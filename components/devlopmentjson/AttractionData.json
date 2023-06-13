@@ -1,0 +1,67 @@
+[{
+    "place":"srinagar",
+    "attractions":[{
+        "attraction_id":"attr001",
+        "activity_name":"HazratBal"
+    },
+    {
+        "attraction_id":"attr002",
+        "activity_name":"Jamia Masjid"
+    },{
+        "attraction_id":"attr003",
+        "activity_name":"DownTown"
+    },{
+        "attraction_id":"attr004",
+        "activity_name":"Mugal Gardens"
+    },{
+        "attraction_id":"attr005",
+        "activity_name":"Dal lake"
+    },{
+        "attraction_id":"attr006",
+        "activity_name":"Nehru Park"
+    },{
+        "attraction_id":"attr007",
+        "activity_name":"Char Chinar"
+    },{
+        "attraction_id":"attr008",
+        "activity_name":"Water Sport"
+    }
+    
+]
+},
+{
+    "place":"gulmarg",
+    "attractions":[{
+        "attraction_id":"attr009",
+        "activity_name":"Gandola"
+    },
+    {
+        "attraction_id":"attr0010",
+        "activity_name":"skiing"
+    },{
+        "attraction_id":"attr0011",
+        "activity_name":"trekking"
+    },{
+        "attraction_id":"attr0016",
+        "activity_name":"Golfing"
+    }
+]
+},
+{
+    "place":"pehalgam",
+    "attractions":[{
+        "attraction_id":"attr0012",
+        "activity_name":"Pehalgam"
+    },
+    {
+        "attraction_id":"attr0013",
+        "activity_name":"Aaru Valley"
+    },{
+        "attraction_id":"attr0014",
+        "activity_name":"Betab Valley"
+    },{
+        "attraction_id":"attr0015",
+        "activity_name":"Baisaran"
+    }]
+}
+]

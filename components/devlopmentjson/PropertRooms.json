@@ -1,0 +1,23 @@
+{
+    [
+        "property_name":"t2k001",
+        "rooms":[{
+            "room_id":"r001",
+            "room_name":"Super Delux Room"
+        },{
+            "room_id": "r002",
+            "room_name":"Executive Room"
+        },{
+            "room_id": "r003",
+            "room_name":"Luxury Suite"
+        },{
+            "room_id": "r003",
+            "room_name":"Luxury Suite"
+        },{
+            "room_id": "r004",
+                "room_name":"Family Room"
+        },{
+            
+        }]
+    ]
+}

@@ -1,0 +1,30 @@
+[{
+    "addon_id": "add001",
+    "addon_name": "kehwa",
+    "addon_description": "some description",
+    "addon_for": "place",
+    "price_per_unit": 100,
+    "serves_to": 2,
+    "external_link": "p001",
+    "provider_id": "provider001"
+},
+{
+    "addon_id": "add002",
+    "addon_name": "halwa",
+    "addon_description": "some description",
+    "addon_for": "place",
+    "price_per_unit": 150,
+    "serves_to": 1,
+    "external_link": "p001",
+    "provider_id": "provider002"
+},
+{
+    "addon_id": "add003",
+    "addon_name": "Kangri",
+    "addon_description": "some description",
+    "addon_for": "milestones",
+    "price_per_unit": 150,
+    "serves_to": 1,
+    "external_link": "p001",
+    "provider_id": "provider002"
+}]

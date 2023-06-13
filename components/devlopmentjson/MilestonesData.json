@@ -1,0 +1,145 @@
+[
+    {
+      "attraction_id": "attr001",
+      "milestones": [
+        {
+          "milestone_id": "mile001",
+          "milestone_name": "Dargah"
+        },
+        {
+          "milestone_id": "mile002",
+          "milestone_name": "Nigeen Lake"
+        }
+      ]
+    },
+    {
+      "attraction_id": "attr002",
+      "milestones": [
+        {
+          "milestone_id": "mile003",
+          "milestone_name": "Nowhatta Market"
+        },
+        {
+          "milestone_id": "mile004",
+          "milestone_name": "Jamia Masjid"
+        }
+      ]
+    },
+    {
+      "attraction_id": "attr003",
+      "milestones": [
+        {
+          "milestone_id": "mile005",
+          "milestone_name": "Khankah e Moula"
+        },
+        {
+          "milestone_id": "mile006",
+          "milestone_name": "Mukhdoom Sahab Shrine"
+        },
+        {
+          "milestone_id": "mile007",
+          "milestone_name": "Badamwari"
+        }
+      ]
+    },
+    {
+      "attraction_id": "attr004",
+      "milestones": [
+        {
+          "milestone_id": "mile008",
+          "milestone_name": "Nishat Garden"
+        },
+        {
+          "milestone_id": "mile009",
+          "milestone_name": "Shalimar"
+        },
+        {
+          "milestone_id": "mile0010",
+          "milestone_name": "Harwan"
+        },
+        {
+          "milestone_id": "mile0011",
+          "milestone_name": "Chashma shahi"
+        }
+      ]
+    },
+    {
+      "attraction_id": "attr005",
+      "milestones": [
+        {
+          "milestone_id": "mile0012",
+          "milestone_name": "Shikara Ride"
+        },
+        {
+          "milestone_id": "mile0013",
+          "milestone_name": "Cycling on banks of dal"
+        }
+      ]
+    },
+    {
+      "attraction_id": "attr006",
+      "milestones": [
+        {
+          "milestone_id": "mile0014",
+          "milestone_name": "Cafe of nehru park"
+        },
+        {
+          "milestone_id": "mile0015",
+          "milestone_name": "picnic on island"
+        }
+      ]
+    },
+    {
+      "attraction_id": "attr007",
+      "milestones": [
+        {
+          "milestone_id": "mile0016",
+          "milestone_name": "Picnic on island"
+        }
+      ]
+    },
+    {
+      "attraction_id": "attr008",
+      "milestones": [
+        {
+          "milestone_id": "mile0017",
+          "milestone_name": "Speed board surfing"
+        }
+      ]
+    },
+    {
+      "attraction_id": "attr009",
+      "milestones": [
+        {
+          "milestone_id": "mile0018",
+          "milestone_name": "Kongdori"
+        },
+        {
+          "milestone_id": "mile0019",
+          "milestone_name": "Phase II"
+        },
+        {
+          "milestone_id": "mile0020",
+          "milestone_name": "Phase III"
+        }
+      ]
+    },
+    {
+      "attraction_id": "attr0010",
+      "milestones": [
+        {
+          "milestone_id": "mile0021",
+          "milestone_name": "Sking at Apharwat"
+        }
+      ]
+    },
+    {
+      "attraction_id": "attr0011",
+      "milestones": [
+        {
+          "milestone_id": "mile0022",
+          "milestone_name": "Trekking to point 1"
+        }
+      ]
+    }
+  ]

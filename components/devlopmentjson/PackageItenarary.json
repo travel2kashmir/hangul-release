@@ -1,0 +1,313 @@
+[
+  {
+    "tour_id": "tour001",
+    "tour_name": "Kashmir Honeymoon 3D 3N",
+    "tour_type": "private",
+    "duration_days": 3,
+    "duration_nights": 3,
+    "min_participants": 2,
+    "max_participants": 5,
+    "tour_summary": "This tour package explores the Kashmir in  winters to explores the real beauty of paradise on earth.Where guests will explore the steep hills suitable for skiing in gulmarg, the snow clad mountains of pehalgam and the beautiful city of srinagar.",
+    "price_type": "Per Person",
+    "price_amount": 7999,
+    "tax_included": "False",
+    "tax_type": "Percentage",
+    "tax_amount": "18%",
+    "other_charges": 0,
+    "currency": "Rupees",
+    "addons": [
+      {
+        "addon_id": "addon001"
+      }
+    ],
+    "additional_info": [
+      {
+        "key": "some title",
+        "value": "value of title"
+      }
+    ],
+    "plan": [
+      {
+        "day": 1,
+        "places": [
+          {
+            "place_id": "place001",
+            "place_name": "srinagar",
+            "addons": [
+              {
+                "addon_id": "addon001"
+              }
+            ],
+            "additional_info": [
+              {
+                "key": "some title",
+                "value": "value of title"
+              }
+            ],
+            "attractions": [
+              {
+                "attraction_id":"attr00",
+                "activity_name": "Transfer From Srinagar airport to Gulmarg",
+                "time_of_ride": "3 Hrs",
+                "distance": "60km",
+                "place": "Gulmarg",
+                "boarding_point": "srinagr",
+                "Guided_tour": true,
+                "addons": [
+                  {
+                    "addon_id": "addon001"
+                  }
+                ],
+                "additional_info": [
+                  {
+                    "key": "some title",
+                    "value": "value of title"
+                  }
+                ],
+                "milestones": [
+                  {
+                    "milestone_id":"mile001",
+                    "milestone_name": "Tangmarg",
+                    "description": "Tangmarg is gateway of gulmarg which is just 13kms away, also drung waterfall is 3kms away which makes tangmarg most crowded place in the evening due to clean & fresh environment. ",
+                    "addons": [
+                      {
+                        "addon_id": "add001",
+                        "addon_name": "kehwa"
+                      }
+                    ],
+                    "additional_info": [
+                      {
+                        "key": "some title",
+                        "value": "value of title"
+                      }
+                    ]
+                  },
+                  {
+                    "milestone_id":"mile002",
+                    "milestone_name": "Drang waterfall",
+                    "description": "The Drung Waterfall is an extremely popular tourist attraction located in the Tangmarg tehsil of Gulmarg, Baramulla. A cascading waterfall set amidst majestic mountains, it freezes completely during winter due to the extremely low temperature. This frozen waterfall is a must-visit in the area.",
+                    "addons": [
+                      {
+                        "addon_id": "addon001"
+                      }
+                    ],
+                    "additional_info": [
+                      {
+                        "key": "some title",
+                        "value": "value of title"
+                      }
+                    ]
+                  },
+                  {
+                    "milestone_id":"mile003",
+                    "milestone_name": "Baba Reshi Shrine ",
+                    "description": "The Ziarat of Baba Reshi is a popular shrine of Baramula, situated near the Alpather Lake at 13 km from Gulmarg and belongs to saint Baba payam-Din.",
+                    "addons": [
+                      {
+                        "addon_id": "addon001"
+                      }
+                    ],
+                    "additional_info": [
+                      {
+                        "key": "some title",
+                        "value": "value of title"
+                      }
+                    ]
+                  }
+                ],
+                "add_on": [
+                  {
+                    "addon_id": "addon001"
+                  },
+                  {
+                    "addon_id": "addon002"
+                  }
+                ],
+                "capacity": {
+                  "adult": 4,
+                  "children": 3
+                }
+              }
+            ]
+          },
+          {
+            "place_id": "place002",
+            "place_name": "gulmarg",
+            "addons": [
+              {
+                "addon_id": "addon001"
+              }
+            ],
+            "additional_info": [
+              {
+                "key": "some title",
+                "value": "value of title"
+              }
+            ],
+            "attractions": [
+              {
+                "attraction_id":"attr009",
+                "activity_name": "Gondolla ride",
+                "time_of_ride": "30 min",
+                "distance": "10km",
+                "place": "Gulmarg",
+                "boarding_point": "Gandola point",
+                "Guided_tour": false,
+                "addons": [
+                  {
+                    "addon_id": "addon001"
+                  }
+                ],
+                "additional_info": [
+                  {
+                    "key": "some title",
+                    "value": "value of title"
+                  }
+                ],
+                "milestones": [
+                  {
+                    "milestone_id":"mile003",
+                    "milestone_name": "kongdori-phase",
+                    "description": "It starts at a height of 2,990 m following which there is a vertical rise of 400m.",
+                    "addons": [
+                      {
+                        "addon_id": "addon001"
+                      }
+                    ],
+                    "additional_info": [
+                      {
+                        "key": "some title",
+                        "value": "value of title"
+                      }
+                    ]
+                  },
+                  {
+                    "milestone_id":"mile004",
+                    "milestone_name": "Apharwat - Phase II",
+                    "description": "it makes a further ascent of 1,330 vertical meters and takes you to a total height of almost 4,000 m",
+                    "addons": [
+                      {
+                        "addon_id": "addon001"
+                      }
+                    ],
+                    "additional_info": [
+                      {
+                        "key": "some title",
+                        "value": "value of title"
+                      }
+                    ]
+                  },
+                  {
+                    "milestone_id":"mile005",
+                    "milestone_name": "Phase III",
+                    "description": "Once here, you can trek a further 30 minutes and reach the top of the mountain to catch a glimpse of the Line of Control (LOC) which is visible from here. ",
+                    "addons": [
+                      {
+                        "addon_id": "addon001"
+                      }
+                    ],
+                    "additional_info": [
+                      {
+                        "key": "some title",
+                        "value": "value of title"
+                      }
+                    ]
+                  }
+                ],
+                "add_on": [
+                  {
+                    "addon_id": "addon001"
+                  },
+                  {
+                    "addon_id": "addon003"
+                  }
+                ],
+                "capacity": {
+                  "adult": 4,
+                  "children": 3
+                }
+              },
+              {
+                "attraction_id":"attr0010",
+                "activity_name": "Skiing on Apharwat Peaks",
+                "time_of_ride": "1 Hr",
+                "distance": "6km",
+                "place": "Gulmarg",
+                "milestones": [
+                  {
+                    "milestone_id":"mile006",
+                    "milestone_name": "Apharwat-peak",
+                    "description": "Best slopes in Asia for best skiing experience.",
+                    "addons": [
+                      {
+                        "addon_id": "addon001"
+                      }
+                    ],
+                    "additional_info": [
+                      {
+                        "key": "some title",
+                        "value": "value of title"
+                      }
+                    ]
+                  }
+                ],
+                "boarding_point": "Apharwat Peak",
+                "Guided_tour": true,
+                "add_on": [
+                  {
+                    "addon_id": "addon001"
+                  },
+                  {
+                    "addon_id": "addon004"
+                  },
+                  {
+                    "addon_id": "addon005"
+                  }
+                ],
+                "capacity": [
+                  {
+                    "adult": 4,
+                    "children": 0
+                  }
+                ]
+              },
+              {
+                "attraction_id":"attr0011",
+                "activity_name": "Night Stay In Gulmarg",
+                "time_of_ride": "",
+                "distance": "",
+                "place": "Gulmarg",
+                "milestones": [],
+                "boarding_point": "Gulmarg",
+                "Guided_tour": false,
+                "add_on": [
+                  {
+                    "addon_id": "addon001"
+                  },
+                  {
+                    "addon_id": "addon006"
+                  },
+                  {
+                    "addon_id": "addon007"
+                  },
+                  {
+                    "addon_id": "addon008"
+                  },
+                  {
+                    "addon_id": "addon009"
+                  }
+                ],
+                "capacity": [
+                  {
+                    "adult": 4,
+                    "children": 2
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

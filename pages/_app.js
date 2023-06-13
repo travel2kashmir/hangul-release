@@ -1,0 +1,21 @@
+import '../styles/globals.css';
+import 'tailwindcss/tailwind.css';
+import '../pages/themes/classic/classic.css'
+import NProgress from 'nprogress'; //nprogress module
+import 'nprogress/nprogress.css';
+// import Layout from '../components/Layout'
+import Router from "next/router";
+Router.events.on('routeChangeStart', () => NProgress.start());
+Router.events.on('routeChangeComplete', () => NProgress.done());
+Router.events.on('routeChangeError', () => NProgress.done());
+
+function MyApp({ Component, pageProps }) {
+  
+  return(
+    <>
+   <Component {...pageProps} />
+   </>
+  )
+}
+export { reportWebVitals } from 'next-axiom';
+export default MyApp

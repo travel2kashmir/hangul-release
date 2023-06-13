@@ -1,0 +1,16 @@
+[{
+    "itinerary_id":"it001",
+    "itinerary_name":"Kashmir Honeymoon 3D 3N",
+    "Days":3,
+    "Nights":3
+},{
+    "itinerary_id":"it002",
+    "itinerary_name":"Trekkers Delight 5D 6N",
+    "Days":5,
+    "Nights":6
+},{
+    "itinerary_id":"it003",
+    "itinerary_name":"Skiing Paradise 3D 2N",
+    "Days":3,
+    "Nights":2
+}]

@@ -1,0 +1,119 @@
+    {
+      "accomodations": [
+        {
+          "itinerary_id": "it001",
+          "accomodation": [
+            {
+              "night": 1,
+              "accomodation_id": "acc001",
+              "property_id": "t2k001",
+              "property_name":"Rose petal",
+              "room_id": "r001",
+              "room_name":"Super Delux Room",
+              "isChecked":false
+            },
+            {
+              "night": 2,
+              "accomodation_id": "acc001",
+              "property_id": "t2k001",
+              "property_name":"Rose petal",
+              "room_id": "r002",
+              "room_name":"Executive Room",
+              "isChecked":false
+            },
+            {
+              "night": 3,
+              "accomodation_id": "acc001",
+              "property_id": "t2k001",
+              "property_name":"Rose petal",
+              "room_id": "r003",
+              "room_name":"Luxury Suite",
+              "isChecked":false
+            }
+          ]
+        },
+        {
+            "itinerary_id": "it002",
+            "accomodation": [
+              {
+                "night": 1,
+                "accomodation_id": "acc002",
+                "property_id": "t2k001",
+                "property_name":"Rose petal",
+                "room_id": "r002",
+                "room_name":"Executive Room",
+                "isChecked":false
+              },
+              {
+                "night": 2,
+                "accomodation_id": "acc002",
+                "property_id": "t2k001",
+                "property_name":"Rose petal",
+                "room_id": "r004",
+                "room_name":"Family Room",
+                "isChecked":false
+              },
+              {
+                "night": 3 ,
+                "accomodation_id": "acc002",
+                "property_id": "t2k001",
+                "property_name":"Rose petal",
+                "room_id": "r002",
+                "room_name":"Executive Room",
+                "isChecked":false
+              },
+              {
+                "night": 4,
+                "accomodation_id": "acc002",
+                "property_id": "t2k001",
+                "property_name":"Rose petal",
+                "room_id": "r002",
+                "room_name":"Executive Room",
+                "isChecked":false
+              },
+              {
+                "night": 5,
+                "accomodation_id": "acc002",
+                "property_id": "t2k001",
+                "property_name":"Rose petal",
+                "room_id": "r003",
+                "room_name":"Executive Room",
+                "isChecked":false
+              },
+              {
+                "night": 6,
+                "accomodation_id": "acc002",
+                "property_id": "t2k001",
+                "property_name":"Rose petal",
+                "room_id": "r001",
+                "room_name":"Family Executive Room",
+                "isChecked":false
+              }
+            ]
+          },
+          {
+            "itinerary_id": "it003",
+            "accomodation": [
+              {
+                "night": 1,
+                "accomodation_id": "acc002",
+                "property_id": "t2k001",
+                "property_name":"Rose petal",
+                "room_id": "r001",
+                "room_name":"Friends Room",
+                "isChecked":false
+              },
+              {
+                "night": 2,
+                "accomodation_id": "acc002",
+                "property_id": "t2k001",
+                "property_name":"Rose petal",
+                "room_id": "r001",
+                "room_name":"Executive Room",
+                "isChecked":false
+              }
+            ]
+          }
+      ]
+    }
+  

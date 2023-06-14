@@ -1,7 +1,6 @@
 
 import React from "react";
 import { useState, useEffect } from "react";
-import axios from 'axios';
 import en from "../components/Languages/en"
 import fr from "../components/Languages/fr"
 import ar from "../components/Languages/ar"
@@ -128,13 +127,17 @@ export async function getServerSideProps(context) {
       .then((response) => response.json());
     let property_id = data?.property_id;
     //fetch room data
+    console.log(`${process.env.serverURL}:${process.env.port}/api/all_rooms_details/${property_id}`)
     const room_data = await fetch(`${process.env.serverURL}:${process.env.port}/api/all_rooms_details/${property_id}`)
       .then((response) => response.json());
+      console.log(room_data)
     //fetch package data
-    const package_data = await fetch(`${process.env.serverURL}:${process.env.port}/api/all_packages_details/${property_id}`)
-      .then((response) => response.json())
+    // console.log(`${process.env.serverURL}:${process.env.port}/api/all_packages_details/${property_id}`);
+    // const package_data = await fetch(`${process.env.serverURL}:${process.env.port}/api/all_packages_details/${property_id}`)
+    //   .then((response) => response.json())
+    //   console.log(package_data)
     //return data fetched to function generation html  
-    return { props: { data, room_data, package_data } }
+    return { props: { data, room_data } }
   }
   else {
     let data = '404';

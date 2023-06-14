@@ -295,18 +295,8 @@ const submitServices = () =>{
           <div className={(visible === 0 && colorToggle == false ? 'block' : 'hidden')}><LoaderTable /></div>
         <div className={(visible === 0 && colorToggle == true ? 'block' : 'hidden')}><LoaderDarkTable /></div>
                 <div className={visible === 1 ? 'block' : 'hidden'}>
-
-             
-
-
-
-
-
-
-
-
-
-                    <Table gen={gen} setGen={setGen} color={color}
+                {/* services table  */}
+                <Table gen={gen} setGen={setGen} color={color}
                         edit={updateServices} common={language?.common} cols={language?.ServicesCols}
                         name="Services" /> 
                         

@@ -106,6 +106,30 @@ function Room() {
   const [editedModifications, setEditedModifications] = useState({})
   const [selectAllDiscounts, setSelectAllDiscounts] = useState(0)
   const [selectAllModifications, setSelectAllModifications] = useState(0)
+   /** Use Effect to fetch details from the Local Storage **/
+   useEffect(() => {
+    const resp = InitialActions({ setColor, setMode })
+    language = resp?.language;
+    currentLogged = resp?.currentLogged;
+    currentProperty = resp?.currentProperty;
+    currentroom = localStorage.getItem('RoomId');
+    setProperty_name(resp?.currentProperty?.property_name);
+    colorToggle = resp?.colorToggle
+
+  }, [])
+
+  /* Function to load Room Details when page loads */
+  useEffect(() => {
+    if (JSON.stringify(currentLogged) === 'null') {
+      Router.push(window.location.origin)
+    }
+    else {
+      fetchRoomtypes();
+      fetchImages();
+      fetchDetails();
+    }
+  }, [])
+
   /* Function Multiple Delete*/
   function deleteMultiple() {
     const data = check?.map((item) => {
@@ -189,53 +213,39 @@ function Room() {
     setShowSearchedImages(1);
   };
 
-  /** Use Effect to fetch details from the Local Storage **/
-  useEffect(() => {
-    const resp = InitialActions({ setColor, setMode })
-    language = resp?.language;
-    currentLogged = resp?.currentLogged;
-    currentProperty = resp?.currentProperty;
-    currentroom = localStorage.getItem('RoomId');
-    setProperty_name(resp?.currentProperty?.property_name);
-    colorToggle = resp?.colorToggle
-
-  }, [])
-
-  /* Function to load Room Details when page loads */
-  useEffect(() => {
-    if (JSON.stringify(currentLogged) === 'null') {
-      Router.push(window.location.origin)
-    }
-    else {
-      fetchRoomtypes();
-      fetchImages();
-      fetchDetails();
-    }
-  }, [])
+ 
   // Fetch Room Details
   const fetchDetails = async () => {
     const url = `/api/${currentProperty.address_province.replace(/\s+/g, '-')}/${currentProperty.address_city}/${currentProperty.property_category}s/${currentProperty.property_id}/${currentroom}`
     axios.get(url)
       .then((response) => {
+        console.log(response.data);
         setAllRoomDetails(response.data);
         setRoomDetails(response.data);
+        setVisible(1);
         setFinalView(response?.data?.views);
-        setDiscount(response?.data?.discounts.map(i => ({ ...i, "isChecked": false }))) //added checked as undefined 
-        setRateModification(response?.data?.room_rate_modifications.map(i => ({ ...i, "isChecked": false })))  //added checked as undefined 
+        
+        setDiscount(response?.data?.discounts?.map(i => ({ ...i, "isChecked": false }))) //added checked as undefined 
+        
+        setRateModification(response?.data?.room_rate_modifications?.map(i => ({ ...i, "isChecked": false })))  //added checked as undefined 
+        
         if (response.data?.room_type == 'Single') {
           setBedDetails(response.data.beds?.[i])
         }
+        
         filterCurrency(response.data?.unconditional_rates?.[i]);
+        
         if (response.data.room_facilities !== undefined) {
           setServices(response.data.room_facilities);
         }
-
+        
         setRoomDetails(response.data);
         if (response.data.room_facilities == undefined) {
           fetchServices();
         }
-
-        if (response.data?.room_type == 'Semi_Double' || 'King' || 'Queen' || 'Studio_Room' || 'Double') {
+        //list of room categories to be checked
+        let room_categories = ['Semi_Double' , 'King' , 'Queen' , 'Studio_Room' , 'Double']
+        if(room_categories.includes(response.data?.room_type)){
           var genData = [];
           {
             response.data?.beds?.map((item) => {
@@ -246,11 +256,11 @@ function Room() {
               }
               genData.push(temp)
             })
-            setGen(genData);;
+            setGen(genData);
           }
         }
         logger.info("url  to fetch room hitted successfully");
-        setVisible(1)
+        
       })
       .catch((error) => { logger.error("url to fetch room, failed"); });
   }
@@ -1237,9 +1247,9 @@ function Room() {
           progress: undefined,
         });
         // to check if the discounts are more than one 
-        if (rateModification.length > 1) {
+        if (rateModification?.length > 1) {
           // filter out unedited discounts 
-          let uneditedModifications = rateModification.filter(item => item.modification_id != editedModifications.modification_id);
+          let uneditedModifications = rateModification?.filter(item => item.modification_id != editedModifications.modification_id);
           // save all discounts to state 
           setRateModification([...uneditedModifications, editedModifications])
         }
@@ -1294,7 +1304,7 @@ function Room() {
         draggable: true,
         progress: undefined,
       });
-      let undeleted = rateModification.filter((m) => m.modification_id != mod?.modification_id);
+      let undeleted = rateModification?.filter((m) => m.modification_id != mod?.modification_id);
       setRateModification(undeleted)
     }).catch((error) => {
       toast.error("API: Modification delete error.", {
@@ -1366,13 +1376,13 @@ function Room() {
     const { name, checked } = e.target;
     let tempattr;
     if (item.isChecked === false) {
-      tempattr = rateModification.map((item) =>
+      tempattr = rateModification?.map((item) =>
         item.modification_id === name ? { ...item, isChecked: 'checked' } : item
       );
     }
 
     else {
-      tempattr = rateModification.map((item) =>
+      tempattr = rateModification?.map((item) =>
         item.modification_id === name ? { ...item, isChecked: false } : item
       );
     }
@@ -1452,7 +1462,7 @@ function Room() {
           draggable: true,
           progress: undefined,
         });
-        let undeleted = rateModification.filter((mod) => mod?.isChecked != 'checked');
+        let undeleted = rateModification?.filter((mod) => mod?.isChecked != 'checked');
         setRateModification(undeleted);
       }).catch((err) => {
         toast.error("Selected Modification Deleting Failed", {
@@ -1496,12 +1506,12 @@ function Room() {
   //set all modification
   function setAllModification() {
     if (selectAllModifications === 0) {
-      let checkedModifications = rateModification.map(mod => ({ ...mod, isChecked: 'checked' }));
+      let checkedModifications = rateModification?.map(mod => ({ ...mod, isChecked: 'checked' }));
       setRateModification(checkedModifications);
       checkModification.map((mod) => checkedModifications.push(mod?.modification_id));
     }
     else {
-      let checkedModifications = rateModification.map(mod => ({ ...mod, isChecked: false }));
+      let checkedModifications = rateModification?.map(mod => ({ ...mod, isChecked: false }));
      setRateModification(checkedModifications);
       checkDiscount = [];
     }
@@ -1510,8 +1520,8 @@ function Room() {
   //to set table header check box of modifications
   useEffect(()=>{
     function settingAll(){
-      if(rateModification.length!=0)
-      setSelectAllModifications(checkModification.length===rateModification.length?1:0)
+      if(rateModification?.length!=0)
+      setSelectAllModifications(checkModification.length===rateModification?.length?1:0)
     }
     settingAll();
   },[checkModification])
@@ -1950,6 +1960,7 @@ function Room() {
 
               <div className={visible === 0 ? 'block' : 'hidden'}><LoaderTable /></div>
               <div className={visible === 1 ? 'block' : 'hidden'}>
+                {JSON.stringify(gen)}
                 <Table gen={gen} setGen={setGen} add={() => setView(1)} name="Additional Services"
                   color={color}
                   mark="beds"

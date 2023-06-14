@@ -18,8 +18,16 @@ const validateContact = (data,props) =>{
     }
 
     if(data.contact_type !== "" && data.contact_type!== undefined){
-        if(data.contact_type === "email"){  
+        if(data.contact_type === "website"){  
     if((!data.contact_data?.match(/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/))){
+        flag.push(false)
+        error.contact_data="APP: The website is invalid."
+    }
+}
+    }
+    if(data.contact_type !== "" && data.contact_type!== undefined){
+        if(data.contact_type === "email"){  
+    if((!data.contact_data?.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/))){
         flag.push(false)
         error.contact_data="APP: The email is invalid."
     }

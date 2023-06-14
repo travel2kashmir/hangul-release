@@ -182,7 +182,7 @@ function Address() {
             .then((response) => {
               setSpinner(0);
               setFlag([]);
-              setVisible(0);
+              setVisible(1);
               toast.success("Address Updated Successfully!", {
                 position: "top-center",
                 autoClose: 5000,
@@ -414,33 +414,7 @@ function Address() {
                   req={true}
                   tooltip={true}
                 />
-                {/* <div className="w-full lg:w-6/12 px-4">
-                  <div className="relative w-full mb-3">
-                    <label
-                      className={`text-sm font-medium ${color?.text} block mb-2`}
-                      htmlFor="grid-password"
-                    >
-                      {language?.streetaddress}
-                      <span style={{ color: "#ff0000" }}>*</span>
-                    </label>
-                    <div className={visible === 0 ? 'block' : 'hidden'}><Lineloader /></div>
-                    <div className={visible === 1 ? 'block' : 'hidden'}>
-                      <input
-                        type="text"
-                        className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
-                        defaultValue={address?.address_street_address}
-                        onChange={(e) =>
-                          setAllHotelDetails({
-                            ...allHotelDetails,
-                            address_street_address: e.target.value,
-                          }, setFlag(1))
-                        }
-                      />
-                      <p className="text-sm text-sm text-red-700 font-light">
-                        {error?.address_street_address}</p></div>
-                  </div>
-                </div> */}
-
+                
                 {/* Landmark */}
 
                 <InputText
@@ -459,33 +433,7 @@ function Address() {
                   req={true}
                   tooltip={true}
                 />
-                {/* <div className="w-full lg:w-6/12 px-4">
-                  <div className="relative w-full mb-3">
-                    <label
-                      className={`text-sm font-medium ${color?.text} block mb-2`}
-                      htmlFor="grid-password"
-                    >
-                      {language?.landmark}
-                      <span style={{ color: "#ff0000" }}>*</span>
-                    </label>
-                    <div className={visible === 0 ? 'block' : 'hidden'}><Lineloader /></div>
-                    <div className={visible === 1 ? 'block' : 'hidden'}>
-                      <input data-testid="landmark"
-                        type="text"
-                        className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
-                        defaultValue={address?.address_landmark}
-                        onChange={(e) => {
-                          setAllHotelDetails({
-                            ...allHotelDetails,
-                            address_landmark: e.target.value,
-                          }); setFlag(1);
-                        }
-                        }
-                      />
-                      <p className="text-sm text-sm text-red-700 font-light">
-                        {error?.address_landmark}</p></div>
-                  </div>
-                </div> */}
+               
 
                 {/* country */}
                 <DropDown
@@ -654,7 +602,7 @@ function Address() {
                   req={true}
                   tooltip={true}
                   options={cities?.map((i) => ({
-                    value: `${JSON.stringify(i)}`,
+                    value: `${i.name}`,
                     label: `${i?.name}`,
                   }))}
                 />

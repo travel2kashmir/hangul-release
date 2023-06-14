@@ -15,7 +15,7 @@ module.exports = withAxiom(
 
  env:{
       serverURL:"http://103.136.36.27",
-      port:"7860"
+      port:"5555"
     }
   , 
 
@@ -46,7 +46,7 @@ module.exports = withAxiom(
     return [
       {
         source: '/api/:path*',
-        destination: 'http://103.136.36.27:7860/:path*' // Proxy to Backend
+        destination: 'http://103.136.36.27:5555/:path*' // Proxy to Backend
       },
       {
         source: '/api2/:path*',

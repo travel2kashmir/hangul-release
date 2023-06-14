@@ -701,7 +701,7 @@ function Gallery() {
                       check?.length === 0 || undefined
                         ? `${color?.textgray} cursor-pointer p-1 ${color?.hover} rounded inline-flex
                                 justify-center`
-                        : `${color?.textgray} bg-red-600 cursor-pointer p-1 ${color?.hover} rounded inline-flex
+                        : `${color?.textgray} bg-slate-300 cursor-pointer p-1 ${color?.hover} rounded inline-flex
                                 justify-center`
                     }
                   >

@@ -24,7 +24,12 @@ const validateContactEdit = (data,props) =>{
         error.type="APP: The email is invalid."
     }
 }
-    
+if(data.name === "website"){  
+    if((!data.type?.match(/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/))){
+        flag.push(false)
+        error.contact_data="APP: The website is invalid."
+    }
+}
    
     if(data.name !== "" && data.name !== undefined){
         if(data.name === "Tdd Number"){  

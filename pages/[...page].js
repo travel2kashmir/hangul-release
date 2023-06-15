@@ -127,15 +127,15 @@ export async function getServerSideProps(context) {
       .then((response) => response.json());
     let property_id = data?.property_id;
     //fetch room data
-    console.log(`${process.env.serverURL}:${process.env.port}/api/all_rooms_details/${property_id}`)
+    
     const room_data = await fetch(`${process.env.serverURL}:${process.env.port}/api/all_rooms_details/${property_id}`)
       .then((response) => response.json());
-      console.log(room_data)
+      
     //fetch package data
-    // console.log(`${process.env.serverURL}:${process.env.port}/api/all_packages_details/${property_id}`);
+   
     // const package_data = await fetch(`${process.env.serverURL}:${process.env.port}/api/all_packages_details/${property_id}`)
     //   .then((response) => response.json())
-    //   console.log(package_data)
+   
     //return data fetched to function generation html  
     return { props: { data, room_data } }
   }

@@ -96,7 +96,7 @@ function Page({ data, room_data, package_data }) {
   return (
     
     <>
-      <Title name={`Engage |  ${data?.property_name}`} />
+      <Title name={`${data?.property_name}`} />
       {/* Classic Theme */}
       {theme === "Classic" ?
         <div className="sticky">
@@ -126,8 +126,7 @@ export async function getServerSideProps(context) {
   //to check if url is valid string
   if (items.split('/').length === 5) {
     //fetch hotel data
-    console.log(`${process.env.serverURL}:${process.env.port}/all_data${items}`)
-    const full_data = await fetch(`${process.env.serverURL}:${process.env.port}/all_data${items}`)
+   const full_data = await fetch(`${process.env.serverURL}:${process.env.port}/all_data${items}`)
       .then((response) => response.json());
     // let property_id = data?.property_id;
     //fetch room data
@@ -142,7 +141,7 @@ export async function getServerSideProps(context) {
    
     //return data fetched to function generation html  
     let data=  JSON.parse(full_data?.property_data);
-    console.log(full_data?.property_data);
+    
     let room_data = JSON.parse(full_data?.room_data);
     return { props: { data, room_data } }
   }

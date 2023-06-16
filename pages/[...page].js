@@ -1,5 +1,6 @@
 
 import React from "react";
+import Title from "../components/title";
 import { useState, useEffect } from "react";
 import en from "../components/Languages/en"
 import fr from "../components/Languages/fr"
@@ -95,6 +96,7 @@ function Page({ data, room_data, package_data }) {
   return (
     
     <>
+      <Title name={`Engage |  ${data?.property_name}`} />
       {/* Classic Theme */}
       {theme === "Classic" ?
         <div className="sticky">

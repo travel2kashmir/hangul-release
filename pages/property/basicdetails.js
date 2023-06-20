@@ -28,11 +28,13 @@ import InputText from "../../components/utils/InputText";
 import InputTextBox from "../../components/utils/InputTextBox";
 import DateInput from "../../components/utils/DateInput";
 import DropDown from "../../components/utils/DropDown";
+import { response } from "msw";
 export default function BasicDetails() {
   const router = useRouter();
   const [visible, setVisible] = useState(0);
   const [spinner, setSpinner] = useState(0);
   const [basicDetails, setBasicDetails] = useState([]);
+  const [allPropertyTypes, setAllPropertyTypes] = useState([]);
   const [flag, setFlag] = useState([]);
   const [color, setColor] = useState({});
   const [error, setError] = useState({});
@@ -84,6 +86,10 @@ export default function BasicDetails() {
     }
   };
 
+  const fetchAllPropertyTypes = () =>{
+    const url='/api/all_property_types';
+    axios.get(url).then((response)=>setAllPropertyTypes(response.data))
+  }
   const fetchBasicDetails = async () => {
     try {
       const { address_province, address_city, property_category, property_id } =
@@ -109,6 +115,7 @@ export default function BasicDetails() {
     if (JSON.stringify(currentLogged) === "null") {
       router?.push(window.location.origin);
     } else {
+      fetchAllPropertyTypes();
       fetchBasicDetails();
     }
   }, []);
@@ -465,11 +472,12 @@ export default function BasicDetails() {
                   color={color}
                   req={true}
                   title={language?.propertycategory}
-                  options={[
-                    { value: "hotel", label: "Hotel" },
-                    { value: "resort", label: "Resort" },
-                    { value: "motel", label: "Motel" },
-                  ]}
+                  options={allPropertyTypes.map(i=>({ value: i?.property_type , label: i?.property_type }))}
+                  // options={[
+                  //   { value: "hotel", label: "Hotel" },
+                  //   { value: "resort", label: "Resort" },
+                  //   { value: "motel", label: "Motel" },
+                  // ]}
                 />
 
                 {/* Property brand */}

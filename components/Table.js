@@ -206,7 +206,7 @@ const Table = (args) => {
                                 <tbody className={` ${args?.color?.whitebackground} divide-y  divide-gray-200 `} id="TableList" >
                                     {displayData?.map((item, idx) => (
                                         <>
-                                      
+
                                             {update?.edit === 1 && update?.id === idx ?
                                                 //After Edit
                                                 <>
@@ -221,12 +221,14 @@ const Table = (args) => {
                                                             </td> : <></>}
                                                         {(args?.name != "Additional Services" && args?.name != "Package Miles" && args?.name != "Elite Rewards") ?
                                                             <td className={`p-4 whitespace-nowrap capitalize text-base font-normal ${args?.color?.text}`}>
-                                                                {item?.name}</td>
+                                                                
+                                                                <input type="text"
+                                                                    onChange={(e) => setEditContact({ ...editContact, type: e.target.value }, setFlag(1))}
+                                                                    className={`shadow-sm  ${args?.color?.whitebackground} border border-gray-300 ${args?.color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-64 p-2.5`}
+                                                                    defaultValue={item?.type}></input></td>
                                                             :
                                                             <td className={`p-4 whitespace-nowrap capitalize text-base font-normal ${args?.color?.text}`}>
-
-
-                                                                <input type="text"
+                                                                    <input type="text"
                                                                     onChange={(e) => setEditContact({ ...editContact, name: e.target.value }, setFlag(1))} className={`shadow-sm capitalize ${args?.color?.whitebackground} border border-gray-300 ${args?.color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-64 p-2.5`}
                                                                     defaultValue={item?.name}></input> </td>}
 
@@ -234,11 +236,7 @@ const Table = (args) => {
 
 
                                                             <td className="data text-left text-sm font-semibold  ">
-
-                                                                <input type="text"
-                                                                    onChange={(e) => setEditContact({ ...editContact, type: e.target.value }, setFlag(1))}
-                                                                    className={`shadow-sm  ${args?.color?.whitebackground} border border-gray-300 ${args?.color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-64 p-2.5`}
-                                                                    defaultValue={item?.type}></input>
+                                                                 {item?.name}          
 
                                                             </td>
                                                             :
@@ -386,13 +384,13 @@ const Table = (args) => {
                                                                     <label htmlFor="checkbox-1" className="sr-only">checkbox</label>
                                                                 </span>
                                                             </td> : <></>}
-                                                        <td className={`p-4 whitespace-nowrap ${args.name === "Contact"?undefined:`capitalize`}  text-base font-normal ${args?.color?.text}`}>
-                                                              {args.name != "Contact"?item?.name:item?.type}
+                                                        <td className={`p-4 whitespace-nowrap ${args.name === "Contact" ? undefined : `capitalize`}  text-base font-normal ${args?.color?.text}`}>
+                                                            {args.name != "Contact" ? item?.name : item?.type}
                                                         </td>
                                                         {args?.name === "Packages" ? <></> :
 
                                                             <td className={`p-4 whitespace-nowrap   text-base font-normal ${args?.color?.text} `}>
-                                                                 <Capsule title={args.name != "Contact"?item?.type:item?.name} action={undefined} selected={true} /> 
+                                                                <Capsule title={args.name != "Contact" ? item?.type : item?.name} action={undefined} selected={true} />
 
                                                             </td>}
                                                         {args?.mark !== "beds" ?

@@ -8,7 +8,7 @@ const validateGallery = (data,props) =>{
         flag.push(false)
         error.image_title="APP: The image title is required"
     }
-
+    alert(props);
     if(props==="" || props===undefined)
     {
         flag.push(false)

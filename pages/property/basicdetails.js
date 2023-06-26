@@ -41,11 +41,15 @@ export default function BasicDetails() {
   const [mode, setMode] = useState();
   const [imageLogo, setImageLogo] = useState();
   const [uploadImageSpin, setUploadImageSpin] = useState(false);
+  const [descriptionLength, setDescriptionLength] = useState();
+
 
   /** Fetching language from the local storage **/
   useEffect(() => {
     firstfun();
   }, []);
+
+
 
   const firstfun = () => {
     if (typeof window !== "undefined") {
@@ -86,9 +90,9 @@ export default function BasicDetails() {
     }
   };
 
-  const fetchAllPropertyTypes = () =>{
-    const url='/api/all_property_types';
-    axios.get(url).then((response)=>setAllPropertyTypes(response.data))
+  const fetchAllPropertyTypes = () => {
+    const url = '/api/all_property_types';
+    axios.get(url).then((response) => setAllPropertyTypes(response.data))
   }
   const fetchBasicDetails = async () => {
     try {
@@ -102,6 +106,7 @@ export default function BasicDetails() {
       const response = await axios.get(url);
       setBasicDetails(response.data);
       setAllHotelDetails(response.data);
+      setDescriptionLength(response.data?.description_body.length)
       setImageLogo(response.data.logo);
       logger.info("url to fetch property details hit successfully");
       setVisible(1);
@@ -139,9 +144,8 @@ export default function BasicDetails() {
 
   const current = new Date();
   let month = current.getMonth() + 1;
-  const descriptionDate = `${current.getDate()}/${
-    month < +10 ? `0${month}` : `${month + 1}`
-  }/${current.getFullYear()}`;
+  const descriptionDate = `${current.getDate()}/${month < +10 ? `0${month}` : `${month + 1}`
+    }/${current.getFullYear()}`;
   const [allHotelDetails, setAllHotelDetails] = useState([]);
 
   /* Edit Basic Details Function */
@@ -160,6 +164,7 @@ export default function BasicDetails() {
         setFlag([]);
       } else {
         setSpinner(1);
+
         const final_data = {
           property_id: currentProperty?.property_id,
           property_name: allHotelDetails.property_name?.toLowerCase(),
@@ -168,9 +173,10 @@ export default function BasicDetails() {
           established_year: allHotelDetails.established_year,
           star_rating: allHotelDetails.star_rating,
           description_title: allHotelDetails.description_title,
-          description_body: allHotelDetails.description_body,
+          description_body: allHotelDetails.description_body.replace(/\n/g, "\\n"),
           description_date: allHotelDetails.description_date,
         };
+
         const url = "/api/basic";
         axios
           .put(url, final_data, {
@@ -454,7 +460,17 @@ export default function BasicDetails() {
 
                 {/* logo */}
                 <div className="w-full lg:w-6/12 px-4">
-                  <img src={imageLogo} width="164px" height="40px" />
+                <label
+          data-testid="checkingcolor"
+          className={`text-sm font-medium ${color?.text} block mb-2`}
+          htmlFor="grid-password"
+        >
+          {`Logo`}
+         
+        </label>
+                  {imageLogo ? <img src={imageLogo} width="164px" height="40px" alt={basicDetails?.property_name} /> : <div className={`hotelLogo border border-2 
+                  p-2 w-fit rounded-lg ${color?.text}`}>{basicDetails?.property_name}</div>}
+
                 </div>
 
                 {/*  Dropdown for Property Category */}
@@ -472,12 +488,7 @@ export default function BasicDetails() {
                   color={color}
                   req={true}
                   title={language?.propertycategory}
-                  options={allPropertyTypes.map(i=>({ value: i?.property_type , label: i?.property_type }))}
-                  // options={[
-                  //   { value: "hotel", label: "Hotel" },
-                  //   { value: "resort", label: "Resort" },
-                  //   { value: "motel", label: "Motel" },
-                  // ]}
+                  options={allPropertyTypes.map(i => ({ value: i?.property_type, label: i?.property_type }))}
                 />
 
                 {/* Property brand */}
@@ -567,14 +578,25 @@ export default function BasicDetails() {
                   label={language?.description}
                   visible={visible}
                   defaultValue={basicDetails?.description_body}
-                  onChangeAction={(e) =>
-                    setAllHotelDetails(
-                      {
-                        ...allHotelDetails,
-                        description_body: e.target.value,
-                      },
-                      setFlag(1)
-                    )
+                  wordLimit={1000}
+                  onChangeAction={(e) => {
+                    if (e.target.value.length >= 0 && e.target.value.length < 1000) {
+                      setError({})
+                      setDescriptionLength(e.target.value.length)
+                      setAllHotelDetails(
+                        {
+                          ...allHotelDetails,
+                          description_body: e.target.value,
+                        },
+                        setFlag(1)
+                      )
+                    }
+                    else {
+                      setError({ description_body: 'word limit reached' })
+                    }
+
+                  }
+
                   }
                   error={error?.description_body}
                   color={color}
@@ -602,7 +624,7 @@ export default function BasicDetails() {
                         required
                         className={`shadow-sm ${color?.greybackground}  border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
                         defaultValue={descriptionDate}
-                        
+
                       />
                     </div>
                   </div>

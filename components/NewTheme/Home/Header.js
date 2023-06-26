@@ -7,8 +7,9 @@ function Header({ allHotelDetails, menu, setMenu, hotelDetailLoader, lang, setLa
     return (
         <header className="relative px-7 md:px-10 py-12 md:py-16 font-bold">
             <div className="flex justify-between">
-                <h1 className="text-xl text-white md:text-2xl">
-                    {hotelDetailLoader === 0 ? <Loader size={`h-10 w-32`} /> : <>{allHotelDetails?.property_name}</>}
+                <h1 className="text-lg text-white md:text-lg hotelLogo">
+                    {hotelDetailLoader === 0 ? <Loader size={`h-10 w-32`} /> :
+                     <>{allHotelDetails?.property_name}</>}
 
                 </h1>
                 <div className='flex gap-5 md:gap-10'>

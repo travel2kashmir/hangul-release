@@ -12,6 +12,7 @@ import english from "../../components/Languages/en"
 import french from "../../components/Languages/fr"
 import arabic from "../../components/Languages/ar";
 import colorFile from "../../components/colors/Color";
+import Capsule from "../../components/utils/Capsule";
 // Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
 import Carousel from 'better-react-carousel';
@@ -191,12 +192,7 @@ function PropertySummary() {
                 </span>
               </div>
             </div>
-            <div className="flex items-center justify-between ">
-            <span className={`${color?.text} text-sm leading-none font-semibold `}>
-              {allHotelDetails?.description_title}
-            </span>
-            <div className="flex-shrink-0">
-                    <div className="flex items-center flex-1 justify-end px-2 text-yellow-400 text-sm font-bold">
+            <div className="flex items-center flex-1 justify-start -mt-4 mb-2 px-2 text-yellow-400 text-sm font-bold">
                     <StarRatings
                                  rating={allHotelDetails?.star_rating}
                                  starRatedColor="#FDCC0D"
@@ -206,8 +202,15 @@ function PropertySummary() {
                                  name='rating'
                               />
                     </div>
+            
+            <div className="flex items-center justify-between ">
+            <span className={`${color?.text} text-sm leading-none font-semibold `}>
+              {allHotelDetails?.description_title}
+            </span>
+            <div className="flex-shrink-0">
+                   
                   </div></div>
-            <p className={`${color?.textgray} text-sm my-2 line-clamp-10`}>
+            <p className={`${color?.textgray} whitespace-pre-wrap text-sm my-2 line-clamp-10`}>
               {allHotelDetails?.description_body}
             </p>
           </div>
@@ -235,22 +238,22 @@ function PropertySummary() {
             <div className="align-middle inline-block min-w-full">
               <div className="overflow-hidden">
                 <table className="table-fixed min-w-full  ">
-                  <tbody>
+                  <tbody >
                     {allHotelDetails?.address?.map((item, idx) => {
                       return (
                         <>
-                        <tr key={idx}>
-                          <td className="p-1 flex items-center whitespace-nowrap space-x-6 mr-6 lg:mr-0">
+                        <tr className={'border-b-2'} key={idx}>
+                          <td className="p-1  flex items-center whitespace-nowrap space-x-6 mr-6 lg:mr-0">
                             <td className={`${color?.text} p-2 whitespace-wrap text-sm leading-none font-semibold`}>
                             {language?.address}
                             </td>
                           </td>
                           <td className= {`${color?.textgray} p-1 whitespace-wrap text-sm my-2`} >
-                          {item.address_street_address}{" "}
+                            {item.address_street_address}
                           </td>
                         </tr> 
-                        <tr key={idx}>
-                          <td className="p-1 flex items-center whitespace-nowrap space-x-6 mr-6 lg:mr-0">
+                        <tr className={'border-b-2'} key={idx}>
+                          <td className="p-1  flex items-center whitespace-nowrap space-x-6 mr-6 lg:mr-0">
                             <td className={`${color?.text} p-2 whitespace-wrap text-sm leading-none font-semibold`}>
                             {language?.landmark}
                             </td>
@@ -259,8 +262,8 @@ function PropertySummary() {
                           {item.address_landmark}{" "}
                           </td>
                         </tr>
-                        <tr key={idx}>
-                          <td className="p-1 flex items-center whitespace-nowrap space-x-6 mr-6 lg:mr-0">
+                        <tr className={'border-b-2'} key={idx}>
+                          <td className="p-1  flex items-center whitespace-nowrap space-x-6 mr-6 lg:mr-0">
                             <td className={`${color?.text} p-2 whitespace-wrap text-sm leading-none font-semibold `}>
                             {language?.postalcode}
                             </td>
@@ -269,8 +272,8 @@ function PropertySummary() {
                           {item.address_zipcode}{" "}
                           </td>
                         </tr>
-                        <tr key={idx}>
-                          <td className="flex p-1 items-center whitespace-nowrap space-x-6 mr-6 lg:mr-0">
+                        <tr className={'border-b-2'} key={idx}>
+                          <td className="flex   p-1 items-center whitespace-nowrap space-x-6 mr-6 lg:mr-0">
                             <td className={`${color?.text} p-2 whitespace-wrap text-sm leading-none font-semibold`}>
                             {language?.province}
                             </td>
@@ -279,8 +282,8 @@ function PropertySummary() {
                           {item.address_city}{" "}
                           </td>
                         </tr>
-                        <tr key={idx}>
-                          <td className="p-1 flex items-center whitespace-nowrap space-x-6 mr-6 lg:mr-0">
+                        <tr className={'border-b-2'} key={idx}>
+                          <td className="p-1  flex items-center whitespace-nowrap space-x-6 mr-6 lg:mr-0">
                             <td className={`${color?.text} p-2 whitespace-wrap text-sm leading-none font-semibold`}>
                             {language?.countrycode}
                             </td>
@@ -289,8 +292,8 @@ function PropertySummary() {
                           {country?.[i]?.country_name}
                           </td>
                         </tr>
-                        <tr key={idx}>
-                          <td className="p-1 flex items-center whitespace-nowrap space-x-6 mr-6 lg:mr-0">
+                        <tr className={'border-b-2'} key={idx}>
+                          <td className="p-1  flex items-center whitespace-nowrap space-x-6 mr-6 lg:mr-0">
                             <td className={`${color?.text} p-2 whitespace-wrap text-sm leading-none font-semibold`}>
                             {language?.latitude}
                             </td>
@@ -299,8 +302,8 @@ function PropertySummary() {
                           {item.address_latitude}{" "}
                           </td>
                         </tr>
-                        <tr key={idx}>
-                          <td className="p-1 flex items-center whitespace-nowrap space-x-6 mr-6 lg:mr-0">
+                        <tr className={'border-b-2'} key={idx}>
+                          <td className="p-1  flex items-center whitespace-nowrap space-x-6 mr-6 lg:mr-0">
                             <td className={`${color?.text} p-2 whitespace-wrap text-sm leading-none font-semibold `}>
                             {language?.longitude}
                             </td>
@@ -309,8 +312,8 @@ function PropertySummary() {
                           {item.address_longitude}{" "}
                           </td>
                         </tr>
-                        <tr key={idx}>
-                          <td className="p-1 flex items-center whitespace-nowrap space-x-6 mr-6 lg:mr-0">
+                        <tr className={'border-b-2'} key={idx}>
+                          <td className="p-1  flex items-center whitespace-nowrap space-x-6 mr-6 lg:mr-0">
                             <td className={`${color?.text} p-2 whitespace-wrap text-sm leading-none font-semibold `}>
                             {language?.precision}
                             </td>
@@ -353,8 +356,8 @@ function PropertySummary() {
                   <tbody>
                     {allHotelDetails?.contacts?.map((item, idx) => {
                       return (
-                        <tr key={idx}>
-                          <td className=" flex items-center whitespace-nowrap space-x-6 mr-6 lg:mr-0">
+                        <tr className='border-b-2' key={idx}>
+                          <td className="flex items-center whitespace-nowrap space-x-6 mr-6 lg:mr-0">
                             <td className={`${color?.text} p-2 whitespace-wrap text-sm leading-none font-semibold`}>
                               {item?.contact_type}{" "}
                             </td>
@@ -448,73 +451,13 @@ function PropertySummary() {
                 </span>
               </div>
             </div>
-            <div className="flex flex-wrap">
-             
-                <button
-                  className="text-sm  font-semibold  text-cyan-700 
-                            bg-gray-200 rounded-lg p-2 mx-1  mb-2 "
-                >
-                  Air Conditioned
-                </button>
-                <button
-                  className="text-sm  font-semibold  text-cyan-700 
-                            bg-gray-200 rounded-lg p-2 mx-1  mb-2"
-                >
-                  Swimming Pool
-                </button>
-            
-                <button
-                  className="text-sm  font-semibold  text-cyan-700 
-                            bg-gray-200 rounded-lg p-2 mx-1  mb-2"
-                >
-                  Child Friendly
-                </button>
-                <button
-                  className="text-sm  font-semibold  text-cyan-700 
-                            bg-gray-200 rounded-lg p-2 mx-1  mb-2"
-                >
-                  Pets Allowed
-                </button>
-             
-                <button
-                  className="text-sm  font-semibold  text-cyan-700 
-                            bg-gray-200 rounded-lg p-2 mx-1  mb-2"
-                >
-                  Laundary Service
-                </button>
-                <button
-                  className="text-sm  font-semibold  text-cyan-700 
-                            bg-gray-200 rounded-lg p-2 mx-1  mb-2"
-                >
-                  Wifi
-                </button>
-              
-                <button
-                  className="text-sm  font-semibold  text-cyan-700 
-                            bg-gray-200 rounded-lg p-2 mx-1  mb-2"
-                >
-                  Smoke Free Property
-                </button>
-                <button
-                  className="text-sm  font-semibold  text-cyan-700 
-                            bg-gray-200 rounded-lg p-2 mx-1  mb-2"
-                >
-                  Spa
-                </button>
-              
-                <button
-                  className="text-sm  font-semibold  text-cyan-700 
-                            bg-gray-200 rounded-lg p-2 mx-1  mb-2"
-                >
-                  Bussiness Center
-                </button>
-                <button
-                  className="text-sm  font-semibold  text-cyan-700 
-                            bg-gray-200 rounded-lg p-2 mx-1  mb-2"
-                >
-                  Kitchen Available
-                </button>
-             
+            <div className="flex flex-wrap capitalize">
+             {allHotelDetails?.services?.map((service,idx)=> (
+              <>{service?.service_value === 'yes'?
+              <Capsule key={idx} title={service?.service_name.replaceAll('_'," ")}/>
+              :<></>}</>
+              )
+             )}
             </div>
           </div>
             

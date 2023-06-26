@@ -2,6 +2,7 @@ import React, { useState, useMemo } from "react";
 import Button from "./Button";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Capsule from '../components/utils/Capsule'
 var checked = [];
 
 const Table = (args) => {
@@ -168,7 +169,7 @@ const Table = (args) => {
                 </div>
             </div>
             {/* Table */}
-            <div className="flex flex-col mt-8 lg:-mr-20 sm:mr-0 w-full ">
+            <div className="flex  flex-col mt-8 lg:-mr-20 sm:mr-0 w-full ">
                 <div className="overflow-x-auto">
                     <div className="align-middle inline-block min-w-full">
                         <div className="shadow overflow-hidden">
@@ -202,7 +203,7 @@ const Table = (args) => {
                                         </th>
                                     </tr>
                                 </thead>
-                                <tbody className={` ${args?.color?.whitebackground} divide-y  divide-gray-200`} id="TableList" >
+                                <tbody className={` ${args?.color?.whitebackground} divide-y  divide-gray-200 `} id="TableList" >
                                     {displayData?.map((item, idx) => (
                                         <>
                                             {update?.edit === 1 && update?.id === idx ?
@@ -389,9 +390,9 @@ const Table = (args) => {
                                                         </td>
                                                         {args?.name === "Packages" ? <></> :
 
-                                                            <td className={`p-4 whitespace-nowrap text-base font-normal ${args?.color?.text}`}>
+                                                            <td className={`p-4 whitespace-nowrap   text-base font-normal ${args?.color?.text} `}>
 
-                                                                {item?.type}
+                                                               <Capsule title={item?.type} action={undefined} selected={true}/>   
                                                             </td>}
                                                         {args?.mark !== "beds" ?
                                                             <>
@@ -429,10 +430,7 @@ const Table = (args) => {
 
                                                                 {
                                                                     (args?.name != "Rooms") && (args?.name != "Packages") && (args?.name != "ARI") && (args?.name != "Inventory") ?
-                                                                        <>
-
-
-                                                                            <button className="bg-gradient-to-r bg-cyan-600 hover:bg-cyan-700 text-white  sm:inline-flex font-semibold rounded-lg text-sm px-5 py-2 text-center items-center ease-linear transition-all duration-150" onClick={() => {
+                                                                        <><button className="bg-gradient-to-r bg-cyan-600 hover:bg-cyan-700 text-white  sm:inline-flex font-semibold rounded-lg text-sm px-5 py-2 text-center items-center ease-linear transition-all duration-150" onClick={() => {
                                                                                 setEditContact(item);
                                                                                 setUpdateContact(item);
                                                                                 setUpdate({ ...update, edit: 1, id: idx })

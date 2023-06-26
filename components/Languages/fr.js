@@ -142,8 +142,8 @@ export default {
 
   "ContactCols":{
     name:"Contacter",
-   col1 : "Type de Contact",
-   col2 : "Détails du contact", 
+   col2 : "Type de Contact",
+   col1 : "Détails du contact", 
   },
   "CheckInCols":{
     name:"Enregistrement",

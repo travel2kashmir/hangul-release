@@ -206,6 +206,7 @@ const Table = (args) => {
                                 <tbody className={` ${args?.color?.whitebackground} divide-y  divide-gray-200 `} id="TableList" >
                                     {displayData?.map((item, idx) => (
                                         <>
+                                      
                                             {update?.edit === 1 && update?.id === idx ?
                                                 //After Edit
                                                 <>
@@ -385,14 +386,14 @@ const Table = (args) => {
                                                                     <label htmlFor="checkbox-1" className="sr-only">checkbox</label>
                                                                 </span>
                                                             </td> : <></>}
-                                                        <td className={`p-4 whitespace-nowrap capitalize text-base font-normal ${args?.color?.text}`}>
-                                                            {item?.name}
+                                                        <td className={`p-4 whitespace-nowrap ${args.name === "Contact"?undefined:`capitalize`}  text-base font-normal ${args?.color?.text}`}>
+                                                              {args.name != "Contact"?item?.name:item?.type}
                                                         </td>
                                                         {args?.name === "Packages" ? <></> :
 
                                                             <td className={`p-4 whitespace-nowrap   text-base font-normal ${args?.color?.text} `}>
+                                                                 <Capsule title={args.name != "Contact"?item?.type:item?.name} action={undefined} selected={true} /> 
 
-                                                               <Capsule title={item?.type} action={undefined} selected={true}/>   
                                                             </td>}
                                                         {args?.mark !== "beds" ?
                                                             <>
@@ -426,15 +427,13 @@ const Table = (args) => {
                                                             </td>
                                                             :
                                                             <td className="py-4 whitespace-nowrap capitalize">
-
-
                                                                 {
                                                                     (args?.name != "Rooms") && (args?.name != "Packages") && (args?.name != "ARI") && (args?.name != "Inventory") ?
                                                                         <><button className="bg-gradient-to-r bg-cyan-600 hover:bg-cyan-700 text-white  sm:inline-flex font-semibold rounded-lg text-sm px-5 py-2 text-center items-center ease-linear transition-all duration-150" onClick={() => {
-                                                                                setEditContact(item);
-                                                                                setUpdateContact(item);
-                                                                                setUpdate({ ...update, edit: 1, id: idx })
-                                                                            }}>{args?.common?.Edit} </button>
+                                                                            setEditContact(item);
+                                                                            setUpdateContact(item);
+                                                                            setUpdate({ ...update, edit: 1, id: idx })
+                                                                        }}>{args?.common?.Edit} </button>
 
 
                                                                             {args?.name != "Services" ?

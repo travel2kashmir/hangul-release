@@ -264,8 +264,8 @@ EditContact :{
 
 
 ContactCols:{
-  col1 : "نوع الاتصال",
-  col2 : "بيانات المتصل"
+  col2 : "نوع الاتصال",
+  col1 : "بيانات المتصل"
  },
    
  common:{

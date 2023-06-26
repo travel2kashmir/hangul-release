@@ -272,8 +272,8 @@ salename:'Point of Sale Name',
  
 "ContactCols":{
   name:"Contact",
- col1 : "Contact Type",
- col2 : "Contact Details", 
+ col2 : "Contact Type",
+ col1 : "Contact Details", 
  search: "Search"
 },
 "LandingCols":{

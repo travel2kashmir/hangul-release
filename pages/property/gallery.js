@@ -352,7 +352,6 @@ function Gallery() {
     setError({});
     alert(image.image_link)
     var result = validateGallery(actionImage, image.image_link);
-    console.log("Result" + JSON.stringify(result));
     if (result === true) {
       submitAddImage();
     } else {

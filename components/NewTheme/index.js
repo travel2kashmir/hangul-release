@@ -70,25 +70,12 @@ function Hotel({ language, HotelDetails,
                 setLang={setLang}
                 hotelDetailLoader={hotelDetailLoader}
             />
-
-            {/* <button className='lg:hidden absolute fixed right-0 z-50 bg-white py-2 px-3 text-xs' style={{ top: '12%' }}
-                onClick={() => { setShowModalBooking(1) }}>BOOK NOW</button>
-            <div className={showModalBooking === 1 ? 'block' : 'hidden'}>
-                <Modal
-                    title='Booking Form'
-                    description={<BookingForm />}
-                    setShowModal={(e) => setShowModalBooking(e)}
-                />
-            </div> */}
-
-
-
-
             <About
                 allHotelDetails={allHotelDetails}
                 hotelDetailLoader={hotelDetailLoader}
                 lang={lang}
             />
+            
             <Rooms
                 rooms={rooms}
                 showRoom={showRoom}

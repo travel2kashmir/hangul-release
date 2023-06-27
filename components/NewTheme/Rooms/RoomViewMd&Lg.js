@@ -5,6 +5,7 @@ import RoomServices from './RoomServices';
 import CarousalComponent from '../CarousalComponent';
 
 
+
 function RoomViewMdAndLg({ rooms, showRoom, setShowRoom, selectedRoom, setSelectedRoom, lang }) {
     return (
         <div className='hidden md:block lg:block'>
@@ -47,7 +48,7 @@ function RoomViewMdAndLg({ rooms, showRoom, setShowRoom, selectedRoom, setSelect
                 {rooms?.map((room, index) => {
                     return (
                         <Carousel.Item key={index} >
-                            <div className={`cursor-pointer text-center pb-5 md:py-5 lg:py-10 md:rounded-md ${selectedRoom?.room_id === room?.room_id ? `${`md:shadow-xl md:bg-slate-200 lg:shadow-xl lg:bg-slate-100`}` : ``}`}
+                            <div className={`cursor-pointer text-center pb-5 md:py-5 lg:py-10 md:rounded-md ${selectedRoom?.room_name === room?.room_name ? `${`md:shadow-xl md:bg-slate-200 lg:shadow-xl lg:bg-slate-100`}` : ``}`}
                                 onClick={() => {
                                     (showRoom.index != index) ? setShowRoom({ "visible": 1, "index": index }) : setShowRoom({ "visible": 0, "index": undefined });
                                     setSelectedRoom(room);
@@ -55,10 +56,10 @@ function RoomViewMdAndLg({ rooms, showRoom, setShowRoom, selectedRoom, setSelect
                             >
                                 {Object.keys(room).includes('room_images') ? <img className='rounded-md md:w-10/12 md:m-auto lg:w-10/12' src={room?.room_images[0].image_link}></img> : <img className='rounded-md md:w-10/12 md:m-auto lg:w-10/12' src="https://themewagon.github.io/sogo/images/slider-3.jpg" alt="image" />}
 
-                                <p className="mt-5 text-xl font-semibold">{room?.room_name}</p>
+                                <p className="mt-5 text-sm font-semibold">{room?.room_name}</p>
 
                                 {room?.unconditional_rates?.map((resource, index) => {
-                                    return <p key={index} className="text-lg text-gray-500 font-medium">{resource?.baserate_currency + " " + resource?.baserate_amount}</p>
+                                    return <p key={index} className="text-lg text-gray-500 font-medium">{resource?.baserate_currency + " " + resource?.baserate_amount} </p>
                                 })}
 
                             </div>
@@ -66,7 +67,8 @@ function RoomViewMdAndLg({ rooms, showRoom, setShowRoom, selectedRoom, setSelect
                     )
                 })}
             </Carousel>
-
+            
+            {/* //jab selectedroom empty hoga tab len zero hogi  */}
             {selectedRoom.length != 0 ? <div className="hidden md:block lg:block md:-mx-auto md:mt-8 md:pt-5 md:mb-10 rounded shadow-lg bg-slate-100">
                 <div className="flex justify-between px-5">
                     <p className=' text-slate-500 font-semibold tracking-wide text-center text-2xl'>{selectedRoom?.room_name} - ({selectedRoom?.room_type?.replaceAll("_", " ")})</p>
@@ -102,5 +104,7 @@ function RoomViewMdAndLg({ rooms, showRoom, setShowRoom, selectedRoom, setSelect
 
     )
 }
+
+
 
 export default RoomViewMdAndLg;

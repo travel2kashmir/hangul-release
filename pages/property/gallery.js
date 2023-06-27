@@ -126,9 +126,8 @@ function Gallery() {
     const url = `/api/${currentProperty.address_province.replace(
       /\s+/g,
       "-"
-    )}/${currentProperty.address_city}/${currentProperty.property_category}s/${
-      currentProperty.property_id
-    }`;
+    )}/${currentProperty.address_city}/${currentProperty.property_category}s/${currentProperty.property_id
+      }`;
     axios
       .get(url)
       .then((response) => {
@@ -350,7 +349,6 @@ function Gallery() {
   // Add Validation Gallery
   const validationGallery = () => {
     setError({});
-    alert(image.image_link)
     var result = validateGallery(actionImage, image.image_link);
     if (result === true) {
       submitAddImage();
@@ -387,9 +385,7 @@ function Gallery() {
   };
 
   // Select multiple delete images
-  const allDelete = async () => {
-    // checked = images.filter(i => i.isChecked === true).map(j => { return (j.image_id) })
-    // alert(checked?.length)
+  const allDelete = () => {
     setdeleteImage(1);
   };
 
@@ -455,7 +451,7 @@ function Gallery() {
   function left(key) {
     if (document.getElementById("enlarge").className == "block") {
       setActionEnlargeImage(
-        
+
         images.filter((i) => i.image_idx === indexImage - 1)
           .map((j) => {
             return {
@@ -475,25 +471,25 @@ function Gallery() {
 
   function right(key) {
     if (document.getElementById("enlarge").className == "block") {
-                alert('right');
-                  setActionEnlargeImage(
-                    enlargedImage.filter((i) => i.image_idx === indexImage + 1).map((j) => {
-                        return {
-                          image_id: j?.image_id,
-                          image_title: j?.image_title,
-                          image_idx: j?.image_idx,
-                          image_description: j?.image_description,
-                          image_link: j?.image_link,
-                        };
-                      })?.[0]
-                  );
-                  setIndexImage(indexImage + 1);
-                
+
+      setActionEnlargeImage(
+        enlargedImage.filter((i) => i.image_idx === indexImage + 1).map((j) => {
+          return {
+            image_id: j?.image_id,
+            image_title: j?.image_title,
+            image_idx: j?.image_idx,
+            image_description: j?.image_description,
+            image_link: j?.image_link,
+          };
+        })?.[0]
+      );
+      setIndexImage(indexImage + 1);
+
     }
   }
   useEffect(() => {
     // key down set on document 
-   document.onkeydown = checkKey;
+    document.onkeydown = checkKey;
     function checkKey(e) {
       e = e || window.event;
       console.log(e.key);
@@ -502,7 +498,7 @@ function Gallery() {
       // } else if (e.keyCode == "40") {
       //   // down arrow
       // }
-       if (e.keyCode == "37") {
+      if (e.keyCode == "37") {
         console.log(e.key);
         //left(e.key); // left arrow
       } else if (e.keyCode == "39") {
@@ -620,7 +616,7 @@ function Gallery() {
                   </span>
                 </div>
               </div>
-            </li> 
+            </li>
           </ol>
         </nav>
 
@@ -657,27 +653,27 @@ function Gallery() {
                 {/* icons for delete and other operations start */}
                 <div className="flex space-x-1 pl-0 sm:pl-2 mt-3 sm:mt-0">
                   <a
-                      href="#"
-                      onClick={() => {
-                        setShowSearchedImages(0);
-                        clearSearchField();
-                      }}
-                      className={`${color?.textgray}  hover:${color?.text} cursor-pointer p-1 ${color?.hover} rounded inline-flex justify-center ${showSearchedImages != 1?'':'bg-gray-100'}`}
+                    href="#"
+                    onClick={() => {
+                      setShowSearchedImages(0);
+                      clearSearchField();
+                    }}
+                    className={`${color?.textgray}  hover:${color?.text} cursor-pointer p-1 ${color?.hover} rounded inline-flex justify-center ${showSearchedImages != 1 ? '' : 'bg-gray-100'}`}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      title="clear search"
+                      width="26"
+                      height="26"
+                      fill="currentColor"
+                      className="bi bi-eraser-fill"
+                      viewBox="0 0 16 16"
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        title="clear search"
-                        width="26"
-                        height="26"
-                        fill="currentColor"
-                        className="bi bi-eraser-fill"
-                        viewBox="0 0 16 16"
-                      >
-                        {" "}
-                        <path d="M8.086 2.207a2 2 0 0 1 2.828 0l3.879 3.879a2 2 0 0 1 0 2.828l-5.5 5.5A2 2 0 0 1 7.879 15H5.12a2 2 0 0 1-1.414-.586l-2.5-2.5a2 2 0 0 1 0-2.828l6.879-6.879zm.66 11.34L3.453 8.254 1.914 9.793a1 1 0 0 0 0 1.414l2.5 2.5a1 1 0 0 0 .707.293H7.88a1 1 0 0 0 .707-.293l.16-.16z" />{" "}
-                      </svg>
-                    </a>
-                  
+                      {" "}
+                      <path d="M8.086 2.207a2 2 0 0 1 2.828 0l3.879 3.879a2 2 0 0 1 0 2.828l-5.5 5.5A2 2 0 0 1 7.879 15H5.12a2 2 0 0 1-1.414-.586l-2.5-2.5a2 2 0 0 1 0-2.828l6.879-6.879zm.66 11.34L3.453 8.254 1.914 9.793a1 1 0 0 0 0 1.414l2.5 2.5a1 1 0 0 0 .707.293H7.88a1 1 0 0 0 .707-.293l.16-.16z" />{" "}
+                    </svg>
+                  </a>
+
                   <a
                     href="#"
                     className={`${color?.textgray}  hover:${color?.text} cursor-pointer p-1 ${color?.hover} rounded inline-flex justify-center`}
@@ -922,14 +918,14 @@ function Gallery() {
         <div id="enlarge" className={enlargeImage === 1 ? "block" : "hidden"}>
           <div className="overflow-x-hidden overflow-y-auto fixed top-4 left-0 right-0 backdrop-blur-xl   sm:inset-0 bg-black/30 md:inset-0 z-50 flex justify-center items-center h-modal sm:h-full">
             <div className="flex justify-start ml-2 mr-auto">
-      {/* //Left arrow symbol*/ }
-              <svg  
+              {/* //Left arrow symbol*/}
+              <svg
                 className={indexImage <= 0 ? "hidden" : "block cursor-pointer"}
                 xmlns="http://www.w3.org/2000/svg"
                 height="32px"
                 viewBox="0 0 24 24"
                 width="28px"
-                onClick={() => { 
+                onClick={() => {
                   setActionEnlargeImage(
                     enlargedImage
                       .filter((i) => i.image_idx === indexImage - 1)
@@ -955,7 +951,7 @@ function Gallery() {
             <div className="relative w-full max-w-2xl px-4 h-full md:h-auto">
               <div
                 className={` ${color.tableheader} rounded-lg shadow relative`}
-              >  
+              >
                 <div className="flex justify-between p-5 border-b rounded-t">
                   <h3 className={`text-xl ${color?.text} font-semibold`}>
                     {actionEnlargeImage?.image_title}

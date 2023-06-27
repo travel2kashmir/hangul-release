@@ -1331,7 +1331,7 @@ function Addroom() {
                         </div></>
                     ))}
                     <div className="flex items-center justify-end space-x-2 sm:space-x-3 ml-auto">
-                    <Button Primary={language?.Skip} onClick={() => { setDisp(3) }} />
+                    <Button Primary={language?.Skip} onClick={() => { setDisp(4) }} />
                       <div className={spinner === 0 && flag === 1 ? 'block' : 'hidden'}>
                         <Button Primary={language?.Submit} onClick={submitRoomImages} />
                       </div>

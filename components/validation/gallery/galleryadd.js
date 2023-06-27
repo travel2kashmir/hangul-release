@@ -22,7 +22,7 @@ const validateGallery = (data,props) =>{
     }
 
     if(props !== "" && props !== undefined){
-    if((!props?.match(/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/))){
+    if((!props?.match(/^(https?|ftp):\/\/[^\s/$.?#].[^\s]*/))){
         flag.push(false)
         error.image_link="APP: The image link is invalid."
     }

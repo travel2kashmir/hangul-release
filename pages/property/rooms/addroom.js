@@ -32,6 +32,7 @@ let colorToggle;
 function Addroom() {
   const [allRoomDetails, setAllRoomDetails] = useState([])
   const [spinner, setSpinner] = useState(0)
+  const [spin, setSpin] = useState(0)
   const [darkModeSwitcher, setDarkModeSwitcher] = useState()
   const [color, setColor] = useState({})
   const [visible, setVisible] = useState(0)
@@ -133,6 +134,7 @@ function Addroom() {
   }
 
   const uploadImage = (index) => {
+    setSpin(1);
     const imageDetails = imageData?.find(i => i.index === index)?.imageFile
     const formData = new FormData();
     formData.append("file", imageDetails);
@@ -146,6 +148,7 @@ function Addroom() {
           return i
         })
         setImageData(newData)
+        setSpin(0);
       })
       .catch(error => {
         toast.error("Error uploading photo.", {
@@ -157,6 +160,7 @@ function Addroom() {
           draggable: true,
           progress: undefined,
         });
+        setSpin(0);
       });
 
   }
@@ -1291,7 +1295,15 @@ function Addroom() {
                               <div className="col-span-6 mt-2 sm:col-span-3">
                                 <p className="text-sm text-sm text-red-700 font-light">
                                   {error?.[index]?.image_link}</p>
-                                <Button Primary={language?.Upload} onClick={() => uploadImage(imageData?.index)} /></div>
+                                  {spin === 0 ? (
+                            <Button
+                              Primary={language?.Upload}
+                              onClick={() => uploadImage(imageData?.index)}
+                            />
+                          ) : (
+                            <Button Primary={language?.SpinnerUpload} />
+                          )}
+                                </div>
                             </div>
                             <div className="col-span-6 sm:col-span-3">
                               <img src={imageData?.image_link} alt='ImagePreview' style={{ height: "200px", width: "450px" }} className={`py-2 ${color?.text} `} />

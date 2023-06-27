@@ -15,6 +15,7 @@ import Button from "../../components/Button";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import reviewImage from '../../public/review.png';
+import validateReview from "../../components/validation/review";
 var currentLogged;
 var language;
 var currentProperty;

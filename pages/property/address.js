@@ -287,7 +287,7 @@ function Address() {
         data-testid="main-content"
         className={`${color?.greybackground} px-4 py-2 pt-24 pb-2 relative overflow-y-auto lg:ml-64`}
       >
-        {/* Navbar */}
+        {/* bread crumb */}
         <nav
           data-testid="nav"
           className="flex mb-5 ml-4"
@@ -460,42 +460,6 @@ function Address() {
                   tooltip={true}
                 />
 
-                {/* <div className="w-full lg:w-6/12 px-4">
-                  <div className="relative w-full mb-3">
-                    <label data-testid="country"
-                      className={`text-sm font-medium ${color?.text} block mb-2`}
-                      htmlFor="grid-password"
-                    >
-                      {language?.country}
-                      <span style={{ color: "#ff0000" }}>*</span>
-                    </label>
-                    <div className={visible === 0 ? 'block' : 'hidden'}><Lineloader /></div>
-                    <div className={visible === 1 ? 'block' : 'hidden'}>
-                      <select data-testid="province" className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
-                        onChange={(e) => {
-
-                          setAllHotelDetails({
-                            ...allHotelDetails, address_country: e.target.value,
-                            address_province: "",
-                            address_city: "",
-                            address_zipcode: ""
-                          });
-                          setFlag(1);
-                        }
-                        }>
-                        <>
-
-                          <option selected value={country?.[i]?.country_code}>{country?.[i]?.country_name}</option>
-                          {globalData?.CountryData?.map(i => {
-                            return (
-                              <option key={i.country_code} value={i.country_code}>{i?.country_name}</option>)
-                          }
-                          )}</>
-                      </select>
-                      <p className="text-sm text-sm text-red-700 font-light">
-                        {error?.address_country}</p></div>
-                  </div>
-                </div> */}
                 {/* province */}
                 <DropDown
                 data-testid="province"
@@ -530,49 +494,7 @@ function Address() {
                     label: `${i?.name}`,
                   }))}
                 />
-                {/* <div className="w-full lg:w-6/12 px-4">
-                  <div className="relative w-full mb-3">
-                    <label
-                      className={`text-sm font-medium ${color?.text} block mb-2`}
-                      htmlFor="grid-password"
-                    >
-                      {language?.province}
-                      <span style={{ color: "#ff0000" }}>*</span>
-                    </label>
-                    <div className={visible === 0 ? 'block' : 'hidden'}><Lineloader /></div>
-                    <div className={visible === 1 ? 'block' : 'hidden'}>
-                      <select
-                        className={`shadow-sm ${color?.greybackground} capitalize border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
-                        onChange={(e) => {
-
-                          setAllHotelDetails({
-                            ...allHotelDetails,
-                            address_province: JSON.parse(e.target.value).name,
-                            address_province_code: JSON.parse(e.target.value).isoCode,
-                            address_city: "",
-                            address_zipcode: ""
-                          });
-                          setFlag(1);
-                        }
-                        }
-                      >
-                        {countryInitial === allHotelDetails?.address_country ? <>
-                          <option selected >{allHotelDetails?.address_province}</option>
-
-                        </> : <>
-                          <option disabled selected>Select province</option>
-                        </>}
-                        {states?.map(i => {
-                          return (
-                            <option key={i.name} value={JSON.stringify(i)}>{i?.name}</option>)
-                        }
-                        )}
-                      </select>
-                      <p className="text-sm text-sm text-red-700 font-light">
-                        {error?.address_province}</p></div>
-                  </div>
-                </div> */}
-
+              
                 {/*CITY*/}
 
                 <DropDown
@@ -606,46 +528,6 @@ function Address() {
                     label: `${i?.name}`,
                   }))}
                 />
-
-                {/* <div className="w-full lg:w-6/12 px-4">
-                  <div className="relative w-full mb-3">
-                    <label data-testid="city"
-                      className={`text-sm font-medium ${color?.text} block mb-2`}
-                      htmlFor="grid-password"
-                    >
-                      {language?.city}
-                      <span style={{ color: "#ff0000" }}>*</span>
-                    </label>
-                    <div className={visible === 0 ? 'block' : 'hidden'}><Lineloader /></div>
-                    <div className={visible === 1 ? 'block' : 'hidden'}>
-                      <select
-                        className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
-                        onChange={(e) => {
-                          setAllHotelDetails({
-                            ...allHotelDetails,
-                            address_city: e.target.value,
-                            address_zipcode: ""
-                          })
-                        }
-                        }
-                      >
-                        {(countryInitial === allHotelDetails?.address_country) && (provinceInitial === allHotelDetails?.address_province) ? <>
-                          <option selected>{address?.address_city}</option>
-                        </> : <>
-                          <option disabled selected>{language?.select}</option>
-                        </>}
-
-                        {cities?.map(i => {
-                          return (
-                            <option key={i.name} value={i.name}>{i?.name}</option>)
-                        }
-                        )}
-                      </select>
-                      <p className="text-sm text-sm text-red-700 font-light">
-                        {error?.address_city}</p>
-                    </div>
-                  </div>
-                </div> */}
                 {/* POSTAL CODE */}
                 <InputText
                 data-testid="postalcode"
@@ -669,37 +551,7 @@ function Address() {
                   tooltip={true}
                 />
 
-                {/* <div className="w-full lg:w-6/12 px-4">
-                  <div className="relative w-full mb-3">
-                    <label
-                      className={`text-sm font-medium ${color?.text} block mb-2`}
-                      htmlFor="grid-password"
-                    >
-                      {language?.postalcode}
-                      <span style={{ color: "#ff0000" }}>*</span>
-                    </label>
-                    <div className={visible === 0 ? 'block' : 'hidden'}><Lineloader /></div>
-                    <div className={visible === 1 ? 'block' : 'hidden'}>
-                      <input data-testid="postal code"
-                        type="text"
-                        className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
-                        defaultValue={allHotelDetails.address_zipcode != '' ? allHotelDetails.address_zipcode : ''}
-                        onChange={(e) => {
-                          setAllHotelDetails({
-                            ...allHotelDetails,
-                            address_zipcode: e.target.value,
-                          });
-                          setFlag(1);
-                        }
-                        }
-                      />
-
-
-                      <p className="text-sm text-sm text-red-700 font-light">
-                        {error?.address_zipcode}</p></div>
-                  </div>
-                </div> */}
-
+            
                 {/* Latitude */}
 
                 <InputText
@@ -719,34 +571,7 @@ function Address() {
                   req={true}
                   tooltip={true}
                 />
-                {/* <div className="w-full lg:w-6/12 px-4">
-                  <div className="relative w-full mb-3">
-                    <label
-                      className={`text-sm font-medium ${color?.text} block mb-2`}
-                      htmlFor="grid-password"
-                    >
-                      {language?.latitude}
-                      <span style={{ color: "#ff0000" }}>*</span>
-                    </label>
-                    <div className={visible === 0 ? 'block' : 'hidden'}><Lineloader /></div>
-                    <div className={visible === 1 ? 'block' : 'hidden'}>
-                      <input data-testid="latitude"
-                        type="text"
-                        className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
-                        defaultValue={address?.address_latitude}
-                        onChange={(e) => {
-                          setAllHotelDetails({
-                            ...allHotelDetails,
-                            address_latitude: parseFloat(e.target.value),
-                          }); setFlag(1);
-                        }
-                        }
-                      />
-                      <p className="text-sm text-sm text-red-700 font-light">
-                        {error?.address_latitude}</p></div>
-                  </div>
-                </div> */}
-
+               
                 {/* Longitude */}
 
                 <InputText
@@ -766,34 +591,6 @@ function Address() {
                   req={true}
                   tooltip={true}
                 />
-                {/* <div className="w-full lg:w-6/12 px-4">
-                  <div className="relative w-full mb-3">
-                    <label
-                      className={`text-sm font-medium ${color?.text} block mb-2`}
-                      htmlFor="grid-password"
-                    >
-                      {language?.longitude}
-                      <span style={{ color: "#ff0000" }}>*</span>
-                    </label>
-                    <div className={visible === 0 ? 'block' : 'hidden'}><Lineloader /></div>
-                    <div className={visible === 1 ? 'block' : 'hidden'}>
-                      <input
-                      data-testid="longitude"
-                        type="text"
-                        className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
-                        defaultValue={address?.address_longitude}
-                        onChange={(e) => {
-                          setAllHotelDetails({
-                            ...allHotelDetails,
-                            address_longitude: parseFloat(e.target.value),
-                          }); setFlag(1);
-                        }
-                        }
-                      />
-                      <p className="text-sm text-sm text-red-700 font-light">
-                        {error?.address_longitude}</p></div>
-                  </div>
-                </div> */} 
                 {/* PRECISION */}
                 <InputText
                 data-testid="precision"
@@ -812,35 +609,7 @@ function Address() {
                   req={true}
                   tooltip={true} 
                 />
-                {/* <div className="w-full lg:w-6/12 px-4">
-                  <div className="relative w-full mb-3">
-                    <label
-                      className={`text-sm font-medium ${color?.text} block mb-2`}
-                      htmlFor="grid-password"
-                    >
-                      {language?.precision}({language?.inmeters})
-                      <span style={{ color: "#ff0000" }}>*</span>
-                    </label>
-                    <div className={visible === 0 ? 'block' : 'hidden'}><Lineloader /></div>
-                    <div className={visible === 1 ? 'block' : 'hidden'}>
-                      <input
-                      data-testid="precision"
-                        type="text"
-                        className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
-                        defaultValue={address?.address_precision}
-                        onChange={(e) => {
-                          setAllHotelDetails({
-                            ...allHotelDetails,
-                            address_precision: parseInt(e.target.value)
-                          });
-                          setFlag(1);
-                        }}
-                      />
-                      <p className="text-sm text-sm text-red-700 font-light">
-                        {error?.address_precision}</p></div>
-                  </div>
-                </div> */}
-
+             
                 <div className="w-full lg:w-6/12 px-4">
                   <div className="relative w-full mb-3"></div>
                 </div>

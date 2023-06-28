@@ -447,62 +447,50 @@ function Gallery() {
     setShowSearchedImages(1);
   };
 
-  /*function for keyboard keys */
-  function left(key) {
-    if (document.getElementById("enlarge").className == "block") {
-      setActionEnlargeImage(
-
-        images.filter((i) => i.image_idx === indexImage - 1)
-          .map((j) => {
-            return {
-              image_id: j?.image_id,
-              image_title: j?.image_title,
-              image_idx: j?.image_idx,
-              image_description: j?.image_description,
-              image_link: j?.image_link,
-            };
-          })?.[0]
-      );
-      setIndexImage(indexImage - 1);
-
-      //functionality
-    }
-  }
-
-  function right(key) {
-    if (document.getElementById("enlarge").className == "block") {
-
-      setActionEnlargeImage(
-        enlargedImage.filter((i) => i.image_idx === indexImage + 1).map((j) => {
-          return {
-            image_id: j?.image_id,
-            image_title: j?.image_title,
-            image_idx: j?.image_idx,
-            image_description: j?.image_description,
-            image_link: j?.image_link,
-          };
-        })?.[0]
-      );
-      setIndexImage(indexImage + 1);
-
-    }
-  }
+  // key detection left right to be usedd when implementing keyboard change of images
   useEffect(() => {
     // key down set on document 
     document.onkeydown = checkKey;
     function checkKey(e) {
       e = e || window.event;
       console.log(e.key);
-      // if (e.keyCode == "38") {
-      //   // up arrow
-      // } else if (e.keyCode == "40") {
-      //   // down arrow
-      // }
       if (e.keyCode == "37") {
         console.log(e.key);
+        console.log(enlargedImage)
+        setActionEnlargeImage(
+          enlargedImage
+            .filter((i) => i.image_idx === indexImage - 1)
+            .map((j) => {
+              return {
+                image_id: j?.image_id,
+                image_title: j?.image_title,
+                image_idx: j?.image_idx,
+                image_description: j?.image_description,
+                image_link: j?.image_link,
+              };
+            })?.[0]
+        );
+        setIndexImage(indexImage - 1);
+
         //left(e.key); // left arrow
       } else if (e.keyCode == "39") {
         console.log(e.key);
+
+        setActionEnlargeImage(
+          enlargedImage
+            .filter((i) => i.image_idx === indexImage + 1)
+            .map((j) => {
+              return {
+                image_id: j?.image_id,
+                image_title: j?.image_title,
+                image_idx: j?.image_idx,
+                image_description: j?.image_description,
+                image_link: j?.image_link,
+              };
+            })?.[0]
+        );
+        setIndexImage(indexImage + 1);
+
         //right(e.key); // right arrow
       }
     }
@@ -532,7 +520,7 @@ function Gallery() {
         id="main-content"
         className={`${color?.greybackground} px-4 pt-24 pb-6 relative overflow-y-auto lg:ml-64`}
       >
-        {/* Navbar */}
+        {/* bread crumb */}
         <nav className="flex mb-5 ml-4" aria-label="Breadcrumb">
           <ol className="inline-flex items-center space-x-1 md:space-x-2">
             <li className="inline-flex items-center">
@@ -926,6 +914,7 @@ function Gallery() {
                 viewBox="0 0 24 24"
                 width="28px"
                 onClick={() => {
+                  
                   setActionEnlargeImage(
                     enlargedImage
                       .filter((i) => i.image_idx === indexImage - 1)

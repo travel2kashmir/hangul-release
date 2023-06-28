@@ -140,25 +140,6 @@ function Rooms() {
   const addRoom = () => {
     Router.push("./rooms/addroom")
   }
-
-  // const colorToggler = (newColor) => {
-  //   if (newColor === 'system') {
-  //     window.matchMedia("(prefers-color-scheme:dark)").matches === true ? setColor(colorFile?.dark)
-  //     : setColor(colorFile?.light)
-  //     localStorage.setItem("colorToggle", newColor)
-  //   }
-  //   else if (newColor === 'light') {
-  //     setColor(colorFile?.light)
-  //     localStorage.setItem("colorToggle", false)
-  //   }
-  //   else if (newColor === 'dark') {
-  //     setColor(colorFile?.dark)
-  //     localStorage.setItem("colorToggle", true)
-  //   }
-  //  firstfun();
-  //  Router.push('./rooms')
-  // }
-
   return (
     <>
       <Header 
@@ -173,7 +154,7 @@ function Rooms() {
       <div id="main-content"
         className={`${color?.whitebackground} min-h-screen pt-24 relative overflow-y-auto lg:ml-64`}>
 
-        {/* Navbar */}
+        {/* bread crumb */}
         <nav className="flex mb-5 ml-4" aria-label="Breadcrumb">
           <ol className="inline-flex items-center space-x-1 md:space-x-2">
             <li className="inline-flex items-center">

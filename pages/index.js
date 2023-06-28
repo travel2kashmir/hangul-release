@@ -35,53 +35,53 @@ function Signin() {
   }, [locale])
 
   // First Function
- const firstfun = () => {
-  if (typeof window !== 'undefined') {
-    locale = localStorage.getItem("Language");
-    const colorToggle =localStorage.getItem("colorToggle");
-     if (colorToggle === "" || colorToggle === undefined || colorToggle === null || colorToggle === "system"){
-    window.matchMedia("(prefers-color-scheme:dark)").matches === true ? setColor(colorFile?.dark) :setColor(colorFile?.light) 
-  }
-  else if (colorToggle === "true" || colorToggle === "false") { 
-   setColor(colorToggle=== "true" ? colorFile?.dark: colorFile?.light);
-  }
-    /*Checks if language is already there in local storage */
-    {if (locale === null) {
-      language = english
-      setLang("en")
-      localStorage.setItem("Language", "en")
-    }
-    else {
-      if (locale === "ar") {
-        language = arabic;
-        setLang("ar")
-        localStorage.setItem("Language", "ar")
+  const firstfun = () => {
+    if (typeof window !== 'undefined') {
+      locale = localStorage.getItem("Language");
+      const colorToggle = localStorage.getItem("colorToggle");
+      if (colorToggle === "" || colorToggle === undefined || colorToggle === null || colorToggle === "system") {
+        window.matchMedia("(prefers-color-scheme:dark)").matches === true ? setColor(colorFile?.dark) : setColor(colorFile?.light)
       }
-      else if (locale === "en") {
-        language = english;
-        setLang("en")
-        localStorage.setItem("Language", "en")
+      else if (colorToggle === "true" || colorToggle === "false") {
+        setColor(colorToggle === "true" ? colorFile?.dark : colorFile?.light);
       }
-      else if (locale === "fr") {
-       language = french;
-        setLang("fr")
-        localStorage.setItem("Language", "fr")
-      }
-    }}
-    currentUser = JSON.parse(localStorage.getItem("Signin Details")); 
-    if(JSON.stringify(currentUser)!='null'){
-      if(currentUser?.id.match('user00.[0-9]*'))
+      /*Checks if language is already there in local storage */
       {
-        router.push('./property/landing')
+        if (locale === null) {
+          language = english
+          setLang("en")
+          localStorage.setItem("Language", "en")
+        }
+        else {
+          if (locale === "ar") {
+            language = arabic;
+            setLang("ar")
+            localStorage.setItem("Language", "ar")
+          }
+          else if (locale === "en") {
+            language = english;
+            setLang("en")
+            localStorage.setItem("Language", "en")
+          }
+          else if (locale === "fr") {
+            language = french;
+            setLang("fr")
+            localStorage.setItem("Language", "fr")
+          }
+        }
       }
-      else if(currentUser?.id.match('admin00.[0-9]*'))
-      {
-        router.push('./admin/AdminLanding');
-      }
+      currentUser = JSON.parse(localStorage.getItem("Signin Details"));
+      if (JSON.stringify(currentUser) != 'null') {
+        if (currentUser?.id.match('user00.[0-9]*')) {
+          router.push('./property/landing')
+        }
+        else if (currentUser?.id.match('admin00.[0-9]*')) {
+          router.push('./admin/AdminLanding');
+        }
 
-    }     
-}
-}
+      }
+    }
+  }
 
   //Write into Cookies
   function setCookieData(checked) {
@@ -251,7 +251,7 @@ function Signin() {
 
   }
 
-  
+
   return (
     <>
       <Title id="title" name="Engage | Sign in" />
@@ -420,8 +420,6 @@ function Signin() {
           draggable
           pauseOnHover
         />
-        {/* <DarkModeToggle Primary={darkModeSwitcher} Sec={setDarkModeSwitcher} /> */}
-      
       </div>
     </>
 

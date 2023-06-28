@@ -30,7 +30,7 @@ function EditPackageItenarary({ activePackage, setActivePackage, update, theme, 
         <>
             <div id="main-content"
                 className={`${color?.greybackground} px-4 pt-24 pb-2 relative overflow-y-auto h-screen lg:ml-64`}>
-                {/* Navbar */}
+                {/* bread crumb */}
                 <nav className="flex mb-5 ml-4" aria-label="Breadcrumb">
                     <ol className="inline-flex items-center space-x-1 md:space-x-2">
                         {/* home */}

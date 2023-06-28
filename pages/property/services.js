@@ -188,7 +188,7 @@ function Services() {
       <Sidebar color={color} Primary={english?.Side} Type={currentLogged?.user_type} />
       <div id="main-content"
         className={`${color?.whitebackground} min-h-screen pt-24 relative overflow-y-auto lg:ml-64`}>
-        {/* Navbar */}
+        {/* bread crumb */}
         <nav className="flex mb-5 ml-4" aria-label="Breadcrumb">
           <ol className="inline-flex items-center space-x-1 md:space-x-2">
             <li className="inline-flex items-center">

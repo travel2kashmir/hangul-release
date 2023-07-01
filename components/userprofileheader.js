@@ -141,7 +141,6 @@ function UserProfileHeader(args) {
                       router.push("/");
                       localStorage.removeItem("property");
                       localStorage.removeItem("Signin Details");
-                      //localStorage.clear();
                     }} >
                       {language?.signout}</button></a>
                 </li>

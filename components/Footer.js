@@ -1,8 +1,6 @@
 import React, {useEffect} from "react";
 import Link from 'next/link';
-import english from "./Languages/en";
-import french from "./Languages/fr";
-import arabic from "./Languages/ar";
+import {english, french, arabic } from "./Languages/Languages"
 import getConfig from 'next/config';
 import generatedGitInfo from './generatedGitInfo.json';
 var language;
@@ -10,8 +8,7 @@ const gitCommand = "git rev-parse HEAD";
 const {publicRuntimeConfig}  = getConfig();
 
 function Footer(args) {
-  
-    useEffect(()=>{
+  useEffect(()=>{
         const firstfun=()=>{
           if (typeof window !== 'undefined'){
            

@@ -1529,8 +1529,8 @@ function Room() {
   //to set table header check box of discount
   useEffect(()=>{
     function settingAll(){
-      if(discount.length!=0)
-      setSelectAllDiscounts(checkDiscount.length===discount.length?1:0)
+      if(discount?.length!=0)
+      setSelectAllDiscounts(checkDiscount?.length===discount?.length?1:0)
     }
     settingAll();
   },[checkDiscount])
@@ -1894,31 +1894,6 @@ function Room() {
 
                       ]}
                     />
-                    {/* <div className="w-full lg:w-6/12 px-4">
-                      <div className="relative w-full mb-3">
-                        <label className={`text-sm font-medium ${color?.text} block mb-2`}
-                          htmlFor="grid-password">
-                          {language?.isroom}
-                          <span style={{ color: "#ff0000" }}>*</span>
-                        </label>
-                        <div className={visible === 0 ? 'block' : 'hidden'}><Lineloader /></div>
-                        <div className={visible === 1 ? 'block' : 'hidden'}>
-                          <select className={`shadow-sm ${color?.greybackground} capitalize border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
-                            onChange={
-                              (e) => (
-                                setAllRoomDetails({ ...allRoomDetails, is_room: e.target.value }, setFlag(1))
-                              )
-                            }
-                          >
-                            <option selected disabled >{allRoomDetails?.is_room}</option>
-                            <option value="outdoor" >Indoor</option>
-                            <option value="indoor">Outdoor</option>
-                          </select>
-                          <p className="text-sm text-sm text-red-700 font-light">
-                            {error?.is_room}</p>
-                        </div>
-                      </div>
-                    </div> */}
                     <div className="flex items-center justify-end space-x-2 sm:space-x-3 ml-auto">
                       <div className={(spinner === 0 && (flag !== 1 && roomView != 1)) ? 'block' : 'hidden'}>
                         <Button Primary={language?.UpdateDisabled} />
@@ -1960,7 +1935,6 @@ function Room() {
 
               <div className={visible === 0 ? 'block' : 'hidden'}><LoaderTable /></div>
               <div className={visible === 1 ? 'block' : 'hidden'}>
-                {JSON.stringify(gen)}
                 <Table gen={gen} setGen={setGen} add={() => setView(1)} name="Additional Services"
                   color={color}
                   mark="beds"
@@ -2355,7 +2329,7 @@ function Room() {
                   </div>
                 </div>
               </div>
-              <div className="flex items-center justify-end space-x-2 sm:space-x-3 ml-auto">
+              <div className="flex items-center justify-end space-x-2 sm:space-x-3 ml-auto mt-2">
                 <Button Primary={language?.Previous} onClick={() => { setDisp(1) }} />
                 <Button Primary={language?.Next} onClick={() => { setDisp(3) }} />
               </div>
@@ -2586,7 +2560,7 @@ function Room() {
                       <div className="align-middle inline-block min-w-full">
                         <div className="shadow overflow-hidden">
                           <table className="table data table-fixed lg:min-w-full divide-y divide-gray-200 min-w-screen" id="discountTable">
-                            <thead  >
+                            <thead  className={` ${color?.tableheader} `}>
                               <tr>
                                 {/* checkbox */}
                                 <th scope="col" className="p-4">
@@ -2782,7 +2756,7 @@ function Room() {
                   {/* table end */}
 
                   {/* buttons start */}
-                  <div className="flex items-center justify-end space-x-2 sm:space-x-3 ml-auto">
+                  <div className="flex items-center justify-end space-x-2 sm:space-x-3 ml-auto mt-2">
                     <Button Primary={language?.Previous} onClick={() => { setDisp(3) }} />
                     <Button Primary={language?.Next} onClick={() => { setDisp(7) }} />
 
@@ -3046,10 +3020,8 @@ function Room() {
                   {/* table end */}
 
                   {/* buttons start */}
-                  <div className="flex items-center justify-end space-x-2 sm:space-x-3 ml-auto">
+                  <div className="flex items-center justify-end space-x-2 sm:space-x-3 ml-auto mt-2">
                     <Button Primary={language?.Previous} onClick={() => { setDisp(6) }} />
-                    {/* <Button Primary={language?.Next} onClick={() => { setDisp(7) }} /> */}
-
                   </div>
                   {/* buttons end */}
 

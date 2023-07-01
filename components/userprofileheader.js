@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import DarkModeLogic from "./darkmodelogic";
-import english from "./Languages/en";
-import french from "./Languages/fr";
-import arabic from "./Languages/ar";
+import {english, french, arabic} from "./Languages/Languages";
 import { useRouter } from "next/router";
 import Link from 'next/link';
 var language;
@@ -67,37 +64,13 @@ function UserProfileHeader(args) {
               <li className="text-2xl text-cyan-600 font-bold flex items-center lg:ml-2.5">
                 <span className="self-center whitespace-nowrap">enGage</span>
               </li>
-              {/* <form action="#" method="GET" className="hidden lg:block lg:pl-40">
-                <label htmlFor="topbar-search" className="sr-only">{language?.search}</label>
-                <div className="mt-1 relative lg:w-64">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg className={`w-5 h-5 ${args?.color?.textgray}`} fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                      <path fillRule="evenodd"
-                        d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd"></path></svg>
-                  </div>
-                  <input type="text" name="email" id="topbar-search" className={`${args?.color?.greybackground} border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full pl-10 p-2.5`}
-                    placeholder={language?.search} />
-                </div>
-              </form> */}
+            
             </div>
 
 
             {/** Button for Sign out**/}
 
-            {/* <button
-                  className="bg-cyan-600 bg-opacity-100 float-right ml-5 text-white 
-              hover:bg-cyan-700 focus:ring-4 focus:ring-cyan-200 font-semibold 
-              rounded-lg text-sm px-4 py-2 text-center  mr-2"
-                  onClick={() => {
-                     router.push("/");
-                     localStorage.removeItem("property");
-                     localStorage.removeItem("Signin Details");  
-                    //localStorage.clear();
-                  }}
-                  type="button"
-                >
-                  {language?.signout}
-                </button> */}
+          
             {/* Dark mode toggle */}
             <div className="flex mr-2 items-center justify-end space-x-2 sm:space-x-3 ml-auto">
              

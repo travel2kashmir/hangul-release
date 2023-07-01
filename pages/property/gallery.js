@@ -448,53 +448,52 @@ function Gallery() {
   };
 
   // key detection left right to be usedd when implementing keyboard change of images
-  useEffect(() => {
-    // key down set on document 
-    document.onkeydown = checkKey;
-    function checkKey(e) {
-      e = e || window.event;
-      console.log(e.key);
-      if (e.keyCode == "37") {
-        console.log(e.key);
-        console.log(enlargedImage)
-        setActionEnlargeImage(
-          enlargedImage
-            .filter((i) => i.image_idx === indexImage - 1)
-            .map((j) => {
-              return {
-                image_id: j?.image_id,
-                image_title: j?.image_title,
-                image_idx: j?.image_idx,
-                image_description: j?.image_description,
-                image_link: j?.image_link,
-              };
-            })?.[0]
-        );
-        setIndexImage(indexImage - 1);
+  // useEffect(() => {
+  //   // key down set on document 
+  //   document.onkeydown = checkKey;
+  //   function checkKey(e) {
+  //     e = e || window.event;
+  //     console.log(e.key);
+  //     if (e.keyCode == "37") {
+  //       console.log(e.key);
+  //       setActionEnlargeImage(
+  //         enlargedImage
+  //           .filter((i) => i.image_idx === indexImage - 1)
+  //           .map((j) => {
+  //             return {
+  //               image_id: j?.image_id,
+  //               image_title: j?.image_title,
+  //               image_idx: j?.image_idx,
+  //               image_description: j?.image_description,
+  //               image_link: j?.image_link,
+  //             };
+  //           })?.[0]
+  //       );
+  //       setIndexImage(indexImage - 1);
 
-        //left(e.key); // left arrow
-      } else if (e.keyCode == "39") {
-        console.log(e.key);
+  //       //left(e.key); // left arrow
+  //     } else if (e.keyCode == "39") {
+  //       console.log(e.key);
 
-        setActionEnlargeImage(
-          enlargedImage
-            .filter((i) => i.image_idx === indexImage + 1)
-            .map((j) => {
-              return {
-                image_id: j?.image_id,
-                image_title: j?.image_title,
-                image_idx: j?.image_idx,
-                image_description: j?.image_description,
-                image_link: j?.image_link,
-              };
-            })?.[0]
-        );
-        setIndexImage(indexImage + 1);
+  //       setActionEnlargeImage(
+  //         enlargedImage
+  //           .filter((i) => i.image_idx === indexImage + 1)
+  //           .map((j) => {
+  //             return {
+  //               image_id: j?.image_id,
+  //               image_title: j?.image_title,
+  //               image_idx: j?.image_idx,
+  //               image_description: j?.image_description,
+  //               image_link: j?.image_link,
+  //             };
+  //           })?.[0]
+  //       );
+  //       setIndexImage(indexImage + 1);
 
-        //right(e.key); // right arrow
-      }
-    }
-  }, []);
+  //       //right(e.key); // right arrow
+  //     }
+  //   }
+  // }, []);
 
   return (
     <>

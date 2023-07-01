@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import DarkModeLogic from "../../../components/darkmodelogic";
 import Router from 'next/router'
 import Link from "next/link";
 import Sidebar from "../../../components/Sidebar";
@@ -15,34 +14,6 @@ function ComposeMessage() {
     const [darkModeSwitcher, setDarkModeSwitcher] = useState()
     const [color, setColor] = useState({})
     const [mode, setMode] = useState()
-
-    // useEffect(() => {
-    //     firstfun();
-    // }, [])
-
-    // const firstfun = () => {
-    //     if (typeof window !== 'undefined') {
-    //         var locale = localStorage.getItem("Language");
-    //         const colorToggle = JSON.parse(localStorage.getItem("ColorToggle"));
-    //         const color = JSON.parse(localStorage.getItem("Color"));
-    //         setColor(color);
-    //         setDarkModeSwitcher(colorToggle)
-    //         if (locale === "ar") {
-    //             language = arabic;
-    //         }
-    //         if (locale === "en") {
-    //             language = english;
-    //         }
-    //         if (locale === "fr") {
-    //             language = french;
-    //         }
-    //         currentLogged = JSON.parse(localStorage.getItem("Signin Details"));
-    //     }
-    // }
-
-    // useEffect(() => {
-    //     setColor(DarkModeLogic(darkModeSwitcher))
-    // }, [darkModeSwitcher])
 
     // first function to be executed
     useEffect(() => {

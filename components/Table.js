@@ -404,12 +404,13 @@ const Table = (args) => {
                                                                     </td> :
                                                                     args?.status === "matchstatus" ? <></> :
 
-                                                                        <td className={`p-4 whitespace-nowrap text-base font-normal ${args?.color?.text}`}>
-
-                                                                            <span className="flex items-center">
+                                                                        <td className={`p-4 whitespace-nowrap text-base lowercase font-normal ${args?.color?.text}`}>
+                                                                              <Capsule title={ <span className="flex items-center">
                                                                                 <span className="h-2.5 w-2.5 rounded-full bg-red-600 mr-2"></span>
                                                                                 {args?.common?.Inactive}
-                                                                            </span>
+                                                                            </span>}/>
+                                                                        
+                                                                           
                                                                         </td>}</> : <></>}
 
                                                         {del?.delete === 1 && del?.id === idx ?

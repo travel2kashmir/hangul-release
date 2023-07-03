@@ -208,9 +208,10 @@ const Table = (args) => {
                                         <>
 
                                             {update?.edit === 1 && update?.id === idx ?
-                                                //After Edit
+                                                //After Edit Clicked
                                                 <>
                                                     <tr className={`${args?.color?.hover}`}>
+                                                        {/* first col when editing starts */}
                                                         {args?.name != "Services" ?
                                                             <td className="p-4 w-4">
                                                                 <span className="flex items-center">
@@ -221,22 +222,28 @@ const Table = (args) => {
                                                             </td> : <></>}
                                                         {(args?.name != "Additional Services" && args?.name != "Package Miles" && args?.name != "Elite Rewards") ?
                                                             <td className={`p-4 whitespace-nowrap capitalize text-base font-normal ${args?.color?.text}`}>
-                                                                
-                                                                <input type="text"
+
+                                                                {args.name == 'Services' ? <>{item.name}</> : <><input type="text"
                                                                     onChange={(e) => setEditContact({ ...editContact, type: e.target.value }, setFlag(1))}
                                                                     className={`shadow-sm  ${args?.color?.whitebackground} border border-gray-300 ${args?.color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-64 p-2.5`}
-                                                                    defaultValue={item?.type}></input></td>
+                                                                    defaultValue={item?.type}></input></>}</td>
                                                             :
                                                             <td className={`p-4 whitespace-nowrap capitalize text-base font-normal ${args?.color?.text}`}>
-                                                                    <input type="text"
+                                                                {args.name === 'Additional Services' ? <>{item.name}</> : <input type="text"
                                                                     onChange={(e) => setEditContact({ ...editContact, name: e.target.value }, setFlag(1))} className={`shadow-sm capitalize ${args?.color?.whitebackground} border border-gray-300 ${args?.color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-64 p-2.5`}
-                                                                    defaultValue={item?.name}></input> </td>}
-
+                                                                    defaultValue={item?.name}></input>}
+                                                            </td>}
+                                                        {/* second col  */}
                                                         {args?.name != "Services" ?
 
 
-                                                            <td className="data text-left text-sm font-semibold  ">
-                                                                 {item?.name}          
+                                                            <td className="data text-left text-sm ">
+                                                                {args.name !== 'Additional Services' ? <>{item.name}</> : <input type="text"
+                                                                    onChange={(e) => setEditContact({ ...editContact, type: e.target.value }, setFlag(1))} 
+                                                                className={`shadow-sm capitalize ${args?.color?.whitebackground} border border-gray-300
+                                                                ${args?.color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600
+                                                                block w-64 p-2.5`}
+                                                                    defaultValue={item?.type}></input>}
 
                                                             </td>
                                                             :
@@ -371,7 +378,7 @@ const Table = (args) => {
 
 
                                                 :
-                                                //Before Edit
+                                                //Before Edit is clicked
                                                 <>
                                                     <tr>
                                                         {args?.name != "Services" ?
@@ -390,27 +397,28 @@ const Table = (args) => {
                                                         {args?.name === "Packages" ? <></> :
 
                                                             <td className={`p-4 whitespace-nowrap   text-base font-normal ${args?.color?.text} `}>
-                                                                <Capsule title={args.name != "Contact" ? item?.type : item?.name} action={undefined} selected={true} />
+                                                                {args?.name == 'Services' || 'Additional Services' ? <h2>{item?.type}</h2>
+                                                                    : <Capsule title={args.name != "Contact" ? item?.type : item?.name} action={undefined} selected={true} />}
 
                                                             </td>}
                                                         {args?.mark !== "beds" ?
                                                             <>
                                                                 {item?.status == true ?
                                                                     <td className={`p-4 whitespace-nowrap lowercase text-base font-normal ${args?.color?.text}`}>
-                                                                        
-                                                                            <Capsule title={<span className="flex items-center"><span className="h-2.5 w-2.5 rounded-full bg-green-400 mr-2"></span>
-                                                                            {args?.common?.Active}</span>}/>
-                                                                        
+
+                                                                        <Capsule title={<span className="flex items-center"><span className="h-2.5 w-2.5 rounded-full bg-green-400 mr-2"></span>
+                                                                            {args?.common?.Active}</span>} />
+
                                                                     </td> :
                                                                     args?.status === "matchstatus" ? <></> :
 
                                                                         <td className={`p-4 whitespace-nowrap text-base lowercase font-normal ${args?.color?.text}`}>
-                                                                              <Capsule title={ <span className="flex items-center">
+                                                                            <Capsule title={<span className="flex items-center">
                                                                                 <span className="h-2.5 w-2.5 rounded-full bg-red-600 mr-2"></span>
                                                                                 {args?.common?.Inactive}
-                                                                            </span>}/>
-                                                                        
-                                                                           
+                                                                            </span>} />
+
+
                                                                         </td>}</> : <></>}
 
                                                         {del?.delete === 1 && del?.id === idx ?

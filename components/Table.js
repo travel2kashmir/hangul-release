@@ -396,11 +396,11 @@ const Table = (args) => {
                                                         {args?.mark !== "beds" ?
                                                             <>
                                                                 {item?.status == true ?
-                                                                    <td className={`p-4 whitespace-nowrap capitalize text-base font-normal ${args?.color?.text}`}>
-                                                                        <span className="flex items-center">
-                                                                            <span className="h-2.5 w-2.5 rounded-full bg-green-400 mr-2"></span>
-                                                                            {args?.common?.Active}
-                                                                        </span>
+                                                                    <td className={`p-4 whitespace-nowrap lowercase text-base font-normal ${args?.color?.text}`}>
+                                                                        
+                                                                            <Capsule title={<span className="flex items-center"><span className="h-2.5 w-2.5 rounded-full bg-green-400 mr-2"></span>
+                                                                            {args?.common?.Active}</span>}/>
+                                                                        
                                                                     </td> :
                                                                     args?.status === "matchstatus" ? <></> :
 

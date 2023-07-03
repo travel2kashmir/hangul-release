@@ -1,6 +1,5 @@
 const validateEditGallery = (data) =>{
-  alert(JSON.stringify(data))
-    var error={};
+  var error={};
     var flag=[]
     var final_flag=true;
     

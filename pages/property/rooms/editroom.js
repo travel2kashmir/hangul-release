@@ -32,6 +32,7 @@ import WidgetStatus from '../../../components/widgetStatus';
 import roomDiscountValidation from '../../../components/validation/room/roomDiscountValidation';
 import roomRateModificationValidation from '../../../components/validation/room/roomRateModificationValidation';
 import searchFunction from '../../../components/searchFunction';
+import ImageDemo from "../../../components/utils/ImageDemo"
 var language;
 var currentProperty;
 var currentroom;
@@ -531,9 +532,11 @@ function Room() {
             draggable: true,
             progress: undefined,
           });
+          fetchImages();
           setActionImage([])
           setError({});
-          setFlag([])
+          setFlag([]);
+          setAddImage(0);
           // submitImageLink(response?.data?.image_id);
         })
         .catch(error => {
@@ -726,7 +729,7 @@ function Room() {
           draggable: true,
           progress: undefined,
         });
-        setDisp(2);
+        // setDisp(2);
       })
       .catch((error) => {
         toast.error("Room services add error.", {
@@ -3225,8 +3228,13 @@ function Room() {
                         <Button Primary={language?.Upload} onClick={uploadImage} />
                       </div>
                     </div>
-                    <div className="col-span-6 sm:col-span-3 mt-2">
-                      <img className={`py-2 ${color?.text} `} src={actionImage?.image_link} alt='Image Preview' style={{ height: "150px", width: "250px" }} />
+                    <div className="col-span-6 sm:col-span-3 mt-2"> 
+                    {/* displays image once it is loaded else demoImage */}
+                    {actionImage?.image_link != undefined ?
+                    <img className={`py-2 ${color?.text} `} src={actionImage?.image_link} alt='Image Preview' style={{ height: "150px", width: "250px" }} />:
+                    <ImageDemo width={'250'} height={'150'}  bgColor={'bg-gray-400'}/>}
+                    
+                    
                     </div>
                     <div className="col-span-6 sm:col-span-3">
                       <label

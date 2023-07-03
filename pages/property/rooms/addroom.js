@@ -21,6 +21,7 @@ import arabic from "../../../components/Languages/ar";
 import Footer from "../../../components/Footer";
 import Sidebar from '../../../components/Sidebar';
 import Header from '../../../components/Header';
+import ImageDemo from "../../../components/utils/ImageDemo"
 var language;
 var currentProperty;
 var addroom;
@@ -48,7 +49,7 @@ function Addroom() {
   const [error, setError] = useState({})
   const [flag, setFlag] = useState(0)
   const [allRoomRates, setAllRoomRates] = useState([])
-  const[mode,setMode] = useState()
+  const [mode, setMode] = useState()
 
   /** Use Effect to fetch details from the Local Storage **/
   useEffect(() => {
@@ -60,22 +61,24 @@ function Addroom() {
       var locale = localStorage.getItem("Language");
       colorToggle = localStorage.getItem("colorToggle");
       if (colorToggle === "" || colorToggle === undefined || colorToggle === null || colorToggle === "system") {
-          window.matchMedia("(prefers-color-scheme:dark)").matches === true ? setColor(colorFile?.dark) : setColor(colorFile?.light)
-          setMode(window.matchMedia("(prefers-color-scheme:dark)").matches === true ? true : false);
-        }
+        window.matchMedia("(prefers-color-scheme:dark)").matches === true ? setColor(colorFile?.dark) : setColor(colorFile?.light)
+        setMode(window.matchMedia("(prefers-color-scheme:dark)").matches === true ? true : false);
+      }
       else if (colorToggle === "true" || colorToggle === "false") {
-          setColor(colorToggle === "true" ? colorFile?.dark : colorFile?.light);
-          setMode(colorToggle === "true" ? true : false)
+        setColor(colorToggle === "true" ? colorFile?.dark : colorFile?.light);
+        setMode(colorToggle === "true" ? true : false)
       }
-     { if (locale === "ar") {
-        language = arabic;
+      {
+        if (locale === "ar") {
+          language = arabic;
+        }
+        if (locale === "en") {
+          language = english;
+        }
+        if (locale === "fr") {
+          language = french;
+        }
       }
-      if (locale === "en") {
-        language = english;
-      }
-      if (locale === "fr") {
-        language = french;
-      }}
       /** Current Property Details fetched from the local storage **/
       currentProperty = JSON.parse(localStorage.getItem("property"));
       currentLogged = JSON.parse(localStorage.getItem("Signin Details"));
@@ -573,7 +576,7 @@ function Addroom() {
   const colorToggler = (newColor) => {
     if (newColor === 'system') {
       window.matchMedia("(prefers-color-scheme:dark)").matches === true ? setColor(colorFile?.dark)
-      : setColor(colorFile?.light)
+        : setColor(colorFile?.light)
       localStorage.setItem("colorToggle", newColor)
     }
     else if (newColor === 'light') {
@@ -584,8 +587,8 @@ function Addroom() {
       setColor(colorFile?.dark)
       localStorage.setItem("colorToggle", true)
     }
-   firstfun();
-   Router.push('./addroom')
+    firstfun();
+    Router.push('./addroom')
   }
   return (
     <>
@@ -1205,7 +1208,7 @@ function Addroom() {
                 </div>
               </div>
               <div className="flex items-center mt-4 justify-end space-x-2 sm:space-x-3 ml-auto">
-              <Button Primary={language?.Skip} onClick={() => { setDisp(3) }} />
+                <Button Primary={language?.Skip} onClick={() => { setDisp(3) }} />
                 <div className={spinner === 0 ? 'block' : 'hidden'}>
                   <Button Primary={language?.Submit} onClick={() => { submitServices() }} />
                 </div>
@@ -1295,18 +1298,23 @@ function Addroom() {
                               <div className="col-span-6 mt-2 sm:col-span-3">
                                 <p className="text-sm text-sm text-red-700 font-light">
                                   {error?.[index]?.image_link}</p>
-                                  {spin === 0 ? (
-                            <Button
-                              Primary={language?.Upload}
-                              onClick={() => uploadImage(imageData?.index)}
-                            />
-                          ) : (
-                            <Button Primary={language?.SpinnerUpload} />
-                          )}
-                                </div>
+                                {spin === 0 ? (
+                                  <Button
+                                    Primary={language?.Upload}
+                                    onClick={() => uploadImage(imageData?.index)}
+                                  />
+                                ) : (
+                                  <Button Primary={language?.SpinnerUpload} />
+                                )}
+                              </div>
                             </div>
                             <div className="col-span-6 sm:col-span-3">
-                              <img src={imageData?.image_link} alt='ImagePreview' style={{ height: "200px", width: "450px" }} className={`py-2 ${color?.text} `} />
+
+                              {/* displays image once it is loaded else demoImage */}
+                              {imageData?.image_link != undefined ?
+                                <img className={`py-2 ${color?.text} `} src={imageData?.image_link} alt='Image Preview' style={{ height: "150px", width: "250px" }} /> :
+                                <ImageDemo width={'250'} height={'150'} bgColor={'bg-gray-400'} />}
+
                             </div>
                             <div className="col-span-6 sm:col-span-3">
                               <label
@@ -1343,7 +1351,7 @@ function Addroom() {
                         </div></>
                     ))}
                     <div className="flex items-center justify-end space-x-2 sm:space-x-3 ml-auto">
-                    <Button Primary={language?.Skip} onClick={() => { setDisp(4) }} />
+                      <Button Primary={language?.Skip} onClick={() => { setDisp(4) }} />
                       <div className={spinner === 0 && flag === 1 ? 'block' : 'hidden'}>
                         <Button Primary={language?.Submit} onClick={submitRoomImages} />
                       </div>

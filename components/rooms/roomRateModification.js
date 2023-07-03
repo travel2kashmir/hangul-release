@@ -28,12 +28,12 @@ var i = 0;
 let colorToggle;
 
 
-function RoomRateModification({room_id}) {
+function RoomRateModification({ room_id }) {
     const [color, setColor] = useState({})
     const [mode, setMode] = useState()
     const [property_name, setProperty_name] = useState('')
     const [visible, setVisible] = useState(0)
-    const [error,setError]=useState([{}])
+    const [error, setError] = useState([{}])
     // runs first in the code
     useEffect(() => {
         const resp = InitialActions({ setColor, setMode })
@@ -76,58 +76,45 @@ function RoomRateModification({room_id}) {
 
     function addModification() {
         let result = roomRateModificationValidation(modification);
-        if(result=== true){
-        let url = '/api/room_rate_modification';
-        axios.post(url, modification, { header: { "content-type": "application/json" } })
-            .then((response) => {
-                console.log("Rate Modification Added")
-                toast.success("API: Modification Added Sucessfully", {
-                    position: "top-center",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
-                //   Router.push("./basicdetails");
-                document.getElementById('modificationForm').reset();
+        if (result === true) {
+            let url = '/api/room_rate_modification';
+            axios.post(url, modification, { header: { "content-type": "application/json" } })
+                .then((response) => {
+                    console.log("Rate Modification Added")
+                    toast.success("API: Modification Added Sucessfully", {
+                        position: "top-center",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
+                    //   Router.push("./basicdetails");
+                    document.getElementById('modificationForm').reset();
 
-            }).catch((err) => {
-                toast.error("API: Failed to save modification", {
-                    position: "top-center",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
-            })
+                }).catch((err) => {
+                    toast.error("API: Failed to save modification", {
+                        position: "top-center",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
+                })
         }
-        else{
+        else {
             setError(result)
         }
 
     }
     return (
         <>
-          
+
             <div id="main-content"
                 className={`${color?.greybackground}`}>
-
-             
-                {/* <div className='flex items-center justify-between'>
-                    <h3 className={`${color?.text} text-xl flex leading-none pl-6 lg:pt-2 pt-6 pb-2  font-bold`}>
-                        {language?.room} Rate Modification
-                    </h3>
-
-                    <Button
-                        Primary={language?.Add}
-                        onClick={() => addDiscountTemplate()}
-                    />
-
-                </div> */}
 
                 <div className={`${color?.whitebackground} shadow rounded-lg px-12 sm:p-6 xl:p-8  2xl:col-span-2`}>
                     <h3 className={`${color?.text} text-xl flex leading-none pl-6 lg:pt-2 pt-6  pb-2 font-bold`}>
@@ -227,9 +214,9 @@ function RoomRateModification({room_id}) {
                     }
                     <div className=' flex justify-end'>
                         <Button
-                        Primary={language?.Submit}
-                        onClick={() => addModification()}
-                    />
+                            Primary={language?.Submit}
+                            onClick={() => addModification()}
+                        />
                     </div>
                 </div>
 

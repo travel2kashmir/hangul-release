@@ -107,8 +107,8 @@ function Room() {
   const [editedModifications, setEditedModifications] = useState({})
   const [selectAllDiscounts, setSelectAllDiscounts] = useState(0)
   const [selectAllModifications, setSelectAllModifications] = useState(0)
-   /** Use Effect to fetch details from the Local Storage **/
-   useEffect(() => {
+  /** Use Effect to fetch details from the Local Storage **/
+  useEffect(() => {
     const resp = InitialActions({ setColor, setMode })
     language = resp?.language;
     currentLogged = resp?.currentLogged;
@@ -214,7 +214,7 @@ function Room() {
     setShowSearchedImages(1);
   };
 
- 
+
   // Fetch Room Details
   const fetchDetails = async () => {
     const url = `/api/${currentProperty.address_province.replace(/\s+/g, '-')}/${currentProperty.address_city}/${currentProperty.property_category}s/${currentProperty.property_id}/${currentroom}`
@@ -225,28 +225,28 @@ function Room() {
         setRoomDetails(response.data);
         setVisible(1);
         setFinalView(response?.data?.views);
-        
+
         setDiscount(response?.data?.discounts?.map(i => ({ ...i, "isChecked": false }))) //added checked as undefined 
-        
+
         setRateModification(response?.data?.room_rate_modifications?.map(i => ({ ...i, "isChecked": false })))  //added checked as undefined 
-        
+
         if (response.data?.room_type == 'Single') {
           setBedDetails(response.data.beds?.[i])
         }
-        
+
         filterCurrency(response.data?.unconditional_rates?.[i]);
-        
+
         if (response.data.room_facilities !== undefined) {
           setServices(response.data.room_facilities);
         }
-        
+
         setRoomDetails(response.data);
         if (response.data.room_facilities == undefined) {
           fetchServices();
         }
         //list of room categories to be checked
-        let room_categories = ['Semi_Double' , 'King' , 'Queen' , 'Studio_Room' , 'Double']
-        if(room_categories.includes(response.data?.room_type)){
+        let room_categories = ['Semi_Double', 'King', 'Queen', 'Studio_Room', 'Double']
+        if (room_categories.includes(response.data?.room_type)) {
           var genData = [];
           {
             response.data?.beds?.map((item) => {
@@ -261,7 +261,7 @@ function Room() {
           }
         }
         logger.info("url  to fetch room hitted successfully");
-        
+
       })
       .catch((error) => { logger.error("url to fetch room, failed"); });
   }
@@ -507,7 +507,7 @@ function Room() {
     }
   }, []);
 
-/* Function to add images*/
+  /* Function to add images*/
   const submitAddImage = () => {
     if (actionImage.length !== 0) {
       const imagedata = [{
@@ -1232,7 +1232,7 @@ function Room() {
       // url to be hit
       const url = `/api/room_rate_modification`;
       // data formated as per api requirement 
-     
+
       let data = { "room_rate_modification": [editedModifications] }
       // network call to edit data
       axios.put(url, data, {
@@ -1515,28 +1515,28 @@ function Room() {
     }
     else {
       let checkedModifications = rateModification?.map(mod => ({ ...mod, isChecked: false }));
-     setRateModification(checkedModifications);
+      setRateModification(checkedModifications);
       checkDiscount = [];
     }
     setSelectAllModifications(selectAllModifications === 0 ? 1 : 0)
   }
   //to set table header check box of modifications
-  useEffect(()=>{
-    function settingAll(){
-      if(rateModification?.length!=0)
-      setSelectAllModifications(checkModification.length===rateModification?.length?1:0)
+  useEffect(() => {
+    function settingAll() {
+      if (rateModification?.length != 0)
+        setSelectAllModifications(checkModification.length === rateModification?.length ? 1 : 0)
     }
     settingAll();
-  },[checkModification])
+  }, [checkModification])
 
   //to set table header check box of discount
-  useEffect(()=>{
-    function settingAll(){
-      if(discount?.length!=0)
-      setSelectAllDiscounts(checkDiscount?.length===discount?.length?1:0)
+  useEffect(() => {
+    function settingAll() {
+      if (discount?.length != 0)
+        setSelectAllDiscounts(checkDiscount?.length === discount?.length ? 1 : 0)
     }
     settingAll();
-  },[checkDiscount])
+  }, [checkDiscount])
   return (
     <>
       <Title name={`Engage | Edit Room`} />
@@ -2338,11 +2338,10 @@ function Room() {
               </div>
             </div>
           </div>
-
-
+          
           {/* Room Rates */}
           <div id='3' className={disp === 3 ? 'block' : 'hidden'}>
-            <div className={`${color?.whitebackground} shadow-lg rounded-lg  sm:p-6 xl:p-8  2xl:col-span-2`}>
+            <div className={`${color?.whitebackground} shadow rounded-lg  sm:p-6 xl:p-8  2xl:col-span-2`}>
               {/* widget progress starts */}
               <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`, `Rate Discounts`, `Rate Modifications`]} selected={4} color={color} />{/* widget progress ends */}
 
@@ -2502,7 +2501,7 @@ function Room() {
 
           {/* Room Rates Discount */}
           <div id='6' className={disp === 6 ? 'block' : 'hidden'}>
-            <div className={`${color?.whitebackground} shadow-lg rounded-lg  sm:p-6 xl:p-8  2xl:col-span-2`}>
+            <div className={`${color?.whitebackground} shadow rounded-lg  sm:p-6 xl:p-8  2xl:col-span-2`}>
               {/* widget progress starts */}
               <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`, `Rate Discounts`, `Rate Modifications`]} selected={5} color={color} />
               {/* widget progress ends */}
@@ -2563,7 +2562,7 @@ function Room() {
                       <div className="align-middle inline-block min-w-full">
                         <div className="shadow overflow-hidden">
                           <table className="table data table-fixed lg:min-w-full divide-y divide-gray-200 min-w-screen" id="discountTable">
-                            <thead  className={` ${color?.tableheader} `}>
+                            <thead className={` ${color?.tableheader} `}>
                               <tr>
                                 {/* checkbox */}
                                 <th scope="col" className="p-4">
@@ -2773,7 +2772,7 @@ function Room() {
 
           {/* Room Rates Modifications */}
           <div id='7' className={disp === 7 ? 'block' : 'hidden'}>
-            <div className={`${color?.whitebackground} shadow-lg rounded-lg  sm:p-6 xl:p-8  2xl:col-span-2`}>
+            <div className={`${color?.whitebackground} shadow rounded-lg  sm:p-6 xl:p-8  2xl:col-span-2`}>
               {/* widget progress starts */}
               <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`, `Rate Discounts`, `Rate Modifications`]} selected={6} color={color} />
               {/* widget progress ends */}
@@ -3228,13 +3227,13 @@ function Room() {
                         <Button Primary={language?.Upload} onClick={uploadImage} />
                       </div>
                     </div>
-                    <div className="col-span-6 sm:col-span-3 mt-2"> 
-                    {/* displays image once it is loaded else demoImage */}
-                    {actionImage?.image_link != undefined ?
-                    <img className={`py-2 ${color?.text} `} src={actionImage?.image_link} alt='Image Preview' style={{ height: "150px", width: "250px" }} />:
-                    <ImageDemo width={'250'} height={'150'}  bgColor={'bg-gray-400'}/>}
-                    
-                    
+                    <div className="col-span-6 sm:col-span-3 mt-2">
+                      {/* displays image once it is loaded else demoImage */}
+                      {actionImage?.image_link != undefined ?
+                        <img className={`py-2 ${color?.text} `} src={actionImage?.image_link} alt='Image Preview' style={{ height: "150px", width: "250px" }} /> :
+                        <ImageDemo width={'250'} height={'150'} bgColor={'bg-gray-400'} />}
+
+
                     </div>
                     <div className="col-span-6 sm:col-span-3">
                       <label

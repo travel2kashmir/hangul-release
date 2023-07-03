@@ -56,7 +56,7 @@ function Liscensing() {
                             </div>
                         </div>
                         <p className="text-sm text-gray-500">
-                            We at Travel2Kashmir value the privacy of your personal information and are committed to protecting and preserving its confidentiality. As the owner and operator of Travel2Kashmir (referred to as "us," "our," or "we" in this Privacy Policy), we have provided this policy to explain how we collect, use, share, and protect information about our users (referred to as "users," "you," or "your").
+                            We at Travel2Kashmir value the privacy of your personal information and are committed to protecting and preserving its confidentiality. As the owner and operator of Travel2Kashmir (referred to as &quot us &quot,&quot our &quot,&quot or &quot, &quot we &quot  in this Privacy Policy), we have provided this policy to explain how we collect, use, share, and protect information about our users .
 
                             This Privacy Policy outlines the types of personal data we collect, the purposes for which we use the data, how we handle the data, and your rights concerning your personal data. It is our intention to fulfill the transparency requirements of the EU General Data Protection Regulation 2016/679 (GDPR) and its implementing laws.
 

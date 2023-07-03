@@ -458,7 +458,7 @@ function Room() {
 
   /*function for keyboard keys */
   function left(key) {
-    if (document.getElementById("enlarge").className == "block") {
+    if (document.getElementById("enlarge").className == "block py-1") {
       setActionEnlargeImage(roomimages?.filter((i, idx) => i.idx === indexImage - 1)
         .map((j) => {
           return {
@@ -476,7 +476,7 @@ function Room() {
   }
 
   function right(key) {
-    if (document.getElementById("enlarge").className == "block") {
+    if (document.getElementById("enlarge").className == "block py-1") {
       console.log('right');
       setActionEnlargeImage(roomimages?.filter((i, idx) => i.idx === indexImage + 1)
         .map((j) => {
@@ -1169,7 +1169,7 @@ function Room() {
       axios.put(url, data, {
         header: { "content-type": "application/json" },
       }).then((response) => {
-        // this block will execute on sucessfull completiion of network call 
+        // this block py-1 will execute on sucessfull completiion of network call 
         setSpinner(0);
         toast.success("API: Room Discount Updated Successfully!", {
           position: "top-center",
@@ -1238,7 +1238,7 @@ function Room() {
       axios.put(url, data, {
         header: { "content-type": "application/json" },
       }).then((response) => {
-        // this block will execute on sucessfull completiion of network call 
+        // this block py-1 will execute on sucessfull completiion of network call 
         setSpinner(0);
         toast.success("API: Room Rate Modification Updated Successfully!", {
           position: "top-center",
@@ -1562,8 +1562,8 @@ function Room() {
               <div className="flex items-center">
                 <div className={`${color?.text} text-base capitalize font-medium  inline-flex items-center`}>
                   <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path></svg>
-                  <div className={visible === 0 ? 'block w-16' : 'hidden'}><Headloader /></div>
-                  <div className={visible === 1 ? 'block' : 'hidden'}>   <Link href="../propertysummary" className={`text-gray-700 text-sm ml-1 md:ml-2  font-medium hover:${color?.text} `}>
+                  <div className={visible === 0 ? 'block py-1 w-16' : 'hidden'}><Headloader /></div>
+                  <div className={visible === 1 ? 'block py-1' : 'hidden'}>   <Link href="../propertysummary" className={`text-gray-700 text-sm ml-1 md:ml-2  font-medium hover:${color?.text} `}>
                     <a>{property_name}</a>
                   </Link>
                   </div></div>
@@ -1574,8 +1574,8 @@ function Room() {
               <div className="flex items-center">
                 <div className={`${color?.text} text-base font-medium  inline-flex items-center`}>
                   <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path></svg>
-                  <div className={visible === 0 ? 'block w-16' : 'hidden'}><Headloader /></div>
-                  <div className={visible === 1 ? 'block' : 'hidden'}>   <Link href="../rooms" className="text-gray-700 text-sm   font-medium hover:{`${color?.text} ml-1 md:ml-2">
+                  <div className={visible === 0 ? 'block py-1 w-16' : 'hidden'}><Headloader /></div>
+                  <div className={visible === 1 ? 'block py-1' : 'hidden'}>   <Link href="../rooms" className="text-gray-700 text-sm   font-medium hover:{`${color?.text} ml-1 md:ml-2">
                     <a>{language?.rooms}</a>
                   </Link>
                   </div></div>
@@ -1601,7 +1601,7 @@ function Room() {
           </h6>
 
           {/* Room Description */}
-          <div id='0' className={disp === 0 ? 'block' : 'hidden'}>
+          <div id='0' className={disp === 0 ? 'block py-1' : 'hidden'}>
 
             <div className={`${color?.whitebackground} shadow rounded-lg px-12 sm:p-6 xl:p-8  2xl:col-span-2`}>
               {/* progress bar starts */}
@@ -1733,15 +1733,15 @@ function Room() {
                     {/* views room */}
                     <div className="w-full lg:w-6/12 px-4">
                       <div className="relative w-full mb-3">
-                        <label className={`text-sm font-medium ${color?.text} block mb-2`}
+                        <label className={`text-sm font-medium ${color?.text} block py-1 mb-2`}
                           htmlFor="grid-password">
                           {language?.viewsfromroom}
                           <span style={{ color: "#ff0000" }}>*</span>
                         </label>
-                        <div className={visible === 0 ? 'block' : 'hidden'}><Lineloader /></div>
-                        <div className={visible === 1 ? 'block' : 'hidden'}>
+                        <div className={visible === 0 ? 'block py-1' : 'hidden'}><Lineloader /></div>
+                        <div className={visible === 1 ? 'block py-1' : 'hidden'}>
                           <Multiselect
-                            className={` shadow-sm ${color?.greybackground} ${color?.text} mb-3 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full
+                            className={` shadow-sm ${color?.greybackground} ${color?.text} mb-3 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full
                        `}
                             isObject={true}
                             options={lang?.Views}
@@ -1806,17 +1806,17 @@ function Room() {
                     <div className="w-full lg:w-6/12 px-4">
                       <div className="relative w-full mb-3">
                         <label
-                          className={`text-sm font-medium ${color?.text} block mb-2`}
+                          className={`text-sm font-medium ${color?.text} block py-1 mb-2`}
                           htmlFor="grid-password"
                         >
                           {language?.room} {language?.area}
 
                         </label>
-                        <div className={visible === 0 ? 'block' : 'hidden'}><Lineloader /></div>
-                        <div className={visible === 1 ? 'block' : 'hidden'}>
+                        <div className={visible === 0 ? 'block py-1' : 'hidden'}><Lineloader /></div>
+                        <div className={visible === 1 ? 'block py-1' : 'hidden'}>
                           <input
                             type="text"
-                            className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
+                            className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`}
                             defaultValue={allRoomDetails?.carpet_area} readOnly="readonly"
                           /></div>
                       </div>
@@ -1825,16 +1825,16 @@ function Room() {
                     <div className="w-full lg:w-6/12 px-4">
                       <div className="relative w-full mb-3">
                         <label
-                          className={`text-sm font-medium ${color?.text} block mb-2`}
+                          className={`text-sm font-medium ${color?.text} block py-1 mb-2`}
                           htmlFor="grid-password"
                         >
                           {language?.room} {language?.volume}
                         </label>
-                        <div className={visible === 0 ? 'block' : 'hidden'}><Lineloader /></div>
-                        <div className={visible === 1 ? 'block' : 'hidden'}>
+                        <div className={visible === 0 ? 'block py-1' : 'hidden'}><Lineloader /></div>
+                        <div className={visible === 1 ? 'block py-1' : 'hidden'}>
                           <input
                             type="text"
-                            className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
+                            className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`}
                             defaultValue={allRoomDetails?.room_volume} readOnly="readonly" />
                         </div></div>
                     </div>
@@ -1898,13 +1898,13 @@ function Room() {
                       ]}
                     />
                     <div className="flex items-center justify-end space-x-2 sm:space-x-3 ml-auto">
-                      <div className={(spinner === 0 && (flag !== 1 && roomView != 1)) ? 'block' : 'hidden'}>
+                      <div className={(spinner === 0 && (flag !== 1 && roomView != 1)) ? 'block py-1' : 'hidden'}>
                         <Button Primary={language?.UpdateDisabled} />
                       </div>
-                      <div className={(spinner === 0 && (flag === 1 || roomView === 1)) ? 'block' : 'hidden'}>
+                      <div className={(spinner === 0 && (flag === 1 || roomView === 1)) ? 'block py-1' : 'hidden'}>
                         <Button Primary={language?.Update} onClick={() => { validationRoomDescription() }} />
                       </div>
-                      <div className={spinner === 1 ? 'block' : 'hidden'}>
+                      <div className={spinner === 1 ? 'block py-1' : 'hidden'}>
                         <Button Primary={language?.SpinnerUpdate} />
                       </div>
                       <Button Primary={language?.Next} onClick={() => {
@@ -1927,7 +1927,7 @@ function Room() {
 
 
           {/* Multiple Bed */}
-          <div id='4' className={disp === 4 ? 'block' : 'hidden'}>
+          <div id='4' className={disp === 4 ? 'block py-1' : 'hidden'}>
             <div className={`${color?.whitebackground} shadow rounded-lg px-12 sm:p-6 xl:p-8  2xl:col-span-2`}>
               <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`, `Rate Discounts`, `Rate Modifications`]}
                 selected={1}
@@ -1936,8 +1936,8 @@ function Room() {
                 {language?.room} {language?.description}
               </h6>
 
-              <div className={visible === 0 ? 'block' : 'hidden'}><LoaderTable /></div>
-              <div className={visible === 1 ? 'block' : 'hidden'}>
+              <div className={visible === 0 ? 'block py-1' : 'hidden'}><LoaderTable /></div>
+              <div className={visible === 1 ? 'block py-1' : 'hidden'}>
                 <Table gen={gen} setGen={setGen} add={() => setView(1)} name="Additional Services"
                   color={color}
                   mark="beds"
@@ -1956,7 +1956,7 @@ function Room() {
           </div>
 
           {/* Single Bed */}
-          <div id='5' className={disp === 5 ? 'block' : 'hidden'}>
+          <div id='5' className={disp === 5 ? 'block py-1' : 'hidden'}>
             <div className={`${color?.whitebackground} shadow rounded-lg px-12 sm:p-6 xl:p-8  2xl:col-span-2`}>
               <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`, `Rate Discounts`, `Rate Modifications`]} selected={1} color={color} />
               <h6 className={`${color?.text} text-xl flex leading-none pl-6 lg:pt-2 pt-6  pb-2 font-bold`}>
@@ -1967,16 +1967,16 @@ function Room() {
                 <div className="w-full lg:w-6/12 px-4">
                   <div className="relative w-full mb-3">
                     <label
-                      className={`text-sm  font-medium ${color?.text} block mb-2`}
+                      className={`text-sm  font-medium ${color?.text} block py-1 mb-2`}
                       htmlFor="grid-password">
                       {language?.bed} {language?.Length}({language?.incm})
                       <span style={{ color: "#ff0000" }}>*</span>
                     </label>
-                    <div className={visible === 0 ? 'block' : 'hidden'}><Lineloader /></div>
-                    <div className={visible === 1 ? 'block' : 'hidden'}>
+                    <div className={visible === 0 ? 'block py-1' : 'hidden'}><Lineloader /></div>
+                    <div className={visible === 1 ? 'block py-1' : 'hidden'}>
                       <input
                         type="text" defaultValue={bedDetails?.bed_length}
-                        className={`shadow-sm ${color?.greybackground} ${color?.text}  border border-gray-300  sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
+                        className={`shadow-sm ${color?.greybackground} ${color?.text}  border border-gray-300  sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`}
                         onChange={
                           (e) => (
                             setBedDetails({ ...bedDetails, bed_length: e.target.value }, setFlag(1))
@@ -1991,16 +1991,16 @@ function Room() {
 
                 <div className="w-full lg:w-6/12 px-4">
                   <div className="relative w-full mb-3">
-                    <label className={`text-sm font-medium ${color?.text} block mb-2`}
+                    <label className={`text-sm font-medium ${color?.text} block py-1 mb-2`}
                       htmlFor="grid-password">
                       {language?.bed}  {language?.width}({language?.incm})
                       <span style={{ color: "#ff0000" }}>*</span>
                     </label>
-                    <div className={visible === 0 ? 'block' : 'hidden'}><Lineloader /></div>
-                    <div className={visible === 1 ? 'block' : 'hidden'}>
+                    <div className={visible === 0 ? 'block py-1' : 'hidden'}><Lineloader /></div>
+                    <div className={visible === 1 ? 'block py-1' : 'hidden'}>
                       <input
                         type="text"
-                        className={`shadow-sm ${color?.greybackground} ${color?.text}  border border-gray-300  sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
+                        className={`shadow-sm ${color?.greybackground} ${color?.text}  border border-gray-300  sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`}
                         defaultValue={bedDetails?.bed_width}
                         onChange={
                           (e) => (
@@ -2020,14 +2020,14 @@ function Room() {
                   setDisp(0)
                 }} />
 
-                <div className={(spinner === 0 && flag !== 1) ? 'block' : 'hidden'}>
+                <div className={(spinner === 0 && flag !== 1) ? 'block py-1' : 'hidden'}>
                   <Button Primary={language?.UpdateDisabled} /></div>
-                <div className={(spinner === 0 && flag === 1) ? 'block' : 'hidden'}>
+                <div className={(spinner === 0 && flag === 1) ? 'block py-1' : 'hidden'}>
                   <Button Primary={language?.Update} onClick={() => {
                     validationBedData();
                   }} />
                 </div>
-                <div className={(spinner === 1 && flag === 1) ? 'block' : 'hidden'}>
+                <div className={(spinner === 1 && flag === 1) ? 'block py-1' : 'hidden'}>
                   <Button Primary={language?.SpinnerUpdate} />
                 </div>
                 <Button Primary={language?.Next} onClick={() => {
@@ -2038,7 +2038,7 @@ function Room() {
           </div>
 
           {/* Room Services */}
-          <div id='1' className={disp === 1 ? 'block' : 'hidden'}>
+          <div id='1' className={disp === 1 ? 'block py-1' : 'hidden'}>
             <div className={`${color?.whitebackground} shadow rounded-lg mt-2 mx-1 px-12 sm:p-6 xl:p-8  2xl:col-span-2`}>
 
               <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`, `Rate Discounts`, `Rate Modifications`]} selected={2} color={color} />
@@ -2048,8 +2048,8 @@ function Room() {
               </h6>
               <div className="flex flex-col my-4">
                 <div className="overflow-x-auto">
-                  <div className="align-middle inline-block min-w-full">
-                    <div className="shadow overflow-hidden">
+                  <div className="align-middle inline-block py-1 min-w-full">
+                    <div className="shadow-sm overflow-hidden">
                       <table className="table-fixed min-w-full divide-y mx-8 divide-gray-200">
                         <thead className={`${color.greybackground}`}>
                           <tr>
@@ -2118,11 +2118,11 @@ function Room() {
               </div>
               <div className="flex items-center mt-4 justify-end space-x-2 sm:space-x-3 ml-auto">
                 <Button Primary={language?.Previous} onClick={() => { setDisp(0) }} />
-                <div className={spinner === 0 ? 'block' : 'hidden'}>
+                <div className={spinner === 0 ? 'block py-1' : 'hidden'}>
                   <Button Primary={roomDetails?.room_facilities !== undefined ? language?.Update : language?.Submit}
                     onClick={() => { roomDetails?.room_facilities !== undefined ? editServices() : submitServices() }} />
                 </div>
-                <div className={spinner === 1 ? 'block' : 'hidden'}>
+                <div className={spinner === 1 ? 'block py-1' : 'hidden'}>
                   <Button Primary={roomDetails?.room_facilities !== undefined ? language?.SpinnerUpdate : language?.SpinnerSubmit}
                   />
                 </div>
@@ -2132,8 +2132,8 @@ function Room() {
           </div>
 
           {/* Room Gallery */}
-          <div id='2' className={disp === 2 ? 'block' : 'hidden'}>
-            <div className={`${color?.whitebackground} shadow-xl rounded-lg sm:p-6 xl:p-8  2xl:col-span-2 my-3`}>
+          <div id='2' className={disp === 2 ? 'block py-1' : 'hidden'}>
+            <div className={`${color?.whitebackground} shadow rounded-lg sm:p-6 xl:p-8  2xl:col-span-2 my-3`}>
 
               <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`, `Rate Discounts`, `Rate Modifications`]} selected={3} color={color} />
               <h6 className={`${color?.text} text-base  flex leading-none mb-2 mx-2 pt-2 font-semibold`}>
@@ -2150,7 +2150,7 @@ function Room() {
                         type="text"
                         name="imageSearch"
                         onChange={(e) => searchImage(e.target.value)}
-                        className={`${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
+                        className={`${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`}
                         placeholder={language?.searchforimages}
                       ></input>
                     </div>
@@ -2266,8 +2266,8 @@ function Room() {
               </div>
 
               <div className="flex flex-wrap" >
-                <div className={visible === 0 ? 'block w-auto h-auto m-6 w-32 flex' : 'hidden'}><Imageloader /> <Imageloader /><Imageloader /></div>
-                <div className={visible === 1 ? 'block flex flex-wrap' : 'hidden'}>
+                <div className={visible === 0 ? 'block py-1 w-auto h-auto m-6 w-32 flex' : 'hidden'}><Imageloader /> <Imageloader /><Imageloader /></div>
+                <div className={visible === 1 ? 'block py-1 flex flex-wrap' : 'hidden'}>
                   <div className="flex-wrap container grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
 
 
@@ -2277,7 +2277,7 @@ function Room() {
 
                         <>
                           <div
-                            className="block text-blueGray-600  text-xs font-bold "
+                            className="block py-1 text-blueGray-600  text-xs font-bold "
                             key={idx}
                           >
                             <div
@@ -2338,9 +2338,9 @@ function Room() {
               </div>
             </div>
           </div>
-          
+
           {/* Room Rates */}
-          <div id='3' className={disp === 3 ? 'block' : 'hidden'}>
+          <div id='3' className={disp === 3 ? 'block py-1' : 'hidden'}>
             <div className={`${color?.whitebackground} shadow rounded-lg  sm:p-6 xl:p-8  2xl:col-span-2`}>
               {/* widget progress starts */}
               <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`, `Rate Discounts`, `Rate Modifications`]} selected={4} color={color} />{/* widget progress ends */}
@@ -2359,15 +2359,15 @@ function Room() {
                     <div className="w-full lg:w-6/12 px-4">
                       <div className="relative w-full mb-3">
                         <label
-                          className={`text-sm font-medium ${color?.text} block mb-2`}
+                          className={`text-sm font-medium ${color?.text} block py-1 mb-2`}
                           htmlFor="grid-password"
                         >
                           {language?.currency}
                           <span style={{ color: "#ff0000" }}>*</span>
                         </label>
-                        <div className={visible === 0 ? 'block' : 'hidden'}><Lineloader /></div>
-                        <div className={visible === 1 ? 'block' : 'hidden'}>
-                          <select className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
+                        <div className={visible === 0 ? 'block py-1' : 'hidden'}><Lineloader /></div>
+                        <div className={visible === 1 ? 'block py-1' : 'hidden'}>
+                          <select className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`}
                             onChange={
                               (e) => (
                                 setAllRoomRates({ ...allRoomRates, currency: e.target.value }, setFlag(1))
@@ -2390,17 +2390,17 @@ function Room() {
                     <div className="w-full lg:w-6/12 px-4">
                       <div className="relative w-full mb-3">
                         <label
-                          className={`text-sm font-medium ${color?.text} block mb-2`}
+                          className={`text-sm font-medium ${color?.text} block py-1 mb-2`}
                           htmlFor="grid-password"
                         >
                           {language?.baserate} {language?.amount}
                           <span style={{ color: "#ff0000" }}>*</span>
                         </label>
-                        <div className={visible === 0 ? 'block' : 'hidden'}><Lineloader /></div>
-                        <div className={visible === 1 ? 'block' : 'hidden'}>
+                        <div className={visible === 0 ? 'block py-1' : 'hidden'}><Lineloader /></div>
+                        <div className={visible === 1 ? 'block py-1' : 'hidden'}>
                           <input
                             type="text"
-                            className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
+                            className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`}
                             defaultValue={roomDetails?.unconditional_rates?.[0]?.baserate_amount}
                             onChange={
                               (e) => (
@@ -2417,17 +2417,17 @@ function Room() {
                     <div className="w-full lg:w-6/12 px-4">
                       <div className="relative w-full mb-3">
                         <label
-                          className={`text-sm font-medium ${color?.text} block mb-2`}
+                          className={`text-sm font-medium ${color?.text} block py-1 mb-2`}
                           htmlFor="grid-password"
                         >
                           {language?.taxrate} {language?.amount}
                           <span style={{ color: "#ff0000" }}>*</span>
                         </label>
-                        <div className={visible === 0 ? 'block' : 'hidden'}><Lineloader /></div>
-                        <div className={visible === 1 ? 'block' : 'hidden'}>
+                        <div className={visible === 0 ? 'block py-1' : 'hidden'}><Lineloader /></div>
+                        <div className={visible === 1 ? 'block py-1' : 'hidden'}>
                           <input
                             type="text"
-                            className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
+                            className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`}
                             defaultValue={roomDetails?.unconditional_rates?.[0]?.tax_amount}
                             onChange={
                               (e) => (
@@ -2442,16 +2442,16 @@ function Room() {
                     <div className="w-full lg:w-6/12 px-4">
                       <div className="relative w-full mb-3">
                         <label
-                          className={`text-sm font-medium ${color?.text} block mb-2`}
+                          className={`text-sm font-medium ${color?.text} block py-1 mb-2`}
                           htmlFor="grid-password">
                           {language?.other} {language?.charges} {language?.amount}
                           <span style={{ color: "#ff0000" }}>*</span>
                         </label>
-                        <div className={visible === 0 ? 'block' : 'hidden'}><Lineloader /></div>
-                        <div className={visible === 1 ? 'block' : 'hidden'}>
+                        <div className={visible === 0 ? 'block py-1' : 'hidden'}><Lineloader /></div>
+                        <div className={visible === 1 ? 'block py-1' : 'hidden'}>
                           <input
                             type="text"
-                            className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
+                            className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`}
                             defaultValue={roomDetails?.unconditional_rates?.[0]?.otherfees_amount}
                             onChange={
                               (e) => (
@@ -2470,17 +2470,17 @@ function Room() {
                     {/* buttons start */}
                     <div className="flex items-center justify-end space-x-2 sm:space-x-3 ml-auto">
                       <Button Primary={language?.Previous} onClick={() => { setDisp(2) }} />
-                      <div className={(spinner === 0 && flag !== 1) ? 'block' : 'hidden'}>
+                      <div className={(spinner === 0 && flag !== 1) ? 'block py-1' : 'hidden'}>
                         <Button Primary={language?.UpdateDisabled} />
                       </div>
-                      <div className={(spinner === 0 && flag === 1) ? 'block' : 'hidden'}>
+                      <div className={(spinner === 0 && flag === 1) ? 'block py-1' : 'hidden'}>
                         <Button Primary={language?.Update} onClick={() => {
                           validationRates();
                         }} />
                       </div>
 
 
-                      <div className={spinner === 1 ? 'block' : 'hidden'}>
+                      <div className={spinner === 1 ? 'block py-1' : 'hidden'}>
                         <Button Primary={language?.SpinnerUpdate} />
                       </div>
 
@@ -2500,7 +2500,7 @@ function Room() {
           </div>
 
           {/* Room Rates Discount */}
-          <div id='6' className={disp === 6 ? 'block' : 'hidden'}>
+          <div id='6' className={disp === 6 ? 'block py-1' : 'hidden'}>
             <div className={`${color?.whitebackground} shadow rounded-lg  sm:p-6 xl:p-8  2xl:col-span-2`}>
               {/* widget progress starts */}
               <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`, `Rate Discounts`, `Rate Modifications`]} selected={5} color={color} />
@@ -2520,7 +2520,7 @@ function Room() {
                         <label htmlFor="users-search" className="sr-only">Search</label>
                         <div className="mt-1 relative lg:w-64 xl:w-96">
                           <input type="text" name="email" id="roomDiscount" onKeyUp={() => searchFunction('roomDiscount', 'discountTable')}
-                            className={`${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`} placeholder='Search'>
+                            className={`${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`} placeholder='Search'>
                           </input>
                         </div>
                       </form>
@@ -2559,8 +2559,8 @@ function Room() {
                   {/* table */}
                   <div className="flex flex-col mt-8 lg:-mr-20 sm:mr-0 w-full  relative">
                     <div className="overflow-x-auto">
-                      <div className="align-middle inline-block min-w-full">
-                        <div className="shadow overflow-hidden">
+                      <div className="align-middle inline-block py-1 min-w-full">
+                        <div className="shadow-sm overflow-hidden">
                           <table className="table data table-fixed lg:min-w-full divide-y divide-gray-200 min-w-screen" id="discountTable">
                             <thead className={` ${color?.tableheader} `}>
                               <tr>
@@ -2618,21 +2618,21 @@ function Room() {
 
                                       <td className={`p-4 whitespace-nowrap text-base font-normal capitalize ${color?.text}`}>
                                         <input type="date"
-                                          className={`${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-24 p-2.5`}
+                                          className={`${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-24 p-2.5`}
                                           defaultValue={dis?.date_from}
                                           onChange={(e) => setEditedDiscount({ ...editedDiscount, date_from: e.target.value })}
                                         />
                                       </td>
 
                                       <td className={`p-4 whitespace-nowrap text-base font-normal capitalize ${color?.text}`}>
-                                        <input type="date" className={`${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-24 p-2.5`}
+                                        <input type="date" className={`${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-24 p-2.5`}
                                           defaultValue={dis?.date_to}
                                           onChange={(e) => setEditedDiscount({ ...editedDiscount, date_to: e.target.value })}
                                         />
 
                                       </td>
                                       <td className={`p-4 whitespace-nowrap text-base font-normal capitalize ${color?.text}`}>
-                                        <select className={`${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-24 p-2.5`}
+                                        <select className={`${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-24 p-2.5`}
                                           onChange={(e) => setEditedDiscount({ ...editedDiscount, discount_type: e.target.value })}
                                         >
                                           <option value="Flat">Flat</option>
@@ -2641,7 +2641,7 @@ function Room() {
                                       </td>
 
                                       <td className={`p-4 whitespace-nowrap text-base font-normal capitalize ${color?.text}`}>
-                                        <select className={`${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-24 p-2.5`}
+                                        <select className={`${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-24 p-2.5`}
                                           onChange={(e) => setEditedDiscount({ ...editedDiscount, discount_on: e.target.value })}
                                         >
                                           <option value="Per Person">Per Person</option>
@@ -2650,7 +2650,7 @@ function Room() {
                                       </td>
 
                                       <td className={`p-4 whitespace-nowrap text-base font-normal capitalize ${color?.text}`}>
-                                        <input type="text" className={`${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-24 p-2.5`}
+                                        <input type="text" className={`${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-24 p-2.5`}
                                           defaultValue={dis?.discount}
                                           onChange={(e) => setEditedDiscount({ ...editedDiscount, discount: e.target.value })}
                                         />
@@ -2771,7 +2771,7 @@ function Room() {
           </div>
 
           {/* Room Rates Modifications */}
-          <div id='7' className={disp === 7 ? 'block' : 'hidden'}>
+          <div id='7' className={disp === 7 ? 'block py-1' : 'hidden'}>
             <div className={`${color?.whitebackground} shadow rounded-lg  sm:p-6 xl:p-8  2xl:col-span-2`}>
               {/* widget progress starts */}
               <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`, `Rate Discounts`, `Rate Modifications`]} selected={6} color={color} />
@@ -2791,7 +2791,7 @@ function Room() {
                         <label htmlFor="users-search" className="sr-only">Search</label>
                         <div className="mt-1 relative lg:w-64 xl:w-96">
                           <input type="text" name="email" id="roomModification" onKeyUp={() => searchFunction('roomModification', 'modificationTable')}
-                            className={`${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`} placeholder='Search'>
+                            className={`${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`} placeholder='Search'>
                           </input>
                         </div>
                       </form>
@@ -2830,8 +2830,8 @@ function Room() {
                   {/* table */}
                   <div className="flex flex-col mt-8 lg:-mr-20 sm:mr-0 w-full  relative">
                     <div className="overflow-x-auto">
-                      <div className="align-middle inline-block min-w-full">
-                        <div className="shadow overflow-hidden">
+                      <div className="align-middle inline-block py-1 min-w-full">
+                        <div className="shadow-sm overflow-hidden">
                           <table className="table data table-fixed lg:min-w-full divide-y divide-gray-200 min-w-screen" id="modificationTable">
                             <thead className={` ${color?.tableheader} `}>
                               <tr>
@@ -2886,7 +2886,7 @@ function Room() {
                                       {/* date from */}
                                       <td className={`p-4 whitespace-nowrap text-base font-normal capitalize ${color?.text}`}>
                                         <input type="date"
-                                          className={`${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-24 p-2.5`}
+                                          className={`${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-24 p-2.5`}
                                           defaultValue={mod?.date_from}
                                           onChange={(e) => setEditedModifications({ ...editedModifications, date_from: e.target.value })}
                                         />
@@ -2894,7 +2894,7 @@ function Room() {
 
                                       {/* date to */}
                                       <td className={`p-4 whitespace-nowrap text-base font-normal capitalize ${color?.text}`}>
-                                        <input type="date" className={`${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-24 p-2.5`}
+                                        <input type="date" className={`${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-24 p-2.5`}
                                           defaultValue={mod?.date_to}
                                           onChange={(e) => setEditedModifications({ ...editedModifications, date_to: e.target.value })}
                                         />
@@ -2904,7 +2904,7 @@ function Room() {
 
                                       {/* orginal rate */}
                                       <td className={`p-4 whitespace-nowrap text-base font-normal capitalize ${color?.text}`}>
-                                        <input type="text" className={`${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-24 p-2.5`}
+                                        <input type="text" className={`${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-24 p-2.5`}
                                           defaultValue={mod?.orginal_rate}
                                           onChange={(e) => setEditedModifications({ ...editedModifications, orginal_rate: e.target.value })}
                                         />
@@ -2914,7 +2914,7 @@ function Room() {
 
                                       {/* modified rate */}
                                       <td className={`p-4 whitespace-nowrap text-base font-normal capitalize ${color?.text}`}>
-                                        <input type="text" className={`${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-24 p-2.5`}
+                                        <input type="text" className={`${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-24 p-2.5`}
                                           defaultValue={mod?.modified_rate}
                                           onChange={(e) => setEditedModifications({ ...editedModifications, modified_rate: e.target.value })}
                                         />
@@ -3036,13 +3036,13 @@ function Room() {
 
 
         {/* New image enlarge */}
-        <div id="enlarge" className={enlargeImage === 1 ? "block" : "hidden"}>
+        <div id="enlarge" className={enlargeImage === 1 ? "block py-1" : "hidden"}>
           <div className="overflow-x-hidden overflow-y-auto fixed top-4 left-0 right-0 backdrop-blur-xl   sm:inset-0 bg-black/30 md:inset-0 z-50 flex justify-center items-center h-modal sm:h-full">
             <div className="flex justify-start ml-2 mr-auto">
               {/* //Left arrow symbol*/}
 
               <svg
-                className={indexImage <= 0 ? "hidden" : "block cursor-pointer"}
+                className={indexImage <= 0 ? "hidden" : "block py-1 cursor-pointer"}
                 xmlns="http://www.w3.org/2000/svg"
                 height="32px"
                 viewBox="0 0 24 24"
@@ -3073,7 +3073,7 @@ function Room() {
 
             <div className="relative w-full max-w-2xl px-4 h-full md:h-auto">
               <div
-                className={` ${color.tableheader} rounded-lg shadow relative`}
+                className={` ${color.tableheader} rounded-lg shadow-sm relative`}
               >
                 <div className="flex justify-between p-5 border-b rounded-t">
                   <h3 className={`text-xl ${color?.text} font-semibold`}>
@@ -3149,7 +3149,7 @@ function Room() {
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className={
-                  indexImage <= 0 ? "hidden" : "block cursor-pointer"}
+                  indexImage <= 0 ? "hidden" : "block py-1 cursor-pointer"}
 
                 onClick={() => {
 
@@ -3184,10 +3184,10 @@ function Room() {
         </div>
 
         {/* Modal Add Image */}
-        <div className={addImage === 1 ? 'block' : 'hidden'}>
+        <div className={addImage === 1 ? 'block py-1' : 'hidden'}>
           <div className="overflow-x-hidden overflow-y-auto fixed top-4 left-0 right-0 backdrop-blur-xl bg-black/30 md:inset-0 z-50 flex justify-center items-center h-modal sm:h-full">
             <div className="relative w-full max-w-2xl px-4 h-full md:h-auto">
-              <div className={`${color?.whitebackground} rounded-lg shadow relative`}>
+              <div className={`${color?.whitebackground} rounded-lg shadow-sm relative`}>
                 <div className="flex items-start justify-between p-5 border-b rounded-t">
                   <h3 className={`${color?.text} text-xl font-semibold`}>
                     {language?.add} {language?.new} {language?.image}
@@ -3206,7 +3206,7 @@ function Room() {
                   <div className="grid grid-cols-6 gap-6">
                     <div className="col-span-6 sm:col-span-3">
                       <label
-                        className={`text-sm font-medium ${color?.text} block mb-2`}
+                        className={`text-sm font-medium ${color?.text} block py-1 mb-2`}
                         htmlFor="grid-password"
                       >
                         {language?.image} {language?.upload}
@@ -3218,7 +3218,7 @@ function Room() {
                           onChange={e => {
                             onChangePhoto(e, 'imageFile');
                           }}
-                          className={`${color?.greybackground} ${color?.text} shadow-sm  border border-gray-300  sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full py-2 px-2.5`}
+                          className={`${color?.greybackground} ${color?.text} shadow-sm  border border-gray-300  sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full py-2 px-2.5`}
                         />
                       </div>
                       <div className="col-span-6 mt-2 sm:col-span-3">
@@ -3237,7 +3237,7 @@ function Room() {
                     </div>
                     <div className="col-span-6 sm:col-span-3">
                       <label
-                        className={`text-sm font-medium ${color?.text} block mb-2`}
+                        className={`text-sm font-medium ${color?.text} block py-1 mb-2`}
                         htmlFor="grid-password"
                       >
                         {language?.image} {language?.titl}
@@ -3246,14 +3246,14 @@ function Room() {
                       <input
                         type="text"
                         onChange={(e) => (setActionImage({ ...actionImage, image_title: e.target.value }, setFlag(1)))}
-                        className={`${color?.greybackground} ${color?.text} shadow-sm py-2  border border-gray-300  sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full px-2.5`}
+                        className={`${color?.greybackground} ${color?.text} shadow-sm py-2  border border-gray-300  sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full px-2.5`}
                       />
                       <p className="text-sm text-sm text-red-700 font-light">
                         {error?.image_title}</p>
                     </div>
                     <div className="col-span-6 sm:col-span-3">
                       <label
-                        className={`text-sm font-medium ${color?.text} block mb-2`}
+                        className={`text-sm font-medium ${color?.text} block py-1 mb-2`}
                         htmlFor="grid-password"
                       >
                         {language?.image} {language?.description}
@@ -3261,7 +3261,7 @@ function Room() {
                       </label>
                       <textarea rows="2" columns="60"
                         onChange={(e) => (setActionImage({ ...actionImage, image_description: e.target.value }, setFlag(1)))}
-                        className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
+                        className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`}
                         defaultValue="" />
                       <p className="text-sm text-sm text-red-700 font-light">
                         {error?.image_description}</p>
@@ -3271,14 +3271,14 @@ function Room() {
                 </div>
                 <div className="items-center p-6 border-t border-gray-200 rounded-b">
 
-                  <div className={(spinner === 0 && flag !== 1) ? 'block' : 'hidden'}>
+                  <div className={(spinner === 0 && flag !== 1) ? 'block py-1' : 'hidden'}>
                     <Button Primary={language?.AddDisabled} />
                   </div>
-                  <div className={(spinner === 0 && flag === 1) ? 'block' : 'hidden'}>
+                  <div className={(spinner === 0 && flag === 1) ? 'block py-1' : 'hidden'}>
                     <Button Primary={language?.Add} onClick={() => { validationImage(); }} />
                   </div>
 
-                  <div className={spinner === 1 ? 'block' : 'hidden'}>
+                  <div className={spinner === 1 ? 'block py-1' : 'hidden'}>
                     <Button Primary={language?.SpinnerAdd} />
                   </div>
                 </div>
@@ -3288,10 +3288,10 @@ function Room() {
         </div>
 
         {/* Modal edit Image */}
-        <div className={editImage === 1 ? 'block' : 'hidden'}>
+        <div className={editImage === 1 ? 'block py-1' : 'hidden'}>
           <div className="overflow-x-hidden overflow-y-auto fixed top-4 left-0 right-0 backdrop-blur-xl bg-black/30 md:inset-0 z-50 flex justify-center items-center h-modal sm:h-full">
             <div className="relative w-full max-w-2xl px-4 h-full md:h-auto">
-              <div className={`${color?.whitebackground} rounded-lg shadow relative`}>
+              <div className={`${color?.whitebackground} rounded-lg shadow-sm relative`}>
                 <div className="flex items-start justify-between p-5 border-b rounded-t">
                   <h3 className={`${color?.text} text-xl font-semibold`}>
                     {language?.edit} {language?.image}
@@ -3309,13 +3309,13 @@ function Room() {
                     </div>
                     <div className="col-span-6 sm:col-span-3">
                       <label
-                        className={`text-sm font-medium ${color?.text} block mb-2`}
+                        className={`text-sm font-medium ${color?.text} block py-1 mb-2`}
                         htmlFor="grid-password">
                         {language?.image} {language?.description}
                         <span style={{ color: "#ff0000" }}>*</span>
                       </label>
                       <textarea rows="6" columns="60"
-                        className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
+                        className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`}
                         onChange={
                           (e) => (
                             setActionImage({
@@ -3329,7 +3329,7 @@ function Room() {
                     </div>
                     <div className="col-span-6 sm:col-span-3">
                       <label
-                        className={`text-sm font-medium ${color?.text} block mb-2`}
+                        className={`text-sm font-medium ${color?.text} block py-1 mb-2`}
                         htmlFor="grid-password">
                         {language?.image} {language?.titl}
                         <span style={{ color: "#ff0000" }}>*</span>
@@ -3345,7 +3345,7 @@ function Room() {
                             }, setFlag(1))
                           )
                         }
-                        className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
+                        className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`}
                       />
                       <p className="text-sm text-sm text-red-700 font-light">
                         {error?.image_title}</p>
@@ -3353,15 +3353,15 @@ function Room() {
                   </div>
                 </div>
                 <div className="items-center p-6 border-t border-gray-200 rounded-b">
-                  <div className={(spinner === 0 && flag !== 1) ? 'block' : 'hidden'}>
+                  <div className={(spinner === 0 && flag !== 1) ? 'block py-1' : 'hidden'}>
                     <Button Primary={language?.UpdateDisabled} />
                   </div>
-                  <div className={(spinner === 0 && flag === 1) ? 'block' : 'hidden'}>
+                  <div className={(spinner === 0 && flag === 1) ? 'block py-1' : 'hidden'}>
                     <Button Primary={language?.Update} onClick={validationImage} />
                   </div>
 
 
-                  <div className={spinner === 1 ? 'block' : 'hidden'}>
+                  <div className={spinner === 1 ? 'block py-1' : 'hidden'}>
                     <Button Primary={language?.SpinnerUpdate} />
                   </div>
                 </div>
@@ -3371,10 +3371,10 @@ function Room() {
         </div>
 
         {/* Modal Delete */}
-        <div className={deleteImage === 1 ? 'block' : 'hidden'}>
+        <div className={deleteImage === 1 ? 'block py-1' : 'hidden'}>
           <div className="overflow-x-hidden overflow-y-auto fixed top-4 left-0 right-0 backdrop-blur-xl bg-black/30 md:inset-0 z-50 flex justify-center items-center h-modal sm:h-full">
             <div className="relative w-full max-w-md px-4 h-full md:h-auto">
-              <div className={`${color?.whitebackground}  rounded-lg shadow relative`}>
+              <div className={`${color?.whitebackground}  rounded-lg shadow-sm relative`}>
                 <div className="flex justify-end p-2">
                   <button
                     onClick={() => setdeleteImage(0)}
@@ -3403,11 +3403,11 @@ function Room() {
         </div>
 
         {/* Modal Add Bed */}
-        <div className={view === 1 ? 'block' : 'hidden'}>
+        <div className={view === 1 ? 'block py-1' : 'hidden'}>
           <div className="overflow-x-hidden overflow-y-auto fixed top-4 left-0 right-0 backdrop-blur-xl bg-black/30 md:inset-0 z-50 flex justify-center items-center h-modal sm:h-full">
             <div className="relative w-full max-w-2xl px-4 h-full md:h-auto">
               <form id='asform'>
-                <div className={`${color?.whitebackground} rounded-lg shadow relative`}>
+                <div className={`${color?.whitebackground} rounded-lg shadow-sm relative`}>
                   <div className="flex items-start justify-between p-5 border-b rounded-t">
                     <h3 className={`${color?.text} text-xl font-semibold`}>
                       {language?.add} {language?.new} {language?.bed}
@@ -3424,26 +3424,26 @@ function Room() {
                   <div className="p-6 space-y-6">
                     <div className="grid grid-cols-6 gap-6">
                       <div className="col-span-6 sm:col-span-3">
-                        <label htmlFor="first-name" className={`text-sm ${color?.text} font-medium  block mb-2`}>{language?.bed} {language?.length}({language?.incm})
+                        <label htmlFor="first-name" className={`text-sm ${color?.text} font-medium  block py-1 mb-2`}>{language?.bed} {language?.length}({language?.incm})
                           <span style={{ color: "#ff0000" }}>*</span>
                         </label>
                         <input type="text" name="first-name"
                           onChange={(e) => { setModified({ ...modified, bed_length: e.target.value }, setFlag(1)) }}
                           id="first-name"
                           className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg 
-                              focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`} required />
+                              focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`} required />
                         <p className="text-sm text-sm text-red-700 font-light">
                           {error?.bed_length}</p>
                       </div>
                       <div className="col-span-6 sm:col-span-3">
-                        <label htmlFor="last-name" className={`text-sm ${color?.text} font-medium  block mb-2`}>{language?.bed} {language?.width}({language?.incm})
+                        <label htmlFor="last-name" className={`text-sm ${color?.text} font-medium  block py-1 mb-2`}>{language?.bed} {language?.width}({language?.incm})
                           <span style={{ color: "#ff0000" }}>*</span>
                         </label>
                         <input type="text" name="first-name"
                           onChange={(e) => { setModified({ ...modified, bed_width: e.target.value }, setFlag(1)) }}
                           id="first-name"
                           className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg 
-                focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`} required />
+                focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`} required />
                         <p className="text-sm text-sm text-red-700 font-light">
                           {error?.bed_width}</p>
                       </div>
@@ -3452,13 +3452,13 @@ function Room() {
 
                   <div className="items-center p-6 border-t border-gray-200 rounded-b">
 
-                    <div className={(spinner === 0 && flag !== 1) ? 'block' : 'hidden'}>
+                    <div className={(spinner === 0 && flag !== 1) ? 'block py-1' : 'hidden'}>
                       <Button Primary={language?.AddDisabled} />
                     </div>
-                    <div className={(spinner === 0 && flag === 1) ? 'block' : 'hidden'}>
+                    <div className={(spinner === 0 && flag === 1) ? 'block py-1' : 'hidden'}>
                       <Button Primary={language?.Add} onClick={() => { addBed() }} />
                     </div>
-                    <div className={spinner === 1 ? 'block' : 'hidden'}>
+                    <div className={spinner === 1 ? 'block py-1' : 'hidden'}>
                       <Button Primary={language?.SpinnerAdd} />
                     </div>
 

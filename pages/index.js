@@ -349,13 +349,13 @@ function Signin() {
                       {language?.remember}
                     </label>
                   </div>
-                  <a
+                  {/* <a
                     href=""
                     className="text-sm font-semibold
                    text-teal-500 hover:underline  ml-auto"
                   >
                     {language?.lost}
-                  </a>
+                  </a> */}
                 </div>
                 <div className={spinner === 0 ? 'block' : 'hidden'}>
                   <Button testid='submitbtn' Primary={language?.Signin} onClick={(e) => { submitSignIn(e); }} />
@@ -364,12 +364,12 @@ function Signin() {
                   <Button Primary={language?.SpinnerSignin} />
                 </div>
 
-                <div className={`${color?.text} text-base font-semibold`}>
+                {/* <div className={`${color?.text} text-base font-semibold`}>
                   {language?.remember}
                   <a href="" className="text-teal-500 hover:underline px-2">
                     {language?.create}
                   </a>
-                </div>
+                </div> */}
               </form>
             </div>
           </div>

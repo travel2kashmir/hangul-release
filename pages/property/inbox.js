@@ -87,19 +87,20 @@ function Inbox() {
             .then((response) => {
                 setInboxDetails(response?.data);
                 var msg = [];
-               response?.data.map(i => {
+              response?.data.map(i => {
 
-            if (i.parent_message_id === "" || undefined || null)
+            if (i.parent_message_id === "" || undefined || null || "none")
            
               {
                 msg.push(i)
               }
+              
           setMessagesFiltered(msg)
         });
-                logger.info("url  to fetch property details hitted success.");
+                logger.info("url  to fetch property messages hitted success.");
                 setVisible(1)
             })
-            .catch((error) => { logger.error("url to fetch property details, failed.") });
+            .catch((error) => { logger.error("url to fetch property messages, failed.") });
     }
 
     const displayData = useMemo(() => {

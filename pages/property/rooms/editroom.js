@@ -2332,7 +2332,7 @@ function Room() {
                   </div>
                 </div>
               </div>
-              <div className="flex items-center justify-end space-x-2 sm:space-x-3 ml-auto mt-2">
+              <div className="flex items-center justify-end space-x-2 sm:space-x-3 ml-auto mt-8">
                 <Button Primary={language?.Previous} onClick={() => { setDisp(1) }} />
                 <Button Primary={language?.Next} onClick={() => { setDisp(3) }} />
               </div>
@@ -2342,7 +2342,7 @@ function Room() {
 
           {/* Room Rates */}
           <div id='3' className={disp === 3 ? 'block' : 'hidden'}>
-            <div className={`${color?.whitebackground} shadow-xl rounded-lg  sm:p-6 xl:p-8  2xl:col-span-2`}>
+            <div className={`${color?.whitebackground} shadow-lg rounded-lg  sm:p-6 xl:p-8  2xl:col-span-2`}>
               {/* widget progress starts */}
               <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`, `Rate Discounts`, `Rate Modifications`]} selected={4} color={color} />{/* widget progress ends */}
 
@@ -2502,7 +2502,7 @@ function Room() {
 
           {/* Room Rates Discount */}
           <div id='6' className={disp === 6 ? 'block' : 'hidden'}>
-            <div className={`${color?.whitebackground} shadow-xl rounded-lg  sm:p-6 xl:p-8  2xl:col-span-2`}>
+            <div className={`${color?.whitebackground} shadow-lg rounded-lg  sm:p-6 xl:p-8  2xl:col-span-2`}>
               {/* widget progress starts */}
               <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`, `Rate Discounts`, `Rate Modifications`]} selected={5} color={color} />
               {/* widget progress ends */}
@@ -2773,7 +2773,7 @@ function Room() {
 
           {/* Room Rates Modifications */}
           <div id='7' className={disp === 7 ? 'block' : 'hidden'}>
-            <div className={`${color?.whitebackground} shadow-xl rounded-lg  sm:p-6 xl:p-8  2xl:col-span-2`}>
+            <div className={`${color?.whitebackground} shadow-lg rounded-lg  sm:p-6 xl:p-8  2xl:col-span-2`}>
               {/* widget progress starts */}
               <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`, `Rate Discounts`, `Rate Modifications`]} selected={6} color={color} />
               {/* widget progress ends */}

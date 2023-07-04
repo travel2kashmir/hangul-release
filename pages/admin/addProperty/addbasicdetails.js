@@ -9,6 +9,9 @@ import InputTextBox from "../../../components/utils/InputTextBox";
 import DateInput from "../../../components/utils/DateInput";
 import DropDown from "../../../components/utils/DropDown";
 import colorFile from "../../../components/colors/Color";
+import { Country, State, City } from "country-state-city";
+import globalData from "../../../components/GlobalData";
+
 
 var language;
 var currentProperty;
@@ -16,10 +19,18 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 const logger = require("../../../services/logger");
 let colorToggle;
+var country;
+var i = 0;
 
 function AddBasicDetails() {
   const [mode, setMode] = useState();
+  const [spinner, setSpinner] = useState(0);
   const [basicDetails, setBasicDetails] = useState([]);
+  const [countries, setCountries] = useState(
+    globalData?.CountryData?.map((i) => {
+      return { value: `${i?.country_code}`, label: `${i?.country_name}` };
+    })
+  );
   const [allHotelDetails, setAllHotelDetails] = useState({
     property_name: '',
     property_category: '',
@@ -43,10 +54,30 @@ function AddBasicDetails() {
     address_country: ''
   });
   const [basic, setBasic] = useState(0);
-  const [error,setError]=useState({});
+  const [error, setError] = useState({});
   const [descriptionLength, setDescriptionLength] = useState();
   const [color, setColor] = useState({});
   const [allPropertyTypes, setAllPropertyTypes] = useState([]);
+  const [states, setStates] = useState([]);
+  const [cities, setCities] = useState([]);
+
+
+  useEffect(() => {
+    var state_code;
+    setStates(
+      State.getStatesOfCountry(address?.address_country?.toString())
+    );
+    state_code = State.getStatesOfCountry(
+      address?.address_country?.toString()
+    ).filter((el) => {
+      return address?.address_province === el.name;
+    });
+    setAddress({
+      ...address,
+      address_province_code: state_code?.[i]?.isoCode,
+    });
+  }, [address?.address_country, address?.address_province]);
+
   /** Fetching language from the local storage **/
   useEffect(() => {
     const firstfun = () => {
@@ -54,7 +85,7 @@ function AddBasicDetails() {
         var locale = localStorage.getItem("Language");
         setColor(colorFile?.light)
         colorToggle = localStorage.getItem("colorToggle");
-      
+
         if (locale === "ar") {
           language = arabic;
         }
@@ -78,14 +109,13 @@ function AddBasicDetails() {
   var current = new Date();
   let month = current.getMonth() + 1;
   var descriptionDate = `${current.getDate()}/${month < +10 ? `0${month}` : `${month + 1}`}/${current.getFullYear()}`;
-  
+
   const fetchAllPropertyTypes = () => {
     const url = '/api/all_property_types';
     axios.get(url).then((response) => setAllPropertyTypes(response.data))
   }
 
   const validateBasicDetails = (allHotelDetails, address) => {
-    console.log("address present" + address.length === undefined)
     if (address.length === undefined) {
       //detect empty values in basic details
       for (let item in allHotelDetails) {
@@ -141,7 +171,7 @@ function AddBasicDetails() {
 
   //to send data to database
   const submitBasic = () => {
-
+    setSpinner(1);
     const valid = validateAddress(allHotelDetails, address);
     if (valid === true) {
       const propertydata = { "address": [address] }
@@ -149,6 +179,7 @@ function AddBasicDetails() {
       console.log(JSON.stringify(finalData), 'finaldata')
       axios.post('/api/basic', finalData).then((response) => {
         localStorage.setItem("property_id", JSON.stringify(response?.data?.property_id));
+        setSpinner(0)
         toast.success("API: Property Added Successfully!", {
           position: "top-center",
           autoClose: 5000,
@@ -173,6 +204,7 @@ function AddBasicDetails() {
       })
     }
     else {
+      setSpinner(0);
       toast.error(valid, {
         position: "top-center",
         autoClose: 5000,
@@ -218,287 +250,161 @@ function AddBasicDetails() {
               <h6 className="text-xl flex leading-none pl-6 pt-2 font-bold text-gray-900 mb-2">
                 {language?.basicdetails}
 
-                <svg className="ml-2 h-6 mb-2 w-6 font-semibold" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path><path fillRule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clipRule="evenodd"></path></svg>
+                <svg className="ml-2 h-6 mb-2 w-6 font-semibold" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path><path fillRule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clipRule="evenodd">
+                  </path>
+                </svg>
               </h6>
 
               <div className="pt-6">
                 <div className=" md:px-4 mx-auto w-full">
                   <div className="flex flex-wrap">
-                     {/* property name */}
-                <InputText
-                  label={language?.propertyname}
-                  visible={1}
-                  defaultValue={basicDetails?.property_name}
-                  onChangeAction={ (e) => (
-                    setAllHotelDetails({ ...allHotelDetails, property_name: e.target.value })
-                  )
-                  }
-                  error={error?.property_name}
-                  color={color}
-                  req={true}
-                  title={language?.propertyname}
-                  tooltip={true}
-                />
-
-                   {/*  Dropdown for Property Category */}
-                <DropDown
-                  label={language?.propertycategory}
-                  visible={1}
-                  defaultValue={`Select Property Category`}
-                  onChangeAction={
-                    (e) => (
-                      setAllHotelDetails({ ...allHotelDetails, property_category: e.target.value })
-                    )
-                  }
-                  error={error?.propertycategory}
-                  color={color}
-                  req={true}
-                  title={language?.propertycategory}
-                  options={allPropertyTypes.map(i => ({ value: i?.property_type, label: i?.property_type }))}
-                />
-
-                    {/* <label
-                      className="text-sm font-medium text-gray-900 block mb-2"
-                      htmlFor="grid-password"
-                    >
-                      {language?.propertyname}
-                    </label>
-                    <input
-                      type="text"
-                      className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
-                      onChange={
-                        (e) => (
-                          setAllHotelDetails({ ...allHotelDetails, property_name: e.target.value })
-                        )
+                    {/* property name */}
+                    <InputText
+                      label={language?.propertyname}
+                      visible={1}
+                      defaultValue={basicDetails?.property_name}
+                      onChangeAction={(e) => (
+                        setAllHotelDetails({ ...allHotelDetails, property_name: e.target.value })
+                      )
                       }
-                    /> */}
-                  
-                  {/* <div className="col-span-6 sm:col-span-3">
-                    <label className="text-sm font-medium text-gray-900 block mb-2"
-                      htmlFor="grid-password">
-                      {language?.propertycategory}
-                    </label>
-                    <select className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
+                      error={error?.property_name}
+                      color={color}
+                      req={true}
+                      title={language?.propertyname}
+                      tooltip={true}
+                    />
 
-                      onChange={
+                    {/*  Dropdown for Property Category */}
+                    <DropDown
+                      label={language?.propertycategory}
+                      visible={1}
+                      defaultValue={`Select Property Category`}
+                      onChangeAction={
                         (e) => (
                           setAllHotelDetails({ ...allHotelDetails, property_category: e.target.value })
                         )
                       }
-                    >
-                      <option defaultValue="" >Select</option>
-                      <option defaultValue="hotel" >Hotel</option>
-                      <option defaultValue="resort">Resort</option>
-                      <option defaultValue="motel">Motel</option>
-                    </select>
-                  </div> */}
+                      error={error?.propertycategory}
+                      color={color}
+                      req={true}
+                      title={language?.propertycategory}
+                      options={allPropertyTypes.map(i => ({ value: i?.property_type, label: i?.property_type }))}
+                    />
 
                     {/* Property brand */}
-                <InputText
-                  label={language?.propertybrand}
-                  visible={1}
-                  defaultValue={basicDetails?.property_brand}
-                  onChangeAction={(e) =>
-                    setAllHotelDetails(
-                      { ...allHotelDetails, property_brand: e.target.value },
-                      setFlag(1)
-                    )
-                  }
-                  error={error?.property_brand}
-                  color={color}
-                  req={false}
-                  tooltip={true}
-                />
-{/* 
-                  <div className="col-span-6 sm:col-span-3">
-                    <label
-                      className="text-sm font-medium text-gray-900 block mb-2"
-                      htmlFor="grid-password"
-                    >
-                      {language?.propertybrand}
-                    </label>
-                    <input
-                      type="text"
-                      className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
-                      onChange={
-                        (e) => (
-                          setAllHotelDetails({ ...allHotelDetails, property_brand: e.target.value })
+                    <InputText
+                      label={language?.propertybrand}
+                      visible={1}
+                      defaultValue={basicDetails?.property_brand}
+                      onChangeAction={(e) =>
+                        setAllHotelDetails(
+                          { ...allHotelDetails, property_brand: e.target.value }
                         )
                       }
+                      error={error?.property_brand}
+                      color={color}
+                      req={false}
+                      tooltip={true}
                     />
-                  </div> */}
 
-                     {/* Established date */}
-                <DateInput
-                  color={color}
-                  label={language?.establisheddate}
-                  req={1}
-                  initialValue={basicDetails?.established_year}
-                  onChangeAction={ (e) => (
-                    setAllHotelDetails({ ...allHotelDetails, established_year: e.target.value })
-                  )
-                  }
-                  error={error?.established_year}
-                  visible={1}
-                  max={descriptionDate}
-                  title={language?.establisheddate}
-                  tooltip={true}
-                />
-                  {/* <div className="col-span-6 sm:col-span-3">
-                    <label
-                      className="text-sm font-medium text-gray-900 block mb-2"
-                      htmlFor="grid-password"
-                    >
-                      {language?.establisheddate}
-                    </label>
-                    <input
-                      type="Date"
-                      className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
-                      onChange={
-                        (e) => (
-                          setAllHotelDetails({ ...allHotelDetails, established_year: e.target.value })
-                        )
-                      }
-                    />
-                  </div> */}
-
-                   {/*Star Rating*/}
-                <DropDown
-                  label={language?.starrating}
-                  visible={1}
-                  defaultValue={basicDetails?.star_rating}
-                  onChangeAction={ (e) => {
-                    if (e.target.value >= 0 && e.target.value <= 5)
-                      setAllHotelDetails({ ...allHotelDetails, star_rating: e.target.value })
-                    else
-                      e.target.value = 0
-                  }
-                  }
-                  error={error?.starrating}
-                  color={color}
-                  req={true}
-                  tooltip={true}
-                  options={[
-                    { value: 0, label: 0 },
-                    { value: 1, label: 1 },
-                    { value: 2, label: 2 },
-                    { value: 3, label: 3 },
-                    { value: 4, label: 4 },
-                    { value: 5, label: 5 },
-                  ]}
-                />
-                  {/* <div className="col-span-6 sm:col-span-3">
-                    <label
-                      className="text-sm font-medium text-gray-900 block mb-2"
-                      htmlFor="grid-password"
-                    >
-                      {language?.starrating}
-                    </label>
-                    <input
-                      type="number"
-                      min="0"
-                      max="7"
-                      pattern="\[0-7]"
-                      className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
-                      onChange={
-                        (e) => {
-                          if (e.target.value >= 0 && e.target.value <= 7)
-                            setAllHotelDetails({ ...allHotelDetails, star_rating: e.target.value })
-                          else
-                            e.target.value = 0
-                        }
-                      }
-                    />
-                  </div> */}
-
-                   {/* Description_title */}
-                <InputText
-                  label={language?.descriptiontitle}
-                  visible={1}
-                  defaultValue={basicDetails?.description_title}
-                  onChangeAction={(e) => (
-                    setAllHotelDetails({ ...allHotelDetails, description_title: e.target.value })
-                  )
-                  }
-                  error={error?.description_title}
-                  color={color}
-                  req={true}
-                  title={language?.descriptiontitle}
-                  tooltip={true}
-                />
-
-
-                  {/* <div className="col-span-6 sm:col-span-3">
-                    <label
-                      className="text-sm font-medium text-gray-900 block mb-2"
-                      htmlFor="grid-password"
-                    >
-                      {language?.descriptiontitle}
-                    </label>
-                    <input
-                      type="text"
-                      className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
-                      onChange={
-                        (e) => (
-                          setAllHotelDetails({ ...allHotelDetails, description_title: e.target.value })
-                        )
-                      }
-                    />
-                  </div> */}
-
-                   {/*Description */}
-                <InputTextBox
-                  label={language?.description}
-                  visible={1}
-                  defaultValue={basicDetails?.description_body}
-                  wordLimit={1000}
-                  onChangeAction={(e) => {
-                    if (e.target.value.length >= 0 && e.target.value.length < 1000) {
-                      setError({})
-                      setDescriptionLength(e.target.value.length)
-                      setAllHotelDetails(
-                        {
-                          ...allHotelDetails,
-                          description_body: e.target.value,
-                        }
+                    {/* Established date */}
+                    <DateInput
+                      color={color}
+                      label={language?.establisheddate}
+                      req={1}
+                      initialValue={basicDetails?.established_year}
+                      onChangeAction={(e) => (
+                        setAllHotelDetails({ ...allHotelDetails, established_year: e.target.value })
                       )
-                    }
-                    else {
-                      setError({ description_body: 'word limit reached' })
-                    }
-
-                  }
-                    }
-                  error={error?.description_body}
-                  color={color}
-                  req={true}
-                  tooltip={true}/>
-
-                  {/* <div className="col-span-6 sm:col-span-3">
-                    <label
-                      className="text-sm font-medium text-gray-900 block mb-2"
-                      htmlFor="grid-password"
-                    >
-                      {language?.description}
-                    </label>
-                    <textarea rows="5" columns="50"
-                      className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
-                      onChange={
-                        (e) => (
-                          setAllHotelDetails({ ...allHotelDetails, description_body: e.target.value })
-                        )
                       }
+                      error={error?.established_year}
+                      visible={1}
+                      max={descriptionDate}
+                      title={language?.establisheddate}
+                      tooltip={true}
                     />
-                  </div> */}
 
+                    {/*Star Rating*/}
+                    <DropDown
+                      label={language?.starrating}
+                      visible={1}
+                      defaultValue={basicDetails?.star_rating}
+                      onChangeAction={(e) => {
+                        if (e.target.value >= 0 && e.target.value <= 5)
+                          setAllHotelDetails({ ...allHotelDetails, star_rating: e.target.value })
+                        else
+                          e.target.value = 0
+                      }
+                      }
+                      error={error?.starrating}
+                      color={color}
+                      req={true}
+                      tooltip={true}
+                      options={[
+                        { value: 0, label: 0 },
+                        { value: 1, label: 1 },
+                        { value: 2, label: 2 },
+                        { value: 3, label: 3 },
+                        { value: 4, label: 4 },
+                        { value: 5, label: 5 },
+                      ]}
+                    />
+
+                    {/* Description_title */}
+                    <InputText
+                      label={language?.descriptiontitle}
+                      visible={1}
+                      defaultValue={basicDetails?.description_title}
+                      onChangeAction={(e) => (
+                        setAllHotelDetails({ ...allHotelDetails, description_title: e.target.value })
+                      )
+                      }
+                      error={error?.description_title}
+                      color={color}
+                      req={true}
+                      title={language?.descriptiontitle}
+                      tooltip={true}
+                    />
+
+
+                    {/*Description */}
+                    <InputTextBox
+                      label={language?.description}
+                      visible={1}
+                      defaultValue={basicDetails?.description_body}
+                      wordLimit={1000}
+                      onChangeAction={(e) => {
+                        if (e.target.value.length >= 0 && e.target.value.length < 1000) {
+                          setError({})
+                          setDescriptionLength(e.target.value.length)
+                          setAllHotelDetails(
+                            {
+                              ...allHotelDetails,
+                              description_body: e.target.value,
+                            }
+                          )
+                        }
+                        else {
+                          setError({ description_body: 'word limit reached' })
+                        }
+
+                      }
+                      }
+                      error={error?.description_body}
+                      color={color}
+                      req={true}
+                      tooltip={true} />
+
+
+                  </div>
+                </div>
+
+                <div className='float-right -mt-4'>
+                  <Button className="float-right" Primary={language?.Submit} onClick={() => { validateBasicDetails(allHotelDetails, address) === true ? setBasic(1) : alert((validateBasicDetails(allHotelDetails, address))) }} />
                 </div>
               </div>
-
-              <div className='float-right -mt-4'>
-                <Button className="float-right" Primary={language?.Submit} onClick={() => { validateBasicDetails(allHotelDetails, address) === true ? setBasic(1) : alert((validateBasicDetails(allHotelDetails, address))) }} />
-              </div>
             </div>
-          </div>
           </div>
 
           {/*Address Form*/}
@@ -520,208 +426,218 @@ function AddBasicDetails() {
 
                 <svg className="ml-2 h-6 mb-2 w-6 font-semibold" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path><path fillRule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clipRule="evenodd"></path></svg>
               </h6>
-              <div className="p-6 space-y-6 -my-8">
-                <div className="grid grid-cols-6 gap-6">
-                  <div className="col-span-6 sm:col-span-3">
-                    <label
-                      className="text-sm font-medium text-gray-900 block mb-2"
-                      htmlFor="grid-password"
-                    >
-                      {language?.streetaddress}
-                    </label>
-                    <input
-                      type="text"
-                      className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
-
-                      onChange={(e) =>
+              <div className="pt-6">
+                <div className=" md:px-4 mx-auto w-full">
+                  <div className="flex flex-wrap">
+                    {/* //streetaddress */}
+                    <InputText
+                      data-testid="streetaddress"
+                      label={language?.streetaddress}
+                      visible={1}
+                      defaultValue={address?.address_street_address}
+                      onChangeAction={(e) =>
                         setAddress({
                           ...address,
                           address_street_address: e.target.value,
                         })
                       }
+                      error={error?.address_street_address}
+                      color={color}
+                      req={true}
+                      tooltip={true}
                     />
-                  </div>
 
-                  <div className="col-span-6 sm:col-span-3">
-                    <label
-                      className="text-sm font-medium text-gray-900 block mb-2"
-                      htmlFor="grid-password"
-                    >
-                      {language?.landmark}
-                    </label>
-                    <input
-                      type="text"
-                      className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
+                    {/* Landmark */}
 
-                      onChange={(e) =>
+                    <InputText
+                      data-testid="landmark"
+                      label={language?.landmark}
+                      visible={1}
+                      defaultValue={address?.address_landmark}
+                      onChangeAction={(e) =>
                         setAddress({
                           ...address,
                           address_landmark: e.target.value,
                         })
                       }
+                      error={error?.address_landmark}
+                      color={color}
+                      req={true}
+                      tooltip={true}
                     />
-                  </div>
 
-                  <div className="col-span-6 sm:col-span-3">
-                    <label
-                      className="text-sm font-medium text-gray-900 block mb-2"
-                      htmlFor="grid-password"
-                    >
-                      {language?.city}
-                    </label>
-                    <select
-                      className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
-                      onChange={(e) =>
+                    {/* country */}
+                    <DropDown
+                      data-testid="country"
+                      label={language?.country}
+                      visible={1}
+                      defaultValue={country?.[i]?.country_name}
+                      onChangeAction={(e) =>
+                        setAddress(
+                          {
+                            ...address,
+                            address_country: e.target.value,
+                            address_province: "",
+                            address_city: "",
+                            address_zipcode: "",
+                          },
+
+                        )
+                      }
+                      error={error?.propertycategory}
+                      color={color}
+                      req={true}
+                      options={countries}
+                      tooltip={true}
+                    />
+
+                    {/* province */}
+                    <DropDown
+                      data-testid="province"
+                      label={language?.province}
+                      visible={1}
+                      defaultValue={`Select province`}
+                      onChangeAction={(e) => {
+                        setAddress({
+                          ...address,
+                          address_province: JSON.parse(e.target.value).name,
+                          address_province_code: JSON.parse(e.target.value)
+                            .isoCode,
+                          address_city: "",
+                          address_zipcode: "",
+                        },
+
+                        );
+                      }}
+                      error={error?.propertycategory}
+                      color={color}
+                      req={true}
+                      tooltip={true}
+                      options={states?.map((i) => ({
+                        value: `${JSON.stringify(i)}`,
+                        label: `${i?.name}`,
+                      }))}
+                    />
+
+                    {/*CITY*/}
+
+                    <DropDown
+                      data-testid="city"
+                      label={language?.city}
+                      visible={1}
+                      defaultValue={`${language?.select}`}
+                      onChangeAction={(e) => {
                         setAddress({
                           ...address,
                           address_city: e.target.value,
-                        })
-                      }
-                    >
-                      <option value="">Select</option>
-                      <option value="srinagar">Srinagar</option>
-                      <option value="baramulla">Baramulla</option>
-                      <option value="budgam">Budgam</option>
-                      <option value="pahalgam">Pahalgam</option>
-                      <option value="gulmarg">Gulmarg</option>
-                    </select>
-                  </div>
+                          address_zipcode: "",
+                        },
 
-                  <div className="col-span-6 sm:col-span-3">
-                    <label
-                      className="text-sm font-medium text-gray-900 block mb-2"
-                      htmlFor="grid-password"
-                    >
-                      {language?.province}
-                    </label>
-                    <select
-                      className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
-                      onChange={(e) =>
-                        setAddress({
-                          ...address,
-                          address_province: e.target.value,
-                        })
-                      }
-                    >
-                      <option value="">Select</option>
-                      <option value="jammu and kashmir">Jammu and Kashmir</option>
-                      <option value="kargil">Kargil</option>
-                      <option value="delhi">Delhi</option>
-                      <option value="maharastra">Maharastra</option>
-                    </select>
-                  </div>
-
-                  <div className="col-span-6 sm:col-span-3">
-                    <label
-                      className="text-sm font-medium text-gray-900 block mb-2"
-                      htmlFor="grid-password"
-                    >
-                      {language?.latitude}
-                    </label>
-                    <input
-                      type="text"
-                      className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900
-                     sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600
-                      block w-full p-2.5"
-
-                      onChange={(e) =>
-                        setAddress({
-                          ...address,
-                          address_latitude: e.target.value,
-                        })
-                      }
+                        );
+                      }}
+                      error={error?.propertycategory}
+                      color={color}
+                      req={true}
+                      tooltip={true}
+                      options={cities?.map((i) => ({
+                        value: `${i.name}`,
+                        label: `${i?.name}`,
+                      }))}
                     />
-                  </div>
 
-                  <div className="col-span-6 sm:col-span-3">
-                    <label
-                      className="text-sm font-medium text-gray-900 block mb-2"
-                      htmlFor="grid-password"
-                    >
-                      {language?.longitude}
-                    </label>
-                    <input
-                      type="text"
-                      className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
+                    {/* POSTAL CODE */}
+                    <InputText
+                      data-testid="postalcode"
+                      label={language?.postalcode}
+                      visible={1}
+                      defaultValue={""}
+                      onChangeAction={(e) => {
+                        (e) =>
+                          setAddress({
+                            ...address,
+                            address_zipcode: e.target.value,
+                          })
+                      }}
+                      error={error?.address_zipcode}
+                      color={color}
+                      req={true}
+                      tooltip={true}
+                    />
 
-                      onChange={(e) =>
+                    {/* Latitude */}
+
+                    <InputText
+                      data-testid="latitude"
+                      label={language?.latitude}
+                      visible={1}
+                      defaultValue={address?.address_latitude}
+                      onChangeAction={(e) => {
+                        (e) =>
+                          setAddress({
+                            ...address,
+                            address_latitude: parseFloat(e.target.value),
+                          })
+                      }}
+                      error={error?.address_latitude}
+                      color={color}
+                      req={true}
+                      tooltip={true}
+                    />
+
+                    {/* Longitude */}
+
+                    <InputText
+                      data-testid="longitude"
+                      label={language?.longitude}
+                      visible={1}
+                      defaultValue={address?.address_longitude}
+                      onChangeAction={(e) => {
                         setAddress({
                           ...address,
-                          address_longitude: e.target.value,
+                          address_longitude: parseFloat(e.target.value),
                         })
-                      }
+                      }}
+                      error={error?.address_longitude}
+                      color={color}
+                      req={true}
+                      tooltip={true}
                     />
-                  </div>
-                  <div className="col-span-6 sm:col-span-3">
-                    <label
-                      className="text-sm font-medium text-gray-900 block mb-2"
-                      htmlFor="grid-password"
-                    >
-                      {language?.postalcode}
-                    </label>
-                    <input
-                      type="text"
-                      className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
 
-                      onChange={(e) =>
-                        setAddress({
-                          ...address,
-                          address_zipcode: e.target.value,
-                        })
-                      }
+                    {/* PRECISION */}
+                    <InputText
+                      data-testid="precision"
+                      label={`${language?.precision}(${language?.inmeters})`}
+                      visible={1}
+                      defaultValue={address?.address_precision}
+                      onChangeAction={(e) => {
+                        (e) =>
+                          setAddress({
+                            ...address,
+                            address_precision: parseInt(e.target.value),
+                          })
+                      }}
+                      error={error?.address_precision}
+                      color={color}
+                      req={true}
+                      tooltip={true}
                     />
+                    <div className="flex items-center justify-end space-x-2 sm:space-x-3 ml-auto">
+                      <Button Primary={
+                        {
+                          label: "<-Edit Basic Details",
+                          color: "bg-cyan-600 hover:bg-cyan-700 text-white",
+                        }} onClick={() => setBasic(0)} />
+
+                      {spinner === 0 ?
+                        <Button Primary={language?.Submit} onClick={submitBasic} /> :
+                        <Button Primary={language?.SpinnerUpdate} />}
+
+
+                    </div>
                   </div>
-                </div>
-                <div className="lg:col-span-6 col-span-6 sm:col-span-3">
-                  <label
-                    className="text-sm font-medium text-gray-900 block mb-2"
-                    htmlFor="grid-password"
-                  >
-                    {language?.precision}
-                  </label>
-                  <input
-                    type="text"
-                    className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
-
-                    onChange={(e) =>
-                      setAddress({
-                        ...address,
-                        address_precision: e.target.value,
-                      })
-                    }
-                  />
-                </div>
-                <div className="col-span-6 sm:col-span-3">
-                  <label
-                    className="text-sm font-medium text-gray-900 block mb-2"
-                    htmlFor="grid-password"
-                  >
-                    {language?.country}
-                  </label>
-                  <select
-                    onChange={(e) => setAddress({ ...address, address_country: e.target.value })}
-                    className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5">
-                    <option value="">Select</option>
-                    <option value="IN">India</option>
-                    <option value="PK">Pakistan</option>
-                    <option value="UN">United States of America</option>
-                    <option value="UK">United Kingdom</option>
-                  </select>
-                </div>
-
-                <div className="flex items-center justify-end space-x-2 sm:space-x-3 ml-auto">
-                  <Button Primary={
-                    {
-                      label: "<-Edit Basic Details",
-                      color: "bg-cyan-600 hover:bg-cyan-700 text-white",
-                    }} onClick={() => setBasic(0)} />
-
-                  {Button !== 'undefined' ?
-                    <Button Primary={language?.Submit} onClick={submitBasic} />
-                    : <></>
-                  }
                 </div>
               </div>
+
 
 
 

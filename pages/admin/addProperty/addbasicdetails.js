@@ -52,25 +52,8 @@ function AddBasicDetails() {
     const firstfun = () => {
       if (typeof window !== 'undefined') {
         var locale = localStorage.getItem("Language");
+        setColor(colorFile?.light)
         colorToggle = localStorage.getItem("colorToggle");
-      if (
-        colorToggle === "" ||
-        colorToggle === undefined ||
-        colorToggle === null ||
-        colorToggle === "system"
-      ) {
-        window.matchMedia("(prefers-color-scheme:dark)").matches === true
-          ? setColor(colorFile?.dark)
-          : setColor(colorFile?.light);
-        setMode(
-          window.matchMedia("(prefers-color-scheme:dark)").matches === true
-            ? true
-            : false
-        );
-      } else if (colorToggle === "true" || colorToggle === "false") {
-        setColor(colorToggle === "true" ? colorFile?.dark : colorFile?.light);
-        setMode(colorToggle === "true" ? true : false);
-      }
       
         if (locale === "ar") {
           language = arabic;

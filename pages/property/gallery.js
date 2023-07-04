@@ -537,7 +537,7 @@ function Gallery() {
                 <Link
                   href={
                     currentLogged?.id.match(/admin.[0-9]*/)
-                      ? "../admin/AdminLanding"
+                      ? "../admin/adminlanding"
                       : "./landing"
                   }
                   className={`${color?.text} text-base font-medium  inline-flex items-center`}

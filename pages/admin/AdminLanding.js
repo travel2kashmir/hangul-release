@@ -67,7 +67,7 @@ function AdminLanding() {
             }
         }
         firstfun();
-        router.push('./AdminLanding');
+        router.push('./adminlanding');
         fetchAllProperties();
         setLoc(window.location.origin)
      

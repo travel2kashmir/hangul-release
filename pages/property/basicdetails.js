@@ -28,7 +28,7 @@ import InputText from "../../components/utils/InputText";
 import InputTextBox from "../../components/utils/InputTextBox";
 import DateInput from "../../components/utils/DateInput";
 import DropDown from "../../components/utils/DropDown";
-import { response } from "msw";
+
 export default function BasicDetails() {
   const router = useRouter();
   const [visible, setVisible] = useState(0);
@@ -358,7 +358,7 @@ export default function BasicDetails() {
                 <Link
                   href={
                     currentLogged?.id.match(/admin.[0-9]*/)
-                      ? "../admin/AdminLanding"
+                      ? "../admin/adminlanding"
                       : "./landing"
                   }
                   className={`${color?.text} text-base font-medium  inline-flex items-center`}

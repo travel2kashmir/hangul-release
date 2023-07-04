@@ -3,7 +3,7 @@ import Router from 'next/router';
 
 function AllProperties() {
     useEffect(()=>{
-        Router.push('./AdminLanding')
+        Router.push('./adminlanding')
     },[])
   return (
     <div>Re-directing</div>

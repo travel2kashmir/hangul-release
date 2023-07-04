@@ -76,7 +76,7 @@ function Signin() {
           router.push('./property/landing')
         }
         else if (currentUser?.id.match('admin00.[0-9]*')) {
-          router.push('./admin/AdminLanding');
+          router.push('./admin/adminlanding');
         }
 
       }
@@ -162,7 +162,7 @@ function Signin() {
             {/*To re-direct to required module*/ }
             if (response.data.id.match(/admin00.[0-9]*/g)) {
               LocalSignin(whoIsLogged);
-              router.push("./admin/AdminLanding")
+              router.push("./admin/adminlanding")
             }
             else {
               LocalSignin(whoIsLogged);

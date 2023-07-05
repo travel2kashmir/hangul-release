@@ -259,7 +259,8 @@ function UserDetails() {
                                             </th>
                                         </tr>
                                     </thead>
-                                    {Object.keys(userData).length !== 0 ? <tbody className="bg-white divide-y divide-gray-200">
+                                    {userData[0]?.message==='no property for user' ?<h1 className='capitalize'>{currentUser?.user_name} has no property</h1> :
+                                     <tbody className="bg-white divide-y divide-gray-200">
                                         {userData?.map((item, idx) => {
                                             return (
                                                 <tr className="hover:bg-gray-100" key={idx}>
@@ -293,12 +294,12 @@ function UserDetails() {
                                                 </tr>
                                             );
                                         })}
-                                    </tbody> : <></>}
+                                    </tbody> }
                                 </table>
 
                             </form>
-
-                            {Object.keys(userData).length === 0 ? <h1 className='capitalize'>{currentUser?.user_name} has no property</h1> : <></>}
+                             
+                            
                         </div>
                     </div>
                 </div>

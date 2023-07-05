@@ -202,7 +202,7 @@ export default {
   additionalservices:"Additional Services",
   roomstyle:"Room Style",
   isroomshared:"Is Room Shared",
-  isroom:"Is Room",
+  isroom:"Room Is",
   viewsfromroom:"Views from Room",
   infeet:"in feet",
   bed:"Bed",

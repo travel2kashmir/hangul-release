@@ -8,9 +8,8 @@ import Link from "next/link";
 import Table from '../../components/Table';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import english from "../../components/Languages/en"
-import french from "../../components/Languages/fr"
-import arabic from "../../components/Languages/ar";
+import Title from '../../components/title';
+import {english,french,arabic} from "../../components/Languages/Languages"
 import LoaderTable from "../../components/loadertable";
 import Headloader from "../../components/loaders/headloader";
 import { InitialActions,ColorToggler } from '../../components/initalActions';
@@ -141,7 +140,7 @@ function Rooms() {
     Router.push("./rooms/addroom")
   }
   return (
-    <>
+    <> <Title name={`Engage | Rooms`} />
       <Header 
       color={color} 
       setColor={setColor}

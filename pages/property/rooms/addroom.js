@@ -15,9 +15,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import colorFile from '../../../components/colors/Color';
 import 'react-toastify/dist/ReactToastify.css';
 import Link from "next/link";
-import english from "../../../components/Languages/en";
-import french from "../../../components/Languages/fr";
-import arabic from "../../../components/Languages/ar";
+import Title from '../../../components/title';
+import {english,french,arabic} from "../../../components/Languages/Languages"
 import Footer from "../../../components/Footer";
 import Sidebar from '../../../components/Sidebar';
 import Header from '../../../components/Header';
@@ -592,7 +591,7 @@ function Addroom() {
   }
   return (
     <>
-
+      <Title name={`Engage | Add Room`} />
       <Header Primary={english?.Side1} color={color} Type={currentLogged?.user_type} Sec={colorToggler} mode={mode} setMode={setMode} />
       <Sidebar Primary={english?.Side1} color={color} Type={currentLogged?.user_type} />
 

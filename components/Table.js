@@ -406,7 +406,7 @@ const Table = (args) => {
                                                                 {item?.status == true ?
                                                                     <td className={`p-4 whitespace-nowrap lowercase text-base font-normal ${args?.color?.text}`}>
 
-                                                                        <Capsule color='bg-green-400'
+                                                                        <Capsule color='bg-green-300'
                                                                         title={<span  className="flex items-center">
                                                                             {args?.common?.Active}</span>} />
 
@@ -414,7 +414,7 @@ const Table = (args) => {
                                                                     args?.status === "matchstatus" ? <></> :
 
                                                                         <td className={`p-4 whitespace-nowrap text-base lowercase font-normal ${args?.color?.text}`}>
-                                                                            <Capsule color='bg-red-400' title={<span className="flex items-center">
+                                                                            <Capsule color='bg-red-300' title={<span className="flex items-center">
                                                                                 {args?.common?.Inactive}
                                                                             </span>} />
 

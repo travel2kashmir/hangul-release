@@ -77,6 +77,7 @@ function Room() {
   const [view, setView] = useState(0);
   const [roomView, setRoomView] = useState([]);
   const [image, setImage] = useState({})
+  const [imageUploaded, setImageUploaded] = useState(false)
   const [services, setServices] = useState([])
   const [add, setAdd] = useState(0)
   const [gen, setGen] = useState([])
@@ -341,6 +342,7 @@ function Room() {
     axios.post("https://api.cloudinary.com/v1_1/dvczoayyw/image/upload", formData)
       .then(response => {
         setActionImage({ ...actionImage, image_link: response?.data?.secure_url })
+        setImageUploaded(true)
       })
       .catch(error => {
         toast.error("App: Image upload error.", {
@@ -3270,17 +3272,17 @@ function Room() {
                   </div>
                 </div>
                 <div className="items-center p-6 border-t border-gray-200 rounded-b">
-
-                  <div className={(spinner === 0 && flag !== 1) ? 'block py-1' : 'hidden'}>
+                  {spinner === 0 ? <><div className={( flag !== 1 || imageUploaded === false) ? 'block py-1' : 'hidden'}>
                     <Button Primary={language?.AddDisabled} />
                   </div>
-                  <div className={(spinner === 0 && flag === 1) ? 'block py-1' : 'hidden'}>
-                    <Button Primary={language?.Add} onClick={() => { validationImage(); }} />
-                  </div>
-
-                  <div className={spinner === 1 ? 'block py-1' : 'hidden'}>
+                    <div className={(flag === 1 && imageUploaded === true) ? 'block py-1' : 'hidden'}>
+                      <Button Primary={language?.Add} onClick={() => { validationImage(); }} />
+                    </div>
+                  </> : <div className={'block py-1'}>
                     <Button Primary={language?.SpinnerAdd} />
-                  </div>
+                  </div>}
+
+
                 </div>
               </div>
             </div>

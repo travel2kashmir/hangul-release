@@ -78,6 +78,18 @@ function AddBasicDetails() {
     });
   }, [address?.address_country, address?.address_province]);
 
+  useEffect(() => {
+    setCities(
+      City.getCitiesOfState(
+        address?.address_country,
+        address?.address_province_code
+      )
+    );
+  }, [
+    address?.address_country,
+    address?.address_province_code,
+  ]);
+
   /** Fetching language from the local storage **/
   useEffect(() => {
     const firstfun = () => {
@@ -311,7 +323,7 @@ function AddBasicDetails() {
                   <DateInput
                     color={color}
                     label={language?.establisheddate}
-                    req={1}
+                    req={true}
                     initialValue={basicDetails?.established_year}
                     onChangeAction={(e) => (
                       setAllHotelDetails({ ...allHotelDetails, established_year: e.target.value })
@@ -320,7 +332,7 @@ function AddBasicDetails() {
                     error={error?.established_year}
                     visible={1}
                     max={descriptionDate}
-                    title={language?.establisheddate}
+                    title={`Year in which property was established`}
                     tooltip={true}
                   />
 
@@ -395,7 +407,7 @@ function AddBasicDetails() {
                     req={true}
                     tooltip={true} />
 
-                  <div className='flex justify-end mt-4  w-full'>
+                  <div className='flex justify-end mt-4  w-full hover:bg-grey-200'>
                     <Button  Primary={language?.Submit} onClick={() => { validateBasicDetails(allHotelDetails, address) === true ? setBasic(1) : alert((validateBasicDetails(allHotelDetails, address))) }} />
                   </div>
                 </div>
@@ -544,7 +556,7 @@ function AddBasicDetails() {
                       label: `${i?.name}`,
                     }))}
                   />
-
+              
                   {/* POSTAL CODE */}
                   <InputText
                     data-testid="postalcode"
@@ -552,7 +564,7 @@ function AddBasicDetails() {
                     visible={1}
                     defaultValue={""}
                     onChangeAction={(e) => {
-                      (e) =>
+                      
                         setAddress({
                           ...address,
                           address_zipcode: e.target.value,
@@ -571,13 +583,14 @@ function AddBasicDetails() {
                     label={language?.latitude}
                     visible={1}
                     defaultValue={address?.address_latitude}
-                    onChangeAction={(e) => {
-                      (e) =>
+                    onChangeAction={(e) => 
+                      {alert(parseFloat(e.target.value));
                         setAddress({
                           ...address,
                           address_latitude: parseFloat(e.target.value),
-                        })
-                    }}
+                        })}
+                      
+                    }
                     error={error?.address_latitude}
                     color={color}
                     req={true}
@@ -610,8 +623,7 @@ function AddBasicDetails() {
                     visible={1}
                     defaultValue={address?.address_precision}
                     onChangeAction={(e) => {
-                      (e) =>
-                        setAddress({
+                      setAddress({
                           ...address,
                           address_precision: parseInt(e.target.value),
                         })
@@ -624,7 +636,7 @@ function AddBasicDetails() {
                   <div className="flex items-center justify-end space-x-2 sm:space-x-3 ml-auto">
                     <Button Primary={
                       {
-                        label: "<-Edit Basic Details",
+                        label: "Back",
                         color: "bg-cyan-600 hover:bg-cyan-700 text-white",
                       }} onClick={() => setBasic(0)} />
 

@@ -19,9 +19,7 @@ var currentProperty;
 const logger = require("../../services/logger");
 import Link from "next/link";
 import Footer from "../../components/Footer";
-import english from "../../components/Languages/en";
-import french from "../../components/Languages/fr";
-import arabic from "../../components/Languages/ar";
+import {english,arabic,french} from "../../components/Languages/Languages"
 import InputText from "../../components/utils/InputText";
 import DropDown from "../../components/utils/DropDown";
 var i = 0;

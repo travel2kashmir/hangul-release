@@ -30,8 +30,11 @@ function Home({ allHotelDetails, menu, setMenu, hotelDetailLoader, lang, setLang
 
             <div className="contentBox relative text-center pt-32 pb-0 md:top-0 lg:top-5 xl:top-10">
                 {hotelDetailLoader === 0 ? <Loader size={`h-8 w-32`} /> :
-                    <>  <h1 className="text-white font-extralight tracking-widest text-sm md:text-xl lg:text-lg lg:font-normal 2xl:font-medium">{lang?.welcomeTo} {allHotelDetails?.star_rating} <i><StarIcon className="text-2xl" sx={{ color: 'orange' }} /> </i> {lang?.hotel}</h1></>}
-                <h1 className="text-3xl px-6 font-bold mt-3 text-white font-bold md:text-6xl lg:text-7xl"> {hotelDetailLoader === 0 ? <Loader size='h-8 w-44 md:h-9 md:w-5/12 lg:h-16 lg:w-6/12' /> : allHotelDetails?.description_title} </h1>
+                    <>  <h1 className="text-white font-extralight tracking-widest text-sm md:text-xl lg:text-lg lg:font-normal 2xl:font-medium">
+                        {lang?.welcomeTo}
+                         {allHotelDetails?.star_rating===0?<></>:<>{allHotelDetails?.star_rating} <i><StarIcon className="text-2xl" sx={{ color: 'orange' }} /> </i></>} 
+                         {` ${lang?.hotel}`}</h1></>}
+                <h1 className="text-3xl px-6 font-bold mt-3 text-white md:text-6xl lg:text-7xl"> {hotelDetailLoader === 0 ? <Loader size='h-8 w-44 md:h-9 md:w-5/12 lg:h-16 lg:w-6/12' /> : allHotelDetails?.description_title} </h1>
 
                 <div className=' lg:hidden mt-40'>
                     <button className='bookNow bg-white py-2 px-3 text-xs rounded-lg'

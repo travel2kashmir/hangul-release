@@ -584,7 +584,7 @@ function AddBasicDetails() {
                     visible={1}
                     defaultValue={address?.address_latitude}
                     onChangeAction={(e) => 
-                      {alert(parseFloat(e.target.value));
+                      {
                         setAddress({
                           ...address,
                           address_latitude: parseFloat(e.target.value),

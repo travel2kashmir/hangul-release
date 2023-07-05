@@ -129,8 +129,8 @@ export async function getServerSideProps(context) {
     const full_data = await fetch(`${process.env.serverURL}:${process.env.port}/all_data${items}`)
       .then((response) => response.json());
     //return data fetched to function generation html  
-    let data = JSON.parse(full_data?.property_data);
 
+    let data = JSON.parse(full_data?.property_data);
     let room_data = JSON.parse(full_data?.room_data);
     return { props: { data, room_data } }
   }

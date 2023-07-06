@@ -913,7 +913,7 @@ function Gallery() {
                 viewBox="0 0 24 24"
                 width="28px"
                 onClick={() => {
-                  
+
                   setActionEnlargeImage(
                     enlargedImage
                       .filter((i) => i.image_idx === indexImage - 1)
@@ -936,21 +936,31 @@ function Gallery() {
               </svg>
             </div>
 
-            <div className="relative w-full max-w-2xl px-4 h-full md:h-auto">
+            <div className="relative w-fit max-w-2xl px-4 h-full md:h-auto">
               <div
                 className={` ${color.tableheader} rounded-lg shadow relative`}
               >
-                <div className="flex justify-between p-5 border-b rounded-t">
-                  <h3 className={`text-xl ${color?.text} font-semibold`}>
+
+
+                <img
+                  src={actionEnlargeImage?.image_link}
+                  alt="pic_room"
+                  className=""
+                  style={{ height: "100vh" }}
+                />
+
+                <div className="relative -mt-20 z-30 backdrop-blur-sm bg-white/20 flex justify-between p-5">
+                  <h3 className={`text-xl ${color?.text} drop-shadow-2xl shadow-black`}>
                     {actionEnlargeImage?.image_title}
                   </h3>
+                  {/* edit button  */}
                   <button
                     onClick={() => {
                       setEditImage(1);
                       setActionImage(actionEnlargeImage);
                       setUpdateImage(actionEnlargeImage);
                     }}
-                    className={` px-1 mr-1  hover:${color?.sidebar} ${color?.text}
+                    className={` px-1 mr-1 pt-1 hover:${color?.sidebar} ${color?.text}
                                          cursor-pointer ${color?.hover} rounded`}
                   >
                     <svg
@@ -967,6 +977,8 @@ function Gallery() {
                       ></path>
                     </svg>
                   </button>
+
+                  {/* close button  */}
                   <button
                     type="button"
                     onClick={() => {
@@ -989,13 +1001,6 @@ function Gallery() {
                       ></path>
                     </svg>
                   </button>{" "}
-                </div>
-                <div>
-                  <img
-                    src={actionEnlargeImage?.image_link}
-                    alt="pic_room"
-                    // style={{ height: "350px", width: "650px" }}
-                  />
                 </div>
               </div>
             </div>
@@ -1248,16 +1253,16 @@ function Gallery() {
                       </div>
                       <div className="col-span-6 sm:col-span-3 mt-2">
                         {/* displays image once it is loaded else demoImage */}
-                    {image?.image_link != undefined ?
-                    <img
-                    className={` ${color?.text}`}
-                    src={image?.image_link}
-                    alt="Image Preview"
-                    style={{ height: "150px", width: "250px" }}
-                  />:
-                    <ImageDemo width={'250'} height={'150'}  bgColor={'bg-gray-400'}/>}
-                   
-                        
+                        {image?.image_link != undefined ?
+                          <img
+                            className={` ${color?.text}`}
+                            src={image?.image_link}
+                            alt="Image Preview"
+                            style={{ height: "150px", width: "250px" }}
+                          /> :
+                          <ImageDemo width={'250'} height={'150'} bgColor={'bg-gray-400'} />}
+
+
                       </div>
                       <div className="col-span-6 sm:col-span-3">
                         <label

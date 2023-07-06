@@ -11,7 +11,7 @@ import DropDown from "../../../components/utils/DropDown";
 import colorFile from "../../../components/colors/Color";
 import { Country, State, City } from "country-state-city";
 import globalData from "../../../components/GlobalData";
-
+import Title from '../../../components/title';
 
 var language;
 var currentProperty;
@@ -229,7 +229,8 @@ function AddBasicDetails() {
     }
   }
   return (
-    <><div className="flex justify-center w-full h-full" id="user-modal">
+    <><Title name={`Engage | Admin Landing Page`} />
+    <div className="flex justify-center w-full h-full" id="user-modal">
       <div className="relative w-full max-w-5xl px-4 h-full md:h-auto">
         <button
           className="float-right my-8 sm:inline-flex  text-gray-800  

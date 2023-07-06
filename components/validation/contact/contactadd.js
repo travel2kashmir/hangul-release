@@ -33,7 +33,7 @@ const validateContact = (data, props) => {
     }
 
     if (data.contact_type !== "" && data.contact_type !== undefined) {
-        if (data.contact_type === "phone") {
+        if (data.contact_type === "phone" ||data.contact_type === "phone-reception"||data.contact_type === "phone-manager") {
             // regex to check string may have + at start , may have - after 2 digits and must have only numbers
             const regex = /^(\+)?\d{2}(-)?\d+$/;
             if (regex.test(data.type) === false) {

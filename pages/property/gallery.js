@@ -994,7 +994,7 @@ function Gallery() {
                   <img
                     src={actionEnlargeImage?.image_link}
                     alt="pic_room"
-                    style={{ height: "350px", width: "650px" }}
+                    // style={{ height: "350px", width: "650px" }}
                   />
                 </div>
               </div>

@@ -392,7 +392,7 @@ const Table = (args) => {
                                                                 </span>
                                                             </td> : <></>}
                                                         <td className={`p-4 whitespace-nowrap ${args.name === "Contact" ? undefined : `capitalize`}  text-base font-normal ${args?.color?.text}`}>
-                                                            {args.name != "Contact" ? item?.name : item?.type}
+                                                            {args.name != "Contact" ? item?.name: item?.type}
                                                         </td>
                                                         {args?.name === "Packages" ? <></> :
 
@@ -406,7 +406,7 @@ const Table = (args) => {
                                                                 {item?.status == true ?
                                                                     <td className={`p-4 whitespace-nowrap lowercase text-base font-normal ${args?.color?.text}`}>
 
-                                                                        <Capsule color='bg-green-300'
+                                                                        <Capsule color='bg-green-200'
                                                                         title={<span  className="flex items-center">
                                                                             {args?.common?.Active}</span>} />
 

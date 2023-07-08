@@ -457,6 +457,8 @@ function Contact() {
                       >
                         <option selected disabled>{language?.select}</option>
                         <option value="phone">Phone</option>
+                        <option value="phone-manager">Phone-Manager</option>
+                        <option value="phone-reception">Phone-Reception</option>
                         <option value="email">Email</option>
                         <option value="website">Website</option>
                         <option value="toll free number">

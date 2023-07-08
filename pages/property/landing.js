@@ -15,7 +15,8 @@ import english from "../../components/Languages/en"
 import french from "../../components/Languages/fr"
 import arabic from "../../components/Languages/ar"
 const logger = require("../../services/logger");
-import colorFile from '../../components/colors/Color'
+import colorFile from '../../components/colors/Color';
+import GenericTable from "../../components/utils/Tables/GenericTable";
 var language;
 var currentUser;
 let currentLogged;
@@ -33,8 +34,8 @@ const Landing = () => {
   const [visible, setVisible] = useState(0);
   const [color, setColor] = useState({})
   const [modeChanger, setModeChanger] = useState("")
-  const[mode,setMode] = useState()
-  
+  const [mode, setMode] = useState()
+
 
   useEffect(() => {
     firstfun();
@@ -46,18 +47,18 @@ const Landing = () => {
     }
   }, [])
 
-  
+
 
   const firstfun = async () => {
     if (typeof window !== 'undefined') {
-       locale = localStorage.getItem("Language");
-       colorToggle = localStorage.getItem("colorToggle");
+      locale = localStorage.getItem("Language");
+      colorToggle = localStorage.getItem("colorToggle");
 
       if (colorToggle === "" || colorToggle === undefined || colorToggle === null || colorToggle === "system") {
         setColor(window.matchMedia("(prefers-color-scheme:dark)").matches === true ? colorFile?.dark
-         : colorFile?.light);
-         setMode(window.matchMedia("(prefers-color-scheme:dark)").matches === true ? true
-         : false);
+          : colorFile?.light);
+        setMode(window.matchMedia("(prefers-color-scheme:dark)").matches === true ? true
+          : false);
 
       }
       else if (colorToggle === "true" || colorToggle === "false") {
@@ -78,7 +79,7 @@ const Landing = () => {
       currentLogged = JSON.parse(localStorage.getItem("Signin Details"));
     }
   }
-  
+
 
   /** Use Effect to fetch all the properties of Current user **/
   const fetchProperty = async () => {
@@ -97,18 +98,19 @@ const Landing = () => {
       {
         response.data?.map((item) => {
           var temp = {
-            name: item.property_name,
-            type: item.property_category,
-            status: item.status,
-            id: item.property_id,
-            property_id: item.property_id,
-            user_id: item.user_id,
-            property_name: item.property_name,
-            address_province: item.address_province,
-            address_city: item.address_city,
-            property_category: item.property_category,
-            language: item.language
+            "checkbox": { operation: undefined },
+            "Property Name": item.property_name,
+            "Property Type": item.property_category,
+            "status": JSON.stringify(item.status),
+            Actions: [
+              {
+                type: "button",
+                label: "View",
+                operation: () => { LocalProperty({ item }) }
+              }
+            ],
           }
+
           genData.push(temp)
         })
         setGen(genData);
@@ -124,11 +126,11 @@ const Landing = () => {
       }
     }
   };
-  
+
   const colorToggler = (newColor) => {
     if (newColor === 'system') {
       window.matchMedia("(prefers-color-scheme:dark)").matches === true ? setColor(colorFile?.dark)
-      : setColor(colorFile?.light)
+        : setColor(colorFile?.light)
       localStorage.setItem("colorToggle", newColor)
     }
     else if (newColor === 'light') {
@@ -139,22 +141,22 @@ const Landing = () => {
       setColor(colorFile?.dark)
       localStorage.setItem("colorToggle", true)
     }
-   firstfun();
-   router.push('./landing')
+    firstfun();
+    router.push('./landing')
   }
 
 
 
   /**Function to save Current property to be viewed to Local Storage**/
   const LocalProperty = (props) => {
-    localStorage.setItem("property", JSON.stringify(props));
+    localStorage.setItem("property", JSON.stringify(props.item));
     router.push('./propertysummary');
   };
 
   return (
     <>
       <Title name={`Engage |  ${language?.landing}`} />
-      <UserProfileHeader color={color} Primary={color?.name} Sec={colorToggler} mode={mode} setMode={setMode}/>
+      <UserProfileHeader color={color} Primary={color?.name} Sec={colorToggler} mode={mode} setMode={setMode} />
       <UserProfileSidebar color={color} Primary={color?.name} Sec={colorToggler} colorToggle={colorToggle} />
 
       <div
@@ -187,101 +189,17 @@ const Landing = () => {
         <div className={(visible === 0 && colorToggle == false ? 'block' : 'hidden')}><LoaderTable /></div>
         <div className={(visible === 0 && colorToggle == true ? 'block' : 'hidden')}><LoaderDarkTable /></div>
         <div className={visible === 1 ? 'block' : 'hidden'}>
-          <Table gen={gen} setGen={setGen} esp="landing"
+          <GenericTable
             color={color}
-            view={language?.view} edit={LocalProperty}
-            common={language?.common} cols={language?.LandingCols}
-            name="Inventory" />
+            language={language}
+            addButton={false}
+            tableName={language?.listofproperties}
+            cols={["checkbox", "Property Name", "Property Type", "status", "Actions"]}
+            data={gen}
+          />
+
         </div>
 
-
-
-        {/* <div className={`${color?.whitebackground} shadow rounded-lg md:mt-0 w-full sm:max-w-screen-sm xl:p-0`} >
-            <div className="p-4 sm:py-8 sm:px-2 lg:p-space-y-2">
-              <div className="text-center mt-16">
-                <div className={visible === 0 ? ' block w-32 h-8 my-2 flex justify-center' : 'hidden'}><></></div>
-                <div className={visible === 1 ? ' block' : 'hidden'}>
-                  <p className="capitalize font-semibold text-3xl font-sans sm:mt-4 mx-10 mt-2 mb-6 text-cyan-500">
-                    {language?.welcome} {currentUser?.name}
-                  </p></div>
-              </div>
-              <div className={visible === 0 ? ' block w-36 h-8 my-2 flex justify-center' : 'hidden'}><Buttonloader /></div>
-              <div className={visible === 1 ? ' block' : 'hidden'}>
-                <p className={`${color.text} font-semibold mb-2 text-lg `}>{language?.List} {language?.ofproperties}</p>
-              </div>
-              <form className=" space-y-1" action="#">
-                <div className="flex flex-col">
-                  <div className="overflow-x-auto">
-                    <div className="align-middle inline-block min-w-full">
-                      <div className="shadow overflow-hidden">
-                        <div className={visible === 0 ? 'block' : 'hidden'}><Landingloader /></div>
-                        <div className={visible === 1 ? 'block' : 'hidden'}>
-                          <table className="table-fixed min-w-full divide-y divide-gray-200">
-                            <thead className={`${color.greybackground}`}>
-                              <tr>
-                                <th
-                                  scope="col"
-                                  className={`${color.text} px-1 py-4 text-left text-sm font-semibold  uppercase `
-                                  }> {language?.property} {language?.name}</th>
-                                <th
-                                  scope="col"
-                                  className={`${color.text} px-1 py-4 text-left text-sm font-semibold  uppercase `
-                                  }
-                                >
-                                  {language?.property} {language?.category}
-                                </th>
-                                <th
-                                  scope="col"
-                                  className={`${color.text} px-1 py-4 text-left text-sm font-semibold  uppercase `
-                                  }
-                                >
-                                  {language?.Status}
-                                </th>
-                                <th
-                                  scope="col"
-                                  className={`${color.text} px-1 py-4 text-left text-sm font-semibold  uppercase `
-                                  }
-                                >
-                                  {language?.action}
-                                </th>
-                              </tr>
-                            </thead>
-                            <tbody className={`${color.text} divide-y divide-gray-200`
-                            }>
-                              {Object.keys(ownerdata).length != 0 ? ownerdata?.map((item, idx) => {
-                                return (
-                                  <tr className={`${color?.hover}`} key={idx}>
-                                    <td
-                                      className={`${color.text} p-1 whitespace-nowrap text-base font-medium  capitalize`}
-                                    >
-                                      {item?.property_name}
-                                    </td>
-                                    <td className={`${color.text} p-1 whitespace-nowrap text-base font-medium  capitalize`}>
-                                      {item?.property_category}
-                                    </td>
-                                    <td className={`${color.text} p-1 whitespace-nowrap text-base font-medium  capitalize`}>
-                                      <div className="flex items-center">
-                                        <div className="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div>
-                                        {language?.active}
-                                      </div>
-                                    </td>
-                                    <td className="p-2 whitespace-nowrap space-x-1">
-                                      <Button Primary={language?.View} onClick={() => { LocalProperty({ item }); }} />
-                                    </td>
-                                  </tr>
-                                );
-                              }) : <></>}
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </form>
-            </div>
-          </div>
-        */}
       </div>
 
       <ToastContainer

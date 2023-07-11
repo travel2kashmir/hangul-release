@@ -2,7 +2,7 @@ import React from 'react'
 import Capsule from '../../Capsule'
 import TableHead from './TableHead'
 
-function TableBody({ cols = [], data = [], color = {}, ...args }) {
+function TableBody({ cols = [], data = [], color = {},handlecheckbox, ...args }) {
     const btnColor = { "save": "bg-cyan-600 hover:bg-cyan-700", "delete": "bg-red-600 hover:bg-red-700", "view": "bg-cyan-600 hover:bg-cyan-700" }
     return (
         <>
@@ -21,7 +21,7 @@ function TableBody({ cols = [], data = [], color = {}, ...args }) {
                                                 return (<td>{(item[col]?.map((i, idx) => {
                                                     return (
                                                         // show buttons 
-                                                        <button key={idx} onClick={() => { i?.operation() }} className={`mx-1 bg-gradient-to-r ${btnColor[i?.label?.toLowerCase()]} text-white  sm:inline-flex  
+                                                        <button key={idx} onClick={() => { i?.operation() }} className={`mx-1 my-0.5 bg-gradient-to-r ${btnColor[i?.label?.toLowerCase()]} text-white  sm:inline-flex  
                                                          font-semibold rounded-lg text-sm px-5 py-2 text-center items-center ease-linear transition-all duration-150`}>
                                                             {i?.label}</button>
                                                     )
@@ -33,7 +33,7 @@ function TableBody({ cols = [], data = [], color = {}, ...args }) {
                                                 return (<td className={`p-4 whitespace-nowrap lowercase text-base font-normal ${color?.text}`}>
                                                     <Capsule 
                                                     color={item[col] === "true"?`bg-green-300`:`bg-red-300`} 
-                                                    title={item[col] === "true" ? 'active' : 'inactive'}
+                                                    title={<span className='px-1'>{item[col] === "true" ? 'active' : 'inactive'}</span>}
                                                      />
 
                                                 </td>)
@@ -41,15 +41,15 @@ function TableBody({ cols = [], data = [], color = {}, ...args }) {
 
                                             case "Property Type":
                                                 return (<td className={`p-4 whitespace-nowrap lowercase text-base font-normal ${color?.text}`}>
-                                                    <Capsule title={item[col]} />
+                                                    <Capsule title={<span className='px-1'>{item[col]}</span>} />
                                                 </td>)
                                                 break
                                             case "checkbox":
                                                 return (<td className='p-4 w-4'>
                                                     {/* showcheckbox  */}
                                                     <span className="flex items-center">
-                                                        <input id="checkbox-1" name={item?.id} checked={item.isChecked || false}
-                                                            onChange={(e) => { handlecheckbox(e); setViewDel(1); }}
+                                                        <input id="checkbox-1" name={item?.id} 
+                                                            onChange={(e) => { handlecheckbox(e);}}
                                                             aria-describedby="checkbox-1" type="checkbox"
                                                             className="bg-gray-50 border-gray-300 text-cyan-600  focus:ring-3 focus:ring-cyan-200 h-4 w-4 rounded" />
                                                         <label htmlFor="checkbox-1" className="sr-only">checkbox</label>

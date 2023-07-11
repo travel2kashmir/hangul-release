@@ -6,7 +6,7 @@ import TableBody from "./TableBody";
 import Pagination from "./Pagination";
 var checked = [];
 
-function GenericTable({ color, language, deleteAll, cols, data,addButton,tableName }) {
+function GenericTable({ color, language, deleteAll, cols, data,addButton,tableName,addButtonAction }) {
     const [itemsPerPage, setItemsPerPage] = useState(5);
     const [page, setPage] = useState(1);
     const [error, setError] = useState({});
@@ -24,6 +24,11 @@ function GenericTable({ color, language, deleteAll, cols, data,addButton,tableNa
         setItemsPerPage(event.target.value);
     }
 
+    const handlecheckbox = (e) => {
+        const { name, checked } = e.target;
+        alert(name,checked)
+        
+    }
     return (<>
         <div>
             <h1 className={`text-xl sm:text-2xl font-semibold mx-4 ${color?.text}`}>{tableName}</h1>
@@ -35,7 +40,7 @@ function GenericTable({ color, language, deleteAll, cols, data,addButton,tableNa
                         <form className="lg:pr-3" action="#" method="GET">
                             <label htmlFor="users-search" className="sr-only">{`search`}</label>
                             <div className="pl-4 mt-1 relative lg:w-64 xl:w-96">
-                                <input type="text" name="email" id="searchInput" onKeyUp={(e) => SearchFunction(searchInput, dataTable)}
+                                <input type="text" name="email" id="searchInput" onKeyUp={(e) =>{SearchFunction(e.target.value, dataTable)} }
                                     className={`${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`} placeholder={`Search`}>
                                 </input>
                             </div>
@@ -62,11 +67,11 @@ function GenericTable({ color, language, deleteAll, cols, data,addButton,tableNa
                         </div>
                         {/* icons end*/}
                         {/* if add button is true then show icon  */}
-                        {addButton===true?<div className="flex items-center space-x-2 sm:space-x-3 ml-auto">
-                            <button className="bg-gradient-to-r bg-cyan-600 hover:bg-cyan-700 text-white  sm:inline-flex  
+                        {addButton===true?<div className="flex items-center justify-center space-x-2 sm:space-x-3 ml-auto">
+                            <button className="mr-4  bg-cyan-600 hover:bg-cyan-700 text-white  sm:inline-flex  
                              font-semibold
                                     rounded-lg text-sm px-5 py-2 text-center 
-                              items-center ease-linear transition-all duration-150" onClick={() => alert("add")} >
+                              items-center ease-linear transition-all duration-150" onClick={() => addButtonAction()} >
                                 {`Add`}</button>
 
                         </div>:<></>}
@@ -78,7 +83,7 @@ function GenericTable({ color, language, deleteAll, cols, data,addButton,tableNa
                                 <div className="shadow overflow-x-auto">
                                     <table id="dataTable" className="table data overflow-x-auto table-fixed w-full divide-y divide-gray-200">
                                         <TableHead cols={cols} color={color} />
-                                        <TableBody cols={cols} data={displayData} color={color} />
+                                        <TableBody cols={cols} data={displayData} color={color} handlecheckbox={(e)=>handlecheckbox(e)}/>
                                     </table>
                                     {/* Pagination */}
                                     <Pagination color={color}

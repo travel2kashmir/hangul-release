@@ -189,12 +189,13 @@ const Landing = () => {
         <div className={(visible === 0 && colorToggle == false ? 'block' : 'hidden')}><LoaderTable /></div>
         <div className={(visible === 0 && colorToggle == true ? 'block' : 'hidden')}><LoaderDarkTable /></div>
         <div className={visible === 1 ? 'block' : 'hidden'}>
+          {/* call to generic table  */}
           <GenericTable
             color={color}
             language={language}
             addButton={false}
             tableName={language?.listofproperties}
-            cols={["checkbox", "Property Name", "Property Type", "status", "Actions"]}
+            cols={["Property Name", "Property Type", "status", "Actions"]}
             data={gen}
           />
 

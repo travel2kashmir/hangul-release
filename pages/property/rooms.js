@@ -6,6 +6,7 @@ import colorFile from "../../components/colors/Color";
 import axios from "axios";
 import Link from "next/link";
 import Table from '../../components/Table';
+import GenericTable from '../../components/utils/Tables/GenericTable';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Title from '../../components/title';
@@ -74,13 +75,35 @@ function Rooms() {
       const response = await axios.get(url, { headers: { 'accept': 'application/json' } });
       setAllRooms(response.data)
       setVisible(1)
+      
       response?.data?.map((item) => {
         var temp = {
-          name: item.room_name,
-          type: item.room_type_name.replaceAll("_", " "),
-          status: item.status,
-          id: item.room_id
+          "checkbox": { operation: undefined },
+          "Room Name": item.room_name,
+          "Room Type": item.room_type_name.replaceAll("_", " "),
+          "status": JSON.stringify(item.status),
+          "id": item.room_id,
+          "isChecked":false,
+          Actions: [
+            {
+              type: "button",
+              label: "View",
+              operation: () => { currentRoom }
+            },
+            {
+              type: "button",
+              label: "Delete",
+              operation: () => { deleteRooms }
+            }
+          ],
         }
+
+        // var temp = {
+        //   name: item.room_name,
+        //   type: item.room_type_name.replaceAll("_", " "),
+        //   status: item.status,
+        //   id: item.room_id
+        // }
         genData.push(temp)
       }
       )
@@ -190,9 +213,20 @@ function Rooms() {
         <div className={(visible === 0 && colorToggle == false ? 'block' : 'hidden')}><LoaderTable /></div>
         <div className={(visible === 0 && colorToggle == true ? 'block' : 'hidden')}><LoaderDarkTable /></div>
         <div className={visible === 1 ? 'block' : 'hidden'}>
-          <Table gen={gen} setGen={setGen} add={addRoom}
+           {/* call to generic table  */}
+           <GenericTable
+            color={color}
+            language={language}
+            addButton={true}
+            addButtonAction={()=>addRoom()}
+            tableName={language?.rooms}
+            cols={["checkbox","Room Name", "Room Type", "status", "Actions"]}
+            data={gen}
+          />
+
+          {/* <Table gen={gen} setGen={setGen} add={addRoom}
             edit={currentRoom} color={color}
-            delete={deleteRooms} common={language?.common} cols={language?.RoomCols} name="Rooms" />
+            delete={deleteRooms} common={language?.common} cols={language?.RoomCols} name="Rooms" /> */}
         </div>
 
         {/* Toast Container */}

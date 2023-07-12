@@ -1,6 +1,6 @@
 import React from 'react'
 
-function Pagination({color={},page,data=[],itemsPerPage,ItemShow}) {
+function Pagination({color={},page,setPage,data=[],itemsPerPage,ItemShow}) {
     return (
         <div className={`${color?.whitebackground} sticky sm:flex items-center w-full sm:justify-between bottom-0 right-0 border-t border-gray-200 p-4`}>
             <div className="flex items-center w-64 mb-4 sm:mb-0">

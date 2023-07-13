@@ -29,7 +29,7 @@ function InlineTableBody({ cols = [], color = {}, handlecheckbox, ...args }) {
     function doAction(label, idx) {
         label === "Edit" ? setUpdate({ edit: 1, id: idx }) : setDel({ delete: 1, id: idx })
     }
-    
+
     return (
 
         <tbody className={` ${color?.whitebackground} divide-y  divide-gray-200 `} id="TableList" >
@@ -42,17 +42,18 @@ function InlineTableBody({ cols = [], color = {}, handlecheckbox, ...args }) {
 
                                     switch (col) {
                                         case "Actions":
-                                            return (update?.edit === 1 && update?.id === indx ?<td> 
-                                                <button key={indx} onClick={() => { alert("update clicked") }}
+                                            return (update?.edit === 1 && update?.id === indx ? <td>
+                                                <td> <button key={indx} onClick={() => { alert("update clicked") }}
                                                     className={`mx-1 my-0.5 bg-gradient-to-r ${btnColor["update"]} text-white  sm:inline-flex  
                                             font-semibold rounded-lg text-sm px-5 py-2 text-center items-center ease-linear transition-all duration-150`}>
                                                     Update</button>
+                                                </td>
 
-                                                <button key={indx} onClick={() => { setUpdate({ edit: 0, id: -1 }) }}
+                                                <td> <button key={indx} onClick={() => { setUpdate({ edit: 0, id: -1 }) }}
                                                     className={`mx-1 my-0.5 bg-gradient-to-r ${btnColor["cancel"]} text-white  sm:inline-flex  
                                                          font-semibold rounded-lg text-sm px-5 py-2 text-center items-center ease-linear transition-all duration-150`}>
                                                     Cancel</button>
-
+                                                </td>
                                             </td> : <td>{(item[col]?.map((i, idx) => {
                                                 return (
                                                     // show buttons 

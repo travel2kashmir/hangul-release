@@ -4,16 +4,18 @@ import SearchFunction from "../../Code/SearchFunction";
 import Button from "../../../Button";
 import TableHead from "./TableHead";
 import TableBody from "./TableBody";
+import InlineTableBody from "./InlineTableBody";
 import Pagination from "./Pagination";
 var checked = [];
 
-function GenericTable({ color, language, deleteAll, cols, addButton, tableName, addButtonAction,...args }) {
+function GenericTable({inlineTable, color, language, deleteAll, cols, addButton, tableName, addButtonAction,...args }) {
     const [itemsPerPage, setItemsPerPage] = useState(5);
     const [page, setPage] = useState(1);
     const [error, setError] = useState({});
     const [viewDel, setViewDel] = useState(0);
     const [flag, setFlag] = useState([]);
     const [isAllSelected, setIsAllSelected] = useState(false);
+    
     const [data,setData]=useState(args.data)
     useEffect(()=>{setData(args.data)},[args.data])
    
@@ -110,12 +112,18 @@ function GenericTable({ color, language, deleteAll, cols, addButton, tableName, 
                                          handleSelectAll={(e)=>handleSelectAll(e)} 
                                          isAllSelected={isAllSelected}/>
 
-                                        <TableBody
+                                        {inlineTable===true?<InlineTableBody
                                          cols={cols}
                                           data={displayData} 
                                           color={color} 
                                           handlecheckbox={(e) => handlecheckbox(e)}
-                                           setDeleteMultiple={(e) => setDeleteMultiple(e)} />
+                                           setDeleteMultiple={(e) => setDeleteMultiple(e)} />:
+                                           <TableBody
+                                           cols={cols}
+                                            data={displayData} 
+                                            color={color} 
+                                            handlecheckbox={(e) => handlecheckbox(e)}
+                                             setDeleteMultiple={(e) => setDeleteMultiple(e)} />}
                                     </table>
                                     {/* Pagination */}
                                     <Pagination color={color}

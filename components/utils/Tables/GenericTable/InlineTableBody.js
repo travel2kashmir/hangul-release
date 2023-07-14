@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import Capsule from '../../Capsule'
-import InputText from '../../InputText'
-
 
 function InlineTableBody({ cols = [], color = {}, handlecheckbox, ...args }) {
     const [data, setData] = useState([])
+    const [orginalData, setOrginalData] = useState({});
+    const [editedData,setEditedData]=useState({});
     const [update, setUpdate] = useState({
         "edit": 0,
         "id": ''
@@ -26,8 +26,15 @@ function InlineTableBody({ cols = [], color = {}, handlecheckbox, ...args }) {
         "cancel": "bg-gray-400 hover:bg-gray-600",
         "update": "bg-green-600 hover:bg-green-700"
     }
-    function doAction(label, idx) {
-        label === "Edit" ? setUpdate({ edit: 1, id: idx }) : setDel({ delete: 1, id: idx })
+    function doAction(label, idx, item) {
+        if (label === "Edit") {
+            setOrginalData(item);
+            setUpdate({ edit: 1, id: idx });
+        }
+        else 
+        { 
+            setDel({ delete: 1, id: idx }); }
+
     }
 
     return (
@@ -54,10 +61,10 @@ function InlineTableBody({ cols = [], color = {}, handlecheckbox, ...args }) {
                                                          font-semibold rounded-lg text-sm px-5 py-2 text-center items-center ease-linear transition-all duration-150`}>
                                                     Cancel</button>
                                                 </td>
-                                            </td> : <td>{(item[col]?.map((i, idx) => {
+                                            </td> : <td>{(item[col]?.map((i, idx, item) => {
                                                 return (
                                                     // show buttons 
-                                                    <button key={idx} onClick={() => { doAction(i.label, indx) }} className={`mx-1 my-0.5 bg-gradient-to-r ${btnColor[i?.label?.toLowerCase()]} text-white  sm:inline-flex  
+                                                    <button key={idx} onClick={() => { doAction(i.label, indx, item) }} className={`mx-1 my-0.5 bg-gradient-to-r ${btnColor[i?.label?.toLowerCase()]} text-white  sm:inline-flex  
                                                          font-semibold rounded-lg text-sm px-5 py-2 text-center items-center ease-linear transition-all duration-150`}>
                                                         {i?.label}</button>
 
@@ -73,7 +80,7 @@ function InlineTableBody({ cols = [], color = {}, handlecheckbox, ...args }) {
 
                                                         <label htmlFor={`default-toggle${indx}`} className="inline-flex relative items-center cursor-pointer">
                                                             <input type="checkbox" value={item.status} checked={item.status === true}
-                                                                onChange={(e) => (alert("e"))}
+                                                                onChange={(e) => (set)}
                                                                 id={`default-toggle${indx}`} className="sr-only peer" />
 
                                                             <div

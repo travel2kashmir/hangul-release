@@ -33,9 +33,9 @@ function TableBody({ cols = [], color = {},handlecheckbox, ...args }) {
                                                 break
 
                                             case "status":
-                                                return (<td className={`p-4 whitespace-nowrap lowercase text-base font-normal ${color?.text}`}>
+                                                return (<td className={`p-2  lowercase text-base font-normal ${color?.text}`}>
                                                     <Capsule 
-                                                    color={item[col] === "true"?`bg-green-300`:`bg-red-300`} 
+                                                    color={item[col] === "true"?`bg-green-100`:`bg-red-300`} 
                                                     title={<span className='px-1'>{item[col] === "true" ? 'active' : 'inactive'}</span>}
                                                      />
 

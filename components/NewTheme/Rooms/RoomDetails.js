@@ -6,7 +6,7 @@ import SquareFootIcon from '@mui/icons-material/SquareFoot';
 
 function RoomDetails({room,lang}) {
     
-    // alert(JSON.stringify(lang))
+   
     return (
         <div className="mt-5 pt-10 bg-slate-200 rounded-md">
             <h2 className=' text-slate-500 font-semibold tracking-wide text-center text-2xl'>{lang?.roomDetails}</h2>

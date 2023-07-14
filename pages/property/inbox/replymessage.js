@@ -57,10 +57,8 @@ function ReplyMessage() {
     
     // get inbox messages of current property
     const fetchInboxDetails = async () => {
-        alert(`/api/inbox/${currentMessage}`)
-        const url = `/api/inbox/${currentMessage}`;
-        alert(url)
-        axios.get(url)
+       const url = `/api/inbox/${currentMessage}`;
+       axios.get(url)
           .then((response) => {
             alert(JSON.stringify(response.data))
             setMessageDetails(response?.data);

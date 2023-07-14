@@ -68,7 +68,6 @@ function Rooms() {
 
   /**Function to save Current property to be viewed to Local Storage**/
   const currentRoom = (id) => {
-    alert(`id is ${id}`)
     localStorage.setItem("RoomId", id);
     Router.push("./rooms/editroom");
   };

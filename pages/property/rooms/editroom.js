@@ -976,7 +976,7 @@ function Room() {
   /* function for multiple delete */
   const allDelete = async () => {
     // checked = images.filter(i => i.isChecked === true).map(j => { return (j.image_id) })
-    // alert(checked?.length)
+
     setdeleteImage(1);
   };
 
@@ -1450,7 +1450,6 @@ function Room() {
   function deleteMultipleModifications() {
     if (checkModification.length > 0) {
       const tempData = checkModification.map((item) => ({ "modification_id": item }))
-      alert(JSON.stringify(tempData))
       const data = { "room_rate_modifications": tempData };
       const url = `/api/deleteall/room_rate_modifications`
       axios.post(url, data, {
@@ -1607,7 +1606,7 @@ function Room() {
 
             <div className={`${color?.whitebackground} shadow rounded-lg px-12 sm:p-6 xl:p-8  2xl:col-span-2`}>
               {/* progress bar starts */}
-              <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`, `Rate Discounts`, `Rate Modifications`]} selected={1} color={color} />
+              <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`]} selected={1} color={color} />
               {/* Progress bar ends */}
               <h6 className={`${color?.text} text-xl flex leading-none pl-6 lg:pt-2 pt-6  pb-2 font-bold`}>
                 {language?.room} {language?.description}
@@ -1751,6 +1750,14 @@ function Room() {
                             onSelect={(event) => { views(event) }}
                             selectedValues={finalView}
                             displayValue="view"
+                            closeIcon='circle'
+                            style={{
+                              chips: {
+                                background: '#0891b2',
+                                'font-size': '0.875 rem'
+                              }
+                              
+                            }}
 
                           />
                           <p className="text-sm text-sm text-red-700 font-light">
@@ -1931,7 +1938,7 @@ function Room() {
           {/* Multiple Bed */}
           <div id='4' className={disp === 4 ? 'block py-1' : 'hidden'}>
             <div className={`${color?.whitebackground} shadow rounded-lg px-12 sm:p-6 xl:p-8  2xl:col-span-2`}>
-              <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`, `Rate Discounts`, `Rate Modifications`]}
+              <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`]}
                 selected={1}
                 color={color} />
               <h6 className={`${color?.text} text-xl flex leading-none pl-6 lg:pt-2 pt-6  pb-2 font-bold`}>
@@ -1960,7 +1967,7 @@ function Room() {
           {/* Single Bed */}
           <div id='5' className={disp === 5 ? 'block py-1' : 'hidden'}>
             <div className={`${color?.whitebackground} shadow rounded-lg px-12 sm:p-6 xl:p-8  2xl:col-span-2`}>
-              <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`, `Rate Discounts`, `Rate Modifications`]} selected={1} color={color} />
+              <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`]} selected={1} color={color} />
               <h6 className={`${color?.text} text-xl flex leading-none pl-6 lg:pt-2 pt-6  pb-2 font-bold`}>
                 {language?.room} {language?.description}
               </h6>
@@ -2043,7 +2050,7 @@ function Room() {
           <div id='1' className={disp === 1 ? 'block py-1' : 'hidden'}>
             <div className={`${color?.whitebackground} shadow rounded-lg mt-2 mx-1 px-12 sm:p-6 xl:p-8  2xl:col-span-2`}>
 
-              <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`, `Rate Discounts`, `Rate Modifications`]} selected={2} color={color} />
+              <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`]} selected={2} color={color} />
 
               <h6 className={`${color?.text} text-xl flex leading-none pl-6 pt-2 font-bold  mb-8`}>
                 {language?.room} {language?.services}
@@ -2137,7 +2144,7 @@ function Room() {
           <div id='2' className={disp === 2 ? 'block py-1' : 'hidden'}>
             <div className={`${color?.whitebackground} shadow rounded-lg sm:p-6 xl:p-8  2xl:col-span-2 my-3`}>
 
-              <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`, `Rate Discounts`, `Rate Modifications`]} selected={3} color={color} />
+              <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`]} selected={3} color={color} />
               <h6 className={`${color?.text} text-base  flex leading-none mb-2 mx-2 pt-2 font-semibold`}>
                 {language?.room}  {language?.gallery}
               </h6>
@@ -2345,7 +2352,7 @@ function Room() {
           <div id='3' className={disp === 3 ? 'block py-1' : 'hidden'}>
             <div className={`${color?.whitebackground} shadow rounded-lg  sm:p-6 xl:p-8  2xl:col-span-2`}>
               {/* widget progress starts */}
-              <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`, `Rate Discounts`, `Rate Modifications`]} selected={4} color={color} />{/* widget progress ends */}
+              <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`]} selected={4} color={color} />{/* widget progress ends */}
 
               {/* page label starts */}
               <h6 className={`${color?.text} text-base  flex leading-none  pt-2 font-semibold`}>
@@ -2486,7 +2493,7 @@ function Room() {
                         <Button Primary={language?.SpinnerUpdate} />
                       </div>
 
-                      <Button Primary={language?.Next} onClick={() => { setDisp(6) }} />
+                      {/* <Button Primary={language?.Next} onClick={() => { setDisp(6) }} /> */}
 
                     </div>
                     {/* buttons end */}
@@ -2501,538 +2508,7 @@ function Room() {
             </div>
           </div>
 
-          {/* Room Rates Discount */}
-          <div id='6' className={disp === 6 ? 'block py-1' : 'hidden'}>
-            <div className={`${color?.whitebackground} shadow rounded-lg  sm:p-6 xl:p-8  2xl:col-span-2`}>
-              {/* widget progress starts */}
-              <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`, `Rate Discounts`, `Rate Modifications`]} selected={5} color={color} />
-              {/* widget progress ends */}
 
-              {/* page label starts */}
-              <h6 className={`${color?.text} text-base  flex leading-none  pt-2 font-semibold`}>
-                {language?.room} {language?.rates} {language?.discount}
-              </h6>
-              {/* page label ends */}
-              <div className="pt-6">
-                <div className=" md:px-2 mx-auto w-full">
-                  <div className="sm:flex">
-                    <div className=" sm:flex items-center sm:divide-x sm:divide-gray-100 mb-3 sm:mb-0">
-                      {/* search form */}
-                      <form className="lg:pr-3" action="#" method="GET">
-                        <label htmlFor="users-search" className="sr-only">Search</label>
-                        <div className="mt-1 relative lg:w-64 xl:w-96">
-                          <input type="text" name="email" id="roomDiscount" onKeyUp={() => searchFunction('roomDiscount', 'discountTable')}
-                            className={`${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`} placeholder='Search'>
-                          </input>
-                        </div>
-                      </form>
-                      {/* search form end */}
-                      {/* icons start */}
-                      <div className="flex space-x-1 pl-0 sm:pl-2 mt-3 sm:mt-0">
-                        <span className={`${color?.textgray} hover:${color?.text} cursor-pointer p-1 ${color?.hover} rounded inline-flex justify-center`}>
-                          <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd"></path></svg>
-                        </span>
-
-                        <button onClick={() => { deleteMultipleDiscount() }} data-tooltip="Delete" aria-label="Delete" className={`${color?.textgray} hover:${color?.text} cursor-pointer p-1 ${color?.hover} rounded inline-flex justify-center`}>
-                          <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd"></path></svg>
-                        </button>
-
-                        <span className={`${color?.textgray} hover:${color?.text} cursor-pointer p-1 ${color?.hover} rounded inline-flex justify-center`}>
-                          <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd"></path></svg>
-                        </span>
-                        <span className={`${color?.textgray} hover:${color?.text} cursor-pointer p-1 ${color?.hover} rounded inline-flex justify-center`}>
-                          <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path></svg>
-                        </span>
-
-                      </div>
-                      {/* icons end*/}
-                      {/* add discount and modification buttons start */}
-
-                      <button className="bg-gradient-to-r bg-cyan-600 hover:bg-cyan-700 text-white  sm:inline-flex font-semibold rounded-lg text-sm px-5 py-2 text-center items-center ease-linear transition-all duration-150 lg:ml-72 xl:ml-80 md:ml-64"
-                        onClick={() => { localStorage.setItem("RoomId", currentroom); Router.push('./roomdiscount'); }}>
-                        Add Discount</button>
-
-
-                      {/* add discount and modification buttons ends */}
-
-                    </div>
-                  </div>
-
-                  {/* table */}
-                  <div className="flex flex-col mt-8 lg:-mr-20 sm:mr-0 w-full  relative">
-                    <div className="overflow-x-auto">
-                      <div className="align-middle inline-block py-1 min-w-full">
-                        <div className="shadow-sm overflow-hidden">
-                          <table className="table data table-fixed lg:min-w-full divide-y divide-gray-200 min-w-screen" id="discountTable">
-                            <thead className={` ${color?.tableheader} `}>
-                              <tr>
-                                {/* checkbox */}
-                                <th scope="col" className="p-4">
-                                  <div className="flex items-center">
-                                    <input id="checkbox-all" aria-describedby="checkbox-1" type="checkbox"
-                                      checked={selectAllDiscounts === 1 || false}
-                                      name="allSelect"
-                                      onChange={(e) => {
-                                        setAllDiscount()
-
-                                      }}
-                                      className="bg-gray-50 border-gray-300 text-cyan-600  focus:ring-3 focus:ring-cyan-200 h-4 w-4 rounded" />
-                                    <label htmlFor="checkbox-all" className="sr-only">checkbox</label>
-                                  </div>
-                                </th>
-
-                                <th scope="col" className={`p-4 text-left text-xs font-semibold ${color?.textgray} uppercase`}>
-                                  Date From</th>
-                                <th scope="col" className={`p-4 text-left text-xs font-semibold ${color?.textgray} uppercase`}>
-                                  Date To</th>
-                                <th scope="col" className={`p-4 text-left text-xs font-semibold ${color?.textgray} uppercase`}>
-                                  Discount Type</th>
-                                <th scope="col" className={`p-4 text-left text-xs font-semibold ${color?.textgray} uppercase`}>
-                                  Discount On</th>
-                                <th scope="col" className={`p-4 text-left text-xs font-semibold ${color?.textgray} uppercase`}>
-                                  Discount </th>
-                                <th scope="col" className={`p-4 text-left text-xs font-semibold ${color?.textgray} uppercase`}>
-                                  Actions</th>
-                              </tr>
-                            </thead>
-
-                            <tbody className={` ${color?.whitebackground} divide-y  divide-gray-200`}>
-                              {discount?.map((dis, index) => {
-                                return (<>
-                                  {(editRow?.edit === 1 && editRow?.id === index) ?
-                                    <tr key={index}>
-                                      <td className="p-4 w-4">
-                                        <span className="flex items-center">
-                                          <input
-                                            type="checkbox"
-                                            id={dis?.discount_id}
-                                            tooltip
-                                            disabled
-                                            title="Click here to delete discount."
-                                            name={dis?.discount_id}
-                                            checked={dis?.isChecked || false}
-                                            aria-describedby="checkbox-1"
-                                            className="bg-gray-50 border-gray-300 text-cyan-600  focus:ring-3 focus:ring-cyan-200 h-4 w-4 rounded"
-                                          />
-                                          <label htmlFor="checkbox-1" className="sr-only">checkbox</label>
-                                        </span>
-                                      </td>
-
-                                      <td className={`p-4 whitespace-nowrap text-base font-normal capitalize ${color?.text}`}>
-                                        <input type="date"
-                                          className={`${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-24 p-2.5`}
-                                          defaultValue={dis?.date_from}
-                                          onChange={(e) => setEditedDiscount({ ...editedDiscount, date_from: e.target.value })}
-                                        />
-                                      </td>
-
-                                      <td className={`p-4 whitespace-nowrap text-base font-normal capitalize ${color?.text}`}>
-                                        <input type="date" className={`${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-24 p-2.5`}
-                                          defaultValue={dis?.date_to}
-                                          onChange={(e) => setEditedDiscount({ ...editedDiscount, date_to: e.target.value })}
-                                        />
-
-                                      </td>
-                                      <td className={`p-4 whitespace-nowrap text-base font-normal capitalize ${color?.text}`}>
-                                        <select className={`${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-24 p-2.5`}
-                                          onChange={(e) => setEditedDiscount({ ...editedDiscount, discount_type: e.target.value })}
-                                        >
-                                          <option value="Flat">Flat</option>
-                                          <option value="percentage">Percentage</option>
-                                        </select>
-                                      </td>
-
-                                      <td className={`p-4 whitespace-nowrap text-base font-normal capitalize ${color?.text}`}>
-                                        <select className={`${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-24 p-2.5`}
-                                          onChange={(e) => setEditedDiscount({ ...editedDiscount, discount_on: e.target.value })}
-                                        >
-                                          <option value="Per Person">Per Person</option>
-                                          <option value="Per Group">Per Group</option>
-                                        </select>
-                                      </td>
-
-                                      <td className={`p-4 whitespace-nowrap text-base font-normal capitalize ${color?.text}`}>
-                                        <input type="text" className={`${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-24 p-2.5`}
-                                          defaultValue={dis?.discount}
-                                          onChange={(e) => setEditedDiscount({ ...editedDiscount, discount: e.target.value })}
-                                        />
-
-                                      </td>
-
-                                      <td>
-                                        <button
-                                          onClick={() => {
-                                            updateDiscount();
-                                          }}
-                                          className={`bg-gradient-to-r mt-1 bg-green-600 hover:bg-green-700 mr-2 text-white sm:inline-flex font-semibold rounded-lg text-sm px-5 py-2 text-center items-center ease-linear transition-all duration-150`}>
-
-                                          Save</button>
-                                        <button className={`bg-gradient-to-r my-1 bg-gray-400 hover:${color?.greybackground}0 text-white sm:inline-flex font-semibold rounded-lg text-sm px-5 py-2 text-center items-center ease-linear transition-all duration-150`}
-                                          onClick={() => {
-                                            setEditedDiscount({});
-                                            setEditRow({ edit: 0, id: undefined })
-                                          }}
-                                        >
-
-                                          Cancel</button>
-                                      </td>
-                                    </tr> :
-                                    <tr key={index}>
-                                      <td className="p-4 w-4">
-                                        <span className="flex items-center">
-                                          <input
-                                            type="checkbox"
-                                            id={dis?.discount_id}
-                                            tooltip
-                                            title="Click here to delete discount."
-                                            name={dis?.discount_id}
-                                            checked={dis?.isChecked || false}
-                                            onChange={(e) => {
-                                              handleCheckboxDiscount(e, dis);
-                                            }}
-                                            aria-describedby="checkbox-1"
-                                            className="bg-gray-50 border-gray-300 text-cyan-600  focus:ring-3 focus:ring-cyan-200 h-4 w-4 rounded" />
-                                          <label htmlFor="checkbox-1" className="sr-only">checkbox</label>
-                                        </span>
-                                      </td>
-
-                                      <td className={`p-4 whitespace-nowrap text-base font-normal capitalize ${color?.text}`}>
-                                        {dis?.date_from}
-                                      </td>
-
-                                      <td className={`p-4 whitespace-nowrap text-base font-normal capitalize ${color?.text}`}>
-                                        {dis?.date_to}
-                                      </td>
-                                      <td className={`p-4 whitespace-nowrap text-base font-normal capitalize ${color?.text}`}>
-                                        {dis?.discount_type}
-                                      </td>
-                                      <td className={`p-4 whitespace-nowrap text-base font-normal capitalize ${color?.text}`}>
-                                        {dis?.discount_on}
-                                      </td>
-                                      <td className={`p-4 whitespace-nowrap text-base font-normal capitalize ${color?.text}`}>
-
-                                        {dis?.discount}
-                                      </td>
-
-                                      {(del == 1 && id === index) ?
-                                        <td>
-                                          <button
-                                            className="lg:mr-2 bg-gradient-to-r my-1 bg-red-600 hover:bg-red-700 text-white  sm:inline-flex font-semibold rounded-lg text-sm px-5 py-2 text-center items-center ease-linear transition-all duration-150"
-                                            onClick={() => { deleteDiscount(dis) }}
-                                          >Yes,Delete</button>
-                                          <button className={`bg-gradient-to-r my-1 bg-gray-400 hover:${color?.greybackground}0 text-white sm:inline-flex font-semibold rounded-lg text-sm px-5 py-2 text-center items-center ease-linear transition-all duration-150`}
-                                            onClick={(e) => {
-                                              setDel(0)
-                                              setId(undefined)
-                                            }}
-                                          >
-
-                                            Cancel</button>
-                                        </td> : <td>
-                                          <button className="bg-gradient-to-r mt-1 mr-2 bg-cyan-600 hover:bg-cyan-700 text-white  sm:inline-flex font-semibold rounded-lg text-sm px-5 py-2 text-center items-center ease-linear transition-all duration-150"
-                                            onClick={() => {
-                                              setEditedDiscount(dis);
-                                              setEditRow({ edit: 1, id: index })
-                                            }}
-                                          >
-
-                                            Edit</button>
-                                          <button className="bg-gradient-to-r my-1 bg-red-600 hover:bg-red-700 text-white  sm:inline-flex font-semibold rounded-lg text-sm px-5 py-2 text-center items-center ease-linear transition-all duration-150"
-                                            onClick={(e) => {
-                                              setDel(1);
-                                              setId(index);
-                                            }}
-                                          >
-
-                                            Delete</button>
-                                        </td>}
-                                    </tr>}
-                                </>
-                                )
-                              })}
-
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  {/* table end */}
-
-                  {/* buttons start */}
-                  <div className="flex items-center justify-end space-x-2 sm:space-x-3 ml-auto mt-2">
-                    <Button Primary={language?.Previous} onClick={() => { setDisp(3) }} />
-                    <Button Primary={language?.Next} onClick={() => { setDisp(7) }} />
-
-                  </div>
-                  {/* buttons end */}
-
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Room Rates Modifications */}
-          <div id='7' className={disp === 7 ? 'block py-1' : 'hidden'}>
-            <div className={`${color?.whitebackground} shadow rounded-lg  sm:p-6 xl:p-8  2xl:col-span-2`}>
-              {/* widget progress starts */}
-              <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`, `Rate Discounts`, `Rate Modifications`]} selected={6} color={color} />
-              {/* widget progress ends */}
-
-              {/* page label starts */}
-              <h6 className={`${color?.text} text-base  flex leading-none  pt-2 font-semibold`}>
-                {language?.room} {language?.ratemodifications}
-              </h6>
-              {/* page label ends */}
-              <div className="pt-6">
-                <div className=" md:px-2 mx-auto w-full">
-                  <div className="sm:flex">
-                    <div className=" sm:flex items-center sm:divide-x sm:divide-gray-100 mb-3 sm:mb-0">
-                      {/* search form */}
-                      <form className="lg:pr-3" action="#" method="GET">
-                        <label htmlFor="users-search" className="sr-only">Search</label>
-                        <div className="mt-1 relative lg:w-64 xl:w-96">
-                          <input type="text" name="email" id="roomModification" onKeyUp={() => searchFunction('roomModification', 'modificationTable')}
-                            className={`${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`} placeholder='Search'>
-                          </input>
-                        </div>
-                      </form>
-                      {/* search form end */}
-                      {/* icons start */}
-                      <div className="flex space-x-1 pl-0 sm:pl-2 mt-3 sm:mt-0">
-                        <span className={`${color?.textgray} hover:${color?.text} cursor-pointer p-1 ${color?.hover} rounded inline-flex justify-center`}>
-                          <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd"></path></svg>
-                        </span>
-
-                        <button onClick={() => { deleteMultipleModifications() }} data-tooltip="Delete" aria-label="Delete" className={`${color?.textgray} hover:${color?.text} cursor-pointer p-1 ${color?.hover} rounded inline-flex justify-center`}>
-                          <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd"></path></svg>
-                        </button>
-
-                        <span className={`${color?.textgray} hover:${color?.text} cursor-pointer p-1 ${color?.hover} rounded inline-flex justify-center`}>
-                          <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd"></path></svg>
-                        </span>
-                        <span className={`${color?.textgray} hover:${color?.text} cursor-pointer p-1 ${color?.hover} rounded inline-flex justify-center`}>
-                          <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path></svg>
-                        </span>
-
-                      </div>
-                      {/* icons end*/}
-                      {/* add discount and modification buttons start */}
-
-                      <button className="bg-gradient-to-r bg-cyan-600 hover:bg-cyan-700 text-white  sm:inline-flex font-semibold rounded-lg text-sm px-5 py-2 text-center items-center ease-linear transition-all duration-150 lg:ml-72 xl:ml-80 md:ml-64"
-                        onClick={() => { localStorage.setItem("RoomId", currentroom); Router.push('./roomratemodifcation'); }}>
-                        Add Rate Modification</button>
-
-
-                      {/* add discount and modification buttons ends */}
-
-                    </div>
-                  </div>
-
-                  {/* table */}
-                  <div className="flex flex-col mt-8 lg:-mr-20 sm:mr-0 w-full  relative">
-                    <div className="overflow-x-auto">
-                      <div className="align-middle inline-block py-1 min-w-full">
-                        <div className="shadow-sm overflow-hidden">
-                          <table className="table data table-fixed lg:min-w-full divide-y divide-gray-200 min-w-screen" id="modificationTable">
-                            <thead className={` ${color?.tableheader} `}>
-                              <tr>
-                                {/* checkbox */}
-                                <th scope="col" className="p-4">
-                                  <div className="flex items-center">
-                                    <input id="checkbox-all" aria-describedby="checkbox-1" type="checkbox"
-                                      checked={selectAllModifications === 1 || false}
-                                      name="allSelect"
-                                      onChange={(e) => {
-                                        setAllModification()
-                                      }}
-                                      className="bg-gray-50 border-gray-300 text-cyan-600  focus:ring-3 focus:ring-cyan-200 h-4 w-4 rounded" />
-                                    <label htmlFor="checkbox-all" className="sr-only">checkbox</label>
-                                  </div>
-                                </th>
-
-                                <th scope="col" className={`p-4 text-left text-xs font-semibold ${color?.textgray} uppercase`}>
-                                  Date From</th>
-                                <th scope="col" className={`p-4 text-left text-xs font-semibold ${color?.textgray} uppercase`}>
-                                  Date To</th>
-                                <th scope="col" className={`p-4 text-left text-xs font-semibold ${color?.textgray} uppercase`}>
-                                  Orginal Rate</th>
-                                <th scope="col" className={`p-4 text-left text-xs font-semibold ${color?.textgray} uppercase`}>
-                                  Modified Rate</th>
-                                <th scope="col" className={`p-4 text-left text-xs font-semibold ${color?.textgray} uppercase`}>
-                                  Actions</th>
-                              </tr>
-                            </thead>
-
-                            <tbody className={` ${color?.whitebackground} divide-y  divide-gray-200`}>
-                              {rateModification?.map((mod, index) => {
-                                return (<>
-                                  {(editRow?.edit === 1 && editRow?.id === index) ?
-                                    <tr key={index}>
-                                      {/* check box disabled while editing */}
-                                      <td className="p-4 w-4">
-                                        <span className="flex items-center">
-                                          <input
-                                            type="checkbox"
-                                            id={mod?.modification_id}
-                                            tooltip
-                                            disabled
-                                            title="Click here to delete image."
-                                            name={mod?.modification_id}
-                                            checked={mod?.isChecked || false}
-                                            aria-describedby="checkbox-1"
-                                            className="bg-gray-50 border-gray-300 text-cyan-600  focus:ring-3 focus:ring-cyan-200 h-4 w-4 rounded" />
-                                          <label htmlFor="checkbox-1" className="sr-only">checkbox</label>
-                                        </span>
-                                      </td>
-                                      {/* date from */}
-                                      <td className={`p-4 whitespace-nowrap text-base font-normal capitalize ${color?.text}`}>
-                                        <input type="date"
-                                          className={`${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-24 p-2.5`}
-                                          defaultValue={mod?.date_from}
-                                          onChange={(e) => setEditedModifications({ ...editedModifications, date_from: e.target.value })}
-                                        />
-                                      </td>
-
-                                      {/* date to */}
-                                      <td className={`p-4 whitespace-nowrap text-base font-normal capitalize ${color?.text}`}>
-                                        <input type="date" className={`${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-24 p-2.5`}
-                                          defaultValue={mod?.date_to}
-                                          onChange={(e) => setEditedModifications({ ...editedModifications, date_to: e.target.value })}
-                                        />
-
-                                      </td>
-
-
-                                      {/* orginal rate */}
-                                      <td className={`p-4 whitespace-nowrap text-base font-normal capitalize ${color?.text}`}>
-                                        <input type="text" className={`${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-24 p-2.5`}
-                                          defaultValue={mod?.orginal_rate}
-                                          onChange={(e) => setEditedModifications({ ...editedModifications, orginal_rate: e.target.value })}
-                                        />
-
-                                      </td>
-
-
-                                      {/* modified rate */}
-                                      <td className={`p-4 whitespace-nowrap text-base font-normal capitalize ${color?.text}`}>
-                                        <input type="text" className={`${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-24 p-2.5`}
-                                          defaultValue={mod?.modified_rate}
-                                          onChange={(e) => setEditedModifications({ ...editedModifications, modified_rate: e.target.value })}
-                                        />
-
-                                      </td>
-
-                                      {/* buttons */}
-                                      <td>
-                                        <button
-                                          onClick={() => {
-                                            updateModification();
-                                          }}
-                                          className={`bg-gradient-to-r mt-1 bg-green-600 hover:bg-green-700 mr-2 text-white sm:inline-flex font-semibold rounded-lg text-sm px-5 py-2 text-center items-center ease-linear transition-all duration-150`}>
-
-                                          Save</button>
-                                        <button className={`bg-gradient-to-r my-1 bg-gray-400 hover:${color?.greybackground}0 text-white sm:inline-flex font-semibold rounded-lg text-sm px-5 py-2 text-center items-center ease-linear transition-all duration-150`}
-                                          onClick={() => {
-                                            setEditedModifications({});
-                                            setEditRow({ edit: 0, id: undefined })
-                                          }}
-                                        >
-
-                                          Cancel</button>
-                                      </td>
-                                    </tr> :
-                                    <tr key={index}>
-                                      <td className="p-4 w-4">
-                                        <span className="flex items-center">
-                                          <input
-                                            type="checkbox"
-                                            id={mod?.modification_id}
-                                            tooltip
-                                            title="Click here to delete image."
-                                            name={mod?.modification_id}
-                                            checked={mod?.isChecked || false}
-                                            onChange={(e) => {
-                                              handleCheckboxModification(e, mod);
-                                            }}
-                                            aria-describedby="checkbox-1"
-                                            className="bg-gray-50 border-gray-300 text-cyan-600  focus:ring-3 focus:ring-cyan-200 h-4 w-4 rounded" />
-                                          <label htmlFor="checkbox-1" className="sr-only">checkbox</label>
-                                        </span>
-                                      </td>
-
-                                      <td className={`p-4 whitespace-nowrap text-base font-normal capitalize ${color?.text}`}>
-                                        {mod?.date_from}
-                                      </td>
-
-                                      <td className={`p-4 whitespace-nowrap text-base font-normal capitalize ${color?.text}`}>
-                                        {mod?.date_to}
-                                      </td>
-                                      <td className={`p-4 whitespace-nowrap text-base font-normal capitalize ${color?.text}`}>
-                                        {mod?.orginal_rate}
-                                      </td>
-                                      <td className={`p-4 whitespace-nowrap text-base font-normal capitalize ${color?.text}`}>
-                                        {mod?.modified_rate}
-                                      </td>
-
-
-                                      {(del == 1 && id === index) ?
-                                        <td>
-                                          <button
-                                            className="lg:mr-2 bg-gradient-to-r my-1 bg-red-600 hover:bg-red-700 text-white  sm:inline-flex font-semibold rounded-lg text-sm px-5 py-2 text-center items-center ease-linear transition-all duration-150"
-                                            onClick={() => { deleteModification(mod) }}
-                                          >Yes,Delete</button>
-                                          <button className={`bg-gradient-to-r my-1 bg-gray-400 hover:${color?.greybackground}0 text-white sm:inline-flex font-semibold rounded-lg text-sm px-5 py-2 text-center items-center ease-linear transition-all duration-150`}
-                                            onClick={(e) => {
-                                              setDel(0);
-                                              setId(undefined);
-                                            }}
-                                          >
-
-                                            Cancel</button>
-                                        </td>
-                                        : <td>
-                                          <button className="bg-gradient-to-r mt-1 mr-2 bg-cyan-600 hover:bg-cyan-700 text-white  sm:inline-flex font-semibold rounded-lg text-sm px-5 py-2 text-center items-center ease-linear transition-all duration-150"
-                                            onClick={() => {
-                                              setEditedModifications(mod);
-                                              setEditRow({ edit: 1, id: index })
-                                            }}
-                                          >
-
-                                            Edit</button>
-                                          <button className="bg-gradient-to-r my-1 bg-red-600 hover:bg-red-700 text-white  sm:inline-flex font-semibold rounded-lg text-sm px-5 py-2 text-center items-center ease-linear transition-all duration-150"
-                                            onClick={(e) => {
-                                              setDel(1);
-                                              setId(index);
-                                            }}
-                                          >
-
-                                            Delete</button>
-                                        </td>}
-
-                                    </tr>}
-                                </>
-                                )
-                              })}
-
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  {/* table end */}
-
-                  {/* buttons start */}
-                  <div className="flex items-center justify-end space-x-2 sm:space-x-3 ml-auto mt-2">
-                    <Button Primary={language?.Previous} onClick={() => { setDisp(6) }} />
-                  </div>
-                  {/* buttons end */}
-
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
 
 
@@ -3272,7 +2748,7 @@ function Room() {
                   </div>
                 </div>
                 <div className="items-center p-6 border-t border-gray-200 rounded-b">
-                  {spinner === 0 ? <><div className={( flag !== 1 || imageUploaded === false) ? 'block py-1' : 'hidden'}>
+                  {spinner === 0 ? <><div className={(flag !== 1 || imageUploaded === false) ? 'block py-1' : 'hidden'}>
                     <Button Primary={language?.AddDisabled} />
                   </div>
                     <div className={(flag === 1 && imageUploaded === true) ? 'block py-1' : 'hidden'}>

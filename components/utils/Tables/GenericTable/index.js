@@ -96,7 +96,7 @@ function GenericTable({inlineTable, color, language, deleteAll, cols, addButton,
                              font-semibold
                                     rounded-lg text-sm px-5 py-2 text-center 
                               items-center ease-linear transition-all duration-150" onClick={() => addButtonAction()} >
-                                {`Add`}</button>
+                                {`Add `}</button>
 
                         </div> : <></>}
                     </div>

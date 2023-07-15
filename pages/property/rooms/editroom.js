@@ -1614,24 +1614,6 @@ function Room() {
               <div className="pt-6">
                 <div className=" md:px-2 mx-auto w-full">
                   <div className="flex flex-wrap">
-                    {/* room name */}
-                    <InputText
-                      label={`${language?.room} ${language?.name}`}
-                      visible={visible}
-                      defaultValue={allRoomDetails?.room_name}
-                      onChangeAction={(e) => {
-                        setAllRoomDetails({
-                          ...allRoomDetails, room_name: e.target.value,
-                        });
-                        setFlag(1);
-                      }
-                      }
-                      error={error?.room_name}
-                      color={color}
-                      req={true}
-                      tooltip={true}
-                    />
-
                     {/* room type */}
                     <DropDown
                       label={`${language?.room} ${language?.type}`}
@@ -1655,6 +1637,28 @@ function Room() {
                         { value: "studio_room", label: "Studio Room" },
                       ]}
                     />
+                    
+                    
+                    
+                    {/* room name */}
+                    <InputText
+                      label={`${language?.room} ${language?.name}`}
+                      visible={visible}
+                      defaultValue={allRoomDetails?.room_name}
+                      onChangeAction={(e) => {
+                        setAllRoomDetails({
+                          ...allRoomDetails, room_name: e.target.value,
+                        });
+                        setFlag(1);
+                      }
+                      }
+                      error={error?.room_name}
+                      color={color}
+                      req={true}
+                      tooltip={true}
+                    />
+
+                    
 
                     {/* room description */}
                     <InputText

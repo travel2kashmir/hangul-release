@@ -16,7 +16,7 @@ import colorFile from '../../../components/colors/Color';
 import 'react-toastify/dist/ReactToastify.css';
 import Link from "next/link";
 import Title from '../../../components/title';
-import {english,french,arabic} from "../../../components/Languages/Languages"
+import { english, french, arabic } from "../../../components/Languages/Languages"
 import Footer from "../../../components/Footer";
 import Sidebar from '../../../components/Sidebar';
 import Header from '../../../components/Header';
@@ -56,43 +56,44 @@ function Addroom() {
     firstfun();
   }, [])
 
-  function manageIdentifiers(room_id,room_type_id){
-    let id=roomIdentifiers?.split(",")
-    let final=[];
+  function manageIdentifiers(room_id, room_type_id) {
+    let id = roomIdentifiers?.split(",")
+    let final = [];
     let temp;
-    id.map((i)=>{
-      temp={
-        "room_id":room_id,
-        "room_type_id":room_type_id,
-        "room_identifier":i
+    id.map((i) => {
+      temp = {
+        "room_id": room_id,
+        "room_type_id": room_type_id,
+        "room_identifier": i
       }
       final.push(temp);
-    
+
     })
-    axios.post('/api/room_refrence', {"room_refrences":final},
-     { headers: { 'content-type': 'application/json' } })
-        .then(response => {
-          setSpinner(0);
-          toast.success("API: Room Refrences Added successfully", {
-            position: "top-center",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });}).catch(()=>{
-            toast.error("API: Room Refrences Added Failed", {
-              position: "top-center",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-            });
-          })
-    
+    axios.post('/api/room_refrence', { "room_refrences": final },
+      { headers: { 'content-type': 'application/json' } })
+      .then(response => {
+        setSpinner(0);
+        toast.success("API: Room Refrences Added successfully", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }).catch(() => {
+        toast.error("API: Room Refrences Added Failed", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      })
+
   }
 
   const firstfun = () => {
@@ -254,7 +255,7 @@ function Addroom() {
           if (allRoomDes?.room_type_id === 'rt001' || allRoomDes?.room_type_id === 'rt002' || allRoomDes?.room_type_id === 'rt003'
             || allRoomDes?.room_type_id === 'rt004' || allRoomDes?.room_type_id === 'rt005') { submitBed(response.data.room_id) }
           submitView(response.data.room_id)
-          manageIdentifiers(response.data.room_id,allRoomDes?.room_type_id)
+          manageIdentifiers(response.data.room_id, allRoomDes?.room_type_id)
           setAllRoomDes([]);
           setDisp(2);
           setError({});
@@ -952,7 +953,7 @@ function Addroom() {
 
 
 
-                      
+
                     </div>
                     <div className="w-full lg:w-6/12 px-4">
                       <div className="relative w-full mb-3">
@@ -1007,7 +1008,7 @@ function Addroom() {
                     </div>
 
 
-                    {/* dummy field start */}
+                    {/* Room identifier field start */}
                     <div className="w-full lg:w-6/12 px-4">
                       <div className="relative w-full mb-3">
                         <label className={`text-sm font-medium ${color?.text} block mb-2`}
@@ -1025,38 +1026,39 @@ function Addroom() {
                               )
                             }
                           />
-                          
+
                           <p className="text-sm text-red-700 font-light">
                             {error?.room_identifier}</p>
                         </div>
                       </div>
                     </div>
-                    {/* dummy field end */}
+                    {/*  Room identifier field end */}
                   </div>
                 </div>
               </div>
-              <div className="flex items-center mt-2 justify-end space-x-2 sm:space-x-3 ml-auto">
-                {allRoomDes?.room_type_id === 'rt001' || allRoomDes?.room_type_id === 'rt002' || allRoomDes?.room_type_id === 'rt003' || allRoomDes?.room_type_id === 'rt004'
-                  || allRoomDes?.room_type_id === 'rt005' ?
-
-                  <Button Primary={language?.Next} onClick={(e) => {
-                    validationRoomDescription()
-                  }} /> :
-                  <>
-
-                    <div className={spinner === 0 ? 'block' : 'hidden'}>
-                      {allRoomDes?.length !== 0 ?
-                        <Button Primary={language?.Submit} onClick={(e) => {
-                          validationRoomDescription()
-                        }} /> :
-                        <Button Primary={language?.SubmitDisabled} />}
-                    </div>
-                    <div className={spinner === 1 ? 'block' : 'hidden'}>
-                      <Button Primary={language?.Spinnersubmit} /></div>
-                  </>
-                }
-              </div>
             </div>
+            <div className="flex items-center mt-2 justify-end space-x-2 sm:space-x-3 ml-auto">
+              {allRoomDes?.room_type_id === 'rt001' || allRoomDes?.room_type_id === 'rt002' || allRoomDes?.room_type_id === 'rt003' || allRoomDes?.room_type_id === 'rt004'
+                || allRoomDes?.room_type_id === 'rt005' ?
+
+                <Button Primary={language?.Next} onClick={(e) => {
+                  validationRoomDescription()
+                }} /> :
+                <>
+
+                  <div className={spinner === 0 ? 'block' : 'hidden'}>
+                    {allRoomDes?.length !== 0 ?
+                      <Button Primary={language?.Submit} onClick={(e) => {
+                        validationRoomDescription()
+                      }} /> :
+                      <Button Primary={language?.SubmitDisabled} />}
+                  </div>
+                  <div className={spinner === 1 ? 'block' : 'hidden'}>
+                    <Button Primary={language?.Spinnersubmit} /></div>
+                </>
+              }
+            </div>
+
           </div>
 
           {/* Room Beds */}
@@ -1415,7 +1417,7 @@ function Addroom() {
                             </div>
 
 
-                            
+
                           </div>
                         </div></>
                     ))}

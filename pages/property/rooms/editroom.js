@@ -187,7 +187,7 @@ function Room() {
   };
   //handle check box images
   const handlecheckbox = (e) => {
-  
+
     const { name, checked } = e.target;
 
     let tempCon = images.map((item) =>
@@ -222,7 +222,7 @@ function Room() {
     const url = `/api/${currentProperty.address_province.replace(/\s+/g, '-')}/${currentProperty.address_city}/${currentProperty.property_category}s/${currentProperty.property_id}/${currentroom}`
     axios.get(url)
       .then((response) => {
-       setAllRoomDetails(response.data);
+        setAllRoomDetails(response.data);
         setRoomDetails(response.data);
         setVisible(1);
         setFinalView(response?.data?.views);
@@ -230,9 +230,9 @@ function Room() {
         setDiscount(response?.data?.discounts?.map(i => ({ ...i, "isChecked": false }))) //added checked as undefined 
 
         setRateModification(response?.data?.room_rate_modifications?.map(i => ({ ...i, "isChecked": false })))  //added checked as undefined 
-        
-        if(response.data.room_refrences!== undefined){
-          let item=response.data.room_refrences.map(item=>item.room_identifier)
+
+        if (response.data.room_refrences !== undefined) {
+          let item = response.data.room_refrences.map(item => item.room_identifier)
           setInitalIdentifiers(item.toString())
         }
 
@@ -322,7 +322,7 @@ function Room() {
   // Room Types
   const fetchRoomtypes = async () => {
     const url = `/api/room-types`
-   axios.get(url)
+    axios.get(url)
       .then((response) => {
         setRoomtypes(response.data);
         logger.info("url  to fetch room types hitted successfully")
@@ -379,13 +379,13 @@ function Room() {
 
   /* Function for Edit Room Images*/
   const updateImageDetails = () => {
-   const final_data = {
+    const final_data = {
       "image_id": actionImage?.image_id,
       "image_title": actionImage.image_title,
       "image_description": actionImage.image_description,
       "image_type": "room"
     }
-   setSpinner(1)
+    setSpinner(1)
     const url = '/api/images'
     axios.put(url, final_data, { header: { "content-type": "application/json" } }).then
       ((response) => {
@@ -577,10 +577,10 @@ function Room() {
         "room_height": allRoomDetails.room_height
       }
       setSpinner(1);
-      if(roomIdentifiers!=undefined){
-        manageIdentifiers(currentroom,allRoomDetails.room_type);
+      if (roomIdentifiers != undefined) {
+        manageIdentifiers(currentroom, allRoomDetails.room_type);
       }
-      
+
       const url = '/api/room'
       axios.put(url, final_data, { header: { "content-type": "application/json" } }).then
         ((response) => {
@@ -616,43 +616,44 @@ function Room() {
   }
 
   // manage identifiers
-  function manageIdentifiers(room_id,room_type){
-    let id=roomIdentifiers?.split(",")
-    let final=[];
+  function manageIdentifiers(room_id, room_type) {
+    let id = roomIdentifiers?.split(",")
+    let final = [];
     let temp;
-    id.map((i)=>{
-      temp={
-        "room_id":room_id,
-        "room_type_id":roomtypes.filter(i=>i.room_type_name===room_type)[0].room_type_id,
-        "room_identifier":i
+    id.map((i) => {
+      temp = {
+        "room_id": room_id,
+        "room_type_id": roomtypes.filter(i => i.room_type_name === room_type)[0].room_type_id,
+        "room_identifier": i
       }
       final.push(temp);
-    
+
     })
-    axios.post('/api/room_refrence', {"room_refrences":final},
-     { headers: { 'content-type': 'application/json' } })
-        .then(response => {
-          setSpinner(0);
-          toast.success("API: Room Refrences Added successfully", {
-            position: "top-center",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });}).catch(()=>{
-            toast.error("API: Room Refrences Added Failed", {
-              position: "top-center",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-            });
-          })
-    
+    axios.post('/api/room_refrence', { "room_refrences": final },
+      { headers: { 'content-type': 'application/json' } })
+      .then(response => {
+        setSpinner(0);
+        toast.success("API: Room Refrences Added successfully", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }).catch(() => {
+        toast.error("API: Room Refrences Added Failed", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      })
+
   }
   /* Function for Update Room Rates*/
   const submitRoomRatesEdit = () => {
@@ -1671,17 +1672,18 @@ function Room() {
                       error={error?.propertycategory}
                       color={color}
                       req={true}
-                      options= {roomtypes?.map(i => {
+                      options={roomtypes?.map(i => {
                         return (
 
-                         {value:i.room_type_id, label:i?.room_type_name.replaceAll("_", " ")}
-                      
-                      )})
-                    }
+                          { value: i.room_type_id, label: i?.room_type_name.replaceAll("_", " ") }
 
-                      
+                        )
+                      })
+                      }
+
+
                     />
-                    
+
                     {/* room name */}
                     <InputText
                       label={`${language?.room} ${language?.name}`}
@@ -1700,7 +1702,7 @@ function Room() {
                       tooltip={true}
                     />
 
-                    
+
 
                     {/* room description */}
                     <InputText
@@ -1755,7 +1757,7 @@ function Room() {
                       onChangeAction={
                         (e) => {
                           setAllRoomDetails({ ...allRoomDetails, minimum_number_of_occupants: e.target.value }, setFlag(1))
-                      }
+                        }
                       }
                       error={error?.minimum_number_of_occupants}
                       color={color}
@@ -1802,7 +1804,7 @@ function Room() {
                                 background: '#0891b2',
                                 'font-size': '0.875 rem'
                               }
-                              
+
                             }}
 
                           />
@@ -1866,7 +1868,7 @@ function Room() {
                       color={color}
                       disabled={true}
                     />
-                   
+
                     {/* Room Volume Read only */}
                     <InputText
                       label={`${language?.room} ${language?.volume}`}
@@ -1937,8 +1939,8 @@ function Room() {
                       ]}
                     />
 
-                     {/* Room identifier field start */}
-                     <div className="w-full lg:w-6/12 px-4">
+                    {/* Room identifier field start */}
+                    <div className="w-full lg:w-6/12 px-4">
                       <div className="relative w-full mb-3">
                         <label className={`text-sm font-medium ${color?.text} block mb-2`}
                           htmlFor="grid-password">
@@ -1956,35 +1958,36 @@ function Room() {
                               }
                             }
                           />
-                          
+
                           <p className="text-sm text-red-700 font-light">
                             {error?.room_identifier}</p>
                         </div>
                       </div>
                     </div>
                     {/*  Room identifier field end */}
-                    <div className="flex items-center justify-end space-x-2 sm:space-x-3 ml-auto">
-                      <div className={(spinner === 0 && (flag !== 1 && roomView != 1)) ? 'block py-1' : 'hidden'}>
-                        <Button Primary={language?.UpdateDisabled} />
-                      </div>
-                      <div className={(spinner === 0 && (flag === 1 || roomView === 1)) ? 'block py-1' : 'hidden'}>
-                        <Button Primary={language?.Update} onClick={() => { validationRoomDescription() }} />
-                      </div>
-                      <div className={spinner === 1 ? 'block py-1' : 'hidden'}>
-                        <Button Primary={language?.SpinnerUpdate} />
-                      </div>
-                      <Button Primary={language?.Next} onClick={() => {
-                        {
-                          (roomDetails?.room_type === 'Studio_Room' || roomDetails?.room_type === 'Semi_Double' || roomDetails?.room_type === 'King'
-                            || roomDetails?.room_type === 'Queen' || roomDetails?.room_type === 'Double') ?
-                            setDisp(4)
-                            : roomDetails?.room_type === 'Single' ?
-                              setDisp(5) :
-                              setDisp(1)
-                        }
-                      }} />
-                    </div>
                   </div>
+                  <div className="flex items-center justify-end space-x-2 sm:space-x-3 ml-auto">
+                    <div className={(spinner === 0 && (flag !== 1 && roomView != 1)) ? 'block py-1' : 'hidden'}>
+                      <Button Primary={language?.UpdateDisabled} />
+                    </div>
+                    <div className={(spinner === 0 && (flag === 1 || roomView === 1)) ? 'block py-1' : 'hidden'}>
+                      <Button Primary={language?.Update} onClick={() => { validationRoomDescription() }} />
+                    </div>
+                    <div className={spinner === 1 ? 'block py-1' : 'hidden'}>
+                      <Button Primary={language?.SpinnerUpdate} />
+                    </div>
+                    <Button Primary={language?.Next} onClick={() => {
+                      {
+                        (roomDetails?.room_type === 'Studio_Room' || roomDetails?.room_type === 'Semi_Double' || roomDetails?.room_type === 'King'
+                          || roomDetails?.room_type === 'Queen' || roomDetails?.room_type === 'Double') ?
+                          setDisp(4)
+                          : roomDetails?.room_type === 'Single' ?
+                            setDisp(5) :
+                            setDisp(1)
+                      }
+                    }} />
+                  </div>
+
                 </div>
               </div>
 

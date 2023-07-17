@@ -108,6 +108,8 @@ function Room() {
   const [editedModifications, setEditedModifications] = useState({})
   const [selectAllDiscounts, setSelectAllDiscounts] = useState(0)
   const [selectAllModifications, setSelectAllModifications] = useState(0)
+  const [initalIdentifiers, setInitalIdentifiers] = useState()
+  const [roomIdentifiers, setRoomIdentifiers] = useState()
   /** Use Effect to fetch details from the Local Storage **/
   useEffect(() => {
     const resp = InitialActions({ setColor, setMode })
@@ -177,7 +179,6 @@ function Room() {
   const validationGalleryEdit = () => {
     setError({});
     var result = validateEditGallery(actionImage);
-    console.log("Result" + JSON.stringify(result));
     if (result === true) {
       updateImageDetails();
     } else {
@@ -186,7 +187,7 @@ function Room() {
   };
   //handle check box images
   const handlecheckbox = (e) => {
-    console.log(images.length);
+  
     const { name, checked } = e.target;
 
     let tempCon = images.map((item) =>
@@ -221,8 +222,7 @@ function Room() {
     const url = `/api/${currentProperty.address_province.replace(/\s+/g, '-')}/${currentProperty.address_city}/${currentProperty.property_category}s/${currentProperty.property_id}/${currentroom}`
     axios.get(url)
       .then((response) => {
-        console.log(response.data);
-        setAllRoomDetails(response.data);
+       setAllRoomDetails(response.data);
         setRoomDetails(response.data);
         setVisible(1);
         setFinalView(response?.data?.views);
@@ -230,6 +230,11 @@ function Room() {
         setDiscount(response?.data?.discounts?.map(i => ({ ...i, "isChecked": false }))) //added checked as undefined 
 
         setRateModification(response?.data?.room_rate_modifications?.map(i => ({ ...i, "isChecked": false })))  //added checked as undefined 
+        
+        if(response.data.room_refrences!== undefined){
+          let item=response.data.room_refrences.map(item=>item.room_identifier)
+          setInitalIdentifiers(item.toString())
+        }
 
         if (response.data?.room_type == 'Single') {
           setBedDetails(response.data.beds?.[i])
@@ -301,7 +306,6 @@ function Room() {
   // Room Images
   const fetchImages = async () => {
     const url = `/api/images/${currentProperty?.property_id}`
-    console.log("url " + url)
     axios.get(url)
       .then((response) => {
         const imgs = response.data.map((img, idx) => {
@@ -318,8 +322,7 @@ function Room() {
   // Room Types
   const fetchRoomtypes = async () => {
     const url = `/api/room-types`
-    console.log("url " + url)
-    axios.get(url)
+   axios.get(url)
       .then((response) => {
         setRoomtypes(response.data);
         logger.info("url  to fetch room types hitted successfully")
@@ -376,15 +379,13 @@ function Room() {
 
   /* Function for Edit Room Images*/
   const updateImageDetails = () => {
-    console.log("Room Details:" + JSON.stringify(allRoomDetails));
-    const final_data = {
+   const final_data = {
       "image_id": actionImage?.image_id,
       "image_title": actionImage.image_title,
       "image_description": actionImage.image_description,
       "image_type": "room"
     }
-    console.log("Final Data" + JSON.stringify(final_data))
-    setSpinner(1)
+   setSpinner(1)
     const url = '/api/images'
     axios.put(url, final_data, { header: { "content-type": "application/json" } }).then
       ((response) => {
@@ -576,6 +577,10 @@ function Room() {
         "room_height": allRoomDetails.room_height
       }
       setSpinner(1);
+      if(roomIdentifiers!=undefined){
+        manageIdentifiers(currentroom,allRoomDetails.room_type);
+      }
+      
       const url = '/api/room'
       axios.put(url, final_data, { header: { "content-type": "application/json" } }).then
         ((response) => {
@@ -610,6 +615,45 @@ function Room() {
     }
   }
 
+  // manage identifiers
+  function manageIdentifiers(room_id,room_type){
+    let id=roomIdentifiers?.split(",")
+    let final=[];
+    let temp;
+    id.map((i)=>{
+      temp={
+        "room_id":room_id,
+        "room_type_id":roomtypes.filter(i=>i.room_type_name===room_type)[0].room_type_id,
+        "room_identifier":i
+      }
+      final.push(temp);
+    
+    })
+    axios.post('/api/room_refrence', {"room_refrences":final},
+     { headers: { 'content-type': 'application/json' } })
+        .then(response => {
+          setSpinner(0);
+          toast.success("API: Room Refrences Added successfully", {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });}).catch(()=>{
+            toast.error("API: Room Refrences Added Failed", {
+              position: "top-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+            });
+          })
+    
+  }
   /* Function for Update Room Rates*/
   const submitRoomRatesEdit = () => {
     if (allRoomRates.length !== 0) {
@@ -1123,7 +1167,6 @@ function Room() {
   // Validate Beds Data
   const validationBedData = () => {
     var result = validateBedAdd(bedDetails)
-    console.log("Result" + JSON.stringify(result))
     if (result === true) {
       submitBedUpdate();
     }
@@ -1628,17 +1671,16 @@ function Room() {
                       error={error?.propertycategory}
                       color={color}
                       req={true}
-                      options={[
-                        { value: "king", label: "King" },
-                        { value: "queen", label: "Queen" },
-                        { value: "single", label: "Single" },
-                        { value: "double", label: "Double" },
-                        { value: "semi_double", label: "Semi Double" },
-                        { value: "studio_room", label: "Studio Room" },
-                      ]}
+                      options= {roomtypes?.map(i => {
+                        return (
+
+                         {value:i.room_type_id, label:i?.room_type_name.replaceAll("_", " ")}
+                      
+                      )})
+                    }
+
+                      
                     />
-                    
-                    
                     
                     {/* room name */}
                     <InputText
@@ -1695,7 +1737,7 @@ function Room() {
                       label={`${language?.maximum} ${language?.number} ${language?.of} ${language?.occupants}`}
                       visible={visible}
                       defaultValue={allRoomDetails?.maximum_number_of_occupants}
-                      onChange={
+                      onChangeAction={
                         (e) => (
                           setAllRoomDetails({ ...allRoomDetails, maximum_number_of_occupants: e.target.value }, setFlag(1))
                         )
@@ -1709,13 +1751,13 @@ function Room() {
                     <InputText
                       label={`${language?.minimum} ${language?.number} ${language?.of} ${language?.occupants}`}
                       visible={visible}
-                      defaultValue={allRoomDetails?.maximum_number_of_occupants}
-                      onChange={
-                        (e) => (
-                          setAllRoomDetails({ ...allRoomDetails, maximum_number_of_occupants: e.target.value }, setFlag(1))
-                        )
+                      defaultValue={allRoomDetails?.minimum_number_of_occupants}
+                      onChangeAction={
+                        (e) => {
+                          setAllRoomDetails({ ...allRoomDetails, minimum_number_of_occupants: e.target.value }, setFlag(1))
                       }
-                      error={error?.maximum_number_of_occupants}
+                      }
+                      error={error?.minimum_number_of_occupants}
                       color={color}
                       req={true}
                     />
@@ -1769,7 +1811,7 @@ function Room() {
                         </div>
                       </div>
                     </div>
-                    {/* Room height */}
+                    {/* Room length */}
                     <InputText
                       label={`${language?.room} ${language?.length} (${language?.infeet})`}
                       visible={visible}
@@ -1816,41 +1858,25 @@ function Room() {
                     />
 
                     {/* Room Area Read only */}
-                    <div className="w-full lg:w-6/12 px-4">
-                      <div className="relative w-full mb-3">
-                        <label
-                          className={`text-sm font-medium ${color?.text} block py-1 mb-2`}
-                          htmlFor="grid-password"
-                        >
-                          {language?.room} {language?.area}
-
-                        </label>
-                        <div className={visible === 0 ? 'block py-1' : 'hidden'}><Lineloader /></div>
-                        <div className={visible === 1 ? 'block py-1' : 'hidden'}>
-                          <input
-                            type="text"
-                            className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`}
-                            defaultValue={allRoomDetails?.carpet_area} readOnly="readonly"
-                          /></div>
-                      </div>
-                    </div>
+                    <InputText
+                      label={`${language?.room} ${language?.area}`}
+                      visible={visible}
+                      defaultValue={allRoomDetails?.carpet_area}
+                      onChangeAction={undefined}
+                      color={color}
+                      disabled={true}
+                    />
+                   
                     {/* Room Volume Read only */}
-                    <div className="w-full lg:w-6/12 px-4">
-                      <div className="relative w-full mb-3">
-                        <label
-                          className={`text-sm font-medium ${color?.text} block py-1 mb-2`}
-                          htmlFor="grid-password"
-                        >
-                          {language?.room} {language?.volume}
-                        </label>
-                        <div className={visible === 0 ? 'block py-1' : 'hidden'}><Lineloader /></div>
-                        <div className={visible === 1 ? 'block py-1' : 'hidden'}>
-                          <input
-                            type="text"
-                            className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`}
-                            defaultValue={allRoomDetails?.room_volume} readOnly="readonly" />
-                        </div></div>
-                    </div>
+                    <InputText
+                      label={`${language?.room} ${language?.volume}`}
+                      visible={visible}
+                      defaultValue={allRoomDetails?.room_volume}
+                      onChangeAction={undefined}
+                      color={color}
+                      disabled={true}
+                    />
+
                     {/* Room Style*/}
                     <DropDown
                       label={language?.roomstyle}
@@ -1910,6 +1936,33 @@ function Room() {
 
                       ]}
                     />
+
+                     {/* Room identifier field start */}
+                     <div className="w-full lg:w-6/12 px-4">
+                      <div className="relative w-full mb-3">
+                        <label className={`text-sm font-medium ${color?.text} block mb-2`}
+                          htmlFor="grid-password">
+                          Room identifiers
+                          <span style={{ color: "#ff0000" }}>*</span>
+                        </label>
+                        <div className={visible === 0 ? 'block' : 'hidden'}><Lineloader /></div>
+                        <div className={visible === 1 ? 'block' : 'hidden'}>
+                          <input type="text" className={`shadow-sm ${color?.greybackground} capitalize border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
+                            defaultValue={initalIdentifiers}
+                            onChange={
+                              (e) => {
+                                setRoomIdentifiers(e.target.value);
+                                setFlag(1);
+                              }
+                            }
+                          />
+                          
+                          <p className="text-sm text-red-700 font-light">
+                            {error?.room_identifier}</p>
+                        </div>
+                      </div>
+                    </div>
+                    {/*  Room identifier field end */}
                     <div className="flex items-center justify-end space-x-2 sm:space-x-3 ml-auto">
                       <div className={(spinner === 0 && (flag !== 1 && roomView != 1)) ? 'block py-1' : 'hidden'}>
                         <Button Primary={language?.UpdateDisabled} />

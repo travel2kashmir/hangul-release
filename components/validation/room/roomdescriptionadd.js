@@ -82,6 +82,13 @@ const validateRoom = (data,props) =>{
          error.room_capacity="APP: The room capacity accepts only numbers."
      }
     }
+
+    if(data?.room_capacity <data?.maximum_number_of_occupants)
+     {
+         flag.push(false)
+         error.room_capacity="APP: The room capacity should be greater than max occupants."
+     
+    }
      if(data?.maximum_number_of_occupants!=="" && data?.maximum_number_of_occupants!==undefined)
      {
         if(!(/^([1-9]+[0-9]*)$/.test(data.maximum_number_of_occupants)))
@@ -89,7 +96,7 @@ const validateRoom = (data,props) =>{
          flag.push(false)
          error.maximum_number_of_occupants="APP: The maximum number of occupants accepts only numbers."
      }
-     if(data?.maximum_number_of_occupants <= data?.minimum_number_of_occupants )
+     if(data?.maximum_number_of_occupants < data?.minimum_number_of_occupants )
      {
         flag.push(false)
         error.maximum_number_of_occupants="APP: The maximum number of occupants must be greater than minimum number of occupants."
@@ -102,7 +109,7 @@ const validateRoom = (data,props) =>{
          flag.push(false)
          error.minimum_number_of_occupants="APP: The minimum number of occupants accepts only numbers."
      }
-      if(data?.minimum_number_of_occupants >= data?.maximum_number_of_occupants ){
+      if(data?.minimum_number_of_occupants > data?.maximum_number_of_occupants ){
         flag.push(false)
         error.minimum_number_of_occupants="APP: The minimum number of occupants must be less than maximum number of occupants."
      }

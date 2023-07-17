@@ -12,7 +12,8 @@ function InputText({
   color,
   req,
   title,
-  tooltip
+  tooltip,
+  disabled=false
 }) {
   return (
     <div data-testid="main" className="w-full lg:w-6/12  px-4">
@@ -47,6 +48,7 @@ function InputText({
             defaultValue={defaultValue}
             required
             onChange={(e) =>onChangeAction(e)}
+            disabled={disabled}
           />
           <p
             data-testid="Error"

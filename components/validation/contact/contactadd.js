@@ -4,7 +4,6 @@ const validateContact = (data, props) => {
     var error = {};
     var flag = []
     var final_flag = true;
-
     if (data.contact_type === "" || data.contact_type === undefined) {
         flag.push(false)
         error.contact_type = "APP: The contact type is required"
@@ -36,7 +35,7 @@ const validateContact = (data, props) => {
         if (data.contact_type === "phone" ||data.contact_type === "phone-reception"||data.contact_type === "phone-manager") {
             // regex to check string may have + at start , may have - after 2 digits and must have only numbers
             const regex = /^(\+)?\d{2}(-)?\d+$/;
-            if (regex.test(data.type) === false) {
+            if (regex.test(data.contact_data) === false) {
                 flag.push(false)
                 error.type = `APP: The phone number is invalid.`
             }

@@ -115,43 +115,43 @@ function Contact() {
         propertyName = response.data.property_name;
         {
           response.data?.contacts?.map((item) => {
-            var temp = {
-              "checkbox": { operation: undefined },
-              "Contact Details": {
-                "value": item.contact_data,
-                "inputType": "text",
-                "onChangeAction": () => alert("hello")
-              },
-              "Contact Type": {
-                "value": item.contact_type,
-                "inputType": undefined,
-                "onChangeAction": undefined
-              },
-              "status": item.status,
-              "id": item.contact_id,
-              "Actions": [
-
-                {
-                  type: "button",
-                  label: "Edit",
-                  operation: (item) => { currentRoom(item) }
-                },
-                {
-                  type: "button",
-                  label: "Delete",
-                  operation: (item) => { currentRoom(item) }
-                }
-
-              ]
-
-
-            }
             // var temp = {
-            //   name: item.contact_type,
-            //   type: item.contact_data,
-            //   status: item.status,
-            //   id: item.contact_id
+            //   "checkbox": { operation: undefined },
+            //   "Contact Details": {
+            //     "value": item.contact_data,
+            //     "inputType": "text",
+            //     "onChangeAction": () => alert("hello")
+            //   },
+            //   "Contact Type": {
+            //     "value": item.contact_type,
+            //     "inputType": undefined,
+            //     "onChangeAction": undefined
+            //   },
+            //   "status": item.status,
+            //   "id": item.contact_id,
+            //   "Actions": [
+
+            //     {
+            //       type: "button",
+            //       label: "Edit",
+            //       operation: (item) => { currentRoom(item) }
+            //     },
+            //     {
+            //       type: "button",
+            //       label: "Delete",
+            //       operation: (item) => { currentRoom(item) }
+            //     }
+
+            //   ]
+
+
             // }
+            var temp = {
+              name: item.contact_type,
+              type: item.contact_data,
+              status: item.status,
+              id: item.contact_id
+            }
             genData.push(temp)
           })
           
@@ -423,7 +423,7 @@ function Contact() {
         <div className={(visible === 0 && colorToggle == true ? 'block' : 'hidden')}><LoaderDarkTable /></div>
         <div className={visible === 1 ? 'block' : 'hidden'}>
 
-          <GenericTable
+          {/* <GenericTable
             inlineTable={true}
             color={color}
             language={language}
@@ -433,15 +433,15 @@ function Contact() {
             cols={["checkbox", "Contact Details", "Contact Type", "status", "Actions"]}
             data={gen}
             deleteAll={() => { alert("feature not functional"); }}
-          />
+          /> */}
 
 
-          {/* <Table gen={gen} setGen={setGen} add={() => setView(1)} edit={submitContactEdit}
+          <Table gen={gen} setGen={setGen} add={() => setView(1)} edit={submitContactEdit}
             delSpin={language?.SpinnerDelete} saveSpinner={language?.SpinnerSave} spinner={spinner}
             setSpinner={setSpinner} color={color} language={language} deleteAll={contactDeleteMultiple}
             spin={spin} property_id={currentProperty?.property_id}
             delete={submitContactDelete} common={language?.common} cols={language?.ContactCols}
-            name="Contact" /> */}
+            name="Contact" />
         </div>
 
 

@@ -392,13 +392,13 @@ const Table = (args) => {
                                                                 </span>
                                                             </td> : <></>}
                                                         <td className={`p-4 whitespace-nowrap ${args.name === "Contact" ? undefined : `capitalize`}  text-base font-normal ${args?.color?.text}`}>
-                                                            {args.name != "Contact" ? item?.name: item?.type}
+                                                            {args.name != "Contact" ? item?.name: item?.type} 
                                                         </td>
                                                         {args?.name === "Packages" ? <></> :
 
                                                             <td className={`p-4 whitespace-nowrap   text-base font-normal ${args?.color?.text} `}>
-                                                                {args?.name == 'Services' || 'Additional Services' ? <h2>{item?.type}</h2>
-                                                                    : <Capsule title={args.name != "Contact" ? item?.type : item?.name} action={undefined} selected={true} />}
+                                                                {args?.name ==='Services' || args?.name ==='Additional Services' ? <h2>{item?.type}</h2>
+                                                                    : <Capsule title={args.name !== "Contact" ? item?.type : item?.name} action={undefined} selected={true} />}
 
                                                             </td>}
                                                         {args?.mark !== "beds" ?

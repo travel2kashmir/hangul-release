@@ -23,6 +23,7 @@ import Router, { useRouter } from "next/router";
 import { logger, reqSerializer } from '../../utills/logger'
 import LineLoader from '../../components/loaders/lineloader';
 import BookingForm from '../../components/utils/BookingForm';
+import Contactus from '../../components/utils/Contactus';
 import Color from '../../components/colors/Color';
 var currentUser;
 var currentProperty;
@@ -1249,7 +1250,8 @@ function Classic(args) {
                      </div>
                   </div> */}
 
-                  <BookingForm color={Color?.light} />
+                  {/* <BookingForm color={Color?.light} /> */}
+                  <Contactus color={Color?.light} language={language}/>
                </div>
 
             </div>

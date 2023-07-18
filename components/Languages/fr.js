@@ -1,4 +1,7 @@
 export default {
+  send:"Envoyer",
+  message:"Message",
+  subject:"sujet",
   activeThemeLanguage:"french",
   addons:"Compléments",
   providers:"Fournisseurs",

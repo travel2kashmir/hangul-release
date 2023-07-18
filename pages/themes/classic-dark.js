@@ -24,6 +24,7 @@ import Router, { useRouter } from "next/router";
 import LineLoader from '../../components/loaders/lineloader';
 import BookingForm from '../../components/utils/BookingForm';
 import Color from '../../components/colors/Color';
+import Contactus from '../../components/utils/Contactus';
 var currentUser;
 var currentProperty;
 var currentLogged;
@@ -1252,7 +1253,8 @@ function  getSingleSection(state,name,section){
 
 
 
-                  <BookingForm color={Color?.dark}/>
+                  {/* <BookingForm color={Color?.dark}/> */}
+                  <Contactus color={Color?.dark}/>
                </div>
               
             </div>

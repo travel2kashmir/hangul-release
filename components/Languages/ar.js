@@ -1,4 +1,7 @@
 export default {
+  send:"يرسل",
+  message:"رسالة",
+  subject:"موضوع",
   activeThemeLanguage:"arabic",
   addons:"الإضافات",
   providers:"الموفرون",

@@ -1,4 +1,7 @@
 export default {
+  send:"Send",
+  message:"Message",
+  subject:"Subject",
   activeThemeLanguage:"english",
   addons:"Addons",
   providers:"Providers",

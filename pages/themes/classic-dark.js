@@ -74,6 +74,7 @@ function ClassicDark(args) {
   useEffect(() => {
      const firstfun = () => {
         if (typeof window !== 'undefined') {
+         alert(JSON.stringify(args?.language))
           setLanguage(args?.language)
         }
      }
@@ -88,7 +89,7 @@ function ClassicDark(args) {
      setCheckinDate(checkInDate);
      setCheckoutDate(checkOutDate);
     setVisible(1);
-  }, [])
+  }, [args?.language])
 
   /* Function call to fetch Current Property Details when page loads */
   useEffect(() => {
@@ -1254,7 +1255,7 @@ function  getSingleSection(state,name,section){
 
 
                   {/* <BookingForm color={Color?.dark}/> */}
-                  <Contactus color={Color?.dark}/>
+                  <Contactus color={Color?.dark} language={language}/>
                </div>
               
             </div>

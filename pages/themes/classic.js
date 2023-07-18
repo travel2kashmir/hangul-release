@@ -1,10 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
 import StarRatings from 'react-star-ratings';
 import icon from '../../components/GlobalData'
-import english from '../../components/Languages/en'
-import french from '../../components/Languages/fr';
+import {english,french,arabic} from '../../components/Languages/Languages'
+// import english from '../../components/Languages/en'
+// import french from '../../components/Languages/fr';
 import Marquee from "react-easy-marquee";
-import arabic from '../../components/Languages/ar'
+// import arabic from '../../components/Languages/ar'
 import Carousel from 'better-react-carousel';
 import Headloader from './Loaders/headloader';
 import SubHeading from './Loaders/subheading';
@@ -107,15 +108,14 @@ function Classic(args) {
       setCalendarOut(!calendarOut);
    }
 
+  
+
    /** Router for Redirection **/
    const router = useRouter();
    useEffect(() => {
-      const firstfun = () => {
-         if (typeof window !== 'undefined') {
-            setLanguage(args?.language)
-         }
+     if (typeof window !== 'undefined') {
+         setLanguage(args?.language)
       }
-      firstfun();
       const current = new Date();
       let month = current.getMonth() + 1;
       checkInDate = `${current.getFullYear()}-${month < +10 ? `0${month}` : `${month}`}-${current.getDate()}`;
@@ -124,19 +124,12 @@ function Classic(args) {
       setD2(new Date(`${current.getFullYear()}-${month < +10 ? `0${month}` : `${month}`}-${current.getDate() + 1}`).toString().slice(4, 10));
       setCheckinDate(checkInDate);
       setCheckoutDate(checkOutDate);
-      setVisible(1);
-   }, [])
-
-
-
-   /* Function call to fetch Current Property Details when page loads */
-   useEffect(() => {
       fetchHotelDetails();
-   }, []);
+      setVisible(1);
+   }, [args?.language])
 
 
-
-   const fetchHotelDetails = async () => {
+const fetchHotelDetails = async () => {
       setAllHotelDetails(args?.allHotelDetails);
       setVisible(1)
    }

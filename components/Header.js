@@ -484,7 +484,7 @@ dark:bg-gray-700 dark:divide-gray-6001`: 'hidden'}>
                   </li> */} 
 
 
-                  {JSON.stringify(args?.Type) === "2" ? <></> :
+                  {/* {JSON.stringify(args?.Type) === "2" ? <></> :
                     <>
                       <li className={`${args?.color?.text} ${args?.color?.sidebar} group text-base font-normal rounded-lg flex items-center p-2  group`}>
                         <svg
@@ -528,7 +528,7 @@ dark:bg-gray-700 dark:divide-gray-6001`: 'hidden'}>
                       </li>
 
                       {/* ARI */}
-                      <li>
+                      {/* <li>
                         <button type="button" onClick={() => { setAri(!ari) }}
                           className={`${args?.color?.text} ${args?.color?.sidebar} group  rounded-lg flex items-center p-2 
             w-full p-2 text-base font-normal  transition duration-75`} >
@@ -579,8 +579,8 @@ dark:bg-gray-700 dark:divide-gray-6001`: 'hidden'}>
                               </Link></li>
 
                           </ul></div>
-                      </li>
-                    </>}
+                      </li> */}
+                    {/* </>}  */}
                 </ul>
 
                 <div className="space-y-2 pt-2">
@@ -619,7 +619,7 @@ dark:bg-gray-700 dark:divide-gray-6001`: 'hidden'}>
                         <Link href={{ pathname: args?.Primary?.theme, query: { id: 1 } }}><a>{language?.theme}</a></Link>
                       </span>
                     </li>
-                    {JSON.stringify(args?.Type) === "2" ? <></> :
+                    {/* {JSON.stringify(args?.Type) === "2" ? <></> :
                       <>
                         <li className={`${args?.color?.text} ${args?.color?.sidebar} group text-base font-normal rounded-lg flex items-center p-2  group`}>
                           <svg
@@ -659,7 +659,7 @@ dark:bg-gray-700 dark:divide-gray-6001`: 'hidden'}>
                               <a>{language?.roomxml}</a></Link>
                           </span>
                         </li>
-                      </>}
+                      </>} */}
                   </ul>
                 </div>
               </div>

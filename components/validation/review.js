@@ -31,7 +31,7 @@ const validateReview = (data) =>{
     }
     if(data[0].review_link!='')
     { 
-    if(! /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/.test(data[0].review_link))
+    if(!  /^(http(s):\/\/.)[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)$/.test(data[0].review_link))
     {  
         error.review_link="review link is not proper formatted"
     }
@@ -49,6 +49,12 @@ const validateReview = (data) =>{
             error.review_date="The review date must be after the servce date"
         }
     }
+
+    if(data[0].service_date === '')
+    {
+            error.service_date="The service date is required"
+    }
+
     return Object.keys(error).length===0 ? true : error;
     }
 export default  validateReview 

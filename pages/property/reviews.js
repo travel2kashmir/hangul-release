@@ -206,7 +206,7 @@ function Reviews() {
             draggable: true,
             progress: undefined,
           });
-
+          setError({})
           setView(0);
           document.getElementById('addform').reset();
         })
@@ -576,7 +576,7 @@ function Reviews() {
                             className="text-sm font-medium text-gray-900 block mb-2"
                             htmlFor="grid-password"
                           >
-                            {language?.servicedate}
+                            {language?.servicedate}<span style={{ color: "#ff0000" }}>*</span>
                           </label>
                           <input
                             type="date"
@@ -584,6 +584,9 @@ function Reviews() {
                             className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
                             onChange={e => onChange(e, review?.index, 'service_date')}
                           />
+                             <p className=" peer-invalid:visible text-red-700 font-light">
+                            {error?.service_date}
+                          </p>
                         </div>
 
 

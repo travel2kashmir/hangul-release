@@ -1378,7 +1378,7 @@ function Addroom() {
                             <div className="col-span-6 sm:col-span-3">
 
                               {/* displays image once it is loaded else demoImage */}
-                              {imageData?.image_link != undefined ?
+                              {imageData.image_link !== "" ?
                                 <img className={`py-2 ${color?.text} `} src={imageData?.image_link} alt='Image Preview' style={{ height: "150px", width: "250px" }} /> :
                                 <ImageDemo width={'250'} height={'150'} bgColor={'bg-gray-400'} />}
 

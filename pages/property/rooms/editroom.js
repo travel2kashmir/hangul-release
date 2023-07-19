@@ -134,47 +134,7 @@ function Room() {
     }
   }, [])
 
-  /* Function Multiple Delete*/
-  function deleteMultiple() {
-    const data = check?.map((item) => {
-      return { image_id: item, property_id: currentProperty?.property_id };
-    });
-    setSpinner(1);
-    const imagedata = data;
-    const finalImages = { images: imagedata };
-    axios
-      .post(`/api/deleteall/images`, finalImages, {
-        headers: { "content-type": "application/json" },
-      })
-      .then((response) => {
-        setSpinner(0);
-        toast.success("API: Images delete success.", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-        fetchHotelDetails();
-        Router.push("./gallery");
-        setdeleteImage(0);
-      })
-      .catch((error) => {
-        setSpinner(0);
-        toast.error("API:Images add error.", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      });
-  }
-
+  
   // Edit Validation Gallery
   const validationGalleryEdit = () => {
     setError({});
@@ -189,16 +149,16 @@ function Room() {
   const handlecheckbox = (e) => {
 
     const { name, checked } = e.target;
-
-    let tempCon = images.map((item) =>
+    let tempCon = roomimages.map((item) =>
       item.image_id === name ? { ...item, isChecked: checked } : item
     );
-    setImages(tempCon);
+    setRoomimages(tempCon);
     check = tempCon
       .filter((i) => i.isChecked === true)
       .map((j) => {
         return j.image_id;
       });
+    
   };
 
 
@@ -421,42 +381,6 @@ function Room() {
 
       })
 
-  }
-
-  /* Function for Delete Room Images*/
-  const submitDelete = () => {
-    setSpinner(1)
-    const url = `/api/${actionImage.image_id}`
-    axios.delete(url).then
-      ((response) => {
-        setSpinner(0)
-        setdeleteImage(0)
-        toast.success("App: Image deleted success.", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-        fetchImages();
-        fetchDetails();
-        Router.push("./editroom");
-      })
-      .catch((error) => {
-        setSpinner(0)
-        toast.error("App: Image delete error.", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-
-      })
   }
 
   /*function for keyboard keys */
@@ -1021,7 +945,7 @@ function Room() {
   /* function for multiple delete */
   const allDelete = async () => {
     // checked = images.filter(i => i.isChecked === true).map(j => { return (j.image_id) })
-
+    console.log(JSON.stringify(check))
     setdeleteImage(1);
   };
 
@@ -1033,6 +957,7 @@ function Room() {
     setSpinner(1);
     const imagedata = data;
     const finalImages = { images: imagedata };
+    alert(JSON.stringify(finalImages))
     axios
       .post(`/api/deleteall/images`, finalImages, {
         headers: { "content-type": "application/json" },
@@ -1048,7 +973,7 @@ function Room() {
           draggable: true,
           progress: undefined,
         });
-        fetchHotelDetails();
+        fetchDetails();
         Router.push("./gallery");
         setdeleteImage(0);
       })
@@ -2327,10 +2252,7 @@ function Room() {
                 <div className="flex items-center space-x-2 sm:space-x-3 ml-auto">
 
                   <Button Primary={language?.Add} onClick={() => setAddImage(1)} />
-                  <a href="#" className={`w-1/2 ${color?.text} ${color?.whitebackground} border border-gray-300  ${color?.hover}  focus:ring-4 focus:ring-cyan-200 font-semibold inline-flex items-center justify-center rounded-lg text-sm px-3 py-2 text-center sm:w-auto`}>
-                    <svg className="-ml-1 mr-2 h-6 w-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clipRule="evenodd"></path></svg>
-                    Import
-                  </a>
+                  
                 </div>
               </div>
 
@@ -2359,18 +2281,17 @@ function Room() {
                                   type="checkbox"
                                   id={item?.image_id}
                                   tooltip
-                                  title="Click here to delete image."
+                                  title={`${JSON.stringify(item)}Click here to delete image ${item.image_title}.`}
                                   name={item?.image_id}
-                                  checked={item.isChecked || false}
-                                  onChange={(e) => {
+                                  checked={item?.isChecked || false}
+                                  onClick={(e) => {
                                     handlecheckbox(e);
                                   }}
                                   className="bottom-0 right-0 cursor-pointer absolute bg-gray-30 opacity-30 m-1 border-gray-300 text-cyan-600  checked:opacity-100 focus:ring-3 focus:ring-cyan-200 h-4 w-4 rounded-full"
-                                  onClick={() => {
-                                    setSelectedImage(!selectedImage);
-                                  }}
+                                  
                                 />
-                                {check?.length === 0 || undefined ? (
+                                
+                                {check?.length === 0 ||check?.length === undefined ? (
                                   <img
                                     htmlFor={item?.image_id}
                                     className={`rounded-lg`}
@@ -2929,7 +2850,7 @@ function Room() {
 
                   {spinner === 0 ?
                     <>
-                      <Button Primary={language?.Delete} onClick={() => submitDelete()} />
+                      <Button Primary={language?.Delete} onClick={() => deleteMultiple()} />
                       <Button Primary={language?.Cancel} onClick={() => setdeleteImage(0)} />
                     </>
                     :

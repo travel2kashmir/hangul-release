@@ -38,6 +38,7 @@ function Reviews() {
   const [edit, setEdit] = useState(0)
   const [active, setActive] = useState({})
   const [org, setOrg] = useState({})
+  const [spinner, setSpinner] = useState(0)
 
   var date = new Date();
 
@@ -174,6 +175,7 @@ function Reviews() {
 
   function handleSubmit(e, index) {
     e.preventDefault()
+    setSpinner(1);
     const reviewdata = review?.map((i => {
       return {
         property_id: currentProperty?.property_id,
@@ -208,9 +210,11 @@ function Reviews() {
           });
           setError({})
           setView(0);
+          setSpinner(0);
           document.getElementById('addform').reset();
         })
         .catch(error => {
+          setSpinner(0);
           console.log(JSON.stringify(error))
           toast.error("API: Review Add Error!", {
             position: "top-center",
@@ -225,7 +229,8 @@ function Reviews() {
         });
     }
     else {
-      setError(validationResponse)
+      setError(validationResponse);
+      setSpinner(0);
     }
   }
 
@@ -584,7 +589,7 @@ function Reviews() {
                             className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
                             onChange={e => onChange(e, review?.index, 'service_date')}
                           />
-                             <p className=" peer-invalid:visible text-red-700 font-light">
+                          <p className=" peer-invalid:visible text-red-700 font-light">
                             {error?.service_date}
                           </p>
                         </div>
@@ -782,7 +787,7 @@ function Reviews() {
                           className="text-sm font-medium text-gray-900 block mb-2"
                           htmlFor="grid-password"
                         >
-                          {language?.servicedate}
+                          {language?.servicedate}<span style={{ color: "#ff0000" }}>*</span>
                         </label>
                         <input
                           type="date"
@@ -792,6 +797,9 @@ function Reviews() {
                           onChange={e => setActive({ ...active, service_date: e.target.value })}
                           defaultValue={active?.service_date || ''}
                         />
+                        <p className=" peer-invalid:visible text-red-700 font-light">
+                          {error?.service_date}
+                        </p>
                       </div>
 
 
@@ -841,9 +849,11 @@ function Reviews() {
 
 
               <div className="items-center p-6 border-t border-gray-200 rounded-b">
-
-                <Button Primary={language?.Update} onClick={(e) => handleEdit(e)} />
-
+                {spinner === 1 ?
+                  <Button
+                    testid="test_button_spinner"
+                    Primary={language?.SpinnerUpdate}
+                  /> : <Button Primary={language?.Update} onClick={(e) => handleEdit(e)} />}
               </div>
             </div>
           </div>

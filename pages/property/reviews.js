@@ -7,9 +7,7 @@ import Link from "next/link";
 import Headloader from "../../components/loaders/headloader";
 import Sidebar from "../../components/Sidebar";
 import Header from "../../components/Header";
-import english from "../../components/Languages/en"
-import french from "../../components/Languages/fr"
-import arabic from "../../components/Languages/ar"
+import { english,arabic,french} from "../../components/Languages/Languages"
 import Footer from '../../components/Footer';
 import Button from "../../components/Button";
 import { ToastContainer, toast } from "react-toastify";
@@ -17,6 +15,7 @@ import "react-toastify/dist/ReactToastify.css";
 import reviewImage from '../../public/review.png';
 import validateReview from "../../components/validation/review";
 import InputTextBox from "../../components/utils/InputTextBox";
+import Title from "../../components/title";
 var currentLogged;
 var language;
 var currentProperty;
@@ -314,7 +313,7 @@ function Reviews() {
   }
 
   return (
-    <>
+    <> <Title name={`Engage |  ${language?.reviews}`} />
       <Header color={color} setColor={setColor} Primary={english?.Side} Type={currentLogged?.user_type} Sec={colorToggler} mode={mode} setMode={setMode} />
       <Sidebar Primary={english?.Side} color={color} Type={currentLogged?.user_type} />
       <div id="main-content"

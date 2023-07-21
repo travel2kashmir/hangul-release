@@ -299,14 +299,13 @@ function Inbox() {
             <Sidebar color={color} Primary={english?.Side} Type={currentLogged?.user_type} />
 
             <div id="main-content" className={`${color?.whitebackground} min-h-screen pt-20  relative overflow-y-auto lg:ml-64`}>
-                <div className={`${color?.whitebackground} px-4 sticky pt-2 sm:flex items-center w-full sm:justify-between bottom-0 right-0 `}>
+                <div className={`${color?.whitebackground}  sticky pt-2 sm:flex items-center w-full sm:justify-between bottom-0 right-0 `}>
 
-                    <div className="flex space-x-1 pl-0 sm:pl-4  sm:mt-0">
-                        <div className="border-r   border-gray-200">
+                    <div className="flex items-center justify-start space-x-1 pl-0 sm:pl-4  sm:mt-0">
+                        <div>
                             <input id="checkbox-all"  checked={messagesFiltered?.filter(item => item?.isChecked !== true).length < 1}
                                                         onChange={(e) => { handlecheckbox(e); }}
-                            aria-describedby="checkbox-1" type="checkbox" name="allSelect" className=" mr-4 -ml-1 w-4 h-4 rounded text-cyan-600 bg-gray-100  border-gray-300 focus:ring-cyan-500 dark:focus:ring-blue-600 
-                          dark:ring-offset-gray-800 focus:ring-2 mt-2  dark:bg-gray-700 dark:border-gray-600"/>
+                            aria-describedby="checkbox-1" type="checkbox" name="allSelect" className="bg-gray-50 border-gray-300 text-cyan-600  focus:ring-3 focus:ring-cyan-200 h-4 w-4 rounded"/>
                             <label htmlFor="checkbox-all" className="sr-only">checkbox</label>
                         </div>
                         <button data-tooltip="Delete" aria-label="Delete" onClick={allDelete} className={`${color?.textgray} hover:${color?.text} cursor-pointer p-1 ${color?.hover} rounded inline-flex justify-center`}>
@@ -379,8 +378,7 @@ function Inbox() {
                                                             <input id="checkbox-all" aria-describedby="checkbox-1" type="checkbox"
                                                             name={item?.message_id} checked={item.isChecked || false}
                                                                         onChange={(e) => { handlecheckbox(e); }}
-                                                           className=" w-4 h-4 rounded text-cyan-600 bg-gray-100  border-gray-300 focus:ring-cyan-500 dark:focus:ring-blue-600 
-                                                      dark:ring-offset-gray-800 focus:ring-2 mx-3  dark:bg-gray-700 dark:border-gray-600"/>
+                                                                        className="bg-gray-50 border-gray-300 text-cyan-600  focus:ring-3 focus:ring-cyan-200 h-4 w-4 rounded"/>
                                                             <label htmlFor="checkbox-all" className="sr-only">checkbox</label>
                                                             {item?.is_starred == false ?
                                                             <svg onClick={() => starMessage(item)} xmlns="http://www.w3.org/2000/svg"

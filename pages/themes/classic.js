@@ -335,6 +335,7 @@ const fetchHotelDetails = async () => {
 
                      <div className="tour-content-block">
                         <div className="tour-description">
+                           
                            {args?.allHotelDetails?.description_body}
                         </div>
                      </div></div>
@@ -1244,7 +1245,7 @@ const fetchHotelDetails = async () => {
                   </div> */}
 
                   {/* <BookingForm color={Color?.light} /> */}
-                  <Contactus color={Color?.light} language={language}/>
+                  <Contactus color={Color?.light} language={language} property_id={args?.allHotelDetails?.property_id}/>
                </div>
 
             </div>

@@ -5,7 +5,7 @@ import Header from "../../components/Header";
 import { useState, useEffect } from "react";
 import axios from 'axios';
 import Link from "next/link";
-import {english,arabic,french} from "../../components/Languages/en"
+import {english,arabic,french} from "../../components/Languages/Languages"
 import Title from "../../components/title";
 import Router, { useRouter } from "next/router";
 const logger = require("../../services/logger");
@@ -324,9 +324,9 @@ function Theme() {
                     <li className={`block py-2 px-4 ${color?.sidebar} `}>
                       <button onClick={() => { setThemeName("Classic-Dark"); setThemes(!themes); changeTheme("Classic-Dark") }} >Classic-Dark</button>
                     </li>
-                    <li className={`block py-2 px-4 ${color?.sidebar} `}>
+                    {/* <li className={`block py-2 px-4 ${color?.sidebar} `}>
                       <button onClick={() => { setThemeName("New-Theme"); setThemes(!themes); changeTheme("New-Theme") }} >New Theme</button>
-                    </li>
+                    </li> */}
                   </ul>
                 </div></div>
             </div>

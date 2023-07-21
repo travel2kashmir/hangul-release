@@ -74,8 +74,7 @@ function ClassicDark(args) {
   useEffect(() => {
      const firstfun = () => {
         if (typeof window !== 'undefined') {
-         alert(JSON.stringify(args?.language))
-          setLanguage(args?.language)
+        setLanguage(args?.language)
         }
      }
      firstfun();

@@ -16,6 +16,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import reviewImage from '../../public/review.png';
 import validateReview from "../../components/validation/review";
+import InputTextBox from "../../components/utils/InputTextBox";
 var currentLogged;
 var language;
 var currentProperty;
@@ -472,9 +473,9 @@ function Reviews() {
                   review?.map((review, index) =>
                   (<div key={index} className='mt-4'>
                     <div className="p-6 space-y-6" >
-                      <div className="grid grid-cols-6 gap-6">
+                      <div className="flex flex-wrap w-full">
 
-                        <div className="col-span-6 sm:col-span-3">
+                        <div className="w-full lg:w-6/12 px-4 py-2">
                           <label
                             className="text-sm font-medium text-gray-900 block mb-2"
                             htmlFor="grid-password"
@@ -494,7 +495,7 @@ function Reviews() {
 
 
 
-                        <div className="col-span-6 sm:col-span-3">
+                        <div className="w-full lg:w-6/12 px-4 py-2">
                           <label
                             className="text-sm font-medium text-gray-900 block mb-2"
                             htmlFor="grid-password"
@@ -513,7 +514,7 @@ function Reviews() {
                         </div>
 
 
-                        <div className="col-span-6 sm:col-span-3">
+                        <div className="w-full lg:w-6/12 px-4 py-2">
                           <label
                             className="text-sm font-medium text-gray-900 block mb-2"
                             htmlFor="grid-password"
@@ -532,7 +533,7 @@ function Reviews() {
                         </div>
 
 
-                        <div className="col-span-6 sm:col-span-3">
+                        <div className="w-full lg:w-6/12 px-4 py-2">
                           <label
                             className="text-sm font-medium text-gray-900 block mb-2"
                             htmlFor="grid-password"
@@ -556,7 +557,7 @@ function Reviews() {
                         </div>
 
 
-                        <div className="col-span-6 sm:col-span-3">
+                        <div className="w-full lg:w-6/12 px-4 py-2">
                           <label
                             className="text-sm font-medium text-gray-900 block mb-2"
                             htmlFor="grid-password"
@@ -576,7 +577,7 @@ function Reviews() {
                         </div>
 
 
-                        <div className="col-span-6 sm:col-span-3">
+                        <div className="w-full lg:w-6/12 px-4 py-2">
                           <label
                             className="text-sm font-medium text-gray-900 block mb-2"
                             htmlFor="grid-password"
@@ -595,7 +596,7 @@ function Reviews() {
                         </div>
 
 
-                        <div className="col-span-6 sm:col-span-3">
+                        <div className="w-full lg:w-6/12 px-4 py-2">
                           <label
                             className="text-sm font-medium text-gray-900 block mb-2"
                             htmlFor="grid-password"
@@ -615,33 +616,34 @@ function Reviews() {
                         </div>
 
 
-                        <div className="col-span-6 sm:col-span-3">
-                          <label
-                            className="text-sm font-medium text-gray-900 block mb-2"
-                            htmlFor="grid-password"
-                          >
-                            {language?.reviewcontent}  <span style={{ color: "#ff0000" }}>*</span>
-                          </label>
-                          <textarea rows="3" columns="60"
-                            className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
-                            onChange={e => onChange(e, review?.index, 'review_content')}
-                          />
-                          <p className="peer-invalid:visible text-red-700 font-light">
-                            {error?.review_content}
-                          </p>
-                        </div>
+
+                          {/*Review content */}
+                    <InputTextBox
+                      label={` ${language?.reviewcontent}`}
+                      visible={visible}
+                      defaultValue={review[0]?.review_content}
+                      wordLimit={1000}
+                      onChangeAction={(e) => {
+                        if (e.target.value.length >= 0 && e.target.value.length < 1000) {
+                          setError({})
+                          onChange(e, review?.index, 'review_content')
+                        }
+                        else {
+                          setError({ review_content: 'word limit reached' })
+                        }
+
+                      }
+
+                      }
+                      error={error?.review_content}
+                      color={color}
+                      req={true}
+                      tooltip={true}
+                    />
+
 
                       </div>
-                      {/*commented might need them latter <div className="text-center flex justify-end">
-           
-           
-            <button   
-             className=" text-white bg-cyan-500 hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center" type="button"
-             onClick={() => removeReview(review?.index)}
-            >
-              -Remove Review
-            </button>
-          </div>*/}
+                    
                     </div></div>)
                   )}
 
@@ -679,11 +681,11 @@ function Reviews() {
 
               <div className='mt-4'>
                 <form id="editform">
-                  <div className="p-6 space-y-6" >
-                    <div className="grid grid-cols-6 gap-6">
+                  <div>
+                    <div className="flex flex-wrap w-full">
 
 
-                      <div className="col-span-6 sm:col-span-3">
+                      <div className="w-full lg:w-6/12 px-4 py-2">
 
                         <label
                           className="text-sm font-medium text-gray-900 block mb-2"
@@ -704,7 +706,7 @@ function Reviews() {
 
 
 
-                      <div className="col-span-6 sm:col-span-3">
+                      <div className="w-full lg:w-6/12 px-4 py-2">
                         <label
                           className="text-sm font-medium text-gray-900 block mb-2"
                           htmlFor="grid-password"
@@ -723,7 +725,7 @@ function Reviews() {
                       </div>
 
 
-                      <div className="col-span-6 sm:col-span-3">
+                      <div className="w-full lg:w-6/12 px-4 py-2">
                         <label
                           className="text-sm font-medium text-gray-900 block mb-2"
                           htmlFor="grid-password"
@@ -742,7 +744,7 @@ function Reviews() {
                       </div>
 
 
-                      <div className="col-span-6 sm:col-span-3">
+                      <div className="w-full lg:w-6/12 px-4 py-2">
                         <label
                           className="text-sm font-medium text-gray-900 block mb-2"
                           htmlFor="grid-password"
@@ -765,7 +767,7 @@ function Reviews() {
                       </div>
 
 
-                      <div className="col-span-6 sm:col-span-3">
+                      <div className="w-full lg:w-6/12 px-4 py-2">
                         <label
                           className="text-sm font-medium text-gray-900 block mb-2"
                           htmlFor="grid-password"
@@ -782,7 +784,7 @@ function Reviews() {
                       </div>
 
 
-                      <div className="col-span-6 sm:col-span-3">
+                      <div className="w-full lg:w-6/12 px-4 py-2">
                         <label
                           className="text-sm font-medium text-gray-900 block mb-2"
                           htmlFor="grid-password"
@@ -803,7 +805,7 @@ function Reviews() {
                       </div>
 
 
-                      <div className="col-span-6 sm:col-span-3">
+                      <div className="w-full lg:w-6/12 px-4 py-2">
                         <label
                           className="text-sm font-medium text-gray-900 block mb-2"
                           htmlFor="grid-password"
@@ -823,25 +825,32 @@ function Reviews() {
                         </p>
                       </div>
 
+                       {/*Review content */}
+                    <InputTextBox
+                      label={` ${language?.reviewcontent}`}
+                      visible={visible}
+                      defaultValue={active?.review_content}
+                      wordLimit={1000}
+                      onChangeAction={(e) => {
+                        if (e.target.value.length >= 0 && e.target.value.length < 1000) {
+                          setError({})
+                          setActive({ ...active, review_content: e.target.value })
+                        }
+                        else {
+                          setError({ review_content: 'word limit reached' })
+                        }
 
-                      <div className="col-span-6 sm:col-span-3">
-                        <label
-                          className="text-sm font-medium text-gray-900 block mb-2"
-                          htmlFor="grid-password"
-                        >
-                          {language?.reviewcontent} <span style={{ color: "#ff0000" }}>*</span>
-                        </label>
-                        <textarea rows="3" columns="60"
-                          className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
-                          onChange={e => setActive({ ...active, review_content: e.target.value })}
-                          defaultValue={active?.review_content || ''}
-                        />
-                        <p className="peer-invalid:visible text-red-700 font-light">
-                          {error?.review_content}
-                        </p>
-                      </div>
+                      }
+
+                      }
+                      error={error?.review_content}
+                      color={color}
+                      req={true}
+                      tooltip={true}
+                    />
 
                     </div>
+                   
                   </div>
                 </form>
 

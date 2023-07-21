@@ -20,7 +20,8 @@ import {english,french,arabic} from "../../../components/Languages/Languages"
 import Footer from "../../../components/Footer";
 import Sidebar from '../../../components/Sidebar';
 import Header from '../../../components/Header';
-import ImageDemo from "../../../components/utils/ImageDemo"
+import ImageDemo from "../../../components/utils/ImageDemo";
+import InputTextBox from "../../../components/utils/InputTextBox";
 var language;
 var currentProperty;
 var addroom;
@@ -717,6 +718,8 @@ function Addroom() {
               <div className="pt-6">
                 <div className=" md:px-2 mx-auto w-full">
                   <div className="flex flex-wrap">
+
+                    {/* room name  */}
                     <div className="w-full lg:w-6/12 px-4">
                       <div className="relative w-full mb-3">
                         <label
@@ -735,6 +738,8 @@ function Addroom() {
                           {error?.room_name}</p>
                       </div>
                     </div>
+
+                    {/* room type  */}
                     <div className="w-full lg:w-6/12 px-4">
                       <div className="relative w-full mb-3">
                         <label className={`text-sm font-medium ${color?.text} block mb-2`}
@@ -761,23 +766,32 @@ function Addroom() {
                             {error?.room_type}</p></div>
                       </div>
                     </div>
-                    <div className="w-full lg:w-6/12 px-4">
-                      <div className="relative w-full mb-3">
-                        <label
-                          className={`text-sm font-medium ${color?.text} block mb-2`}
-                          htmlFor="grid-password"
-                        >
-                          {language?.room} {language?.description}
-                          <span style={{ color: "#ff0000" }}>*</span>
-                        </label>
-                        <textarea rows="2" columns="50"
-                          className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
-                          onChange={(e) => { setAllRoomDes({ ...allRoomDes, room_description: e.target.value }); }}
-                        />
-                        <p className="text-sm text-red-700 font-light">
-                          {error?.room_description}</p>
-                      </div>
-                    </div>
+
+                    {/*Room Description */}
+                     <InputTextBox
+                      label={` ${language?.room} ${language?.description}`}
+                      visible={visible}
+                      defaultValue={allRoomDes?.room_description}
+                      wordLimit={1000}
+                      onChangeAction={(e) => {
+                        if (e.target.value.length >= 0 && e.target.value.length < 1000) {
+                          setError({})
+                          setAllRoomDes({ ...allRoomDes, room_description: e.target.value });
+                        }
+                        else {
+                          setError({ room_description: 'word limit reached' })
+                        }
+
+                      }
+
+                      }
+                      error={error?.room_description}
+                      color={color}
+                      req={true}
+                      tooltip={true}
+                    />
+
+                        {/* room capacity */}
                     <div className="w-full lg:w-6/12 px-4">
                       <div className="relative w-full mb-3">
                         <label
@@ -795,6 +809,7 @@ function Addroom() {
                           {error?.room_capacity}</p>
                       </div>
                     </div>
+                    {/* maximum number of guest  */}
                     <div className="w-full lg:w-6/12 px-4">
                       <div className="relative w-full mb-3">
                         <label
@@ -813,6 +828,7 @@ function Addroom() {
                           {error?.maximum_number_of_occupants}</p>
                       </div>
                     </div>
+                    {/* minimum number of occupants  */}
                     <div className="w-full lg:w-6/12 px-4">
                       <div className="relative w-full mb-3">
                         <label
@@ -831,6 +847,7 @@ function Addroom() {
                           {error?.minimum_number_of_occupants}</p>
                       </div>
                     </div>
+                    {/* minimum age of occupant  */}
                     <div className="w-full lg:w-6/12 px-4">
                       <div className="relative w-full mb-3">
                         <label
@@ -849,6 +866,7 @@ function Addroom() {
                           {error?.minimum_age_of_occupants}</p>
                       </div>
                     </div>
+                    {/* view from room  */}
                     <div className="w-full lg:w-6/12 px-4">
                       <div className="relative w-full mb-3">
                         <label className={`text-sm font-medium ${color?.text} block mb-2`}
@@ -871,6 +889,7 @@ function Addroom() {
                         </div>
                       </div>
                     </div>
+                    {/* room length  */}
                     <div className="w-full lg:w-6/12 px-4">
                       <div className="relative w-full mb-3">
                         <label
@@ -888,6 +907,7 @@ function Addroom() {
                         <p className="text-sm text-red-700 font-light">
                           {error?.room_length}</p></div>
                     </div>
+                    {/* room breadth  */}
                     <div className="w-full lg:w-6/12 px-4">
                       <div className="relative w-full mb-3">
                         <label
@@ -906,6 +926,7 @@ function Addroom() {
                           {error?.room_width}</p>
                       </div>
                     </div>
+                    {/* room height  */}
                     <div className="w-full lg:w-6/12 px-4">
                       <div className="relative w-full mb-3">
                         <label
@@ -924,6 +945,8 @@ function Addroom() {
                           {error?.room_height}</p>
                       </div>
                     </div>
+
+                    {/* room style  */}
                     <div className="w-full lg:w-6/12 px-4">
                       <div className="relative w-full mb-3">
                         <label className={`text-sm font-medium ${color?.text} block mb-2`}
@@ -954,6 +977,7 @@ function Addroom() {
 
                       
                     </div>
+                    {/* is room shared  */}
                     <div className="w-full lg:w-6/12 px-4">
                       <div className="relative w-full mb-3">
                         <label className={`text-sm font-medium ${color?.text} block mb-2`}
@@ -979,6 +1003,8 @@ function Addroom() {
                         </div>
                       </div>
                     </div>
+
+                    {/* is room indoor or outdoor  */}
                     <div className="w-full lg:w-6/12 px-4">
                       <div className="relative w-full mb-3">
                         <label className={`text-sm font-medium ${color?.text} block mb-2`}

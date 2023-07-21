@@ -41,9 +41,7 @@ export default function BasicDetails() {
   const [mode, setMode] = useState();
   const [imageLogo, setImageLogo] = useState();
   const [uploadImageSpin, setUploadImageSpin] = useState(false);
-  const [descriptionLength, setDescriptionLength] = useState();
-
-
+  
   /** Fetching language from the local storage **/
   useEffect(() => {
     firstfun();
@@ -106,7 +104,6 @@ export default function BasicDetails() {
       const response = await axios.get(url);
       setBasicDetails(response.data);
       setAllHotelDetails(response.data);
-      setDescriptionLength(response.data?.description_body.length)
       setImageLogo(response.data.logo);
       logger.info("url to fetch property details hit successfully");
       setVisible(1);
@@ -582,8 +579,7 @@ export default function BasicDetails() {
                   onChangeAction={(e) => {
                     if (e.target.value.length >= 0 && e.target.value.length < 1000) {
                       setError({})
-                      setDescriptionLength(e.target.value.length)
-                      setAllHotelDetails(
+                     setAllHotelDetails(
                         {
                           ...allHotelDetails,
                           description_body: e.target.value,

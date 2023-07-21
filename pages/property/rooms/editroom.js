@@ -134,7 +134,7 @@ function Room() {
     }
   }, [])
 
-  
+
   // Edit Validation Gallery
   const validationGalleryEdit = () => {
     setError({});
@@ -158,7 +158,7 @@ function Room() {
       .map((j) => {
         return j.image_id;
       });
-    
+
   };
 
 
@@ -1627,21 +1627,28 @@ function Room() {
                       tooltip={true}
                     />
 
-
-
-                    {/* room description */}
-                    <InputText
+                    {/*Room Description */}
+                    <InputTextBox
                       label={`${language?.room} ${language?.description}`}
                       visible={visible}
                       defaultValue={allRoomDetails?.room_description}
-                      onChangeAction={
-                        (e) => (
+                      wordLimit={1000}
+                      onChangeAction={(e) => {
+                        if (e.target.value.length >= 0 && e.target.value.length < 1000) {
+                          setError({})
                           setAllRoomDetails({ ...allRoomDetails, room_description: e.target.value }, setFlag(1))
-                        )
+                        }
+                        else {
+                          setError({ room_description: 'word limit reached' })
+                        }
+
+                      }
+
                       }
                       error={error?.room_description}
                       color={color}
                       req={true}
+                      tooltip={true}
                     />
 
                     {/* room capacity */}
@@ -2252,7 +2259,7 @@ function Room() {
                 <div className="flex items-center space-x-2 sm:space-x-3 ml-auto">
 
                   <Button Primary={language?.Add} onClick={() => setAddImage(1)} />
-                  
+
                 </div>
               </div>
 
@@ -2288,10 +2295,10 @@ function Room() {
                                     handlecheckbox(e);
                                   }}
                                   className="bottom-0 right-0 cursor-pointer absolute bg-gray-30 opacity-30 m-1 border-gray-300 text-cyan-600  checked:opacity-100 focus:ring-3 focus:ring-cyan-200 h-4 w-4 rounded-full"
-                                  
+
                                 />
-                                
-                                {check?.length === 0 ||check?.length === undefined ? (
+
+                                {check?.length === 0 || check?.length === undefined ? (
                                   <img
                                     htmlFor={item?.image_id}
                                     className={`rounded-lg`}

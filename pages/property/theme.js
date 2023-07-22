@@ -5,7 +5,7 @@ import Header from "../../components/Header";
 import { useState, useEffect } from "react";
 import axios from 'axios';
 import Link from "next/link";
-import {english,arabic,french} from "../../components/Languages/Languages"
+import { english, arabic, french } from "../../components/Languages/Languages"
 import Title from "../../components/title";
 import Router, { useRouter } from "next/router";
 const logger = require("../../services/logger");
@@ -19,11 +19,11 @@ var currentUser;
 var currentProperty;
 var currentLogged;
 let colorToggle;
-
+let premiumThemes = ["New-Theme"];
 function Theme() {
   /** State to store Current Property Details **/
   const [allHotelDetails, setAllHotelDetails] = useState([]);
-  const[mode,setMode] = useState()
+  const [mode, setMode] = useState()
   const [color, setColor] = useState({})
   const [allRooms, setAllRooms] = useState({});
   const [allPackages, setAllPackages] = useState({});
@@ -211,7 +211,7 @@ function Theme() {
   const colorToggler = (newColor) => {
     if (newColor === 'system') {
       window.matchMedia("(prefers-color-scheme:dark)").matches === true ? setColor(colorFile?.dark)
-      : setColor(colorFile?.light)
+        : setColor(colorFile?.light)
       localStorage.setItem("colorToggle", newColor)
     }
     else if (newColor === 'light') {
@@ -222,20 +222,20 @@ function Theme() {
       setColor(colorFile?.dark)
       localStorage.setItem("colorToggle", true)
     }
-   firstfun();
-   Router.push('./theme')
+    firstfun();
+    Router.push('./theme')
   }
   return (
     <>
-       <Title name={`Engage |  Themes`} />
-       
+      <Title name={`Engage |  Themes`} />
+
       <Header color={color} Primary={english?.Side} Sec={colorToggler} mode={mode} setMode={setMode} />
       <Sidebar color={color} Primary={english?.Side} Type={currentLogged?.user_type} />
       {/* Body */}
       <div id="main-content" className={`${color?.greybackground}  pt-24 relative overflow-y-auto lg:ml-64`}>
         {/* bread crumb */}
         <nav className="flex mb-5 px-4 ml-4" aria-label="Breadcrumb">
-        <ol className="inline-flex items-center space-x-1 md:space-x-2">
+          <ol className="inline-flex items-center space-x-1 md:space-x-2">
             <li className="inline-flex items-center">
               <div className={`${color?.text} text-base font-medium  inline-flex items-center`}>
                 <svg
@@ -324,17 +324,24 @@ function Theme() {
                     <li className={`block py-2 px-4 ${color?.sidebar} `}>
                       <button onClick={() => { setThemeName("Classic-Dark"); setThemes(!themes); changeTheme("Classic-Dark") }} >Classic-Dark</button>
                     </li>
-                    {/* <li className={`block py-2 px-4 ${color?.sidebar} `}>
+                    <li className={`block py-2 px-4 ${color?.sidebar} `}>
                       <button onClick={() => { setThemeName("New-Theme"); setThemes(!themes); changeTheme("New-Theme") }} >New Theme</button>
-                    </li> */}
+                    </li>
                   </ul>
                 </div></div>
             </div>
-            <div>
+            <div>{premiumThemes.includes(themeName) ===true ?
+              <> {allHotelDetails.isPremium === "true" ? 
+              <button className="bg-cyan-600 text-sm text-center hover:bg-cyan-700 text-white  py-2 px-4 rounded" onClick={() => {
+                submitTheme();
+              }}>Save</button> :
+                <button className="bg-cyan-600 hover:bg-cyan-700 mx-2 text-white opacity-60 cursor-not-allowed  py-2 px-4 rounded"
+                >Save</button>} </> :
               <button className="bg-cyan-600 text-sm text-center hover:bg-cyan-700 text-white  py-2 px-4 rounded" onClick={() => {
                 submitTheme();
               }}
-              >Save</button>
+              >Save</button>}
+
             </div>
 
             <div className="flex hover:underline py-2 hover:decoration-cyan-600">
@@ -373,16 +380,16 @@ function Theme() {
               allRooms={allRooms} allPackages={allPackages} services={services}
               phone={phone} email={email} /></div> : <div className="sticky"></div>}
 
-                {/* newTheme */}
-      {themeName === "New-Theme" ?
-        <div className="sticky">
-          <NewTheme language={language?.activeThemeLanguage} HotelDetails={allHotelDetails}
-            allRooms={allRooms} allPackages={allPackages} services={services}
-            phone={phone} email={email} /></div> : <div className="sticky"></div>}
+        {/* newTheme */}
+        {themeName === "New-Theme" ?
+          <div className="sticky">
+            <NewTheme language={language?.activeThemeLanguage} HotelDetails={allHotelDetails}
+              allRooms={allRooms} allPackages={allPackages} services={services}
+              phone={phone} email={email} /></div> : <div className="sticky"></div>}
 
 
       </div>
-      
+
       {/* Toast Container */}
       <ToastContainer position="top-center"
         autoClose={5000}

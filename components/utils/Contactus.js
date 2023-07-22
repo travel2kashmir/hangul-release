@@ -9,6 +9,7 @@ function Contactus({ color, language, property_id }) {
     const [error, setError] = useState({})
     const [contact, setContact] = useState({})
     function sendQuery() {
+        e.preventDefault();
         let result = ValidateContactUs(contact);
         if (result === true) {
             let data = {

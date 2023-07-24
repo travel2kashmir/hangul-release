@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import StarRatings from 'react-star-ratings';
 import icon from '../../components/GlobalData'
-import {english,french,arabic} from '../../components/Languages/Languages'
+import { english, french, arabic } from '../../components/Languages/Languages'
 import Marquee from "react-easy-marquee";
 import Carousel from 'better-react-carousel';
 import Headloader from './Loaders/headloader';
@@ -20,6 +20,8 @@ import BookingForm from '../../components/utils/BookingForm';
 import Contactus from '../../components/utils/Contactus';
 import Color from '../../components/colors/Color';
 import GlobalData from '../../components/GlobalData';
+import Modal from '../../components/NewTheme/modal';
+import ImagesSlider from '../../components/utils/ImagesSlider';
 var currentUser;
 var currentProperty;
 var currentLogged;
@@ -35,6 +37,8 @@ var defaultRate = {
 
 function Classic(args) {
    SwiperCore.use([Navigation, Pagination, Autoplay]);
+   const [showModalPrivacy, setShowModalPrivacy] = useState(0)
+   const [showModalTC, setShowModalTC] = useState(0)
    const [language, setLanguage] = useState(english);
    const [ip, setIP] = useState({});
    const [calendarIn, setCalendarIn] = useState(false);
@@ -59,8 +63,8 @@ function Classic(args) {
    const [singleRoom, setSingleRoom] = useState(false);
    const [smSidebar, setSmSidebar] = useState(false)
    const [allHotelDetails, setAllHotelDetails] = useState([]);
-   const [country,setCountry]=useState()
-   const[averageRating,setAverageRating]=useState()
+   const [country, setCountry] = useState()
+   const [averageRating, setAverageRating] = useState()
    useEffect(() => {
       getData();
    }, [])
@@ -103,12 +107,12 @@ function Classic(args) {
       setCalendarOut(!calendarOut);
    }
 
-  
+
 
    /** Router for Redirection **/
    const router = useRouter();
    useEffect(() => {
-     if (typeof window !== 'undefined') {
+      if (typeof window !== 'undefined') {
          setLanguage(args?.language)
       }
       const current = new Date();
@@ -124,19 +128,29 @@ function Classic(args) {
    }, [args?.language])
 
 
-const fetchHotelDetails = async () => {
+   const fetchHotelDetails = async () => {
       setAllHotelDetails(args?.allHotelDetails);
-      setCountry(GlobalData.CountryData.filter(i=>i?.country_code===args?.allHotelDetails?.address[0]?.address_country)[0]?.country_name)
+      try {
+         setCountry(GlobalData.CountryData.filter(i => i?.country_code === args?.allHotelDetails?.address[0]?.address_country)[0]?.country_name)
+      }
+      catch (ex) {
+         setCountry(args?.allHotelDetails?.address[0]?.address_country)
+      }
       calculateTotalRating(args?.allHotelDetails?.Reviews);
       setVisible(1)
    }
 
-function calculateTotalRating(reviews){
-   let rating=reviews.map(review=>review.review_rating);
-   let totalRating=rating.reduce((acc, current) => acc + current, 0);
-   let average=totalRating/rating.length;
-   setAverageRating(average)
-}
+   function calculateTotalRating(reviews) {
+      try {
+         let rating = reviews?.map(review => review.review_rating);
+         let totalRating = rating?.reduce((acc, current) => acc + current, 0);
+         let average = totalRating / rating.length;
+         setAverageRating(average)
+      }
+      catch (exe) {
+         setAverageRating(0)
+      }
+   }
 
    const changeLanguage = ((props) => {
       if (props === "en") {
@@ -149,6 +163,17 @@ function calculateTotalRating(reviews){
          setLanguage(arabic)
       }
    })
+   const [imageSlideShow, setImageSlideShow] = useState(0);
+   const [visibleImage, setVisibleImage] = useState();
+   const [allImagesLink, setAllImagesLink] = useState([]);
+
+   function activateImagesSlider(image_index, allImages) {
+
+      setVisibleImage(image_index)
+      setAllImagesLink(allImages.map(i => i.image_link))
+      setImageSlideShow(1)
+
+   }
 
    return (
       <>
@@ -157,7 +182,7 @@ function calculateTotalRating(reviews){
                <div className="header-logo">
                   {/* <span className="material-icons-outlined header-logo-icon">
                      mode_of_travel</span> */}
-                      <span className='text-sky-600'>{args?.allHotelDetails?.property_name}
+                  <span className='text-sky-600'>{args?.allHotelDetails?.property_name}
                   </span>
                </div>
 
@@ -197,11 +222,11 @@ function calculateTotalRating(reviews){
                      className="header-menu-item"
                   >{language?.amenities}</a
                   >
-                  <a
+                  {args?.allPackages?.packages !== undefined ? <a
                      href="#packages" onClick={() => { getIPData("Anchor tag Packages from header", "/packages") }}
                      className="header-menu-item"
                   >{language?.packages}</a
-                  >
+                  > : <></>}
                   <a
                      href="#contactus" onClick={() => { getIPData("Anchor tag Contact us from header", "/contactus") }}
                      className="header-menu-item"
@@ -253,12 +278,12 @@ function calculateTotalRating(reviews){
                                  </span>
                               </li>
                               <hr />
-                              <li className="text-base text-gray-900 font-normal rounded-lg flex items-center p-2">
+                              {args?.allPackages?.packages !== undefined ? <li className="text-base text-gray-900 font-normal rounded-lg flex items-center p-2">
                                  <span className="ml-3 flex-1 whitespace-nowrap">
                                     <a
                                        href="#packages"><button onClick={() => { setSmSidebar(!smSidebar); getIPData("Anchor tag Packages from header", "/packages") }}>{language?.packages}</button></a>
                                  </span>
-                              </li>
+                              </li> : <></>}
                               <hr />
                               <li className="text-base text-gray-900 font-normal rounded-lg flex items-center p-2">
                                  <span className="ml-3 flex-1 whitespace-nowrap">
@@ -339,7 +364,7 @@ function calculateTotalRating(reviews){
 
                      <div className="tour-content-block">
                         <div className="tour-description">
-                           
+
                            {args?.allHotelDetails?.description_body}
                         </div>
                      </div></div>
@@ -381,7 +406,12 @@ function calculateTotalRating(reviews){
                               {args?.allHotelDetails?.images?.map((resource, index) => {
                                  return (
                                     <Carousel.Item key={index} >
-                                       <img width="100%" style={{ height: "270px" }} className="rounded-lg" src={resource?.image_link} /></Carousel.Item>
+                                       <img width="100%"
+                                          style={{ height: "270px" }}
+                                          className="rounded-lg"
+                                          src={resource?.image_link}
+                                          onClick={() => activateImagesSlider(index, args?.allHotelDetails?.images)} />
+                                    </Carousel.Item>
                                  )
                               })}</Carousel></div>
                      </div>
@@ -411,7 +441,7 @@ function calculateTotalRating(reviews){
                                           <div onClick={() => {
                                              setOpen({ ...open, view: !open.view, id: idx }); getSingleSection(open?.view, resource?.room_name, "rooms")
                                           }}>
-                                             <p className='flex capitalize mt-4 py-1'>
+                                             <div className='flex capitalize mt-4 py-1'>
                                                 <div className="my-1.5 mr-1.5 -ml-2 border-gray-200 border-0 rounded-full  font-bold text-gray-600  bg-gray-200 flex items-center justify-center" style={{ height: "22px", width: "22px", fontSize: "14px" }}>{idx + 1}</div>
                                                 <button className='text-gray-600 font-semibold'
                                                 >{resource?.room_name} </button>
@@ -423,7 +453,7 @@ function calculateTotalRating(reviews){
                                                       :
                                                       <span className=' font-semibold text-gray-400  hidden group-hover:block'>
                                                          + </span>}</button>
-                                             </p>  </div>
+                                             </div>  </div>
                                           <div className={open?.view === true && open?.id === idx ? 'block' : 'hidden'}>
                                              {/* Room Description */}
                                              <div className="tour-content-block">
@@ -442,7 +472,7 @@ function calculateTotalRating(reviews){
                                                             <span className='text-gray-700' key={index}>
                                                                {/* &#10004 is code for tick mark  */}
                                                                <span>&#10004;
-                                                                  {item?.service_name} </span></span>)
+                                                                  {item?.service_name.replaceAll("_", " ")} </span></span>)
                                                       })}
                                                    </div>
                                                 </div>
@@ -479,11 +509,13 @@ function calculateTotalRating(reviews){
                                                          },
                                                       ]}
                                                    >
-                                                      {resource?.room_images?.map((resource, index) => {
+                                                      {resource?.room_images?.map((room_resource, index) => {
                                                          return (
                                                             <Carousel.Item key={index} >
-                                                               <img width="100%" style={{ height: "160px", marginBottom: "10px" }} src={resource?.image_link} />
-                                                               <span className='text-gray-700' >{resource?.image_title}</span>
+                                                               <img width="100%"
+                                                                  onClick={() => activateImagesSlider(index, resource?.room_images)}
+                                                                  style={{ height: "160px", marginBottom: "10px" }} src={room_resource?.image_link} />
+                                                               <span className='text-gray-700' >{room_resource?.image_title}</span>
                                                             </Carousel.Item>
                                                          )
                                                       })}</Carousel></div></div>
@@ -524,6 +556,7 @@ function calculateTotalRating(reviews){
                                  </button></div>
                               <div className={amenity === true ? 'tour-content-block1 ' : 'hidden'}>
                                  <div className="grid ml-2 mb-8 grid-flow-row-dense lg:grid-cols-5 md:grid-cols-4 grid-cols-2  md:gap-3 gap-1 lg:gap-3">
+
                                     {args?.services?.map((item, idx) => {
                                        return (
                                           <>
@@ -1249,7 +1282,7 @@ function calculateTotalRating(reviews){
                   </div> */}
 
                   {/* <BookingForm color={Color?.light} /> */}
-                  <Contactus color={Color?.light} language={language} property_id={args?.allHotelDetails?.property_id}/>
+                  <Contactus color={Color?.light} language={language} property_id={args?.allHotelDetails?.property_id} />
                </div>
 
             </div>
@@ -1262,7 +1295,7 @@ function calculateTotalRating(reviews){
                   <div className="header-logo md:px-8 px-20">
                      {/* <span className="material-icons-outlined header-logo-icon">
                         mode_of_travel</span> */}
-                         {args?.allHotelDetails.logo!==''?<img src={args?.allHotelDetails.logo} className='h-full w-full'/>:<></>}   
+                     {args?.allHotelDetails.logo !== '' ? <img src={args?.allHotelDetails.logo} className='h-full w-full' /> : <></>}
                      <span className='text-sky-600 text-xl '>
                         <div className={visible === 0 ? 'block w-32 ml-1 mb-2' : 'hidden'}><Headloader /></div>
                         <div className={visible === 1 ? 'block' : 'hidden'}>
@@ -1283,8 +1316,8 @@ function calculateTotalRating(reviews){
                         <div className={visible === 0 ? 'block h-2 w-16 mb-8' : 'hidden'}><LineLoader /></div>
                         <div className={visible === 1 ? 'block' : 'hidden'}>
                            {country}
-                        
-                           
+
+
                         </div></span></div>
                </div>
                <div className=" mt-2 grid grid-cols-2 gap-14 lg:gap-36 sm:grid-cols-3">
@@ -1334,11 +1367,11 @@ function calculateTotalRating(reviews){
                         {language?.legal}</h2>
                      <ul className="text-white">
                         <li className="mb-2 flex">
-                           <a href="#" onClick={() => { getIPData("Anchor tag privacy policy from footer", "/privacypolicy") }} className="hover:underline hover:text-gray-400 text-sm">
+                           <a href="#" onClick={() => { getIPData("Anchor tag privacy policy from footer", "/privacypolicy"); setShowModalPrivacy(1) }} className="hover:underline hover:text-gray-400 text-sm">
                               {language?.privacypolicy}</a>
                         </li>
                         <li>
-                           <a href="#" onClick={() => { getIPData("Anchor tag terms and conditions from footer", "/termsandconditions") }}
+                           <a href="#" onClick={() => { getIPData("Anchor tag terms and conditions from footer", "/termsandconditions"); setShowModalTC(1) }}
                               className="hover:underline hover:text-gray-400 text-sm">{language?.termsandconditions}</a>
                         </li>
                      </ul>
@@ -1351,7 +1384,7 @@ function calculateTotalRating(reviews){
                </span>
                <div className="flex mt-4 space-x-6  sm:justify-center sm:mt-0">
                   <a href="#" onClick={() => { getIPData("Anchor tag Facebook", "/facebok") }} className="text-white hover:text-gray-400 dark:hover:text-white">
-                  <a href="https://www.facebook.com/travel2kashmir" target='_blank'><svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clipRule="evenodd" /></svg></a>
+                     <a href="https://www.facebook.com/travel2kashmir" target='_blank'><svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clipRule="evenodd" /></svg></a>
                      <span className="sr-only">Facebook page</span>
                   </a>
                   {/* <a href="#" onClick={() => { getIPData("Anchor tag Instagram", "/instagram") }} className="text-white hover:text-gray-400 dark:hover:text-white">
@@ -1367,6 +1400,31 @@ function calculateTotalRating(reviews){
                </div>
             </div>
          </footer>
+
+         <div className={showModalTC === 1 ? "block" : "hidden"}>
+            <Modal
+               title={`Terms & Conditions`}
+               description={`Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.`}
+               setShowModal={(e) => setShowModalTC(e)}
+            />
+         </div>
+
+         <div className={showModalPrivacy === 1 ? "block" : "hidden"}>
+            <Modal
+               title={`Privacy Policy`}
+               description={`Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.`}
+               setShowModal={(e) => setShowModalPrivacy(e)}
+            />
+         </div>
+
+         <div className={imageSlideShow === 1 ? "block" : "hidden"}>
+            <ImagesSlider
+               visibleImage={visibleImage}
+               images={allImagesLink}
+               setShowModal={(e) => setImageSlideShow(e)} />
+
+         </div>
+
 
       </>
    );

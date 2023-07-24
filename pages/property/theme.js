@@ -98,15 +98,13 @@ function Theme() {
       }s/${currentProperty?.property_id}`;
     axios.get(url)
       .then((response) => {
+        var ser = [];
         setThemeName(response.data.theme)
         setAllHotelDetails(response.data);
-        response.data.contacts.map(i => { if (i.contact_type === 'Phone') { setPhone(i) } });
-        var ser = [];
         response.data.services.map(i => {
           if (i.service_value !== "no")
             if (i.service_value !== "Not available") {
-              {
-                ser.push(i)
+              {ser.push(i);
               }
             }
           setServices(ser)
@@ -114,6 +112,9 @@ function Theme() {
 
         );
 
+        response.data.contacts.map(i => { if (i.contact_type === 'Phone') { setPhone(i) } });
+        
+        
         response.data.contacts.map(i => { if (i.contact_type === 'Email') { setEmail(i) } });
         logger.info("url  to fetch property details hitted successfully")
       })

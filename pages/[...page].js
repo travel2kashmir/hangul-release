@@ -41,16 +41,13 @@ function Page({ data, room_data, package_data }) {
   const fetchProperty = async () => {
 
     if (data?.http_code != '404') {
+      
       var language = router.locale || 'en';
       console.log("language is " + language)
       fetchLanguage(language)
       setAllHotelDetails(data);
       setTheme(data?.theme != "" ? data?.theme : 'Classic');
       fetchRoomDetails(room_data);
-      fetchPackageDetails(package_data);
-
-      data?.contacts?.map(i => { if (i.contact_type === 'Phone') { setPhone(i) } });
-      data?.contacts?.map(i => { if (i.contact_type === 'Email') { setEmail(i) } });
       var ser = [];
       data?.services?.map(i => {
         if (i.service_value !== "no")
@@ -63,6 +60,13 @@ function Page({ data, room_data, package_data }) {
       }
 
       );
+      fetchPackageDetails(package_data);
+
+      data?.contacts?.map(i => { if (i.contact_type === 'Phone') { setPhone(i) } });
+      data?.contacts?.map(i => { if (i.contact_type === 'Email') { setEmail(i) } });
+      
+      
+    
       setDisp(1);
       logger.info("url  to fetch property details hitted successfully")
     }
@@ -86,7 +90,6 @@ function Page({ data, room_data, package_data }) {
       router.push('/404')
     }
     else {
-
       fetchProperty();
     }
 

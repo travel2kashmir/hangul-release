@@ -81,7 +81,7 @@ function Footer(args) {
     </div>
 </footer>
 <p className={`text-center text-sm ${args?.color?.textgray} my-10`}>
-    &copy; 2022 <a href="" className="hover:underline" target="_blank">Hangul </a> {language?.allrightsreserved}. 
+    &copy; 2022 <a href="" className="hover:underline">Hangul </a> {language?.allrightsreserved}. 
 </p>
   
 

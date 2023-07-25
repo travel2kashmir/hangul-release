@@ -67,7 +67,7 @@ function Home({ allHotelDetails, menu, setMenu, hotelDetailLoader, lang, setLang
                 </div>
             </div>
 
-
+{/* style component of jsx */}
             <style jsx>
                 {`
                 @media (min-width: 340px) and (max-width:390px) {

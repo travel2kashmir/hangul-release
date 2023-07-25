@@ -33,7 +33,7 @@ function RoomViewMobile({ rooms, selectedRoom, setSelectedRoom, showRoom, setSho
                                         <div className="flex justify-between px-5">
                                             <p className=' text-slate-500 font-semibold tracking-wide text-center text-xl'>{room?.room_name} <br /> ({room?.room_type.replaceAll("_", " ")})</p>
                                             {room?.unconditional_rates?.map((resource, index) => {
-                                                return <p key={index} className="text-sm mt-2 text-gray-500 font-medium">{resource?.baserate_currency + " " + resource?.baserate_amount}</p>
+                                                return <p key={index} className="text-sm mt-2 text-gray-500 font-medium">{resource?.baserate_currency.toUpperCase() + " " + resource?.baserate_amount}</p>
                                             })}
                                         </div>
 

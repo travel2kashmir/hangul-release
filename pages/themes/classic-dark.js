@@ -562,6 +562,7 @@ function ClassicDark(args) {
                                     </button></div>
                                  <div className={amenity === true ? 'tour-content-block1 ' : 'hidden'}>
                                     <div className="grid ml-2 mb-8 grid-flow-row-dense lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3 gap-3">
+                                    
                                        {args?.services?.map((item, idx) => {
                                           return (
                                              <>

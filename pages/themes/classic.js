@@ -1301,106 +1301,104 @@ function Classic(args) {
 
             </div>
          </div>
-       {/* Footer */}
-       <footer className="bg-gray-900 lg:mt:8 py-6">
-       <div className="md:flex md:justify-between mx-6">
-          <div className="mb-6 md:mb-0">
-             <div className="header-logo lg:px-8 md:px-8 px-20">
-                {/* <span className="material-icons-outlined header-logo-icon">
+         {/* Footer */}
+         <footer className="bg-gray-900 lg:mt:8 py-6">
+            <div className="md:flex md:justify-between mx-6">
+               <div className="mb-6 md:mb-0">
+                  <div className="header-logo lg:px-8 md:px-8 px-20">
+                     {/* <span className="material-icons-outlined header-logo-icon">
                    mode_of_travel</span> */}
-                {/* {args?.allHotelDetails.logo !== '' ? <img src={args?.allHotelDetails.logo} alt="logo" className='h-full w-full' /> : <></>} */}
-                <span className='text-sky-600 text-xl'>
-                   <div className={visible === 0 ? 'block w-32 ml-1 mb-2' : 'hidden'}><Headloader /></div>
-                   <div className={visible === 1 ? 'block' : 'hidden'}>
-                      {args?.allHotelDetails?.property_name}</div></span>
-             </div>
-             <div className='flex mt-1 flex-col lg:pl-0 pl-14 md:pl-0 capitalize'>
-                <span className='lg:px-20 px-16 text-sm text-white'>
-                   <div className={visible === 0 ? 'block h-2 w-32 mb-8' : 'hidden'}><LineLoader /></div>
-                   <div className={visible === 1 ? 'block' : 'hidden'}>
-                      {args?.allHotelDetails?.address?.[i]?.address_street_address}, {args?.allHotelDetails?.address?.[i]?.address_city}
-                   </div> </span>
-                <span className='lg:px-20 px-16 text-sm text-white'>
-                   <div className={visible === 0 ? 'block h-2 w-32 mb-8' : 'hidden'}><LineLoader /></div>
-                   <div className={visible === 1 ? 'block' : 'hidden'}> {args?.allHotelDetails?.address?.[i]?.address_province}, {args?.allHotelDetails?.address?.[i]?.address_zipcode}
-                   </div>
-                </span>
-                <span className='lg:px-20 px-16 text-sm text-white uppercase'>
-                   <div className={visible === 0 ? 'block h-2 w-16 mb-8' : 'hidden'}><LineLoader /></div>
-                   <div className={visible === 1 ? 'block' : 'hidden'}>{country}
-                   </div></span></div>
-          </div>
-          <div className=" mt-2 grid grid-cols-2 gap-14 lg:gap-36 sm:grid-cols-3">
-             <div>
-                <h2 className="mb-2 font-semibold text-gray-400 uppercase">{language?.quicklinks}</h2>
-                <ul className="text-white ">
-                   <li className="mb-2">
-                      <a href="#home" onClick={() => { getIPData("Anchor tag Home from footer", "/home") }} className="hover:underline hover:text-gray-400  text-sm">{language?.home}</a>
-                   </li>
-                   <li className="mb-2">
-                      <a href="#about" onClick={() => { getIPData("Anchor tag About from footer", "/about") }} className="hover:underline hover:text-gray-400 text-sm">{language?.about}</a>
-                   </li>
-                   <li className="mb-2">
-                      <a href="#gallery" onClick={() => { getIPData("Anchor tag Gallery from footer", "/gallery") }} className="hover:underline hover:text-gray-400 text-sm">{language?.gallery}</a>
-                   </li>
-                   <li>
-                      <a href="#contactus" onClick={() => { getIPData("Anchor tag Contact us from footer", "/contactus") }} className="hover:underline hover:text-gray-400 text-sm">{language?.contactus}</a>
-                   </li>
-                </ul>
-             </div>
-             <div>
-                <h2 className="mb-2 font-semibold  uppercase text-gray-400">{language?.contactus}</h2>
-                <ul className="text-white">
-                   <li className="flex mb-2 hover:text-gray-400">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="mr-0.5 mt-1 w-3 h-3">
-                         <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
-                      </svg>
-                      <a href={`tel://${args?.phone?.contact_data}`} onClick={() => { getIPData("Anchor tag phone icon from footer", "/contactus") }} className=" text-sm hover:underline">
-                         <div className={visible === 0 ? 'block h-2 w-32 mb-6' : 'hidden'}><LineLoader /></div>
-                         <div className={visible === 1 ? 'block' : 'hidden'}>
-                            {args?.phone?.contact_data}
-                         </div></a>
-                   </li>
-                   <li className="flex hover:text-gray-400">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="mt-1 mr-0.5 w-4 h-4">
-                         <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
-                      </svg>
-                      <a href={`mailto:${args?.email?.contact_data}`} onClick={() => { getIPData("Anchor tag mail from footer", "/mailus") }} className="text-sm hover:underline">
-                         <div className={visible === 0 ? 'block h-2 w-32 mb-6' : 'hidden'}><LineLoader /></div>
-                         <div className={visible === 1 ? 'block' : 'hidden'}>
-                            {args?.email?.contact_data} </div></a>
-                   </li>
-                </ul>
-             </div>
-             <div className='mr-8'>
-                <h2 className="mb-2  font-semibold text-gray-400 uppercase  dark:text-white">{language?.legal}</h2>
-                <ul className="text-white">
-                   <li className="mb-2 flex">
-                      <a href="#" onClick={() => { getIPData("Anchor tag privacy policy from footer", "/privacypolicy"); setShowModalPrivacy(1) }}
-                         className="hover:underline hover:text-gray-400 text-sm">
-                         {language?.privacypolicy}</a>
-                   </li>
-                   <li>
-                      <a href="#" onClick={() => { getIPData("Anchor tag terms and conditions from footer", "/termsandconditions"); setShowModalTC(1) }} className="hover:underline hover:text-gray-400 text-sm">{language?.termsandconditions}</a>
-                   </li>
-                </ul>
-             </div>
-          </div>
-       </div>
-       <hr className="my-6 border-gray-400 sm:mx-auto dark:border-gray-700 lg:my-8" />
-       <div className="sm:flex sm:items-center mx-2 sm:justify-between">
-          <span className="text-sm  sm:text-center text-white">© {new Date().getFullYear()} <a href="https://www.travel2kashmir.com" className="hover:underline">{language?.poweredby} Travel2Kashmir</a>. {language?.allrightsreserved}.
-          </span>
-          <div className="flex mt-4 space-x-6  sm:justify-center sm:mt-0">
-             <div onClick={() => { getIPData("Anchor tag Facebook", "/facebok") }} className="text-white hover:text-gray-400 dark:hover:text-white mr-4">
-                <a href="https://www.facebook.com/travel2kashmir" ><svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clipRule="evenodd" /></svg></a>
-                <span className="sr-only">Facebook page</span>
-             </div>
-
-
-          </div>
-       </div>
-    </footer>
+                     {/* {args?.allHotelDetails.logo !== '' ? <img src={args?.allHotelDetails.logo} alt="logo" className='h-full w-full' /> : <></>} */}
+                     <span className='text-sky-600 text-xl'>
+                        <div className={visible === 0 ? 'block w-32 ml-1 mb-2' : 'hidden'}><Headloader /></div>
+                        <div className={visible === 1 ? 'block' : 'hidden'}>
+                           {args?.allHotelDetails?.property_name}</div></span>
+                  </div>
+                  <div className='flex mt-1 flex-col lg:pl-0 pl-14 md:pl-0 capitalize'>
+                     <span className='lg:px-20 px-16 text-sm text-white'>
+                        <div className={visible === 0 ? 'block h-2 w-32 mb-8' : 'hidden'}><LineLoader /></div>
+                        <div className={visible === 1 ? 'block' : 'hidden'}>
+                           {args?.allHotelDetails?.address?.[i]?.address_street_address}, {args?.allHotelDetails?.address?.[i]?.address_city}
+                        </div> </span>
+                     <span className='lg:px-20 px-16 text-sm text-white'>
+                        <div className={visible === 0 ? 'block h-2 w-32 mb-8' : 'hidden'}><LineLoader /></div>
+                        <div className={visible === 1 ? 'block' : 'hidden'}> {args?.allHotelDetails?.address?.[i]?.address_province}, {args?.allHotelDetails?.address?.[i]?.address_zipcode}
+                        </div>
+                     </span>
+                     <span className='lg:px-20 px-16 text-sm text-white uppercase'>
+                        <div className={visible === 0 ? 'block h-2 w-16 mb-8' : 'hidden'}><LineLoader /></div>
+                        <div className={visible === 1 ? 'block' : 'hidden'}>{country}
+                        </div></span></div>
+               </div>
+               <div className=" mt-2 grid grid-cols-2 gap-14 lg:gap-36 sm:grid-cols-3">
+                  <div>
+                     <h2 className="mb-2 font-semibold text-gray-400 uppercase">{language?.quicklinks}</h2>
+                     <ul className="text-white ">
+                        <li className="mb-2">
+                           <a href="#home" onClick={() => { getIPData("Anchor tag Home from footer", "/home") }} className="hover:underline hover:text-gray-400  text-sm">{language?.home}</a>
+                        </li>
+                        <li className="mb-2">
+                           <a href="#about" onClick={() => { getIPData("Anchor tag About from footer", "/about") }} className="hover:underline hover:text-gray-400 text-sm">{language?.about}</a>
+                        </li>
+                        <li className="mb-2">
+                           <a href="#gallery" onClick={() => { getIPData("Anchor tag Gallery from footer", "/gallery") }} className="hover:underline hover:text-gray-400 text-sm">{language?.gallery}</a>
+                        </li>
+                        <li>
+                           <a href="#contactus" onClick={() => { getIPData("Anchor tag Contact us from footer", "/contactus") }} className="hover:underline hover:text-gray-400 text-sm">{language?.contactus}</a>
+                        </li>
+                     </ul>
+                  </div>
+                  <div>
+                     <h2 className="mb-2 font-semibold  uppercase text-gray-400">{language?.contactus}</h2>
+                     <ul className="text-white">
+                        <li className="flex mb-2 hover:text-gray-400">
+                           <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="mr-0.5 mt-1 w-3 h-3">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+                           </svg>
+                           <a href={`tel://${args?.phone?.contact_data}`} onClick={() => { getIPData("Anchor tag phone icon from footer", "/contactus") }} className=" text-sm hover:underline">
+                              <div className={visible === 0 ? 'block h-2 w-32 mb-6' : 'hidden'}><LineLoader /></div>
+                              <div className={visible === 1 ? 'block' : 'hidden'}>
+                                 {args?.phone?.contact_data}
+                              </div></a>
+                        </li>
+                        <li className="flex hover:text-gray-400">
+                           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="mt-1 mr-0.5 w-4 h-4">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                           </svg>
+                           <a href={`mailto:${args?.email?.contact_data}`} onClick={() => { getIPData("Anchor tag mail from footer", "/mailus") }} className="text-sm hover:underline">
+                              <div className={visible === 0 ? 'block h-2 w-32 mb-6' : 'hidden'}><LineLoader /></div>
+                              <div className={visible === 1 ? 'block' : 'hidden'}>
+                                 {args?.email?.contact_data} </div></a>
+                        </li>
+                     </ul>
+                  </div>
+                  <div className='mr-8'>
+                     <h2 className="mb-2  font-semibold text-gray-400 uppercase  dark:text-white">{language?.legal}</h2>
+                     <ul className="text-white">
+                        <li className="mb-2 flex">
+                           <a href="#" onClick={() => { getIPData("Anchor tag privacy policy from footer", "/privacypolicy"); setShowModalPrivacy(1) }}
+                              className="hover:underline hover:text-gray-400 text-sm">
+                              {language?.privacypolicy}</a>
+                        </li>
+                        <li>
+                           <a href="#" onClick={() => { getIPData("Anchor tag terms and conditions from footer", "/termsandconditions"); setShowModalTC(1) }} className="hover:underline hover:text-gray-400 text-sm">{language?.termsandconditions}</a>
+                        </li>
+                     </ul>
+                  </div>
+               </div>
+            </div>
+            <hr className="my-6 border-gray-400 sm:mx-auto dark:border-gray-700 lg:my-8" />
+            <div className="sm:flex sm:items-center mx-2 sm:justify-between">
+               <span className="text-sm  sm:text-center text-white">© {new Date().getFullYear()} <a href="https://www.travel2kashmir.com" className="hover:underline">{language?.poweredby} Travel2Kashmir</a>. {language?.allrightsreserved}.
+               </span>
+               <div className="flex mt-4 space-x-6  sm:justify-center sm:mt-0">
+                  <div onClick={() => { getIPData("Anchor tag Facebook", "/facebok") }} className="text-white hover:text-gray-400 dark:hover:text-white mr-4">
+                     <a href="https://www.facebook.com/travel2kashmir" ><svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clipRule="evenodd" /></svg></a>
+                     <span className="sr-only">Facebook page</span>
+                  </div>
+               </div>
+            </div>
+         </footer>
 
 
          <div className={showModalTC === 1 ? "block" : "hidden"}>

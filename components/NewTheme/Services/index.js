@@ -2,7 +2,7 @@ import React from 'react';
 import icon from '../../GlobalData'
 import Loader from '../Loaders/Loader';
 
-function Services({ allHotelDetails, hotelDetailLoader ,lang}) {
+function Services({ services, hotelDetailLoader ,lang}) {
     let i = 0;
 
     return (
@@ -11,9 +11,10 @@ function Services({ allHotelDetails, hotelDetailLoader ,lang}) {
                 <h2 className=" text-center font-semibold text-2xl md:text-4xl">{lang?.propertyServices}</h2>
                 {hotelDetailLoader === 0 ?
                     <Loader size={`w-full h-56 md:h-64 rounded-lg mt-10`} /> :
-                    <div className="py-10 grid grid-flow-row-dense grid-cols-5 lg:grid-cols-5 md:grid-cols-4 md:col-span-9  grid-cols-2  md:gap-3 gap-1 lg:gap-3">
+                    <div className="py-10 grid grid-flow-row-dense  lg:grid-cols-5 md:grid-cols-4 md:col-span-9  grid-cols-2  md:gap-3 gap-1 lg:gap-3">
+                       
                         {
-                            allHotelDetails?.services?.map((item, idx) => {
+                            services?.map((item, idx) => {
                                 return (
                                     <React.Fragment key={idx}>
                                         {(() => {

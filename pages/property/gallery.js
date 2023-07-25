@@ -1238,7 +1238,7 @@ function Gallery() {
                           />
                         </div>
                         <div className="col-span-6 sm:col-span-3 mt-2">
-                          <p className="text-sm text-sm text-red-700 font-light">
+                          <p className="text-sm text-red-700 font-light">
                             {error?.image_link}
                           </p>
                           {spin === 0 ? (
@@ -1284,7 +1284,7 @@ function Gallery() {
                                             focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
                           placeholder="Image Title"
                         />
-                        <p className="text-sm text-sm text-red-700 font-light">
+                        <p className="text-sm text-red-700 font-light">
                           {error?.image_title}
                         </p>
                       </div>
@@ -1312,7 +1312,7 @@ function Gallery() {
                                             focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
                           defaultValue=""
                         />
-                        <p className="text-sm text-sm text-red-700 font-light">
+                        <p className="text-sm text-red-700 font-light">
                           {error?.image_description}
                         </p>
                       </div>
@@ -1407,7 +1407,7 @@ function Gallery() {
                           className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg 
                                             focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
                         />
-                        <p className="text-sm text-sm text-red-700 font-light">
+                        <p className="text-sm text-red-700 font-light">
                           {error?.image_link}
                         </p>
                       </div>
@@ -1431,7 +1431,7 @@ function Gallery() {
                           className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg 
                                             focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
                         />
-                        <p className="text-sm text-sm text-red-700 font-light">
+                        <p className="text-sm text-red-700 font-light">
                           {error?.image_title}
                         </p>
                       </div>
@@ -1459,7 +1459,7 @@ function Gallery() {
                                             focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
                           defaultValue=""
                         />
-                        <p className="text-sm text-sm text-red-700 font-light">
+                        <p className="text-sm text-red-700 font-light">
                           {error?.image_description}
                         </p>
                       </div>

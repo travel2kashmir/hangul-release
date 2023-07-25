@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import StarIcon from '@mui/icons-material/Star';
 import Header from './Header';
 import Loader from '../Loaders/Loader'
@@ -10,13 +10,28 @@ import BookingForm from '../Booking';
 function Home({ allHotelDetails, menu, setMenu, hotelDetailLoader, lang, setLang }) {
 
     const [showModalBooking, setShowModalBooking] = useState(0);
-
+    const [mainPic,setMainPic]=useState('/imghome.webp') 
+    // // /imghome.webp
+    useEffect(()=>{
+        function findCoverPhoto(){
+            try{
+                setMainPic(allHotelDetails?.images?.filter(i=>i.image_title=='Cover')[0].image_link);
+            }
+            catch(ex){
+                setMainPic('/imghome.webp')
+            }
+        }
+        findCoverPhoto();
+    },[allHotelDetails])
     return (
         <section className="relative h-screen md:h-screen z-50">
             <div className="absolute inset-0">
                 {/* <div className="absolute inset-0 bg-[url('https://themewagon.github.io/sogo/images/slider-7.jpg')] bg-no-repeat bg-cover bg-center"></div> */}
-                <div className="absolute inset-0 bg-[url('/imghome.webp')] bg-no-repeat bg-cover bg-center"></div>
-                <div className="absolute inset-0 bg-black opacity-50"></div>
+                <div className="absolute h-full w-full">
+                    <img src={mainPic} alt="cover" className={`h-full w-full`}/>
+                </div>
+               
+                <div className="absolute inset-0 bg-black opacity-30"></div>
             </div>
 
             <Header
@@ -32,8 +47,8 @@ function Home({ allHotelDetails, menu, setMenu, hotelDetailLoader, lang, setLang
                 {hotelDetailLoader === 0 ? <Loader size={`h-8 w-32`} /> :
                     <>  <h1 className="text-white font-extralight tracking-widest text-sm md:text-xl lg:text-lg lg:font-normal 2xl:font-medium">
                         {lang?.welcomeTo}
-                         {allHotelDetails?.star_rating===0?<></>:<>{allHotelDetails?.star_rating} <i><StarIcon className="text-2xl" sx={{ color: 'orange' }} /> </i></>} 
-                         {` ${lang?.hotel}`}</h1></>}
+                        {allHotelDetails?.star_rating === 0 ? <></> : <>{allHotelDetails?.star_rating} <i><StarIcon className="text-2xl" sx={{ color: 'orange' }} /> </i></>}
+                        {` ${lang?.hotel}`}</h1></>}
                 <h1 className="text-3xl px-6 font-bold mt-3 text-white md:text-6xl lg:text-7xl"> {hotelDetailLoader === 0 ? <Loader size='h-8 w-44 md:h-9 md:w-5/12 lg:h-16 lg:w-6/12' /> : allHotelDetails?.description_title} </h1>
 
                 <div className=' lg:hidden mt-40'>

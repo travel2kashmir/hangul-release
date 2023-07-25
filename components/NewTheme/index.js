@@ -75,7 +75,7 @@ function Hotel({ language, HotelDetails,
                 hotelDetailLoader={hotelDetailLoader}
                 lang={lang}
             />
-            
+
             <Rooms
                 rooms={rooms}
                 showRoom={showRoom}
@@ -94,7 +94,7 @@ function Hotel({ language, HotelDetails,
             />
 
             <Services
-                allHotelDetails={allHotelDetails}
+                services={services}
                 hotelDetailLoader={hotelDetailLoader}
                 lang={lang}
             />

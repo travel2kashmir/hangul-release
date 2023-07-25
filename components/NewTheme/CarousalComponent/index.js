@@ -1,10 +1,21 @@
-import React from 'react'
+import React,{useState} from 'react'
 import Carousel from 'better-react-carousel';
 import Loader from '../Loaders/Loader';
+import ImagesSlider from '../../utils/ImagesSlider';
 
 
 function CarousalComponent({ type = 'review', data = [], title, id, hotelDetailLoader }) {
-    return (
+    const [imageSlideShow, setImageSlideShow] = useState(0);
+    const [visibleImage, setVisibleImage] = useState();
+    const [allImagesLink, setAllImagesLink] = useState([]);
+ 
+    function activateImagesSlider(image_index, allImages) {
+       setVisibleImage(image_index)
+       setAllImagesLink(allImages.map(i => i.image_link))
+       setImageSlideShow(1)
+ 
+    }
+    return (<>
         <section id={id} className={`px-5 py-10 ${type === 'room' ? '' : 'bg-slate-200'}`}>
 
             <div>
@@ -70,7 +81,12 @@ function CarousalComponent({ type = 'review', data = [], title, id, hotelDetailL
 
                                                 <p className='text-center text-slate-500 tracking-wide py-10'>{resource?.review_author}</p>
                                             </> :
-                                            <img width="100%" style={{ height: "350px" }} className="rounded-lg" src={resource?.image_link} />
+                                            <img width="100%" 
+                                            style={{ height: "350px" }} 
+                                            className="rounded-lg" 
+                                            src={resource?.image_link} 
+                                            onClick={() => activateImagesSlider(index, data)}
+                                            />
                                     }
 
                                 </Carousel.Item>
@@ -83,6 +99,14 @@ function CarousalComponent({ type = 'review', data = [], title, id, hotelDetailL
             </div>
 
         </section>
+          <div className={imageSlideShow === 1 ? "block" : "hidden"}>
+          <ImagesSlider
+             visibleImage={visibleImage}
+             images={allImagesLink}
+             setShowModal={(e) => setImageSlideShow(e)} />
+
+       </div>
+       </>
     )
 }
 

@@ -1,8 +1,12 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react'
 import StarRatings from 'react-star-ratings';
-import icon from '../../components/GlobalData'
-import { english, french, arabic } from '../../components/Languages/Languages'
+import english from '../../components/Languages/en';
+import icon from '../../components/GlobalData';
+import { logger, reqSerializer } from '../../utills/logger'
+import french from '../../components/Languages/fr';
+import axios from 'axios'
 import Marquee from "react-easy-marquee";
+import arabic from '../../components/Languages/ar'
 import Carousel from 'better-react-carousel';
 import Headloader from './Loaders/headloader';
 import SubHeading from './Loaders/subheading';
@@ -10,24 +14,24 @@ import GallerySlider from './Loaders/galleryslider';
 import ImageLoader from '../../components/loaders/imageloader';
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
+import "swiper/css/pagination";
 import "swiper/css/navigation";
+// import required modules
 import SwiperCore, { Autoplay, Pagination, Navigation } from "swiper";
-import axios from 'axios';
 import Router, { useRouter } from "next/router";
-import { logger, reqSerializer } from '../../utills/logger'
 import LineLoader from '../../components/loaders/lineloader';
 import BookingForm from '../../components/utils/BookingForm';
-import Contactus from '../../components/utils/Contactus';
 import Color from '../../components/colors/Color';
+import Contactus from '../../components/utils/Contactus';
 import GlobalData from '../../components/GlobalData';
 import Modal from '../../components/NewTheme/modal';
 import ImagesSlider from '../../components/utils/ImagesSlider';
 var currentUser;
 var currentProperty;
 var currentLogged;
-var i = 0;
 var checkInDate;
 var checkOutDate;
+var i = 0;
 var defaultRate = {
    base_rate_amount: '1071',
    tax_rate_amount: '175',
@@ -39,32 +43,59 @@ function Classic(args) {
    SwiperCore.use([Navigation, Pagination, Autoplay]);
    const [showModalPrivacy, setShowModalPrivacy] = useState(0)
    const [showModalTC, setShowModalTC] = useState(0)
-   const [language, setLanguage] = useState(english);
+   const [phone, setPhone] = useState({});
    const [ip, setIP] = useState({});
+   const [language, setLanguage] = useState(english);
    const [calendarIn, setCalendarIn] = useState(false);
-   const [checkinDate, setCheckinDate] = useState();
-   const [checkoutDate, setCheckoutDate] = useState();
    const [children, setChildren] = useState(false);
    const [guests, setGuests] = useState(false);
+   const [date, setDate] = useState();
    const [calendarOut, setCalendarOut] = useState(false);
    const [visible, setVisible] = useState(0);
-   const [d1, setD1] = useState();
-   const [d2, setD2] = useState();
    const [email, setEmail] = useState({});
    const [allRooms, setAllRooms] = useState({});
    const [allPackages, setAllPackages] = useState({});
    const [rate, setRate] = useState(defaultRate);
    const [amenity, setAmenity] = useState(false);
+   const [checkinDate, setCheckinDate] = useState();
+   const [checkoutDate, setCheckoutDate] = useState();
    const [packages, setPackages] = useState(false);
    const [open, setOpen] = useState({
       "view": false,
       "id": ''
    });
    const [singleRoom, setSingleRoom] = useState(false);
+   const [d1, setD1] = useState();
+   const [d2, setD2] = useState();
+   const [guest, setGuest] = useState(4);
+   const [child, setChild] = useState(2);
    const [smSidebar, setSmSidebar] = useState(false)
    const [allHotelDetails, setAllHotelDetails] = useState([]);
    const [country, setCountry] = useState()
    const [averageRating, setAverageRating] = useState()
+
+   /** Router for Redirection **/
+   const router = useRouter();
+   useEffect(() => {
+      const firstfun = () => {
+         if (typeof window !== 'undefined') {
+            setLanguage(args?.language)
+         }
+      }
+      firstfun();
+      const current = new Date();
+      let month = current.getMonth() + 1;
+      fetchHotelDetails();
+      checkInDate = `${current.getFullYear()}-${month < +10 ? `0${month}` : `${month}`}-${current.getDate()}`;
+      checkOutDate = `${current.getFullYear()}-${month < +10 ? `0${month}` : `${month}`}-${current.getDate() + 1}`;
+      setD1(new Date(`${current.getFullYear()}-${month < +10 ? `0${month}` : `${month}`}-${current.getDate()}`).toString().slice(4, 10));
+      setD2(new Date(`${current.getFullYear()}-${month < +10 ? `0${month}` : `${month}`}-${current.getDate() + 1}`).toString().slice(4, 10));
+      setCheckinDate(checkInDate);
+      setCheckoutDate(checkOutDate);
+      setVisible(1);
+   }, [args?.language])
+
+
    useEffect(() => {
       getData();
    }, [])
@@ -90,43 +121,12 @@ function Classic(args) {
       if (state === false) { getIPData(`${section} section expanded`, `/${section}`) }
       if (state === true) { getIPData(`${section}  section contract`, `/${section}`) }
    }
+
    //   For Single Room Logger
    function getSingleSection(state, name, section) {
       if (state === false) { getIPData(`${name} ${section} expanded`, `/${section}/${name.trim().replace(" ", "-")}`) }
       if (state === true) { getIPData(`${name} ${section} contract`, `/${section}/${name.trim().replace(" ", "-")}`) }
    }
-   const changeCheckIn = (d1) => {
-      setCheckinDate(d1);
-      setD1(new Date(d1).toString().slice(4, 10));
-      setCalendarIn(!calendarIn)
-   }
-
-   const changeCheckOut = (d2) => {
-      setCheckoutDate(d2)
-      setD2(new Date(d2).toString().slice(4, 10));
-      setCalendarOut(!calendarOut);
-   }
-
-
-
-   /** Router for Redirection **/
-   const router = useRouter();
-   useEffect(() => {
-      if (typeof window !== 'undefined') {
-         setLanguage(args?.language)
-      }
-      const current = new Date();
-      let month = current.getMonth() + 1;
-      checkInDate = `${current.getFullYear()}-${month < +10 ? `0${month}` : `${month}`}-${current.getDate()}`;
-      checkOutDate = `${current.getFullYear()}-${month < +10 ? `0${month}` : `${month}`}-${current.getDate() + 1}`;
-      setD1(new Date(`${current.getFullYear()}-${month < +10 ? `0${month}` : `${month}`}-${current.getDate()}`).toString().slice(4, 10));
-      setD2(new Date(`${current.getFullYear()}-${month < +10 ? `0${month}` : `${month}`}-${current.getDate() + 1}`).toString().slice(4, 10));
-      setCheckinDate(checkInDate);
-      setCheckoutDate(checkOutDate);
-      fetchHotelDetails();
-      setVisible(1);
-   }, [args?.language])
-
 
    const fetchHotelDetails = async () => {
       setAllHotelDetails(args?.allHotelDetails);
@@ -134,7 +134,7 @@ function Classic(args) {
          setCountry(GlobalData.CountryData.filter(i => i?.country_code === args?.allHotelDetails?.address[0]?.address_country)[0]?.country_name)
       }
       catch (ex) {
-         setCountry(args?.allHotelDetails?.address[0]?.address_country)
+         setCountry("INDIA")
       }
       calculateTotalRating(args?.allHotelDetails?.Reviews);
       setVisible(1)
@@ -142,8 +142,8 @@ function Classic(args) {
 
    function calculateTotalRating(reviews) {
       try {
-         let rating = reviews?.map(review => review.review_rating);
-         let totalRating = rating?.reduce((acc, current) => acc + current, 0);
+         let rating = reviews.map(review => review.review_rating);
+         let totalRating = rating.reduce((acc, current) => acc + current, 0);
          let average = totalRating / rating.length;
          setAverageRating(average)
       }
@@ -163,12 +163,22 @@ function Classic(args) {
          setLanguage(arabic)
       }
    })
+   // Function for Check In
+   const changeCheckIn = (d1) => {
+      setCheckinDate(d1);
+      setD1(new Date(d1).toString().slice(4, 10));
+   }
+   // Function for Check Out
+   const changeCheckOut = (d2) => {
+      setCheckoutDate(d2)
+      setD2(new Date(d2).toString().slice(4, 10));
+   }
+
    const [imageSlideShow, setImageSlideShow] = useState(0);
    const [visibleImage, setVisibleImage] = useState();
    const [allImagesLink, setAllImagesLink] = useState([]);
 
    function activateImagesSlider(image_index, allImages) {
-
       setVisibleImage(image_index)
       setAllImagesLink(allImages.map(i => i.image_link))
       setImageSlideShow(1)
@@ -182,6 +192,7 @@ function Classic(args) {
                <div className="header-logo">
                   {/* <span className="material-icons-outlined header-logo-icon">
                      mode_of_travel</span> */}
+                  {/* {args?.allHotelDetails.logo !== '' ? <img src={args?.allHotelDetails.logo} alt="logo" className='h-full w-full' /> : <></>} */}
                   <span className='text-sky-600'>{args?.allHotelDetails?.property_name}
                   </span>
                </div>
@@ -238,7 +249,7 @@ function Classic(args) {
             </div>
 
             <div className={smSidebar === true ? "block" : "hidden"}>
-               <aside id="sidebar" className="fixed  lg:hidden z-20 h-full top-14 right-0 h-min flex  flex-shrink-0 flex-col w-full transition-width duration-75" aria-label="Sidebar">
+               <aside id="sidebar" className="fixed  lg:hidden z-20  top-14 right-0 h-min flex  flex-shrink-0 flex-col w-full transition-width duration-75" aria-label="Sidebar">
                   <div className="relative  flex-1 flex flex-col min-h-0 border-r border-gray-200 bg-white pt-0">
                      <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
                         <div className="flex-1 px-3 bg-white divide-y space-y-1">
@@ -410,6 +421,7 @@ function Classic(args) {
                                           style={{ height: "270px" }}
                                           className="rounded-lg"
                                           src={resource?.image_link}
+                                          alt="room_images"
                                           onClick={() => activateImagesSlider(index, args?.allHotelDetails?.images)} />
                                     </Carousel.Item>
                                  )
@@ -514,7 +526,9 @@ function Classic(args) {
                                                             <Carousel.Item key={index} >
                                                                <img width="100%"
                                                                   onClick={() => activateImagesSlider(index, resource?.room_images)}
-                                                                  style={{ height: "160px", marginBottom: "10px" }} src={room_resource?.image_link} />
+                                                                  style={{ height: "160px", marginBottom: "10px" }}
+                                                                  src={room_resource?.image_link}
+                                                                  alt={"Room Image"} />
                                                                <span className='text-gray-700' >{room_resource?.image_title}</span>
                                                             </Carousel.Item>
                                                          )
@@ -532,7 +546,7 @@ function Classic(args) {
                                                       }), getSingleSection(open?.view, resource?.room_name, "Rooms")
                                                    }}
                                                       className='bg-green-600 sm:inline-flex text-white
-            focus:ring-4 focus:ring-green-200 font-semibold text-white 
+            focus:ring-4 focus:ring-green-200 font-semibold
              rounded-lg text-sm px-4 py-2.5 text-center 
                 ease-linear transition-all duration-150'>
                                                       {language?.booknow}
@@ -1030,7 +1044,7 @@ function Classic(args) {
                                                          }); getSingleSection(open?.view, resource?.package_name, "Packages")
                                                       }}
                                                          className='bg-green-600 sm:inline-flex text-white
-            focus:ring-4 focus:ring-green-200 font-semibold text-white 
+            focus:ring-4 focus:ring-green-200 font-semibold 
              rounded-lg text-sm px-4 py-2.5 text-center 
                 ease-linear transition-all duration-150'>
                                                          {language?.booknow}
@@ -1287,119 +1301,107 @@ function Classic(args) {
 
             </div>
          </div>
+       {/* Footer */}
+       <footer className="bg-gray-900 lg:mt:8 py-6">
+       <div className="md:flex md:justify-between mx-6">
+          <div className="mb-6 md:mb-0">
+             <div className="header-logo lg:px-8 md:px-8 px-20">
+                {/* <span className="material-icons-outlined header-logo-icon">
+                   mode_of_travel</span> */}
+                {/* {args?.allHotelDetails.logo !== '' ? <img src={args?.allHotelDetails.logo} alt="logo" className='h-full w-full' /> : <></>} */}
+                <span className='text-sky-600 text-xl'>
+                   <div className={visible === 0 ? 'block w-32 ml-1 mb-2' : 'hidden'}><Headloader /></div>
+                   <div className={visible === 1 ? 'block' : 'hidden'}>
+                      {args?.allHotelDetails?.property_name}</div></span>
+             </div>
+             <div className='flex mt-1 flex-col lg:pl-0 pl-14 md:pl-0 capitalize'>
+                <span className='lg:px-20 px-16 text-sm text-white'>
+                   <div className={visible === 0 ? 'block h-2 w-32 mb-8' : 'hidden'}><LineLoader /></div>
+                   <div className={visible === 1 ? 'block' : 'hidden'}>
+                      {args?.allHotelDetails?.address?.[i]?.address_street_address}, {args?.allHotelDetails?.address?.[i]?.address_city}
+                   </div> </span>
+                <span className='lg:px-20 px-16 text-sm text-white'>
+                   <div className={visible === 0 ? 'block h-2 w-32 mb-8' : 'hidden'}><LineLoader /></div>
+                   <div className={visible === 1 ? 'block' : 'hidden'}> {args?.allHotelDetails?.address?.[i]?.address_province}, {args?.allHotelDetails?.address?.[i]?.address_zipcode}
+                   </div>
+                </span>
+                <span className='lg:px-20 px-16 text-sm text-white uppercase'>
+                   <div className={visible === 0 ? 'block h-2 w-16 mb-8' : 'hidden'}><LineLoader /></div>
+                   <div className={visible === 1 ? 'block' : 'hidden'}>{country}
+                   </div></span></div>
+          </div>
+          <div className=" mt-2 grid grid-cols-2 gap-14 lg:gap-36 sm:grid-cols-3">
+             <div>
+                <h2 className="mb-2 font-semibold text-gray-400 uppercase">{language?.quicklinks}</h2>
+                <ul className="text-white ">
+                   <li className="mb-2">
+                      <a href="#home" onClick={() => { getIPData("Anchor tag Home from footer", "/home") }} className="hover:underline hover:text-gray-400  text-sm">{language?.home}</a>
+                   </li>
+                   <li className="mb-2">
+                      <a href="#about" onClick={() => { getIPData("Anchor tag About from footer", "/about") }} className="hover:underline hover:text-gray-400 text-sm">{language?.about}</a>
+                   </li>
+                   <li className="mb-2">
+                      <a href="#gallery" onClick={() => { getIPData("Anchor tag Gallery from footer", "/gallery") }} className="hover:underline hover:text-gray-400 text-sm">{language?.gallery}</a>
+                   </li>
+                   <li>
+                      <a href="#contactus" onClick={() => { getIPData("Anchor tag Contact us from footer", "/contactus") }} className="hover:underline hover:text-gray-400 text-sm">{language?.contactus}</a>
+                   </li>
+                </ul>
+             </div>
+             <div>
+                <h2 className="mb-2 font-semibold  uppercase text-gray-400">{language?.contactus}</h2>
+                <ul className="text-white">
+                   <li className="flex mb-2 hover:text-gray-400">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="mr-0.5 mt-1 w-3 h-3">
+                         <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+                      </svg>
+                      <a href={`tel://${args?.phone?.contact_data}`} onClick={() => { getIPData("Anchor tag phone icon from footer", "/contactus") }} className=" text-sm hover:underline">
+                         <div className={visible === 0 ? 'block h-2 w-32 mb-6' : 'hidden'}><LineLoader /></div>
+                         <div className={visible === 1 ? 'block' : 'hidden'}>
+                            {args?.phone?.contact_data}
+                         </div></a>
+                   </li>
+                   <li className="flex hover:text-gray-400">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="mt-1 mr-0.5 w-4 h-4">
+                         <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                      </svg>
+                      <a href={`mailto:${args?.email?.contact_data}`} onClick={() => { getIPData("Anchor tag mail from footer", "/mailus") }} className="text-sm hover:underline">
+                         <div className={visible === 0 ? 'block h-2 w-32 mb-6' : 'hidden'}><LineLoader /></div>
+                         <div className={visible === 1 ? 'block' : 'hidden'}>
+                            {args?.email?.contact_data} </div></a>
+                   </li>
+                </ul>
+             </div>
+             <div className='mr-8'>
+                <h2 className="mb-2  font-semibold text-gray-400 uppercase  dark:text-white">{language?.legal}</h2>
+                <ul className="text-white">
+                   <li className="mb-2 flex">
+                      <a href="#" onClick={() => { getIPData("Anchor tag privacy policy from footer", "/privacypolicy"); setShowModalPrivacy(1) }}
+                         className="hover:underline hover:text-gray-400 text-sm">
+                         {language?.privacypolicy}</a>
+                   </li>
+                   <li>
+                      <a href="#" onClick={() => { getIPData("Anchor tag terms and conditions from footer", "/termsandconditions"); setShowModalTC(1) }} className="hover:underline hover:text-gray-400 text-sm">{language?.termsandconditions}</a>
+                   </li>
+                </ul>
+             </div>
+          </div>
+       </div>
+       <hr className="my-6 border-gray-400 sm:mx-auto dark:border-gray-700 lg:my-8" />
+       <div className="sm:flex sm:items-center mx-2 sm:justify-between">
+          <span className="text-sm  sm:text-center text-white">© {new Date().getFullYear()} <a href="https://www.travel2kashmir.com" className="hover:underline">{language?.poweredby} Travel2Kashmir</a>. {language?.allrightsreserved}.
+          </span>
+          <div className="flex mt-4 space-x-6  sm:justify-center sm:mt-0">
+             <div onClick={() => { getIPData("Anchor tag Facebook", "/facebok") }} className="text-white hover:text-gray-400 dark:hover:text-white mr-4">
+                <a href="https://www.facebook.com/travel2kashmir" ><svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clipRule="evenodd" /></svg></a>
+                <span className="sr-only">Facebook page</span>
+             </div>
 
-         {/* Footer */}
-         <footer className="bg-gray-900 mt-12 lg:mt:8 py-6">
-            <div className="md:flex md:justify-between mx-6">
-               <div className="mb-6 md:mb-0">
-                  <div className="header-logo md:px-8 px-20">
-                     {/* <span className="material-icons-outlined header-logo-icon">
-                        mode_of_travel</span> */}
-                     {args?.allHotelDetails.logo !== '' ? <img src={args?.allHotelDetails.logo} className='h-full w-full' /> : <></>}
-                     <span className='text-sky-600 text-xl '>
-                        <div className={visible === 0 ? 'block w-32 ml-1 mb-2' : 'hidden'}><Headloader /></div>
-                        <div className={visible === 1 ? 'block' : 'hidden'}>
-                           {args?.allHotelDetails?.property_name}</div></span>
-                  </div>
-                  <div className='flex mt-1 flex-col lg:pl-0 pl-14 md:pl-0'>
-                     <span className='lg:px-20 px-16 text-sm text-white'>
-                        <div className={visible === 0 ? 'block h-2 w-32 mb-8' : 'hidden'}><LineLoader /></div>
-                        <div className={visible === 1 ? 'block' : 'hidden'}>
-                           {args?.allHotelDetails?.address?.[i]?.address_street_address}, {args?.allHotelDetails?.address?.[i]?.address_city}
-                        </div> </span>
-                     <span className='lg:px-20 px-16 text-sm text-white capitalize'>
-                        <div className={visible === 0 ? 'block h-2 w-32 mb-8' : 'hidden'}><LineLoader /></div>
-                        <div className={visible === 1 ? 'block' : 'hidden'}> {args?.allHotelDetails?.address?.[i]?.address_province}, {args?.allHotelDetails?.address?.[i]?.address_zipcode}
-                        </div>
-                     </span>
-                     <span className='lg:px-20 px-16 text-sm text-white uppercase'>
-                        <div className={visible === 0 ? 'block h-2 w-16 mb-8' : 'hidden'}><LineLoader /></div>
-                        <div className={visible === 1 ? 'block' : 'hidden'}>
-                           {country}
 
+          </div>
+       </div>
+    </footer>
 
-                        </div></span></div>
-               </div>
-               <div className=" mt-2 grid grid-cols-2 gap-14 lg:gap-36 sm:grid-cols-3">
-                  <div>
-                     <h2 className="mb-2 font-semibold text-gray-400 uppercase">{language?.quicklinks}</h2>
-                     <ul className="text-white ">
-                        <li className="mb-2">
-                           <a href="#home" onClick={() => { getIPData("Anchor tag Home from footer", "/home") }} className="hover:underline hover:text-gray-400  text-sm">{language?.home}</a>
-                        </li>
-                        <li className="mb-2">
-                           <a href="#about" onClick={() => { getIPData("Anchor tag About from footer", "/about") }} className="hover:underline hover:text-gray-400 text-sm">{language?.about}</a>
-                        </li>
-                        <li className="mb-2">
-                           <a href="#gallery" onClick={() => { getIPData("Anchor tag Gallery from footer", "/gallery") }} className="hover:underline hover:text-gray-400 text-sm">{language?.gallery}</a>
-                        </li>
-                        <li>
-                           <a href="#contactus" onClick={() => { getIPData("Anchor tag Contact us from footer", "/contactus") }} className="hover:underline hover:text-gray-400 text-sm">{language?.contactus}</a>
-                        </li>
-                     </ul>
-                  </div>
-                  <div>
-                     <h2 className="mb-2 font-semibold  uppercase text-gray-400">{language?.contactus}</h2>
-                     <ul className="text-white">
-                        <li className="flex mb-2 hover:text-gray-400">
-                           <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="mr-0.5 mt-1 w-3 h-3">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
-                           </svg>
-                           <a href={`tel:${args?.phone?.contact_data}`} onClick={() => { getIPData("Anchor tag phone icon from footer", "/contactus") }} className=" text-sm hover:underline">
-                              <div className={visible === 0 ? 'block h-2 w-32 mb-6' : 'hidden'}><LineLoader /></div>
-                              <div className={visible === 1 ? 'block' : 'hidden'}>
-                                 {args?.phone?.contact_data}
-                              </div></a>
-                        </li>
-                        <li className="flex  hover:text-gray-400">
-                           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="mt-1 mr-0.5 w-4 h-4">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
-                           </svg>
-                           <a href={`mailto:${args?.email?.contact_data}`} onClick={() => { getIPData("Anchor tag mail from footer", "/mailus") }} className="text-sm hover:underline">
-                              <div className={visible === 0 ? 'block h-2 w-32 mb-6' : 'hidden'}><LineLoader /></div>
-                              <div className={visible === 1 ? 'block' : 'hidden'}>
-                                 {args?.email?.contact_data} </div></a>
-                        </li>
-                     </ul>
-                  </div>
-                  <div className='mr-8'>
-                     <h2 className="mb-2  font-semibold text-gray-400 uppercase  dark:text-white">
-                        {language?.legal}</h2>
-                     <ul className="text-white">
-                        <li className="mb-2 flex">
-                           <a href="#" onClick={() => { getIPData("Anchor tag privacy policy from footer", "/privacypolicy"); setShowModalPrivacy(1) }} className="hover:underline hover:text-gray-400 text-sm">
-                              {language?.privacypolicy}</a>
-                        </li>
-                        <li>
-                           <a href="#" onClick={() => { getIPData("Anchor tag terms and conditions from footer", "/termsandconditions"); setShowModalTC(1) }}
-                              className="hover:underline hover:text-gray-400 text-sm">{language?.termsandconditions}</a>
-                        </li>
-                     </ul>
-                  </div>
-               </div>
-            </div>
-            <hr className="my-6 border-gray-400 sm:mx-auto dark:border-gray-700 lg:my-8" />
-            <div className="sm:flex sm:items-center mx-2 sm:justify-between">
-               <span className="text-sm text-white sm:text-center">© {new Date().getFullYear()} <a href="https://www.travel2kashmir.com" className="hover:underline">{language?.poweredby} Travel2Kashmir</a>. {language?.allrightsreserved}.
-               </span>
-               <div className="flex mt-4 space-x-6  sm:justify-center sm:mt-0">
-                  <a href="#" onClick={() => { getIPData("Anchor tag Facebook", "/facebok") }} className="text-white hover:text-gray-400 dark:hover:text-white">
-                     <a href="https://www.facebook.com/travel2kashmir" target='_blank'><svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clipRule="evenodd" /></svg></a>
-                     <span className="sr-only">Facebook page</span>
-                  </a>
-                  {/* <a href="#" onClick={() => { getIPData("Anchor tag Instagram", "/instagram") }} className="text-white hover:text-gray-400 dark:hover:text-white">
-                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fillRule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" clipRule="evenodd" /></svg>
-                     <span className="sr-only">Instagram page</span>
-                  </a>
-                  <a href="#" onClick={() => { getIPData("Anchor tag Twitter", "/twitter") }} className="text-white hover:text-gray-400 dark:hover:text-white">
-                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" /></svg>
-                     <span className="sr-only">Twitter page</span>
-                  </a> */}
-                  <div className="flex space-x-4">
-                  </div>
-               </div>
-            </div>
-         </footer>
 
          <div className={showModalTC === 1 ? "block" : "hidden"}>
             <Modal
@@ -1408,6 +1410,7 @@ function Classic(args) {
                setShowModal={(e) => setShowModalTC(e)}
             />
          </div>
+
 
          <div className={showModalPrivacy === 1 ? "block" : "hidden"}>
             <Modal
@@ -1424,6 +1427,7 @@ function Classic(args) {
                setShowModal={(e) => setImageSlideShow(e)} />
 
          </div>
+
 
 
       </>

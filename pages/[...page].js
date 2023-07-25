@@ -41,7 +41,6 @@ function Page({ data, room_data, package_data }) {
   const fetchProperty = async () => {
 
     if (data?.http_code != '404') {
-      
       var language = router.locale || 'en';
       console.log("language is " + language)
       fetchLanguage(language)
@@ -64,9 +63,6 @@ function Page({ data, room_data, package_data }) {
 
       data?.contacts?.map(i => { if (i.contact_type === 'Phone') { setPhone(i) } });
       data?.contacts?.map(i => { if (i.contact_type === 'Email') { setEmail(i) } });
-      
-      
-    
       setDisp(1);
       logger.info("url  to fetch property details hitted successfully")
     }

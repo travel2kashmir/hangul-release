@@ -85,7 +85,7 @@ function ClassicDark(args) {
       firstfun();
       const current = new Date();
       let month = current.getMonth() + 1;
-
+      fetchHotelDetails();
       checkInDate = `${current.getFullYear()}-${month < +10 ? `0${month}` : `${month}`}-${current.getDate()}`;
       checkOutDate = `${current.getFullYear()}-${month < +10 ? `0${month}` : `${month}`}-${current.getDate() + 1}`;
       setD1(new Date(`${current.getFullYear()}-${month < +10 ? `0${month}` : `${month}`}-${current.getDate()}`).toString().slice(4, 10));
@@ -95,13 +95,8 @@ function ClassicDark(args) {
       setVisible(1);
    }, [args?.language])
 
-   /* Function call to fetch Current Property Details when page loads */
-   useEffect(() => {
-      fetchHotelDetails();
-
-   }, []);
-
-   useEffect(() => {
+   
+ useEffect(() => {
       getData();
    }, [])
 
@@ -182,7 +177,7 @@ function ClassicDark(args) {
    const [imageSlideShow, setImageSlideShow] = useState(0);
    const [visibleImage, setVisibleImage] = useState();
    const [allImagesLink, setAllImagesLink] = useState([]);
-   
+
    function activateImagesSlider(image_index, allImages) {
       setVisibleImage(image_index)
       setAllImagesLink(allImages.map(i => i.image_link))
@@ -254,7 +249,7 @@ function ClassicDark(args) {
                </div>
 
                <div className={smSidebar === true ? "block" : "hidden"}>
-                  <aside id="sidebar" className="fixed  lg:hidden z-20 h-full top-14 right-0 h-min flex  flex-shrink-0 flex-col w-full transition-width duration-75" aria-label="Sidebar">
+                  <aside id="sidebar" className="fixed  lg:hidden z-20 top-14 right-0 h-min flex  flex-shrink-0 flex-col w-full transition-width duration-75" aria-label="Sidebar">
                      <div className="relative  flex-1 flex flex-col min-h-0 border-r border-gray-200 bg-gray-900 pt-0">
                         <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
                            <div className="flex-1 px-3 bg-gray-900 divide-y space-y-1">
@@ -425,11 +420,12 @@ function ClassicDark(args) {
                                  {args?.allHotelDetails?.images?.map((resource, index) => {
                                     return (
                                        <Carousel.Item key={index} >
-                                          <img width="100%" 
-                                          style={{ height: "270px" }} 
-                                          className="rounded-lg" 
-                                          onClick={() => activateImagesSlider(index, args?.allHotelDetails?.images)}
-                                          src={resource?.image_link} /></Carousel.Item>
+                                          <img width="100%"
+                                             style={{ height: "270px" }}
+                                             className="rounded-lg"
+                                             alt="property_images"
+                                             onClick={() => activateImagesSlider(index, args?.allHotelDetails?.images)}
+                                             src={resource?.image_link} /></Carousel.Item>
                                     )
                                  })}</Carousel></div>
                         </div>
@@ -522,8 +518,10 @@ function ClassicDark(args) {
                                                             return (
                                                                <Carousel.Item key={index} >
                                                                   <img width="100%"
-                                                                  onClick={() => activateImagesSlider(index, resource?.room_images)}
-                                                                  className="rounded" style={{ height: "160px", marginBottom: "10px" }} src={room_resource?.image_link} />
+                                                                     onClick={() => activateImagesSlider(index, resource?.room_images)}
+                                                                     className="rounded" style={{ height: "160px", marginBottom: "10px" }} 
+                                                                     alt="room_images"
+                                                                     src={room_resource?.image_link} />
                                                                   <span className='text-gray-400' >{room_resource?.image_title}</span>
                                                                </Carousel.Item>
                                                             )
@@ -541,7 +539,7 @@ function ClassicDark(args) {
                                                          })
                                                       }}
                                                          className='bg-green-600 sm:inline-flex text-white
-            focus:ring-4 focus:ring-green-200 font-semibold text-white 
+            focus:ring-4 focus:ring-green-200 font-semibold 
              rounded-lg text-sm px-4 py-2.5 text-center 
                 ease-linear transition-all duration-150'>
                                                          {language?.booknow}
@@ -1045,7 +1043,7 @@ function ClassicDark(args) {
                                                             })
                                                          }}
                                                             className='bg-green-600 sm:inline-flex text-white
-            focus:ring-4 focus:ring-green-200 font-semibold text-white 
+            focus:ring-4 focus:ring-green-200 font-semibold
              rounded-lg text-sm px-4 py-2.5 text-center 
                 ease-linear transition-all duration-150'>
                                                             {language?.booknow}
@@ -1320,7 +1318,7 @@ function ClassicDark(args) {
                   <div className="header-logo lg:px-8 md:px-8 px-20">
                      {/* <span className="material-icons-outlined header-logo-icon">
                         mode_of_travel</span> */}
-                     {args?.allHotelDetails.logo !== '' ? <img src={args?.allHotelDetails.logo} className='h-full w-full' /> : <></>}
+                     {/* {args?.allHotelDetails.logo !== '' ? <img src={args?.allHotelDetails.logo} alt="logo" className='h-full w-full' /> : <></>} */}
                      <span className='text-sky-600 text-xl'>
                         <div className={visible === 0 ? 'block w-32 ml-1 mb-2' : 'hidden'}><Headloader /></div>
                         <div className={visible === 1 ? 'block' : 'hidden'}>
@@ -1404,13 +1402,9 @@ function ClassicDark(args) {
                <span className="text-sm  sm:text-center text-white">© {new Date().getFullYear()} <a href="https://www.travel2kashmir.com" className="hover:underline">{language?.poweredby} Travel2Kashmir</a>. {language?.allrightsreserved}.
                </span>
                <div className="flex mt-4 space-x-6  sm:justify-center sm:mt-0">
-                  <a href="#" onClick={() => { getIPData("Anchor tag Facebook", "/facebok") }} className="text-white hover:text-gray-400 dark:hover:text-white">
+                  <div onClick={() => { getIPData("Anchor tag Facebook", "/facebok") }} className="text-white hover:text-gray-400 dark:hover:text-white mr-4">
                      <a href="https://www.facebook.com/travel2kashmir" ><svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clipRule="evenodd" /></svg></a>
                      <span className="sr-only">Facebook page</span>
-                  </a>
-
-
-                  <div className="flex space-x-4">
                   </div>
                </div>
             </div>

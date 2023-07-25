@@ -1,4 +1,3 @@
-// components/Gallery.js
 import React, { useEffect, useState } from 'react';
 
 
@@ -26,7 +25,7 @@ const ImagesSlider = ({ images, visibleImage, setShowModal }) => {
               onClick={() => {
                 setShowModal(0)
               }}
-              className="absolute top-3 right-0 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-4"
+              className="absolute top-5 right-0 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-4"
             >
               <svg
                 className="w-5 h-5"
@@ -50,13 +49,39 @@ const ImagesSlider = ({ images, visibleImage, setShowModal }) => {
               onClick={handlePrev}
               className="absolute top-1/2 left-0 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-4"
             >
-              Previous
+              <svg
+                className={"block cursor-pointer"}
+                xmlns="http://www.w3.org/2000/svg"
+                height="32px"
+                viewBox="0 0 24 24"
+                width="28px"
+               fill="#ffffff"
+              >
+                <path d="M0 0h24v24H0V0z" fill="none" opacity=".87" />
+                <path d="M17.51 3.87L15.73 2.1 5.84 12l9.9 9.9 1.77-1.77L9.38 12l8.13-8.13z" />
+              </svg>
             </button>
             <button
               onClick={handleNext}
               className="absolute top-1/2 right-0 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-4"
             >
-              Next
+              {/* right arrow */}
+               <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className={"block cursor-pointer"}
+                enableBackground="new 0 0 24 24"
+                height="32px"
+                viewBox="0 0 24 24"
+                width="28px"
+                fill="#ffffff"
+              >
+                <g>
+                  <path d="M0,0h24v24H0V0z" fill="none" />
+                </g>
+                <g>
+                  <polygon points="6.23,20.23 8,22 18,12 8,2 6.23,3.77 14.46,12" />
+                </g>
+              </svg>
             </button>
           </div>
         </div>

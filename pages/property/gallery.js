@@ -754,7 +754,7 @@ function Gallery() {
           {/* loaders for images start */}
           <div
             className={
-              visible === 0 ? "block w-auto  h-auto m-6 flex" : "hidden"
+              visible === 0 ? "w-auto  h-auto m-6 flex" : "hidden"
             }
           >
             <div className="mr-2">
@@ -1118,7 +1118,7 @@ function Gallery() {
                           }
                           defaultValue={actionImage?.image_description}
                         />
-                        <p className="text-sm text-sm text-red-700 font-light">
+                        <p className="text-sm text-red-700 font-light">
                           {error?.image_description}
                         </p>
                       </div>
@@ -1145,7 +1145,7 @@ function Gallery() {
                           className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
                           placeholder="Image Title"
                         />
-                        <p className="text-sm text-sm text-red-700 font-light">
+                        <p className="text-sm text-red-700 font-light">
                           {error?.image_title}
                         </p>
                       </div>

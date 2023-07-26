@@ -73,6 +73,9 @@ function Classic(args) {
    const [allHotelDetails, setAllHotelDetails] = useState([]);
    const [country, setCountry] = useState()
    const [averageRating, setAverageRating] = useState()
+   const [privacyPolicy, setPrivacyPolicy] = useState()
+   const [termsConditions, setTermsConditions] = useState()
+
 
    /** Router for Redirection **/
    const router = useRouter();
@@ -129,6 +132,9 @@ function Classic(args) {
    }
 
    const fetchHotelDetails = async () => {
+     try{
+      setPrivacyPolicy(args?.allHotelDetails?.privacy_conditions[0]?.privacy_policy)
+      setTermsConditions(args?.allHotelDetails?.privacy_conditions[0]?.terms_condition)
       setAllHotelDetails(args?.allHotelDetails);
       try {
          setCountry(GlobalData.CountryData.filter(i => i?.country_code === args?.allHotelDetails?.address[0]?.address_country)[0]?.country_name)
@@ -138,6 +144,8 @@ function Classic(args) {
       }
       calculateTotalRating(args?.allHotelDetails?.Reviews);
       setVisible(1)
+     } 
+     catch(ex){}
    }
 
    function calculateTotalRating(reviews) {
@@ -1404,7 +1412,7 @@ function Classic(args) {
          <div className={showModalTC === 1 ? "block" : "hidden"}>
             <Modal
                title={`Terms & Conditions`}
-               description={`Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.`}
+               description={termsConditions}
                setShowModal={(e) => setShowModalTC(e)}
             />
          </div>
@@ -1413,7 +1421,7 @@ function Classic(args) {
          <div className={showModalPrivacy === 1 ? "block" : "hidden"}>
             <Modal
                title={`Privacy Policy`}
-               description={`Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.`}
+               description={privacyPolicy}
                setShowModal={(e) => setShowModalPrivacy(e)}
             />
          </div>

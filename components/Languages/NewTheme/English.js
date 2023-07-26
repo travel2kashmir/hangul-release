@@ -1,5 +1,10 @@
 export default {
     language:"Language",
+    property:"Property",
+    name:"Name",
+    subject:"Subject",
+    message:"Message",
+    send:"Send",
     selectedLanguage:"English",
     about:"About",
     rooms:"Rooms",

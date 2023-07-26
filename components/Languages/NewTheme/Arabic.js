@@ -1,5 +1,9 @@
 export default {
     language:"لغة",
+    name:"اسم",
+    subject:"موضوع",
+    message:"رسالة",
+    send:"يرسل",
     selectedLanguage:"عربي",
     about:"عن",
     rooms:"غرف",

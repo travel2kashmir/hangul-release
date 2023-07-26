@@ -8,7 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 function Contactus({ color, language, property_id }) {
     const [error, setError] = useState({})
     const [contact, setContact] = useState({})
-    function sendQuery() {
+    function sendQuery(e) {
         e.preventDefault();
         let result = ValidateContactUs(contact);
         if (result === true) {
@@ -52,7 +52,7 @@ function Contactus({ color, language, property_id }) {
             <div className="flex items-start justify-between p-5  rounded-t">
                 <h3 className={`${color?.text} text-4xl font-bold mx-auto`}>Contact Us</h3>
             </div>
-
+                
             <form id='contact-form' className="space-y-1 mx-10 my-2 lg:space-y-0">
                 <div>
                     <label htmlFor="email" className={`block mb-2 text-sm font-medium ${color?.textgray}`}>{language?.email}</label>
@@ -81,18 +81,7 @@ function Contactus({ color, language, property_id }) {
                     <p className="text-sm  text-red-700 font-light">{error?.sender_name}</p>
                 </div>
 
-                {/* <div className='pt-2'>
-                    <label htmlFor="number" className={`block mb-2 text-sm font-medium ${color?.textgray} `}>{language?.contact}</label>
-                    <input
-                        onChange={(e) => {
-                            // setContact({
-                            //     ...contact,
-                            //     contact_phoneNumber: e.target.value,
-                            // })
-                        }}
-                        type="number" id="number" className={`shadow-sm ${color?.greybackground} border border-gray-300  text-sm rounded-lg  block w-full p-2.5  dark:placeholder-gray-400 dark:text-black`} placeholder="123-233-3232" required />
-                    <p className="text-sm  text-red-700 font-light">{error?.contact_phoneNumber}</p>
-                </div> */}
+              
 
                 <div className='pt-2'>
                     <label htmlFor="subject" className={`block mb-2 text-sm font-medium ${color?.textgray}`}>{language?.subject}</label>
@@ -123,7 +112,7 @@ function Contactus({ color, language, property_id }) {
 
                 <div className='flex justify-center p-5'>
                     <button
-                        onClick={() => sendQuery()}
+                        onClick={(e) => sendQuery(e)}
                         className="mx-auto py-3 px-5 text-sm font-medium text-center text-white rounded-lg bg-cyan-700 sm:w-fit hover:bg-cyan-950 focus:ring-4 focus:outline-none">
                         {language?.send} {language?.message}
                     </button>

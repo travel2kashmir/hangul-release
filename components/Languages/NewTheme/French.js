@@ -1,5 +1,9 @@
 export default {
     language:"Langue",
+    name:"Nom",
+    subject:"Sujet",
+    message:"Message",
+    send:"Envoyer",
     selectedLanguage:"Français",
     about:"à propos",
     rooms:"Pièces",

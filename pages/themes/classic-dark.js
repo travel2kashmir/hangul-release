@@ -73,6 +73,8 @@ function ClassicDark(args) {
    const [allHotelDetails, setAllHotelDetails] = useState([]);
    const [country, setCountry] = useState()
    const [averageRating, setAverageRating] = useState()
+   const [privacyPolicy, setPrivacyPolicy] = useState()
+   const [termsConditions, setTermsConditions] = useState()
 
    /** Router for Redirection **/
    const router = useRouter();
@@ -129,6 +131,9 @@ function ClassicDark(args) {
    }
 
    const fetchHotelDetails = async () => {
+      try{
+         setPrivacyPolicy(args?.allHotelDetails?.privacy_conditions[0]?.privacy_policy)
+      setTermsConditions(args?.allHotelDetails?.privacy_conditions[0]?.terms_condition)
       setAllHotelDetails(args?.allHotelDetails);
       try {
          setCountry(GlobalData.CountryData.filter(i => i?.country_code === args?.allHotelDetails?.address[0]?.address_country)[0]?.country_name)
@@ -138,6 +143,9 @@ function ClassicDark(args) {
       }
       calculateTotalRating(args?.allHotelDetails?.Reviews);
       setVisible(1)
+      }
+      catch(ex){}
+      
    }
 
    function calculateTotalRating(reviews) {
@@ -1400,7 +1408,7 @@ function ClassicDark(args) {
             </div>
             <hr className="my-6 border-gray-400 sm:mx-auto dark:border-gray-700 lg:my-8" />
             <div className="sm:flex sm:items-center mx-2 sm:justify-between">
-               <span className="text-sm  sm:text-center text-white">© {new Date().getFullYear()} <a href="https://www.travel2kashmir.com" className="hover:underline">{language?.poweredby} Travel2Kashmir</a>. {language?.allrightsreserved}.
+               <span className="text-sm  sm:text-center text-white">© {new Date().getFullYear()} <a href="https://www.travel2kashmir.com" className="hover:underline">{language?.poweredby}  Travel2Kashmir</a>. {language?.allrightsreserved}.
                </span>
                <div className="flex mt-4 space-x-6  sm:justify-center sm:mt-0">
                   <div onClick={() => { getIPData("Anchor tag Facebook", "/facebok") }} className="text-white hover:text-gray-400 dark:hover:text-white mr-4">
@@ -1411,9 +1419,10 @@ function ClassicDark(args) {
             </div>
          </footer>
          <div className={showModalTC === 1 ? "block" : "hidden"}>
+           
             <Modal
                title={`Terms & Conditions`}
-               description={`Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.`}
+               description={termsConditions}
                setShowModal={(e) => setShowModalTC(e)}
             />
          </div>
@@ -1421,7 +1430,7 @@ function ClassicDark(args) {
          <div className={showModalPrivacy === 1 ? "block" : "hidden"}>
             <Modal
                title={`Privacy Policy`}
-               description={`Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.`}
+               description={privacyPolicy}
                setShowModal={(e) => setShowModalPrivacy(e)}
             />
          </div>

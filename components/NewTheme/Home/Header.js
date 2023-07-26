@@ -3,7 +3,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Loader from '../Loaders/Loader'
 import { english, arabic, french } from '../../Languages/NewTheme';
 
-function Header({ allHotelDetails, menu, setMenu, hotelDetailLoader, lang, setLang }) {
+function Header({ allHotelDetails, menu, setMenu, hotelDetailLoader, lang, setLang, setShowContactUs}) {
     return (
         <header className="relative px-7 md:px-10 py-12 md:py-16 font-bold">
             <div className="flex justify-between">
@@ -20,7 +20,7 @@ function Header({ allHotelDetails, menu, setMenu, hotelDetailLoader, lang, setLa
                             <a href="#photos"><li className='hover:text-slate-300 hover:underline'>{lang?.photos}</li></a>
                             <a href="#services"><li className='hover:text-slate-300 hover:underline'>{lang?.services}</li></a>
                             <a href="#reviews"><li className='hover:text-slate-300 hover:underline'>{lang?.reviews}</li></a>
-                            <a href="#footer"><li className='hover:text-slate-300 hover:underline'>{lang?.contactUs}</li></a>
+                            <a onClick={()=>setShowContactUs(1)}><li className='hover:text-slate-300 hover:underline'>{lang?.contactUs}</li></a>
                         </ul>
                     </span>
 

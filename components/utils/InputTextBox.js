@@ -28,7 +28,7 @@ function InputTextBox({label,visible,defaultValue,onChangeAction,error,color,req
           </span>
         </Tooltip>:
         <></>}
-        {<p className={`text-sm ${defVal<wordLimit?`text-black`:`text-red-400`} p-1`}> {defVal}/{wordLimit}</p>}
+        {<p className={`text-sm ${defVal<wordLimit?`${color?.text}`:`text-red-400`} p-1`}> {defVal}/{wordLimit}</p>}
         </div>
        
         </div>

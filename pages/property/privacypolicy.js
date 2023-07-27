@@ -21,8 +21,7 @@ var currentLogged;
 let colorToggle;
 
 function PrivacyPolicy() {
-    const [darkModeSwitcher, setDarkModeSwitcher] = useState()
-    const [color, setColor] = useState({})
+   const [color, setColor] = useState({})
     const [mode, setMode] = useState();
     const [visible, setVisible] = useState(0);
     const [privacy, setPrivacy] = useState(1);
@@ -30,36 +29,53 @@ function PrivacyPolicy() {
     const [spinner, setSpinner] = useState(0);
     const [error, setError] = useState({});
     const [flag, setFlag] = useState([]);
+    const firstfun = () => {
+        if (typeof window !== "undefined") {
+          var locale = localStorage.getItem("Language");
+          colorToggle = localStorage.getItem("colorToggle");
 
+          if (
+            colorToggle === "" ||
+            colorToggle === undefined ||
+            colorToggle === null ||
+            colorToggle === "system"
+          ) {
+
+            window.matchMedia("(prefers-color-scheme:dark)").matches === true
+              ? setColor(colorFile?.dark)
+              : setColor(colorFile?.light);
+            setMode(
+              window.matchMedia("(prefers-color-scheme:dark)").matches === true
+                ? true
+                : false
+            );
+          } else if (colorToggle === "true" || colorToggle === "false") {
+           setColor(colorToggle == "true" ? colorFile?.dark : colorFile?.light);
+            setMode(colorToggle === "true" ? true : false);
+          }
+          {
+            if (locale === "ar") {
+              language = arabic;
+            }
+            if (locale === "en") {
+              language = english;
+            }
+            if (locale === "fr") {
+              language = french;
+            }
+          }
+          /** Current Property Details fetched from the local storage **/
+          currentProperty = JSON.parse(localStorage.getItem("property"));
+          currentLogged = JSON.parse(localStorage.getItem("Signin Details"));
+        }
+      };
 
     useEffect(() => {
-        function firstfun() {
-            if (typeof window !== 'undefined') {
-                var locale = localStorage.getItem("Language");
-                const colorToggle = JSON.parse(localStorage.getItem("ColorToggle"));
-                const color = JSON.parse(localStorage.getItem("Color"));
-                currentProperty = JSON.parse(localStorage.getItem("property"));
-                setColor(color);
-                setDarkModeSwitcher(colorToggle)
-                if (locale === "ar") {
-                    language = arabic;
-                }
-                if (locale === "en") {
-                    language = english;
-                }
-                if (locale === "fr") {
-                    language = french;
-                }
-            }
-        }
+       
         firstfun();
         fetchPrivacy();
-
+        router.push(window.location)
     }, [])
-
-    useEffect(() => {
-        setColor(DarkModeLogic(darkModeSwitcher))
-    }, [darkModeSwitcher])
 
     const colorToggler = (newColor) => {
         if (newColor === "system") {
@@ -98,69 +114,69 @@ function PrivacyPolicy() {
 
 
     /* Edit Basic Details Function */
-  const submitPrivacy = () => {
-    if (flag === 1) {
-      if (objChecker.isEqual(unEditedData, privacy)) {
-        toast.warn("APP: No change in Privacy policy and T&C detected. ", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-        setFlag([]);
-      } else {
-        setSpinner(1);
+    const submitPrivacy = () => {
+        if (flag === 1) {
+            if (objChecker.isEqual(unEditedData, privacy)) {
+                toast.warn("APP: No change in Privacy policy and T&C detected. ", {
+                    position: "top-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+                setFlag([]);
+            } else {
+                setSpinner(1);
 
-        const final_data ={
-            "privacy_conditions":[privacy]
+                const final_data = {
+                    "privacy_conditions": [privacy]
+                }
+
+                const url = "/api/privacy_conditions";
+                axios
+                    .post(url, final_data, {
+                        header: { "content-type": "application/json" },
+                    })
+                    .then((response) => {
+                        setSpinner(0);
+                        toast.success("API: Privacy Policy and T&C Updated Successfully!", {
+                            position: "top-center",
+                            autoClose: 5000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                        });
+                        setFlag([]);
+                    })
+                    .catch((error) => {
+                        setSpinner(0);
+                        toast.error("API:Privacy Policy and T&C Update Error!", {
+                            position: "top-center",
+                            autoClose: 5000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                        });
+                    });
+            }
+        } else {
+            toast.warn("APP: No change in Basic Details detected. ", {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
         }
-
-        const url = "/api/privacy_conditions";
-        axios
-          .post(url, final_data, {
-            header: { "content-type": "application/json" },
-          })
-          .then((response) => {
-            setSpinner(0);
-            toast.success("API: Privacy Policy and T&C Updated Successfully!", {
-              position: "top-center",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-            });
-            setFlag([]);
-          })
-          .catch((error) => {
-            setSpinner(0);
-            toast.error("API:Privacy Policy and T&C Update Error!", {
-              position: "top-center",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-            });
-          });
-      }
-    } else {
-      toast.warn("APP: No change in Basic Details detected. ", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-    }
-  };
+    };
 
     return (
 
@@ -182,7 +198,7 @@ function PrivacyPolicy() {
             {/* main content  */}
             <div
                 id="main-content"
-                className={`${color?.greybackground} h-full px-4 pt-24 pb-2 relative overflow-y-auto lg:ml-64`}
+                className={`${color?.greybackground} h-screen px-4 pt-24 pb-2 relative overflow-y-auto lg:ml-64`}
             >
                 {/* bread crumb start*/}
                 <nav className="flex mb-5 ml-4" aria-label="Breadcrumb">
@@ -380,19 +396,19 @@ function PrivacyPolicy() {
                 </div>
             </div>
 
-             {/* Toast Container */}
-        <ToastContainer
-          position="top-center"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-        />
-        <Footer color={color} Primary={english.Foot} />
+            {/* Toast Container */}
+            <ToastContainer
+                position="top-center"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
+            <Footer color={color} Primary={english.Foot} />
         </>
 
 

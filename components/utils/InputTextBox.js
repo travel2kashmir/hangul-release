@@ -15,7 +15,7 @@ function InputTextBox({label,visible,defaultValue,onChangeAction,error,color,req
                   <div  data-testid ="child0" className="relative w-full mb-3">
                   <div className="flex">
                     <label
-                      className={`text-sm font-medium ${color?.text} block mb-2`}
+                      className={`text-sm font-medium ${color?.text} block mb-2 w-full`}
                       htmlFor="grid-password"
                     >
                       {label}

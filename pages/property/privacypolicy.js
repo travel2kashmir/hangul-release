@@ -1,22 +1,44 @@
 import React, { useState, useEffect } from 'react';
-import english from '../../components/Languages/en';
-import french from "../../components/Languages/fr";
-import arabic from "../../components/Languages/ar";
-import Router from 'next/router';
+import { english, arabic, french } from '../../components/Languages/Languages';
+import Title from '../../components/title';
+import Sidebar from "../../components/Sidebar";
+import Header from "../../components/Header";
+import Headloader from '../../components/loaders/headloader';
+import InputTextBox from '../../components/utils/InputTextBox';
+import router from 'next/router';
 import DarkModeLogic from '../../components/darkmodelogic';
+import colorFile from "../../components/colors/Color";
+import Link from 'next/link';
+import axios from "axios";
+import Button from '../../components/Button';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import objChecker from "lodash";
+import Footer from '../../components/Footer';
 var language;
+var currentProperty;
+var currentLogged;
+let colorToggle;
 
 function PrivacyPolicy() {
     const [darkModeSwitcher, setDarkModeSwitcher] = useState()
     const [color, setColor] = useState({})
+    const [mode, setMode] = useState();
+    const [visible, setVisible] = useState(0);
+    const [privacy, setPrivacy] = useState(1);
+    const [unEditedData, setUnEditedData] = useState(0);
+    const [spinner, setSpinner] = useState(0);
+    const [error, setError] = useState({});
+    const [flag, setFlag] = useState([]);
 
 
     useEffect(() => {
-        const firstfun = () => {
+        function firstfun() {
             if (typeof window !== 'undefined') {
                 var locale = localStorage.getItem("Language");
                 const colorToggle = JSON.parse(localStorage.getItem("ColorToggle"));
                 const color = JSON.parse(localStorage.getItem("Color"));
+                currentProperty = JSON.parse(localStorage.getItem("property"));
                 setColor(color);
                 setDarkModeSwitcher(colorToggle)
                 if (locale === "ar") {
@@ -31,72 +53,349 @@ function PrivacyPolicy() {
             }
         }
         firstfun();
-        Router.push("./privacypolicy");
+        fetchPrivacy();
+
     }, [])
 
     useEffect(() => {
         setColor(DarkModeLogic(darkModeSwitcher))
     }, [darkModeSwitcher])
 
+    const colorToggler = (newColor) => {
+        if (newColor === "system") {
+            window.matchMedia("(prefers-color-scheme:dark)").matches === true
+                ? setColor(colorFile?.dark)
+                : setColor(colorFile?.light);
+            localStorage.setItem("colorToggle", newColor);
+        } else if (newColor === "light") {
+            setColor(colorFile?.light);
+            localStorage.setItem("colorToggle", false);
+        } else if (newColor === "dark") {
+            setColor(colorFile?.dark);
+            localStorage.setItem("colorToggle", true);
+        }
+
+    };
+
+    // fetch data 
+    function fetchPrivacy() {
+        const { address_province, address_city, property_category, property_id } =
+            currentProperty;
+        const url = `/api/${address_province.replace(
+            /\s+/g,
+            "-"
+        )}/${address_city}/${property_category}s/${property_id}`;
+
+        axios.get(url).then((response) => {
+            setVisible(1)
+            setUnEditedData(response.data?.privacy_conditions[0])
+            setPrivacy(response.data?.privacy_conditions[0])
+        }).catch((error) => {
+            console.log(error);
+        })
+
+    }
+
+
+    /* Edit Basic Details Function */
+  const submitPrivacy = () => {
+    if (flag === 1) {
+      if (objChecker.isEqual(unEditedData, privacy)) {
+        toast.warn("APP: No change in Privacy policy and T&C detected. ", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        setFlag([]);
+      } else {
+        setSpinner(1);
+
+        const final_data ={
+            "privacy_conditions":[privacy]
+        }
+
+        const url = "/api/privacy_conditions";
+        axios
+          .post(url, final_data, {
+            header: { "content-type": "application/json" },
+          })
+          .then((response) => {
+            setSpinner(0);
+            toast.success("API: Privacy Policy and T&C Updated Successfully!", {
+              position: "top-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+            });
+            setFlag([]);
+          })
+          .catch((error) => {
+            setSpinner(0);
+            toast.error("API:Privacy Policy and T&C Update Error!", {
+              position: "top-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+            });
+          });
+      }
+    } else {
+      toast.warn("APP: No change in Basic Details detected. ", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  };
+
     return (
 
-        <div className={`${color?.whitebackground} mb-4 sm:p-6 xl:p-8 2xl:col-span-2`} >
-            <div className="pt-2">
-                <div className=" md:px-4 mx-auto w-full ">
-                    <div className="border-b-2 py-8 border-cyan-600">
-                        <div className="flex items-center justify-between mb-6">
-                            <div>
-                                <span className={`${color?.text} text-xl sm:text-3xl mb-8 leading-none font-bold `}>{language?.privacypolicy}</span>
-
+        <>
+            <Title name={`Engage |  ${language?.basicdetails}`} />
+            <Header
+                color={color}
+                Primary={english.Side}
+                Type={currentLogged?.user_type}
+                Sec={colorToggler}
+                mode={mode}
+                setMode={setMode}
+            />
+            <Sidebar
+                color={color}
+                Primary={english.Side}
+                Type={currentLogged?.user_type}
+            />
+            {/* main content  */}
+            <div
+                id="main-content"
+                className={`${color?.greybackground} h-full px-4 pt-24 pb-2 relative overflow-y-auto lg:ml-64`}
+            >
+                {/* bread crumb start*/}
+                <nav className="flex mb-5 ml-4" aria-label="Breadcrumb">
+                    <ol className="inline-flex items-center space-x-1 md:space-x-2">
+                        <li className="inline-flex items-center">
+                            <div
+                                className={`${color?.text} text-base font-medium  inline-flex items-center`}
+                            >
+                                <svg
+                                    className="w-5 h-5 mr-2.5"
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+                                </svg>
+                                <Link
+                                    href={
+                                        currentLogged?.id.match(/admin.[0-9]*/)
+                                            ? "../admin/adminlanding"
+                                            : "./landing"
+                                    }
+                                    className={`${color?.text} text-base font-medium  inline-flex items-center`}
+                                >
+                                    <a>{language?.home}</a>
+                                </Link>
                             </div>
-                            <div className="flex-shrink-0">
-                                <div className="flex items-center justify-end flex-1 mr-10 text-cyan-600 text-lg font-bold">
-
+                        </li>
+                        <li>
+                            <div className="flex items-center">
+                                <div
+                                    className={`${color?.text} text-base font-medium  inline-flex items-center`}
+                                >
+                                    <svg
+                                        className="w-6 h-6 text-gray-400"
+                                        fill="currentColor"
+                                        viewBox="0 0 20 20"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <path
+                                            fillRule="evenodd"
+                                            d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                            clipRule="evenodd"
+                                        ></path>
+                                    </svg>
+                                    <div className={visible === 0 ? "block w-16" : "hidden"}>
+                                        <Headloader />
+                                    </div>
+                                    <div className={visible === 1 ? "block" : "hidden"}>
+                                        {" "}
+                                        <Link
+                                            href="./propertysummary"
+                                            className={`text-gray-700 text-sm font-medium hover:${color?.text} ml-1 md:ml-2`}
+                                        >
+                                            <a className='capitalize'>{currentProperty?.property_name}</a>
+                                        </Link>
+                                    </div>
                                 </div>
                             </div>
+                        </li>
+                        <li>
+                            <div className="flex items-center">
+                                <div
+                                    className={`${color?.textgray} text-base font-medium  inline-flex items-center`}
+                                >
+                                    <svg
+                                        className="w-6 h-6 text-gray-400"
+                                        fill="currentColor"
+                                        viewBox="0 0 20 20"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <path
+                                            fillRule="evenodd"
+                                            d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                            clipRule="evenodd"
+                                        ></path>
+                                    </svg>
+                                    <span
+                                        className="text-gray-400 ml-1 md:ml-2 font-medium text-sm  "
+                                        aria-current="page"
+                                    >
+                                        {language?.privacypolicy}
+                                    </span>
+                                </div>
+                            </div>
+                        </li>
+                    </ol>
+                </nav>
+                {/* bread crumb end*/}
+                {/* form fields  start*/}
+                <div
+                    className={`${color?.whitebackground} shadow rounded-lg px-12  sm:p-6 xl:p-8  2xl:col-span-2`}
+                >
+                    <h6
+                        className={`${color?.text} text-xl flex leading-none pl-6 lg:pt-2 pt-6  font-bold`}
+                    >
+                        {language?.privacypolicy} & {language?.termsandconditions}
+                    </h6>
+                    <div className="pt-6">
+                        <div className=" md:px-4 mx-auto w-full">
+                            <div className="flex flex-wrap">
+                                {/*Privacy Policy */}
+                                <InputTextBox
+                                    label={language?.privacypolicy}
+                                    visible={visible}
+                                    defaultValue={privacy.privacy_policy}
+                                    wordLimit={1000}
+                                    onChangeAction={(e) => {
+                                        if (e.target.value.length >= 0 && e.target.value.length < 1000) {
+                                            setError({})
+                                            setPrivacy(
+                                                {
+                                                    ...privacy,
+                                                    privacy_policy: e.target.value,
+                                                },
+                                                setFlag(1)
+                                            )
+                                        }
+                                        else {
+                                            setError({ privacy_policy: 'word limit reached' })
+                                        }
+
+                                    }
+
+                                    }
+                                    error={error?.privacy_policy}
+                                    color={color}
+                                    req={true}
+                                    tooltip={false}
+                                />
+
+                                {/*Terms and conditions*/}
+                                <InputTextBox
+                                    label={language?.termsandconditions}
+                                    visible={visible}
+                                    defaultValue={privacy.terms_condition}
+                                    wordLimit={1000}
+                                    onChangeAction={(e) => {
+                                        if (e.target.value.length >= 0 && e.target.value.length < 1000) {
+                                            setError({})
+                                            setPrivacy(
+                                                {
+                                                    ...privacy,
+                                                    terms_condition: e.target.value,
+                                                },
+                                                setFlag(1)
+                                            )
+                                        }
+                                        else {
+                                            setError({ terms_condition: 'word limit reached' })
+                                        }
+
+                                    }
+
+                                    }
+                                    error={error?.terms_condition}
+                                    color={color}
+                                    req={true}
+                                    tooltip={false}
+                                />
+
+
+                                {/* buttons */}
+                                <div className="flex mr-2 items-center justify-end space-x-2 sm:space-x-3 ml-auto">
+                                    <div
+                                        className={flag !== 1 && spinner === 0 ? "block" : "hidden"}
+                                    >
+                                        <Button
+                                            testid="test_button_disabled"
+                                            Primary={language?.UpdateDisabled}
+                                        />
+                                    </div>
+                                    <div
+                                        className={spinner === 0 && flag === 1 ? "block" : "hidden"}
+                                    >
+                                        <Button
+                                            testid="test_button"
+                                            Primary={language?.Update}
+                                            onClick={submitPrivacy}
+                                        />
+                                    </div>
+                                    <div
+                                        className={spinner === 1 && flag === 1 ? "block" : "hidden"}
+                                    >
+                                        <Button
+                                            testid="test_button_spinner"
+                                            Primary={language?.SpinnerUpdate}
+                                        />
+                                    </div>
+                                </div>
+
+                            </div>
                         </div>
-                     <p className="text-sm text-gray-500">
-                    We at Wasai LLC respect the privacy of your personal information and, as such, make every effort to ensure your information is
-                     protected and remains private. As the owner and operator of loremipsum.io (the Website) hereafter referred to in this Privacy 
-                     Policy as Lorem Ipsum, us, our or we, we have provided this Privacy Policy to explain how we collect, use, share and protect information about 
-                     the users of our Website(hereafter referred to as “user”, “you” or your). 
-                    For the purposes of this Agreement, any use of the terms Lorem Ipsum, us, our or we includes Wasai LLC, without limitation.
-                     We will not use or share your personal information with anyone except as described in this Privacy Policy.
-
-                    This Privacy Policy will inform you about the types of personal data we collect, the purposes for which we use 
-                    the data, the ways in which the data is handled and your rights with regard to your personal data.
-                     Furthermore, this Privacy Policy is intended to satisfy the obligation of transparency under the EU General Data
-                      Protection Regulation 2016/679 (GDPR) and the laws implementing GDPR.
-
-                   </p>
-
-                <p className="text-sm text-gray-500 my-4">
-                    The legal basis upon which we rely for the collection and processing of your Personal Information under the GDPR are the following:<br/>
-
-                   1. When signing up subscribing to use our Services, you have given us explicit consent allowing Lorem Ipsum to provide you with our Services and generally to process your information in accordance with this Privacy Policy; 
-                   and to the transfer of your personal data to other jurisdictions including, without limitation, the United States;
-
-                   <br/>2. It is necessary registering you as a user, managing your account and profile, and authenticating you when you log in.
-
-                   <br/>3. It is necessary for our legitimate interests in the proper administration of our website and business; analyzing the use of the website and our Services; assuring the security of our website and Services; 
-                   maintaining back-ups of our databases; and communicating with you.
-                    </p>    
-                    <p className="text-sm text-gray-500 my-4">   
-                    To resolve technical issues you encounter, to respond to your requests for assistance, comments and questions, to analyze crash information, to repair and improve the Services and provide other customer support.
-                   
-                    Our Services, as well as the email messages sent with respect to our Services, may contain links or access to websites operated by third parties that are beyond our control. Links or access to third parties from our Services are not an endorsement by us of such third parties, or their websites, applications,
-                     products, services, or practices.
-                     We are not responsible for the privacy policy,
-                     terms and conditions, practices or the content of such third parties. These third-parties may send their own Cookies to you and independently collect data.
-
-                    If you visit or access a third-party Website, application or other property that is linked or accessed from our Services, we encourage you to read any privacy policies and terms and conditions of that third party before providing any personally identifiable information.
-                     If you have a question about the terms and conditions, privacy policy, practices or contents of a third party, please contact the third party directly.
-                 
-                </p>
                     </div>
                 </div>
             </div>
-        </div>
+
+             {/* Toast Container */}
+        <ToastContainer
+          position="top-center"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
+        <Footer color={color} Primary={english.Foot} />
+        </>
+
+
 
     )
 }

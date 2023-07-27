@@ -790,6 +790,7 @@ inbox:'../../property/inbox'
 "rateCalendarSide":{
   dashboard:'./property/dashboard',
   basicdetails:'./property/basicdetails',
+  tc:'./property/privacypolicy',
   address:'./property/address',
   contact:'./property/contact',
   reviews:'./property/reviews',
@@ -823,6 +824,7 @@ inbox:'../../property/inbox'
 "Side":{
  dashboard:'./dashboard',
  basicdetails:'./basicdetails',
+ tc:'./privacypolicy',
  address:'./address',
  contact:'./contact',
  reviews:'./reviews',
@@ -856,6 +858,7 @@ roomsprices:'../pricecalendar'
 "PlaceSide":{
  dashboard:'../property/dashboard',
  basicdetails:'../property/basicdetails',
+ tc:'../property/privacypolicy',
  address:'../property/address',
  contact:'../property/contact',
  reviews:'../property/reviews',
@@ -891,6 +894,7 @@ roomsprices:'../../pricecalendar'
 "Side1":{
   dashboard:'../dashboard',
   basicdetails:'../basicdetails',
+  tc:'../privacypolicy',
   address:'../address',
   contact:'../contact',
   reviews:'../reviews',
@@ -925,6 +929,7 @@ roomsprices:'../../pricecalendar'
  "Side2":{
   dashboard:'../../dashboard',
   basicdetails:'../../basicdetails',
+  tc:'../../privacypolicy',
   address:'../../address',
   contact:'../../contact',
   reviews:'../../reviews',

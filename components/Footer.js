@@ -34,17 +34,20 @@ function Footer(args) {
     <footer className= {`${args?.color?.whitebackground} md:flex md:items-center md:justify-between shadow rounded-lg p-4 md:p-6 xl:p-8 my-6`}>
     <ul className="flex items-center flex-wrap mb-6 md:mb-0">
         <li>
-        <Link href={{pathname:args?.Primary?.termsandconditions, query: { id: 1 }}}>
+        {/* <Link href={{pathname:args?.Primary?.termsandconditions, query: { id: 1 }}}>
             <span className={`text-sm font-normal ${args?.color?.textgray} hover:cursor-pointer hover:underline mr-4 md:mr-6`}>
-            {language?.termsandconditions}</span></Link></li>
-        <li>
+            {language?.termsandconditions}</span></Link></li> */}
+        
+            <span className={`text-sm font-normal ${args?.color?.textgray} hover:cursor-pointer hover:underline mr-4 md:mr-6`}>
+            {language?.termsandconditions}</span></li>
+        {/* <li>
         <Link href={{pathname:args?.Primary?.privacypolicy, query: { id: 1 }}}><span className={`text-sm font-normal ${args?.color?.textgray} hover:cursor-pointer hover:underline mr-4 md:mr-6`}>
-       {language?.privacypolicy}</span></Link></li>
+       {language?.privacypolicy}</span></Link></li> */}
         <li>
-        <Link href={{pathname:args?.Primary?.licensing, query: { id: 1 }}}><span className={`text-sm font-normal ${args?.color?.textgray} hover:cursor-pointer hover:underline mr-4 md:mr-6`}>
-      {language?.licensing}</span></Link></li>
-        <li><Link href={{pathname:args?.Primary?.cookiepolicy, query: { id: 1 }}}><span className={`text-sm font-normal ${args?.color?.textgray} hover:cursor-pointer hover:underline mr-4 md:mr-6`}>
-        {language?.cookiepolicy}</span></Link></li>
+        <span className={`text-sm font-normal ${args?.color?.textgray} hover:cursor-pointer hover:underline mr-4 md:mr-6`}>
+       {language?.privacypolicy}</span></li>
+        
+        
         <li> <Link href={{pathname:args?.Primary?.contactus, query: { id: 1 }}}><span className={`text-sm font-normal ${args?.color?.textgray} hover:cursor-pointer hover:underline mr-4 md:mr-6`}>
        {language?.contact}</span></Link></li>
     <li><span href="#" className={`text-sm font-normal ${args?.color?.textgray} hover:cursor-pointer hover:underline`}>

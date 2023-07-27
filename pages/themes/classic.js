@@ -132,20 +132,20 @@ function Classic(args) {
    }
 
    const fetchHotelDetails = async () => {
-     try{
-      setPrivacyPolicy(args?.allHotelDetails?.privacy_conditions[0]?.privacy_policy)
-      setTermsConditions(args?.allHotelDetails?.privacy_conditions[0]?.terms_condition)
-      setAllHotelDetails(args?.allHotelDetails);
       try {
-         setCountry(GlobalData.CountryData.filter(i => i?.country_code === args?.allHotelDetails?.address[0]?.address_country)[0]?.country_name)
+         setPrivacyPolicy(args?.allHotelDetails?.privacy_conditions[0]?.privacy_policy)
+         setTermsConditions(args?.allHotelDetails?.privacy_conditions[0]?.terms_condition)
+         setAllHotelDetails(args?.allHotelDetails);
+         try {
+            setCountry(GlobalData.CountryData.filter(i => i?.country_code === args?.allHotelDetails?.address[0]?.address_country)[0]?.country_name)
+         }
+         catch (ex) {
+            setCountry("INDIA")
+         }
+         calculateTotalRating(args?.allHotelDetails?.Reviews);
+         setVisible(1)
       }
-      catch (ex) {
-         setCountry("INDIA")
-      }
-      calculateTotalRating(args?.allHotelDetails?.Reviews);
-      setVisible(1)
-     } 
-     catch(ex){}
+      catch (ex) { }
    }
 
    function calculateTotalRating(reviews) {
@@ -543,7 +543,7 @@ function Classic(args) {
                                                       })}</Carousel></div></div>
 
                                              {/* Book Now Button */}
-                                             <div className='flex pb-8'>
+                                             {/* <div className='flex pb-8'>
                                                 <div className='mr-2 ml-auto justify-end'>
                                                    <button onClick={() => {
                                                       setRate({
@@ -559,7 +559,8 @@ function Classic(args) {
                 ease-linear transition-all duration-150'>
                                                       {language?.booknow}
                                                    </button></div>
-                                             </div></div>
+                                             </div> */}
+                                          </div>
                                        </div>)
                                  })}
 

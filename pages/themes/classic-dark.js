@@ -536,7 +536,7 @@ function ClassicDark(args) {
                                                          })}</Carousel></div></div>
 
                                                 {/* Book Now Button */}
-                                                <div className='flex pb-8'>
+                                                {/* <div className='flex pb-8'>
                                                    <div className='mr-2 ml-auto justify-end'>
                                                       <button onClick={() => {
                                                          setRate({
@@ -552,7 +552,8 @@ function ClassicDark(args) {
                 ease-linear transition-all duration-150'>
                                                          {language?.booknow}
                                                       </button></div>
-                                                </div></div>
+                                                </div> */}
+                                                </div>
                                           </div>)
                                     })}
 

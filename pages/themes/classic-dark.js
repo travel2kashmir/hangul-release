@@ -12,6 +12,7 @@ import Headloader from './Loaders/headloader';
 import SubHeading from './Loaders/subheading';
 import GallerySlider from './Loaders/galleryslider';
 import ImageLoader from '../../components/loaders/imageloader';
+import Banner from '../../components/ClassicTheme/Banner';
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
@@ -1120,27 +1121,8 @@ function ClassicDark(args) {
                         </div>
                      </div>
 
-                     {/* Booking */}
-                     <div id="contactus" className="tour-content-block">
-                        <div className="tour-help">
-                           <div className="tour-help-inner">
-                              <div className="tour-help-content">
-                                 <div className="tour-help-title">{language?.needhelpbooking}</div>
-                                 <div className="tour-help-text">
-                                    {language?.bookingtitle}
-                                 </div>
-                              </div>
-                              <div className="tour-help-call">
-                                 <span className="material-icons-outlined"> call </span>
-                                 <div className="tour-help-call-text">
-                                    <div className={visible === 0 ? 'block h-2 w-32 mb-6' : 'hidden'}><LineLoader /></div>
-                                    <div className={visible === 1 ? 'block' : 'hidden'}>
-                                       {args?.phone?.contact_data}</div>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
+                     {/*call us banner */}
+                     <Banner args={args} language={language} visible={visible}/>
 
                   </div>
                   {/* booking form content  */}

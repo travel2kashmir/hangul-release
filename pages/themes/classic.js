@@ -26,6 +26,7 @@ import Contactus from '../../components/utils/Contactus';
 import GlobalData from '../../components/GlobalData';
 import Modal from '../../components/NewTheme/modal';
 import ImagesSlider from '../../components/utils/ImagesSlider';
+import Banner from '../../components/ClassicTheme/Banner';
 var currentUser;
 var currentProperty;
 var currentLogged;
@@ -1117,27 +1118,9 @@ function Classic(args) {
                      </div>
                   </div>
 
-                  {/* Booking */}
-                  <div id="contactus" className="tour-content-block">
-                     <div className="tour-help">
-                        <div className="tour-help-inner">
-                           <div className="tour-help-content">
-                              <div className="tour-help-title">{language?.needhelpbooking}</div>
-                              <div className="tour-help-text">
-                                 {language?.bookingtitle}
-                              </div>
-                           </div>
-                           <div className="tour-help-call">
-                              <span className="material-icons-outlined"> call </span>
-                              <div className="tour-help-call-text">
-                                 <div className={visible === 0 ? 'block h-2 w-32 mb-6' : 'hidden'}><LineLoader /></div>
-                                 <div className={visible === 1 ? 'block' : 'hidden'}>
-                                    {args?.phone?.contact_data}</div>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
+                  {/*call us banner */}
+                  <Banner args={args} language={language} visible={visible}/>
+
 
                </div>
                {/* Booking form  */}

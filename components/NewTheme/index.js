@@ -116,8 +116,6 @@ function Hotel({ language, HotelDetails,
             />
               {/* <div className='hidden lg:flex  lg:sticky lg:bottom-0'>
                 <BookingForm color={Color?.light} />
-                
-              
             </div> */}
             
 

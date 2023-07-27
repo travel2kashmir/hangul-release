@@ -2171,14 +2171,16 @@ span.tour-amount-new{
 
 .tour-help-inner{
   position: relative;
-  display: flex;
+  /* display: flex;
   flex-direction: column;
   align-items: flex-start;
-  justify-content: space-between;
+  justify-content: space-between; */
   padding-top: 3rem;
   padding-bottom: 3rem;
   padding-left: 2.5rem;
   padding-right: 2.5rem;
+  margin-bottom: 1rem;
+  height:20rem;
 }
 
 .tour-help-inner::before{
@@ -2211,6 +2213,8 @@ span.tour-amount-new{
   position: relative;
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
+  width: fit-content;
+ 
 }
 
 .tour-help-content{

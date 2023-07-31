@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Title from "../../components/title";
-import objChecker, { property } from "lodash";
+import objChecker from "lodash";
 import Lineloader from "../../components/loaders/lineloader";
 import Sidebar from "../../components/Sidebar";
 import Header from "../../components/Header";
@@ -100,7 +100,7 @@ export default function BasicDetails() {
         /\s+/g,
         "-"
       )}/${address_city}/${property_category}s/${property_id}`;
-      //  const url = `/api2/property/t2k001`;
+      
       const response = await axios.get(url);
       setBasicDetails(response.data);
       setAllHotelDetails(response.data);

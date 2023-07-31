@@ -48,7 +48,7 @@ function Contactus({ color, language, property_id }) {
 
     }
     return (
-        <div className={`${color?.whitebackground} rounded-lg shadow relative border`}>
+        <div className={`${color?.whitebackground} rounded-lg shadow relative border mb-4`}>
             <div className="flex items-start justify-between p-5  rounded-t">
                 <h3 className={`${color?.text} text-4xl font-bold mx-auto`}>Contact Us</h3>
             </div>

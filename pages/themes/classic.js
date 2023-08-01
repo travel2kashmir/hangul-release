@@ -201,7 +201,7 @@ function Classic(args) {
                <div className="header-logo">
                   {/* <span className="material-icons-outlined header-logo-icon">
                      mode_of_travel</span> */}
-                  {/* {args?.allHotelDetails.logo !== '' ? <img src={args?.allHotelDetails.logo} alt="logo" className='h-full w-full' /> : <></>} */}
+                  {args?.allHotelDetails.logo !== '' ? <img src={args?.allHotelDetails.logo} alt="logo" className='h-full w-full' /> : <></>}
                   <span className='text-sky-600'>{args?.allHotelDetails?.property_name}
                   </span>
                </div>
@@ -1119,12 +1119,12 @@ function Classic(args) {
                   </div>
 
                   {/*call us banner */}
-                  <Banner args={args} language={language} visible={visible}/>
+                  <Banner args={args} language={language} visible={visible} />
 
 
                </div>
                {/* Booking form  */}
-               <div className="tour-sidebar">
+               <div className={`tour-sidebar ${Color?.light?.whitebackground}`}>
                   {/* <div className="tour-receipt">
                      <div className="tour-receipt-head">
                         <div className="tour-amount">
@@ -1300,16 +1300,17 @@ function Classic(args) {
                   <div className="header-logo lg:px-8 md:px-8 px-20">
                      {/* <span className="material-icons-outlined header-logo-icon">
                    mode_of_travel</span> */}
-                     {/* {args?.allHotelDetails.logo !== '' ? <img src={args?.allHotelDetails.logo} alt="logo" className='h-full w-full' /> : <></>} */}
-                     <span className='text-sky-600 text-xl'>
-                        <div className={visible === 0 ? 'block w-32 ml-1 mb-2' : 'hidden'}><Headloader /></div>
-                        <div className={visible === 1 ? 'block' : 'hidden'}>
-                           {args?.allHotelDetails?.property_name}</div></span>
+                     {args?.allHotelDetails.logo !== '' ? <img src={args?.allHotelDetails.logo} alt="logo" className='h-full w-full' /> : <></>}
+
                   </div>
                   <div className='flex mt-1 flex-col lg:pl-0 pl-14 md:pl-0 capitalize'>
+                     <div className='lg:px-20 px-16 text-sky-600 text-xl'>
+                        {args?.allHotelDetails?.property_name}</div>
+
                      <span className='lg:px-20 px-16 text-sm text-white'>
                         <div className={visible === 0 ? 'block h-2 w-32 mb-8' : 'hidden'}><LineLoader /></div>
                         <div className={visible === 1 ? 'block' : 'hidden'}>
+
                            {args?.allHotelDetails?.address?.[i]?.address_street_address}, {args?.allHotelDetails?.address?.[i]?.address_city}
                         </div> </span>
                      <span className='lg:px-20 px-16 text-sm text-white'>

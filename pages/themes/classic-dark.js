@@ -1126,7 +1126,7 @@ function ClassicDark(args) {
 
                   </div>
                   {/* booking form content  */}
-                  <div className="tour-sidebar-dark bg-gray-900 border-0  border-lg">
+                  <div className={`tour-sidebar-dark ${Color?.dark?.whitebackground} border-0  border-lg`}>
                      {/* <div className="tour-receipt-dark">
                      <div className="tour-receipt-head">
                         <div className="tour-amount">
@@ -1296,7 +1296,7 @@ function ClassicDark(args) {
 
 
                      {/* <BookingForm color={Color?.dark}/> */}
-                     <Contactus color={Color?.dark} language={language} />
+                     <Contactus color={Color?.dark} language={language} property_id={args?.allHotelDetails?.property_id}/>
                   </div>
 
                </div>
@@ -1311,12 +1311,11 @@ function ClassicDark(args) {
                      {/* <span className="material-icons-outlined header-logo-icon">
                         mode_of_travel</span> */}
                      {/* {args?.allHotelDetails.logo !== '' ? <img src={args?.allHotelDetails.logo} alt="logo" className='h-full w-full' /> : <></>} */}
-                     <span className='text-sky-600 text-xl'>
-                        <div className={visible === 0 ? 'block w-32 ml-1 mb-2' : 'hidden'}><Headloader /></div>
-                        <div className={visible === 1 ? 'block' : 'hidden'}>
-                           {args?.allHotelDetails?.property_name}</div></span>
+                     
                   </div>
                   <div className='flex mt-1 flex-col lg:pl-0 pl-14 md:pl-0 capitalize'>
+                  <div className='lg:px-20 px-16 text-sky-600 text-xl'>
+                        {args?.allHotelDetails?.property_name}</div>
                      <span className='lg:px-20 px-16 text-sm text-white'>
                         <div className={visible === 0 ? 'block h-2 w-32 mb-8' : 'hidden'}><LineLoader /></div>
                         <div className={visible === 1 ? 'block' : 'hidden'}>

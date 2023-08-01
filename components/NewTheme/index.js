@@ -150,7 +150,7 @@ function Hotel({ language, HotelDetails,
 
             <div className={showContactUs === 1 ? "block" : "hidden"}>
                 <Modal
-                    description={<Contactus color={Color?.light} language={lang} />}
+                    description={<Contactus color={Color?.light} language={lang} property_id={HotelDetails?.property_id}/>}
                     setShowModal={(e) => setShowContactUs(e)}
                 />
             </div>

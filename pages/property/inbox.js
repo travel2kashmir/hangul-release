@@ -397,7 +397,7 @@ function Inbox() {
                                                     <>
                                                     <td onClick={() => readMessage(item)} className="px-2 py-3 flex items-center cursor-pointer whitespace-nowrap space-x-4  lg:mr-0">
                                                         <div className="flex-shrink-0 whitespace-nowrap">
-                                                            <img className="h-6 w-6 rounded" src="https://demo.themesberg.com/windster/images/users/neil-sims.png" alt="Neil image" />
+                                                            <img className="h-6 w-6 rounded" src="/man.png" alt="avatar" />
                                                         </div>
                                                         
                                                         <div onClick={() => readMessage(item)} className={` 
@@ -414,7 +414,7 @@ function Inbox() {
                                                     <>
                                                      <td className="px-2 py-3 flex items-center cursor-pointer whitespace-nowrap space-x-4  lg:mr-0">
                                                      <div className="flex-shrink-0 whitespace-nowrap">
-                                                         <img className="h-6 w-6 rounded" src="https://demo.themesberg.com/windster/images/users/neil-sims.png" alt="Neil image" />
+                                                         <img className="h-6 w-6 rounded" src="/man.png" alt="Neil image" />
                                                      </div>
                                                      
                                                      <div  onClick={() => readMessage(item)} className={` 

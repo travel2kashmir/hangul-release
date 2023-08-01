@@ -64,7 +64,7 @@ function Contactus({ color, language, property_id }) {
                             })
                         }}
 
-                        type="email" id="email" className={`shadow-sm ${color?.greybackground} border border-gray-300  text-sm rounded-lg  block w-full p-2.5  dark:placeholder-gray-400 dark:text-black`} placeholder="name@mail.com" required />
+                        type="email" id="email" className={`shadow-sm ${color?.greybackground} border border-gray-300  text-sm rounded-lg  block w-full p-2.5  ${color?.text}`} placeholder="name@mail.com" required />
                     <p className="text-sm text-red-700 font-light">{error?.sender_email}</p>
                 </div>
 
@@ -77,7 +77,7 @@ function Contactus({ color, language, property_id }) {
                                 sender_name: e.target.value,
                             })
                         }}
-                        type="text" id="name" className={`shadow-sm ${color?.greybackground} border border-gray-300  text-sm rounded-lg  block w-full p-2.5  dark:placeholder-gray-400 dark:text-black`} placeholder="John Snow" required />
+                        type="text" id="name" className={`shadow-sm ${color?.greybackground} border border-gray-300  text-sm rounded-lg  block w-full p-2.5 ${color?.text}`} placeholder="John Snow" required />
                     <p className="text-sm  text-red-700 font-light">{error?.sender_name}</p>
                 </div>
 
@@ -92,7 +92,7 @@ function Contactus({ color, language, property_id }) {
                                 message_subject: e.target.value,
                             })
                         }}
-                        type="text" id="subject" className={`shadow-sm block p-3 w-full text-sm ${color?.greybackground} rounded-lg border border-gray-300 dark:placeholder-gray-400 dark:text-black`} placeholder="Let us know how we can help you" required />
+                        type="text" id="subject" className={`shadow-sm block p-3 w-full text-sm ${color?.greybackground} rounded-lg border border-gray-300 ${color?.text}`} placeholder="Let us know how we can help you" required />
                     <p className="text-sm  text-red-700 font-light">{error?.message_subject}</p>
                 </div>
 

@@ -303,7 +303,7 @@ function ReadMessage() {
                         <>
                             <div className='p-4 flex items-center whitespace-nowrap space-x-6 mr-12 lg:mr-0' key={idx}>
 
-                                <img className="h-10 w-10 rounded-full" src="https://demo.themesberg.com/windster/images/users/neil-sims.png" alt="Neil Sims avatar" />
+                                <img className="h-10 w-10 rounded-full" src="/man.png" alt="Neil Sims avatar" />
 
                                 <div className="text-sm font-normal text-gray-500" key={idx}>
                                     <div className={`text-base  ${color?.tabletext} font-semibold`}>{item?.sender_name}</div>

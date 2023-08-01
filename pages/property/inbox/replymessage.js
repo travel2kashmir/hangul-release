@@ -126,7 +126,7 @@ function ReplyMessage() {
 
                 <div className={`${color?.greybackground}  px-4 `} >
                     <div className='p-4 flex items-center whitespace-nowrap space-x-6 mr-12 lg:mr-0'>
-                        <img className="h-10 w-10 rounded-full" src="https://demo.themesberg.com/windster/images/users/neil-sims.png" alt="Neil Sims avatar" />
+                        <img className="h-10 w-10 rounded-full" src="/man.png" alt="Neil Sims avatar" />
                         <div className="text-sm font-normal text-gray-500">
                             <div className="text-base font-semibold text-gray-900">Neil Sims</div>
                             <div className="text-sm font-normal text-gray-500">neil.thomas@gmail.com</div>

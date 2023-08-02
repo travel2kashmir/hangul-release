@@ -409,28 +409,7 @@ function UserProfileSettings() {
               <div className='hover:bg-gray-100 divide-y mt-2 whitespace-nowrap border-t my-2 border-gray-200'></div>
 
 
-              <div className={`${color?.text} text-lg font-bold  my-4`}>
-                Meetups Near You
-              </div>
-              <div className='flex'>
-                <span className={`${color?.textgray} text-base ml-2  font-medium`}>Get an email when a Dribbble Meetup is posted close to my location</span>
-                <div className='items-center justify-end ml-auto'>
-                <label className="inline-flex relative cursor-pointer">
-
-                  <input type="checkbox" className="sr-only peer" />
-                  <div
-                    className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 
-                 dark:peer-focus:ring-cyan-800 rounded-full peer dark:bg-gray-700 
-                    peer-checked:after:translate-x-full 
-                peer-checked:after:border-white a fter:content-[''] after:absolute after:top-[2px] after:left-[2px] 
-                  after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5
-                   after:transition-all dark:border-gray-600 peer-checked:bg-cyan-600"></div>
-                </label>
-                </div>
-              </div>
-              <div className='hover:bg-gray-100 divide-y mt-2 whitespace-nowrap border-t my-2  border-gray-200'></div>
-
-
+            
               <div className={`${color?.text} text-lg font-bold  my-4`}>
                 New Messages
               </div>

@@ -13,13 +13,14 @@ import { ToastContainer, toast } from "react-toastify";
 import Classic from "../themes/classic";
 import ClassicDark from '../themes/classic-dark'
 import NewTheme from "../../components/NewTheme"
+import ModernTheme from "../../components/ModernTheme"
 import "react-toastify/dist/ReactToastify.css";
 var language;
 var currentUser;
 var currentProperty;
 var currentLogged;
 let colorToggle;
-let premiumThemes = ["New-Theme"];
+let premiumThemes = ["New-Theme","ModernTheme"];
 function Theme() {
   /** State to store Current Property Details **/
   const [allHotelDetails, setAllHotelDetails] = useState([]);
@@ -248,8 +249,8 @@ function Theme() {
                   <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
                 </svg>
 
-                <Link href={currentLogged?.id.match(/admin.[0-9]*/) ? "../admin/adminlanding" : "./landing"} className="text-gray-700 text-base font-medium hover:text-gray-900 inline-flex items-center"><a>{language?.home}</a>
-
+                <Link href={currentLogged?.id.match(/admin.[0-9]*/) ? "../admin/adminlanding" : "./landing"} className="text-gray-700 text-base font-medium hover:text-gray-900 inline-flex items-center" passHref>
+                <span> {language?.home}</span>
                 </Link>
               </div>
             </li>
@@ -328,6 +329,9 @@ function Theme() {
                     <li className={`block py-2 px-4 ${color?.sidebar} `}>
                       <button onClick={() => { setThemeName("New-Theme"); setThemes(!themes); changeTheme("New-Theme") }} >New Theme</button>
                     </li>
+                    <li className={`block py-2 px-4 ${color?.sidebar} `}>
+                      <button onClick={() => { setThemeName("ModernTheme"); setThemes(!themes); changeTheme("ModernTheme") }} >ModernTheme</button>
+                    </li>
                   </ul>
                 </div></div>
             </div>
@@ -355,8 +359,9 @@ function Theme() {
                     "-"
                   )}/${currentProperty?.address_city}/${currentProperty?.property_category
                   }s/${allHotelDetails?.property_name?.replaceAll(' ', '-')?.toLowerCase()}`
-                }>
-                  <a target="_blank">Preview </a>
+                }
+                target="_blank" rel="noopener noreferrer">
+                  Preview 
                 </Link>
               </button>
 
@@ -387,6 +392,13 @@ function Theme() {
             <NewTheme language={language?.activeThemeLanguage} HotelDetails={allHotelDetails}
               allRooms={allRooms} allPackages={allPackages} services={services}
               phone={phone} email={email} /></div> : <div className="sticky"></div>}
+        
+        {/* ModernTheme */}
+        {themeName === "ModernTheme" ?
+          <div className="sticky">
+            <ModernTheme language={language?.activeThemeLanguage} HotelDetails={allHotelDetails}
+              allRooms={allRooms} allPackages={allPackages} services={services}
+              phone={phone} email={email} initialColor={'black'} /></div> : <div className="sticky"></div>}
 
 
       </div>

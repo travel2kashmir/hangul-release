@@ -2,7 +2,7 @@ import React, { useState,useEffect } from 'react'
 import Animation from '../Animation';
 
 
-function index({ hotelData, initialThemeColor }) {
+function About({ hotelData, initialThemeColor }) {
   const[allHotelDetails,setAllHotelDetails]=useState({})
   const[themeColor,setThemeColor]=useState({})
   useEffect(() => {
@@ -60,4 +60,4 @@ function index({ hotelData, initialThemeColor }) {
   )
 }
 
-export default index
+export default About

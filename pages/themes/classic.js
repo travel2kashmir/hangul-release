@@ -201,7 +201,7 @@ function Classic(args) {
                <div className="header-logo">
                   {/* <span className="material-icons-outlined header-logo-icon">
                      mode_of_travel</span> */}
-                  {/* {args?.allHotelDetails.logo !== '' ? <img src={args?.allHotelDetails.logo} alt="logo" className='h-full w-full' /> : <></>} */}
+                  {args?.allHotelDetails?.logo !== '' ? <img src={args?.allHotelDetails?.logo} alt="logo" className='h-full w-full' /> : <></>}
                   <span className='text-sky-600'>{args?.allHotelDetails?.property_name}
                   </span>
                </div>

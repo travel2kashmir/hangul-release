@@ -1310,7 +1310,7 @@ function ClassicDark(args) {
                   <div className="header-logo lg:px-8 md:px-8 px-20">
                      {/* <span className="material-icons-outlined header-logo-icon">
                         mode_of_travel</span> */}
-                     {args?.allHotelDetails.logo !== '' ? <img src={args?.allHotelDetails?.logo} alt="logo" className='h-full w-full' /> : <></>}
+                     {args?.allHotelDetails?.logo !== '' ? <img src={args?.allHotelDetails?.logo} alt="logo" className='h-full w-full' /> : <></>}
                      
                   </div>
                   <div className='flex mt-1 flex-col lg:pl-0 pl-14 md:pl-0 capitalize'>

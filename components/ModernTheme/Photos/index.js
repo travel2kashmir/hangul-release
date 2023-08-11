@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import PhotoAlbum from "react-photo-album";
-import ImagesSlider from '../../Utils/ImagesSlider';
+import ImagesSlider from '../../utils/ImagesSlider';
 import { AiOutlineArrowDown, AiOutlineArrowUp } from 'react-icons/ai'
 
 function Photos({ allHotelDetails }) {

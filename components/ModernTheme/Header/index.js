@@ -21,7 +21,7 @@ function Header({ allHotelDetails, menu, setMenu, themeColor}) {
     }
 
     return (
-        <header className={`h-auto ${themeColor.bgColor}`}>r
+        <header className={`h-auto ${themeColor.bgColor}`}>
 
             <div className='mx-8'>
                 <div className='py-8 pr-1 flex justify-between md:py-10 lg:py-16'>

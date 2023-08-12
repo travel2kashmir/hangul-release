@@ -1,6 +1,6 @@
-import React from 'react'
+import React from 'react';
 import Loader from '../Loaders/Loader';
-import icon from '../../GlobalData'
+import icon from '../../GlobalData';
 
 function Services({ services, hotelDetailLoader }) {
     let i = 0;

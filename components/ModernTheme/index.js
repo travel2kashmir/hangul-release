@@ -25,27 +25,32 @@ function Hotel({ language, HotelDetails,
         getThemeColor();
         getHotelDetails();
         getRoomDetails();
-    }, [HotelDetails,allRooms]);
+    }, [HotelDetails, allRooms,initialColor]);
 
     function getThemeColor() {
-        let bgColor = initialColor
-        if (bgColor === null) {
-            setThemeColor(color.black)
-        }
-        else if (bgColor === 'black') {
-            setThemeColor(color.black)
-        }
-        else if (bgColor === 'red') {
-            setThemeColor(color.red)
-        }
-        else if (bgColor === 'green') {
-            setThemeColor(color.green)
-        }
-        else {
-            setThemeColor(color.white)
-        }
+        setThemeColor(initialColor)
+        console.log(initialColor)
+        // let bgColor = initialColor
+        // console.log(bgColor);
+        // if (bgColor === null) {
+        //     setThemeColor(color.black)
+        // }
+        // else if (bgColor === 'black') {
+        //     setThemeColor(color.black)
+        // }
+        // else if (bgColor === 'red') {
+        //     setThemeColor(color.red)
+        // }
+        // else if (bgColor === 'green') {
+        //     setThemeColor(color.green)
+        // }
+        // else {
+        //     setThemeColor(color.white)
+        // }
 
     }
+
+    useEffect(()=>console.log(themeColor),[themeColor])
 
     function getHotelDetails() {
         setHotelDetails(HotelDetails)
@@ -69,7 +74,7 @@ function Hotel({ language, HotelDetails,
             <Home
                 hotelData={allHotelDetails}
             />
-            
+
 
             <About
                 hotelData={allHotelDetails}
@@ -85,17 +90,17 @@ function Hotel({ language, HotelDetails,
 
             {/* hotel gallery */}
             <div id='photos' className='py-10'>
-                            <div className='mx-4 mb-10 md:mb-16 text-center'>
-                                <h3 className='text-2xl md:text-3xl lg:text-3xl font-normal tracking-widest border-b-2 border-black inline-block'>GALLERY</h3>
-                            </div>
-                            <Photos allHotelDetails={allHotelDetails} />
-             </div>
+                <div className='mx-4 mb-10 md:mb-16 text-center'>
+                    <h3 className='text-2xl md:text-3xl lg:text-3xl font-normal tracking-widest border-b-2 border-black inline-block'>GALLERY</h3>
+                </div>
+                <Photos allHotelDetails={allHotelDetails} />
+            </div>
 
-                        {/* hotel Services */}
-                        <Services
-                            services={services}
-                            hotelDetailLoader={hotelDetailLoader}
-                        />
+            {/* hotel Services */}
+            <Services
+                services={services}
+                hotelDetailLoader={hotelDetailLoader}
+            />
 
             <CarousalComponent
                 id="reviews"
@@ -109,9 +114,9 @@ function Hotel({ language, HotelDetails,
             <Footer
                 hotelData={allHotelDetails}
                 hotelDetailLoader={hotelDetailLoader}
-                terms={allHotelDetails?.privacy_conditions===undefined?'':allHotelDetails?.privacy_conditions[0]?.terms_condition }
-                privacy={allHotelDetails?.privacy_conditions===undefined? '' :allHotelDetails?.privacy_conditions[0]?.privacy_policy}
-            
+                terms={allHotelDetails?.privacy_conditions === undefined ? '' : allHotelDetails?.privacy_conditions[0]?.terms_condition}
+                privacy={allHotelDetails?.privacy_conditions === undefined ? '' : allHotelDetails?.privacy_conditions[0]?.privacy_policy}
+
             />
 
 

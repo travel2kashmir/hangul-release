@@ -6,15 +6,15 @@ const black = {
 }
 const red = {
     "textColor": "text-white",
-    "bgColor": "bg-red-950",
-    "colorTransition": "bg-gradient-to-b from-red-950 to-gray-800",
+    "bgColor": "bg-red-900",
+    "colorTransition": "bg-gradient-to-b from-red-900 to-gray-800",
     "menuColor": "white"
 
 }
 const green = {
     "textColor": "text-white",
-    "bgColor": "bg-green-950",
-    "colorTransition": " bg-gradient-to-b from-green-950 to-gray-950",
+    "bgColor": "bg-green-900",
+    "colorTransition": " bg-gradient-to-b from-green-900 to-gray-900",
     "menuColor": "white"
 
 }

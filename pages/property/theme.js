@@ -14,6 +14,7 @@ import Classic from "../themes/classic";
 import ClassicDark from '../themes/classic-dark'
 import NewTheme from "../../components/NewTheme"
 import ModernTheme from "../../components/ModernTheme"
+import ModernThemeColors from "../../components/ModernTheme/Data/Colors"
 import "react-toastify/dist/ReactToastify.css";
 var language;
 var currentUser;
@@ -332,6 +333,15 @@ function Theme() {
                     <li className={`block py-2 px-4 ${color?.sidebar} `}>
                       <button onClick={() => { setThemeName("ModernTheme"); setThemes(!themes); changeTheme("ModernTheme") }} >ModernTheme</button>
                     </li>
+                    <li className={`block py-2 px-4 ${color?.sidebar} `}>
+                      <button onClick={() => { setThemeName("ModernTheme-red"); setThemes(!themes); changeTheme("ModernTheme-red") }} >ModernTheme-red</button>
+                    </li>
+                    <li className={`block py-2 px-4 ${color?.sidebar} `}>
+                      <button onClick={() => { setThemeName("ModernTheme-green"); setThemes(!themes); changeTheme("ModernTheme-green") }} >ModernTheme-green</button>
+                    </li>
+                    <li className={`block py-2 px-4 ${color?.sidebar} `}>
+                      <button onClick={() => { setThemeName("ModernTheme-white"); setThemes(!themes); changeTheme("ModernTheme-white") }} >ModernTheme-white</button>
+                    </li>
                   </ul>
                 </div></div>
             </div>
@@ -357,7 +367,7 @@ function Theme() {
                   `${loc}/${lang}/${currentProperty?.address_province.replace(
                     /\s+/g,
                     "-"
-                  )}/${currentProperty?.address_city}/${currentProperty?.property_category
+                  )}/${currentProperty?.address_city}/${currentProperty?.property_category?.replaceAll(' ', '-')?.toLowerCase()
                   }s/${allHotelDetails?.property_name?.replaceAll(' ', '-')?.toLowerCase()}`
                 }
                 target="_blank" rel="noopener noreferrer">
@@ -398,7 +408,28 @@ function Theme() {
           <div className="sticky">
             <ModernTheme language={language?.activeThemeLanguage} HotelDetails={allHotelDetails}
               allRooms={allRooms} allPackages={allPackages} services={services}
-              phone={phone} email={email} initialColor={'black'} /></div> : <div className="sticky"></div>}
+              phone={phone} email={email} initialColor={ModernThemeColors.black} /></div> : <div className="sticky"></div>}
+
+        {/* ModernTheme */}
+        {themeName === "ModernTheme-red" ?
+          <div className="sticky">
+            <ModernTheme language={language?.activeThemeLanguage} HotelDetails={allHotelDetails}
+              allRooms={allRooms} allPackages={allPackages} services={services}
+              phone={phone} email={email} initialColor={ModernThemeColors.red} /></div> : <div className="sticky"></div>}
+
+        {/* ModernTheme */}
+        {themeName === "ModernTheme-green" ?
+          <div className="sticky">
+            <ModernTheme language={language?.activeThemeLanguage} HotelDetails={allHotelDetails}
+              allRooms={allRooms} allPackages={allPackages} services={services}
+              phone={phone} email={email} initialColor={ModernThemeColors.green} /></div> : <div className="sticky"></div>}
+
+        {/* ModernTheme */}
+        {themeName === "ModernTheme-white" ?
+          <div className="sticky">
+            <ModernTheme language={language?.activeThemeLanguage} HotelDetails={allHotelDetails}
+              allRooms={allRooms} allPackages={allPackages} services={services}
+              phone={phone} email={email} initialColor={ModernThemeColors.white} /></div> : <div className="sticky"></div>}
 
 
       </div>

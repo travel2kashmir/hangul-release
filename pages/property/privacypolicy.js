@@ -21,7 +21,7 @@ var currentLogged;
 let colorToggle;
 
 function PrivacyPolicy() {
-   const [color, setColor] = useState({})
+    const [color, setColor] = useState({})
     const [mode, setMode] = useState();
     const [visible, setVisible] = useState(0);
     const [privacy, setPrivacy] = useState(1);
@@ -31,47 +31,47 @@ function PrivacyPolicy() {
     const [flag, setFlag] = useState([]);
     const firstfun = () => {
         if (typeof window !== "undefined") {
-          var locale = localStorage.getItem("Language");
-          colorToggle = localStorage.getItem("colorToggle");
+            var locale = localStorage.getItem("Language");
+            colorToggle = localStorage.getItem("colorToggle");
 
-          if (
-            colorToggle === "" ||
-            colorToggle === undefined ||
-            colorToggle === null ||
-            colorToggle === "system"
-          ) {
+            if (
+                colorToggle === "" ||
+                colorToggle === undefined ||
+                colorToggle === null ||
+                colorToggle === "system"
+            ) {
 
-            window.matchMedia("(prefers-color-scheme:dark)").matches === true
-              ? setColor(colorFile?.dark)
-              : setColor(colorFile?.light);
-            setMode(
-              window.matchMedia("(prefers-color-scheme:dark)").matches === true
-                ? true
-                : false
-            );
-          } else if (colorToggle === "true" || colorToggle === "false") {
-           setColor(colorToggle == "true" ? colorFile?.dark : colorFile?.light);
-            setMode(colorToggle === "true" ? true : false);
-          }
-          {
-            if (locale === "ar") {
-              language = arabic;
+                window.matchMedia("(prefers-color-scheme:dark)").matches === true
+                    ? setColor(colorFile?.dark)
+                    : setColor(colorFile?.light);
+                setMode(
+                    window.matchMedia("(prefers-color-scheme:dark)").matches === true
+                        ? true
+                        : false
+                );
+            } else if (colorToggle === "true" || colorToggle === "false") {
+                setColor(colorToggle == "true" ? colorFile?.dark : colorFile?.light);
+                setMode(colorToggle === "true" ? true : false);
             }
-            if (locale === "en") {
-              language = english;
+            {
+                if (locale === "ar") {
+                    language = arabic;
+                }
+                if (locale === "en") {
+                    language = english;
+                }
+                if (locale === "fr") {
+                    language = french;
+                }
             }
-            if (locale === "fr") {
-              language = french;
-            }
-          }
-          /** Current Property Details fetched from the local storage **/
-          currentProperty = JSON.parse(localStorage.getItem("property"));
-          currentLogged = JSON.parse(localStorage.getItem("Signin Details"));
+            /** Current Property Details fetched from the local storage **/
+            currentProperty = JSON.parse(localStorage.getItem("property"));
+            currentLogged = JSON.parse(localStorage.getItem("Signin Details"));
         }
-      };
+    };
 
     useEffect(() => {
-       
+
         firstfun();
         fetchPrivacy();
         router.push(window.location)
@@ -104,8 +104,15 @@ function PrivacyPolicy() {
 
         axios.get(url).then((response) => {
             setVisible(1)
-            setUnEditedData(response.data?.privacy_conditions[0])
-            setPrivacy(response.data?.privacy_conditions[0])
+            if (Object.keys(response.data).includes('privacy_conditions') === true) {
+                setUnEditedData(response.data?.privacy_conditions[0])
+                setPrivacy(response.data?.privacy_conditions[0])
+            }
+            else {
+                setUnEditedData({ "property_id": response.data.property_id })
+                setPrivacy({ "property_id": response.data.property_id })
+            }
+
         }).catch((error) => {
             console.log(error);
         })
@@ -129,7 +136,7 @@ function PrivacyPolicy() {
                 setFlag([]);
             } else {
                 setSpinner(1);
-
+                console.log(privacy)
                 const final_data = {
                     "privacy_conditions": [privacy]
                 }

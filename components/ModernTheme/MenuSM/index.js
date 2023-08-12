@@ -13,7 +13,7 @@ function MenuSM() {
 
     return (
         <React.Fragment>
-            <div className='absolute inset-0 w-9/12 mx-auto h-60 mt-28 md:h-80 bg-gray-800 opacity-100 rounded-b-3xl'>
+            <div className='z-50 absolute inset-0 w-9/12 mx-auto h-60 mt-28 md:h-80 bg-gray-800 opacity-100 rounded-b-3xl'>
                 <div className='text-center text-white pt-10 md:pt-12'>
                     <ul className='inline-block font-semibold'>
                         {[{ "label": "About", "id": "#about", "action": "href" },

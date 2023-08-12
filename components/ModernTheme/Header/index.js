@@ -38,7 +38,7 @@ function Header({ allHotelDetails, menu, setMenu, themeColor }) {
 
 
                     {/* for small screens  */}
-                    <div className='my-auto md:hidden lg:hidden'>
+                    <div className='absolute z-50 my-auto md:hidden lg:hidden'>
                         <i className='text-white cursor-pointer ' onClick={() => setMenu(!menu)}>{menu === true ? <CloseIcon sx={{ fontSize: 30, color: themeColor.menuColor }} /> : <MenuIcon sx={{ fontSize: 30, color: themeColor.menuColor }} />}</i>
                     </div>
 
@@ -70,12 +70,6 @@ function Header({ allHotelDetails, menu, setMenu, themeColor }) {
                     setShowModalContactUs={setShowModalContactUs}
                     property_id={allHotelDetails?.property_id}
                 />
-
-                {/* <Modal
-                    description={<Contactus color={Color?.light} language={english} property_id={allHotelDetails?.property_id} />}
-                    setShowModal={(e) => setShowModalContactUs(e)}
-                /> */}
-                {/* <Contactus color={Color?.light} language={english} property_id={allHotelDetails?.property_id} /> */}
             </div>
         </header>
     )

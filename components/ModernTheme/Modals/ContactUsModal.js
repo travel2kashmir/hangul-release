@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import Validation from '../Validation/ContactUsValidation';
+import Contactus from '../../utils/Contactus';
+import Color from '../../colors/Color';
+import { english } from '../../Languages/Languages';
 
-function ContactUsModal({ setShowModalContactUs }) {
+function ContactUsModal({ setShowModalContactUs,property_id }) {
 
     const [contact, setContact] = useState({})
     const [error, setError] = useState({})
@@ -21,7 +24,7 @@ function ContactUsModal({ setShowModalContactUs }) {
             <div className="relative w-full max-w-2xl px-4 h-auto md:h-auto ">
                 <div className='bg-white rounded-lg shadow relative'>
                     <div className="flex items-start justify-between p-5 border-b rounded-t">
-                        <h3 className='text-black text-xl font-semibold'>Contact Us</h3>
+                       
                         <button
                             type="button"
                             onClick={(e) => setShowModalContactUs(e)
@@ -43,7 +46,7 @@ function ContactUsModal({ setShowModalContactUs }) {
                         </button>
                     </div>
 
-                    <form action="#" className="space-y-1 mx-10 my-2 lg:space-y-0">
+                    {/* <form action="#" className="space-y-1 mx-10 my-2 lg:space-y-0">
                         <div>
                             <label  className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-500">Your email</label>
                             <input
@@ -116,7 +119,8 @@ function ContactUsModal({ setShowModalContactUs }) {
                                 className="mx-auto py-3 px-5 text-sm font-medium text-center text-white rounded-lg bg-blue-800 sm:w-fit hover:bg-blue-950 focus:ring-4 focus:outline-none">Send Message</button>
                         </div>
 
-                    </form>
+                    </form> */}
+                    <Contactus color={Color?.light} language={english} property_id={property_id} />
 
                 </div>
             </div>

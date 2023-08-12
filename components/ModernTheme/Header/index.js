@@ -4,20 +4,18 @@ import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import Router from 'next/router';
 import ContactUsModal from '../Modals/ContactUsModal';
-import color from '../Data/Colors'
+import Contactus from '../../utils/Contactus';
+import Color from '../../colors/Color';
+import { english } from '../../Languages/Languages';
+import Modal from '../../NewTheme/modal';
 
-function Header({ allHotelDetails, menu, setMenu, themeColor}) {
+function Header({ allHotelDetails, menu, setMenu, themeColor }) {
 
     const [showModalContactUs, setShowModalContactUs] = useState(0);
-    const [headerColor, setHeaderColor] = useState(themeColor);
-
-    useEffect(() => {
-        setHeaderColor(themeColor)
-    }, [themeColor]);
 
 
     function clickHandler(id, action) {
-        action === 'modal' ? id() : Router.push(`${window?.location?.origin}/${id}`)
+        action === 'modal' ? id() : Router.push(`${window?.location?.origin}${window?.location?.pathname}/${id}`)
     }
 
     return (
@@ -44,7 +42,7 @@ function Header({ allHotelDetails, menu, setMenu, themeColor}) {
                         <i className='text-white cursor-pointer ' onClick={() => setMenu(!menu)}>{menu === true ? <CloseIcon sx={{ fontSize: 30, color: themeColor.menuColor }} /> : <MenuIcon sx={{ fontSize: 30, color: themeColor.menuColor }} />}</i>
                     </div>
 
-                    
+
                 </div>
 
                 {/* for medium and large screens */}
@@ -70,7 +68,14 @@ function Header({ allHotelDetails, menu, setMenu, themeColor}) {
             <div className={showModalContactUs === 1 ? "block" : "hidden"}>
                 <ContactUsModal
                     setShowModalContactUs={setShowModalContactUs}
+                    property_id={allHotelDetails?.property_id}
                 />
+
+                {/* <Modal
+                    description={<Contactus color={Color?.light} language={english} property_id={allHotelDetails?.property_id} />}
+                    setShowModal={(e) => setShowModalContactUs(e)}
+                /> */}
+                {/* <Contactus color={Color?.light} language={english} property_id={allHotelDetails?.property_id} /> */}
             </div>
         </header>
     )

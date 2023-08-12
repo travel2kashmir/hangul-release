@@ -25,33 +25,11 @@ function Hotel({ language, HotelDetails,
         getThemeColor();
         getHotelDetails();
         getRoomDetails();
-    }, [HotelDetails, allRooms,initialColor]);
+    }, [HotelDetails, allRooms, initialColor]);
 
     function getThemeColor() {
         setThemeColor(initialColor)
-        console.log(initialColor)
-        // let bgColor = initialColor
-        // console.log(bgColor);
-        // if (bgColor === null) {
-        //     setThemeColor(color.black)
-        // }
-        // else if (bgColor === 'black') {
-        //     setThemeColor(color.black)
-        // }
-        // else if (bgColor === 'red') {
-        //     setThemeColor(color.red)
-        // }
-        // else if (bgColor === 'green') {
-        //     setThemeColor(color.green)
-        // }
-        // else {
-        //     setThemeColor(color.white)
-        // }
-
     }
-
-    useEffect(()=>console.log(themeColor),[themeColor])
-
     function getHotelDetails() {
         setHotelDetails(HotelDetails)
         setHotelDetailLoader(1)

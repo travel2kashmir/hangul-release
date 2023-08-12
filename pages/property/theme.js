@@ -21,7 +21,8 @@ var currentUser;
 var currentProperty;
 var currentLogged;
 let colorToggle;
-let premiumThemes = ["New-Theme","ModernTheme"];
+// let premiumThemes = ["New-Theme","ModernTheme"];
+let premiumThemes = ["New-Theme"];
 function Theme() {
   /** State to store Current Property Details **/
   const [allHotelDetails, setAllHotelDetails] = useState([]);

@@ -10,6 +10,8 @@ import Classic from "./themes/classic";
 import ClassicDark from './themes/classic-dark'
 import NewTheme from "../components/NewTheme"
 const logger = require("../services/logger");
+import ModernTheme from "../components/ModernTheme";
+import ModernThemeColors from "../components/ModernTheme/Data/Colors"
 var language;
 function Page({ data, room_data, package_data }) {
   const [allHotelDetails, setAllHotelDetails] = useState([]);
@@ -114,6 +116,36 @@ function Page({ data, room_data, package_data }) {
           <NewTheme language={language.activeThemeLanguage} HotelDetails={allHotelDetails}
             allRooms={allRooms} allPackages={allPackages} services={services}
             phone={phone} email={email} /></div> : <div className="sticky"></div>}
+
+             {/* ModernTheme */}
+        {theme === "ModernTheme" ?
+          <div className="sticky">
+            <ModernTheme language={language?.activeThemeLanguage} HotelDetails={allHotelDetails}
+              allRooms={allRooms} allPackages={allPackages} services={services}
+              phone={phone} email={email} initialColor={ModernThemeColors.black} /></div> : <div className="sticky"></div>}
+
+        {/* ModernTheme */}
+        {theme === "ModernTheme-red" ?
+          <div className="sticky">
+            <ModernTheme language={language?.activeThemeLanguage} HotelDetails={allHotelDetails}
+              allRooms={allRooms} allPackages={allPackages} services={services}
+              phone={phone} email={email} initialColor={ModernThemeColors.red} /></div> : <div className="sticky"></div>}
+
+        {/* ModernTheme */}
+        {theme === "ModernTheme-green" ?
+          <div className="sticky">
+            <ModernTheme language={language?.activeThemeLanguage} HotelDetails={allHotelDetails}
+              allRooms={allRooms} allPackages={allPackages} services={services}
+              phone={phone} email={email} initialColor={ModernThemeColors.green} /></div> : <div className="sticky"></div>}
+
+        {/* ModernTheme */}
+        {theme === "ModernTheme-white" ?
+          <div className="sticky">
+            <ModernTheme language={language?.activeThemeLanguage} HotelDetails={allHotelDetails}
+              allRooms={allRooms} allPackages={allPackages} services={services}
+              phone={phone} email={email} initialColor={ModernThemeColors.white} /></div> : <div className="sticky"></div>}
+
+
     </>
 
 

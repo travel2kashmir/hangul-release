@@ -188,7 +188,7 @@ function PrivacyPolicy() {
     return (
 
         <>
-            <Title name={`Engage |  ${language?.basicdetails}`} />
+            <Title name={`Engage |  ${language?.privacypolicy}`} />
             <Header
                 color={color}
                 Primary={english.Side}

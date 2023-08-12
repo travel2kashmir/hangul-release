@@ -660,9 +660,9 @@ function Reviews() {
       <div className={edit === 1 ? "block" : "hidden"}>
         <div className="overflow-x-hidden overflow-y-auto fixed top-4 left-0 right-0 backdrop-blur-xl bg-black/30 md:inset-0 z-50 flex justify-center items-center h-modal sm:h-full">
           <div className="relative w-full max-w-2xl px-4 h-full md:h-auto">
-            <div className="bg-white rounded-lg shadow relative m-4 px-4 py-6">
+            <div className={`${color.whitebackground} bg-white rounded-lg shadow relative m-4 px-4 py-6`}>
               <div className="flex items-start justify-between p-5 border-b rounded-t">
-                <h3 className="text-xl font-semibold">
+                <h3 className={`text-xl ${color.text} font-semibold`}>
                   {language?.editreview}
                 </h3>
                 <button type="button"
@@ -688,14 +688,14 @@ function Reviews() {
                       <div className="w-full lg:w-6/12 px-4 py-2">
 
                         <label
-                          className="text-sm font-medium text-gray-900 block mb-2"
+                          className={`text-sm font-medium ${color?.text} block mb-2`}
                           htmlFor="grid-password"
                         >
                           {language?.reviewlink}  <span style={{ color: "#ff0000" }}>*</span>
                         </label>
                         <input
                           type="text"
-                          className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
+                          className={`${color.greybackground} shadow-sm  border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
                           onChange={e => setActive({ ...active, review_link: e.target.value })}
                           defaultValue={active?.review_link || ''} />
                         <p className=" peer-invalid:visible text-red-700 font-light">
@@ -708,14 +708,14 @@ function Reviews() {
 
                       <div className="w-full lg:w-6/12 px-4 py-2">
                         <label
-                          className="text-sm font-medium text-gray-900 block mb-2"
+                          className={`text-sm font-medium ${color?.text} block mb-2`}
                           htmlFor="grid-password"
                         >
                           {language?.reviewtitle}  <span style={{ color: "#ff0000" }}>*</span>
                         </label>
                         <input
                           type="text"
-                          className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
+                          className={`${color.greybackground} shadow-sm  border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
                           onChange={e => setActive({ ...active, review_title: e.target.value })}
                           defaultValue={active?.review_title || ''}
                         />
@@ -727,14 +727,14 @@ function Reviews() {
 
                       <div className="w-full lg:w-6/12 px-4 py-2">
                         <label
-                          className="text-sm font-medium text-gray-900 block mb-2"
+                          className={`text-sm font-medium ${color?.text} block mb-2`}
                           htmlFor="grid-password"
                         >
                           {language?.reviewauthor}  <span style={{ color: "#ff0000" }}>*</span>
                         </label>
                         <input
                           type="text"
-                          className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
+                          className={`${color.greybackground} shadow-sm  border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
                           onChange={e => setActive({ ...active, review_author: e.target.value })}
                           defaultValue={active?.review_author}
                         />
@@ -746,14 +746,14 @@ function Reviews() {
 
                       <div className="w-full lg:w-6/12 px-4 py-2">
                         <label
-                          className="text-sm font-medium text-gray-900 block mb-2"
+                          className={`text-sm font-medium ${color?.text} block mb-2`}
                           htmlFor="grid-password"
                         >
                           {language?.reviewrating}  <span style={{ color: "#ff0000" }}>*</span>
                         </label>
                         <select
                           onChange={e => setActive({ ...active, review_rating: Number(e.target.value) })}
-                          className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5">
+                          className={`${color.greybackground} shadow-sm  border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}>
                           <option selected disabled>{active?.review_rating}  </option>
                           <option value="1" >1</option>
                           <option value="2">2</option>
@@ -769,14 +769,15 @@ function Reviews() {
 
                       <div className="w-full lg:w-6/12 px-4 py-2">
                         <label
-                          className="text-sm font-medium text-gray-900 block mb-2"
+                          className={`text-sm font-medium ${color?.text} block mb-2`}
                           htmlFor="grid-password"
                         >
                           {language?.reviewercategory}
                         </label>
                         <select
                           onChange={e => setActive({ ...active, review_type: e.target.value })}
-                          className="shadow-sm bg-gray-50 border  border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5">
+                          className={`${color.greybackground} shadow-sm  border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
+                          >
                           <option selected disabled>{active?.review_type?.charAt(0).toUpperCase() + active?.review_type?.slice(1) || 'select'}</option>
                           <option value="user" >User</option>
                           <option value="editorial">Editorial</option>
@@ -786,7 +787,7 @@ function Reviews() {
 
                       <div className="w-full lg:w-6/12 px-4 py-2">
                         <label
-                          className="text-sm font-medium text-gray-900 block mb-2"
+                          className={`text-sm font-medium ${color?.text} block mb-2`}
                           htmlFor="grid-password"
                         >
                           {language?.servicedate}<span style={{ color: "#ff0000" }}>*</span>
@@ -795,7 +796,7 @@ function Reviews() {
                           type="date"
                           max={`${currentDate.year}-${currentDate.month}-${currentDate.day}`}
 
-                          className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
+                          className={`${color.greybackground} shadow-sm  border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
                           onChange={e => setActive({ ...active, service_date: e.target.value })}
                           defaultValue={active?.service_date || ''}
                         />
@@ -807,7 +808,7 @@ function Reviews() {
 
                       <div className="w-full lg:w-6/12 px-4 py-2">
                         <label
-                          className="text-sm font-medium text-gray-900 block mb-2"
+                          className={`text-sm font-medium ${color?.text} block mb-2`}
                           htmlFor="grid-password"
                         >
                           {language?.reviewdate} <span style={{ color: "#ff0000" }}>*</span>
@@ -816,7 +817,7 @@ function Reviews() {
                           type="date"
                           max={`${currentDate.year}-${currentDate.month}-${currentDate.day}`}
 
-                          className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
+                          className={`${color.greybackground} shadow-sm  border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
                           onChange={e => setActive({ ...active, review_date: e.target.value })}
                           defaultValue={active?.review_date || ''}
                         />

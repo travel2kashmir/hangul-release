@@ -427,7 +427,7 @@ function Reviews() {
       <div className={modelDel === 1 ? 'block' : 'hidden'}>
         <div className="overflow-x-hidden overflow-y-auto fixed top-4 left-0 right-0 backdrop-blur-xl bg-black/30 md:inset-0 z-50 flex justify-center items-center h-modal sm:h-full">
           <div className="relative w-full max-w-md px-4 h-full md:h-auto">
-            <div className="bg-white rounded-lg shadow relative">
+            <div className={`${color.whitebackground} rounded-lg shadow relative`}>
               <div className="flex justify-end p-2">
                 <button
                   onClick={() => setModelDel(0)}

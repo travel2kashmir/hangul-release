@@ -38,7 +38,7 @@ function Header({ allHotelDetails, menu, setMenu, themeColor }) {
 
 
                     {/* for small screens  */}
-                    <div className='absolute z-50 my-auto md:hidden lg:hidden'>
+                    <div className='my-auto md:hidden lg:hidden'>
                         <i className='text-white cursor-pointer ' onClick={() => setMenu(!menu)}>{menu === true ? <CloseIcon sx={{ fontSize: 30, color: themeColor.menuColor }} /> : <MenuIcon sx={{ fontSize: 30, color: themeColor.menuColor }} />}</i>
                     </div>
 

@@ -13,7 +13,7 @@ import { ToastContainer, toast } from "react-toastify";
 import Classic from "../themes/classic";
 import ClassicDark from '../themes/classic-dark'
 import NewTheme from "../../components/NewTheme"
-import ModernTheme from "../../components/ModernTheme"
+import Fusion from "../../components/ModernTheme"
 import ModernThemeColors from "../../components/ModernTheme/Data/Colors"
 import "react-toastify/dist/ReactToastify.css";
 var language;
@@ -21,8 +21,8 @@ var currentUser;
 var currentProperty;
 var currentLogged;
 let colorToggle;
-// let premiumThemes = ["New-Theme","ModernTheme"];
-let premiumThemes = ["New-Theme"];
+// let premiumThemes = ["Neo","Fusion"];
+let premiumThemes = [];
 function Theme() {
   /** State to store Current Property Details **/
   const [allHotelDetails, setAllHotelDetails] = useState([]);
@@ -329,19 +329,19 @@ function Theme() {
                       <button onClick={() => { setThemeName("Classic-Dark"); setThemes(!themes); changeTheme("Classic-Dark") }} >Classic-Dark</button>
                     </li>
                     <li className={`block py-2 px-4 ${color?.sidebar} `}>
-                      <button onClick={() => { setThemeName("New-Theme"); setThemes(!themes); changeTheme("New-Theme") }} >New Theme</button>
+                      <button onClick={() => { setThemeName("Neo"); setThemes(!themes); changeTheme("Neo") }} >Neo</button>
                     </li>
                     <li className={`block py-2 px-4 ${color?.sidebar} `}>
-                      <button onClick={() => { setThemeName("ModernTheme"); setThemes(!themes); changeTheme("ModernTheme") }} >ModernTheme</button>
+                      <button onClick={() => { setThemeName("Fusion"); setThemes(!themes); changeTheme("Fusion") }} >Fusion</button>
                     </li>
                     <li className={`block py-2 px-4 ${color?.sidebar} `}>
-                      <button onClick={() => { setThemeName("ModernTheme-red"); setThemes(!themes); changeTheme("ModernTheme-red") }} >ModernTheme-red</button>
+                      <button onClick={() => { setThemeName("Fusion-red"); setThemes(!themes); changeTheme("Fusion-red") }} >Fusion-red</button>
                     </li>
                     <li className={`block py-2 px-4 ${color?.sidebar} `}>
-                      <button onClick={() => { setThemeName("ModernTheme-green"); setThemes(!themes); changeTheme("ModernTheme-green") }} >ModernTheme-green</button>
+                      <button onClick={() => { setThemeName("Fusion-green"); setThemes(!themes); changeTheme("Fusion-green") }} >Fusion-green</button>
                     </li>
                     <li className={`block py-2 px-4 ${color?.sidebar} `}>
-                      <button onClick={() => { setThemeName("ModernTheme-white"); setThemes(!themes); changeTheme("ModernTheme-white") }} >ModernTheme-white</button>
+                      <button onClick={() => { setThemeName("Fusion-white"); setThemes(!themes); changeTheme("Fusion-white") }} >Fusion-white</button>
                     </li>
                   </ul>
                 </div></div>
@@ -370,9 +370,10 @@ function Theme() {
                     "-"
                   )}/${currentProperty?.address_city}/${currentProperty?.property_category?.replaceAll(' ', '-')?.toLowerCase()
                   }s/${allHotelDetails?.property_name?.replaceAll(' ', '-')?.toLowerCase()}`
-                }
-                target="_blank" rel="noopener noreferrer">
+                }>
+                 <a target="_blank" rel="noopener noreferrer">
                   Preview 
+                  </a>
                 </Link>
               </button>
 
@@ -398,37 +399,37 @@ function Theme() {
               phone={phone} email={email} /></div> : <div className="sticky"></div>}
 
         {/* newTheme */}
-        {themeName === "New-Theme" ?
+        {themeName === "Neo" ?
           <div className="sticky">
             <NewTheme language={language?.activeThemeLanguage} HotelDetails={allHotelDetails}
               allRooms={allRooms} allPackages={allPackages} services={services}
               phone={phone} email={email} /></div> : <div className="sticky"></div>}
         
-        {/* ModernTheme */}
-        {themeName === "ModernTheme" ?
+        {/* Fusion */}
+        {themeName === "Fusion" ?
           <div className="sticky">
-            <ModernTheme language={language?.activeThemeLanguage} HotelDetails={allHotelDetails}
+            <Fusion language={language?.activeThemeLanguage} HotelDetails={allHotelDetails}
               allRooms={allRooms} allPackages={allPackages} services={services}
               phone={phone} email={email} initialColor={ModernThemeColors.black} /></div> : <div className="sticky"></div>}
 
-        {/* ModernTheme */}
-        {themeName === "ModernTheme-red" ?
+        {/* Fusion */}
+        {themeName === "Fusion-red" ?
           <div className="sticky">
-            <ModernTheme language={language?.activeThemeLanguage} HotelDetails={allHotelDetails}
+            <Fusion language={language?.activeThemeLanguage} HotelDetails={allHotelDetails}
               allRooms={allRooms} allPackages={allPackages} services={services}
               phone={phone} email={email} initialColor={ModernThemeColors.red} /></div> : <div className="sticky"></div>}
 
-        {/* ModernTheme */}
-        {themeName === "ModernTheme-green" ?
+        {/* Fusion */}
+        {themeName === "Fusion-green" ?
           <div className="sticky">
-            <ModernTheme language={language?.activeThemeLanguage} HotelDetails={allHotelDetails}
+            <Fusion language={language?.activeThemeLanguage} HotelDetails={allHotelDetails}
               allRooms={allRooms} allPackages={allPackages} services={services}
               phone={phone} email={email} initialColor={ModernThemeColors.green} /></div> : <div className="sticky"></div>}
 
-        {/* ModernTheme */}
-        {themeName === "ModernTheme-white" ?
+        {/* Fusion */}
+        {themeName === "Fusion-white" ?
           <div className="sticky">
-            <ModernTheme language={language?.activeThemeLanguage} HotelDetails={allHotelDetails}
+            <Fusion language={language?.activeThemeLanguage} HotelDetails={allHotelDetails}
               allRooms={allRooms} allPackages={allPackages} services={services}
               phone={phone} email={email} initialColor={ModernThemeColors.white} /></div> : <div className="sticky"></div>}
 

@@ -1382,7 +1382,7 @@ function Classic(args) {
             </div>
             <hr className="my-6 border-gray-400 sm:mx-auto dark:border-gray-700 lg:my-8" />
             <div className="sm:flex sm:items-center mx-2 sm:justify-between">
-               <span className="text-sm  sm:text-center text-white">© {new Date().getFullYear()} <a href="https://www.travel2kashmir.com" className="hover:underline">{language?.poweredby} Travel2Kashmir</a>. {language?.allrightsreserved}.
+               <span className="text-sm  sm:text-center text-white">© {new Date().getFullYear()} <a href="http://travel2kashmir.com" className="hover:underline">{language?.poweredby} Travel2Kashmir</a>. {language?.allrightsreserved}.
                </span>
                <div className="flex mt-4 space-x-6  sm:justify-center sm:mt-0">
                   <div onClick={() => { getIPData("Anchor tag Facebook", "/facebok") }} className="text-white hover:text-gray-400 dark:hover:text-white mr-4">

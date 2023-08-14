@@ -10,7 +10,7 @@ import Classic from "./themes/classic";
 import ClassicDark from './themes/classic-dark'
 import NewTheme from "../components/NewTheme"
 const logger = require("../services/logger");
-import ModernTheme from "../components/ModernTheme";
+import Fusion from "../components/ModernTheme";
 import ModernThemeColors from "../components/ModernTheme/Data/Colors"
 var language;
 function Page({ data, room_data, package_data }) {
@@ -111,37 +111,37 @@ function Page({ data, room_data, package_data }) {
             allRooms={allRooms} allPackages={allPackages} services={services}
             phone={phone} email={email} /></div> : <div className="sticky"></div>}
       {/* newTheme */}
-      {theme === "New-Theme" ?
+      {theme === "Neo" ?
         <div className="sticky">
           <NewTheme language={language.activeThemeLanguage} HotelDetails={allHotelDetails}
             allRooms={allRooms} allPackages={allPackages} services={services}
             phone={phone} email={email} /></div> : <div className="sticky"></div>}
 
-             {/* ModernTheme */}
-        {theme === "ModernTheme" ?
+             {/* Fusion */}
+        {theme === "Fusion" ?
           <div className="sticky">
-            <ModernTheme language={language?.activeThemeLanguage} HotelDetails={allHotelDetails}
+            <Fusion language={language?.activeThemeLanguage} HotelDetails={allHotelDetails}
               allRooms={allRooms} allPackages={allPackages} services={services}
               phone={phone} email={email} initialColor={ModernThemeColors.black} /></div> : <div className="sticky"></div>}
 
-        {/* ModernTheme */}
-        {theme === "ModernTheme-red" ?
+        {/* Fusion */}
+        {theme === "Fusion-red" ?
           <div className="sticky">
-            <ModernTheme language={language?.activeThemeLanguage} HotelDetails={allHotelDetails}
+            <Fusion language={language?.activeThemeLanguage} HotelDetails={allHotelDetails}
               allRooms={allRooms} allPackages={allPackages} services={services}
               phone={phone} email={email} initialColor={ModernThemeColors.red} /></div> : <div className="sticky"></div>}
 
-        {/* ModernTheme */}
-        {theme === "ModernTheme-green" ?
+        {/* Fusion */}
+        {theme === "Fusion-green" ?
           <div className="sticky">
-            <ModernTheme language={language?.activeThemeLanguage} HotelDetails={allHotelDetails}
+            <Fusion language={language?.activeThemeLanguage} HotelDetails={allHotelDetails}
               allRooms={allRooms} allPackages={allPackages} services={services}
               phone={phone} email={email} initialColor={ModernThemeColors.green} /></div> : <div className="sticky"></div>}
 
-        {/* ModernTheme */}
-        {theme === "ModernTheme-white" ?
+        {/* Fusion */}
+        {theme === "Fusion-white" ?
           <div className="sticky">
-            <ModernTheme language={language?.activeThemeLanguage} HotelDetails={allHotelDetails}
+            <Fusion language={language?.activeThemeLanguage} HotelDetails={allHotelDetails}
               allRooms={allRooms} allPackages={allPackages} services={services}
               phone={phone} email={email} initialColor={ModernThemeColors.white} /></div> : <div className="sticky"></div>}
 

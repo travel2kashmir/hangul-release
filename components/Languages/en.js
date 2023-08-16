@@ -1,4 +1,5 @@
 export default {
+  identifiers:"identifiers",
   send:"Send",
   message:"Message",
   subject:"Subject",

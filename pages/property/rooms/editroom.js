@@ -1872,30 +1872,23 @@ function Room() {
                     />
 
                     {/* Room identifier field start */}
-                    <div className="w-full lg:w-6/12 px-4">
-                      <div className="relative w-full mb-3">
-                        <label className={`text-sm font-medium ${color?.text} block mb-2`}
-                          htmlFor="grid-password">
-                          Room identifiers
-                          <span style={{ color: "#ff0000" }}>*</span>
-                        </label>
-                        <div className={visible === 0 ? 'block' : 'hidden'}><Lineloader /></div>
-                        <div className={visible === 1 ? 'block' : 'hidden'}>
-                          <input type="text" className={`shadow-sm ${color?.greybackground} capitalize border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
-                            defaultValue={initalIdentifiers}
-                            onChange={
-                              (e) => {
-                                setRoomIdentifiers(e.target.value);
-                                setFlag(1);
-                              }
-                            }
-                          />
+                    
+                    <InputText
+                      label={`${language?.room} ${language?.identifiers}`}
+                      visible={visible}
+                      defaultValue={initalIdentifiers}
+                      onChangeAction={ (e) => {
+                        setRoomIdentifiers(e.target.value);
+                        setFlag(1);
+                      }}
+                      color={color}
+                      disabled={false}
+                      req={true}
+                      title={"Enter comma seperated room no\'s of similar type of rooms"}
+                      tooltip={true}
+                      error={error?.room_identifier}
+                    />
 
-                          <p className="text-sm text-red-700 font-light">
-                            {error?.room_identifier}</p>
-                        </div>
-                      </div>
-                    </div>
                     {/*  Room identifier field end */}
                   </div>
                   <div className="flex items-center justify-end space-x-2 sm:space-x-3 ml-auto">

@@ -1,4 +1,5 @@
 export default {
+  identifiers:"معرفات",
   send:"يرسل",
   message:"رسالة",
   subject:"موضوع",

@@ -16,6 +16,7 @@
     "test": "jest --watch --detectOpenHandles --coverage"
   },
   "dependencies": {
+    "react-intersection-observer": "^9.5.2",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.11.16",

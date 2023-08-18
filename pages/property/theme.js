@@ -15,13 +15,14 @@ import ClassicDark from '../themes/classic-dark'
 import NewTheme from "../../components/NewTheme"
 import Fusion from "../../components/ModernTheme"
 import ModernThemeColors from "../../components/ModernTheme/Data/Colors"
+import Cosmic from "../../components/LodgeTheme"
 import "react-toastify/dist/ReactToastify.css";
 var language;
 var currentUser;
 var currentProperty;
 var currentLogged;
 let colorToggle;
-let premiumThemes = ["Neo","Fusion","Fusion-red","Fusion-green","Fusion-white"];
+let premiumThemes = ["Neo", "Fusion", "Fusion-red", "Fusion-green", "Fusion-white","Cosmic"];
 
 function Theme() {
   /** State to store Current Property Details **/
@@ -107,7 +108,8 @@ function Theme() {
         response.data.services.map(i => {
           if (i.service_value !== "no")
             if (i.service_value !== "Not available") {
-              {ser.push(i);
+              {
+                ser.push(i);
               }
             }
           setServices(ser)
@@ -116,8 +118,8 @@ function Theme() {
         );
 
         response.data.contacts.map(i => { if (i.contact_type === 'Phone') { setPhone(i) } });
-        
-        
+
+
         response.data.contacts.map(i => { if (i.contact_type === 'Email') { setEmail(i) } });
         logger.info("url  to fetch property details hitted successfully")
       })
@@ -252,7 +254,7 @@ function Theme() {
                 </svg>
 
                 <Link href={currentLogged?.id.match(/admin.[0-9]*/) ? "../admin/adminlanding" : "./landing"} className="text-gray-700 text-base font-medium hover:text-gray-900 inline-flex items-center" passHref>
-                <span> {language?.home}</span>
+                  <span> {language?.home}</span>
                 </Link>
               </div>
             </li>
@@ -343,14 +345,17 @@ function Theme() {
                     <li className={`block py-2 px-4 ${color?.sidebar} `}>
                       <button onClick={() => { setThemeName("Fusion-white"); setThemes(!themes); changeTheme("Fusion-white") }} >Fusion-white</button>
                     </li>
+                    <li className={`block py-2 px-4 ${color?.sidebar} `}>
+                      <button onClick={() => { setThemeName("Cosmic"); setThemes(!themes); changeTheme("Cosmic") }} >Cosmic</button>
+                    </li>
                   </ul>
                 </div></div>
             </div>
-            <div>{premiumThemes.includes(themeName) ===true ?
-              <> {allHotelDetails.isPremium === "true" ? 
-              <button className="bg-cyan-600 text-sm text-center hover:bg-cyan-700 text-white  py-2 px-4 rounded" onClick={() => {
-                submitTheme();
-              }}>Save</button> :
+            <div>{premiumThemes.includes(themeName) === true ?
+              <> {allHotelDetails.isPremium === "true" ?
+                <button className="bg-cyan-600 text-sm text-center hover:bg-cyan-700 text-white  py-2 px-4 rounded" onClick={() => {
+                  submitTheme();
+                }}>Save</button> :
                 <button className="bg-cyan-600 hover:bg-cyan-700 mx-2 text-white opacity-60 cursor-not-allowed  py-2 px-4 rounded"
                 >Save</button>} </> :
               <button className="bg-cyan-600 text-sm text-center hover:bg-cyan-700 text-white  py-2 px-4 rounded" onClick={() => {
@@ -371,8 +376,8 @@ function Theme() {
                   )}/${currentProperty?.address_city}/${currentProperty?.property_category?.replaceAll(' ', '-')?.toLowerCase()
                   }s/${allHotelDetails?.property_name?.replaceAll(' ', '-')?.toLowerCase()}`
                 }>
-                 <a target="_blank" rel="noopener noreferrer">
-                  Preview 
+                  <a target="_blank" rel="noopener noreferrer">
+                    Preview
                   </a>
                 </Link>
               </button>
@@ -404,7 +409,7 @@ function Theme() {
             <NewTheme language={language?.activeThemeLanguage} HotelDetails={allHotelDetails}
               allRooms={allRooms} allPackages={allPackages} services={services}
               phone={phone} email={email} /></div> : <div className="sticky"></div>}
-        
+
         {/* Fusion */}
         {themeName === "Fusion" ?
           <div className="sticky">
@@ -434,6 +439,12 @@ function Theme() {
               phone={phone} email={email} initialColor={ModernThemeColors.white} /></div> : <div className="sticky"></div>}
 
 
+        {/* Cosmic */}
+        {themeName === "Cosmic" ?
+          <div className="sticky">
+            <Cosmic language={language?.activeThemeLanguage} HotelDetails={allHotelDetails}
+              allRooms={allRooms} allPackages={allPackages} services={services}
+              phone={phone} email={email} /></div> : <div className="sticky"></div>}
       </div>
 
       {/* Toast Container */}

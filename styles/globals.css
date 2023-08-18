@@ -50,6 +50,30 @@ a {
 }
 
 
+.bg-custom-brown{
+  background-color: #EAE7E3;
+}
+.hover\:bg-custom-hover-brown:hover {
+  background-color:  #EAE7E3;
+}
+
+@keyframes slideInFromBottom {
+  0% {
+      /* transform: translateX(-100%); */
+      transform: translateY(100%);
+      opacity: 0;
+  }
+  100% {
+      /* transform: translateX(0); */
+      transform: translateY(0);
+      opacity: 1;
+  }
+}
+
+.animate-slide-in {
+  animation: slideInFromBottom 2s ease-in-out forwards;
+}
+
 /* .searchBox#css_custom_input option { color: yellowgreen; } */
 /* .chip { background: #414141; padding : "5px 10px"}  */
 /* .multiselectContainer searchBox { border: "none"; border-bottom: "none"; border-radius: "0px" } */

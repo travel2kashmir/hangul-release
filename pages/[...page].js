@@ -12,6 +12,7 @@ import NewTheme from "../components/NewTheme"
 const logger = require("../services/logger");
 import Fusion from "../components/ModernTheme";
 import ModernThemeColors from "../components/ModernTheme/Data/Colors"
+import Cosmic from "../components/LodgeTheme";
 var language;
 function Page({ data, room_data, package_data }) {
   const [allHotelDetails, setAllHotelDetails] = useState([]);
@@ -144,6 +145,13 @@ function Page({ data, room_data, package_data }) {
             <Fusion language={language?.activeThemeLanguage} HotelDetails={allHotelDetails}
               allRooms={allRooms} allPackages={allPackages} services={services}
               phone={phone} email={email} initialColor={ModernThemeColors.white} /></div> : <div className="sticky"></div>}
+       
+        {/* Cosmix */}
+        {theme === "Cosmic" ?
+          <div className="sticky">
+            <Cosmic language={language?.activeThemeLanguage} HotelDetails={allHotelDetails}
+              allRooms={allRooms} allPackages={allPackages} services={services}
+              phone={phone} email={email}  /></div> : <div className="sticky"></div>}
 
 
     </>

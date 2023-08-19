@@ -6,6 +6,7 @@ import LandscapeIcon from '@mui/icons-material/Landscape';
 import BedIcon from '@mui/icons-material/Bed';
 import { BsFillHousesFill } from "react-icons/bs";
 import Marquee from 'react-easy-marquee';
+import ImagesSlider from '../../utils/ImagesSlider';
 
 
 function Rooms({ allRooms = [], roomDetailLoader }) {
@@ -14,11 +15,21 @@ function Rooms({ allRooms = [], roomDetailLoader }) {
         threshold: 0.1,    // Trigger animation when 10% of the element is in view
     });
     const [rooms, setRooms] = useState([])
+    const [imageSlideShow, setImageSlideShow] = useState(0);
+    const [visibleImage, setVisibleImage] = useState();
+    const [allImagesLink, setAllImagesLink] = useState([]);
+    
     useEffect(() => {
         setRooms(allRooms)
     }, [allRooms])
 
-    return (
+    function activateImagesSlider(image_index, allImages) {
+        setVisibleImage(image_index)
+        console.log(allImages)
+        setAllImagesLink(allImages.map(i => i.image_link))
+        setImageSlideShow(1)
+    }
+ return (
         <section id='rooms' className='bg-custom-brown'>
             <div ref={ref} className={`py-10 md:pt-20 lg:pt-36 px-5 lg:px-28 lg:mx-24 ${inView ? 'animate-slide-in' : 'opacity-0'}`}>
                 <div>
@@ -39,7 +50,8 @@ function Rooms({ allRooms = [], roomDetailLoader }) {
                                             {/* room image */}
                                             <div className='md:w-3/12'>
 
-                                                {Object.keys(room).includes('room_images') ? <img className='rounded-md ' src={room?.room_images[0].image_link}></img> : <img className='rounded-md ' src="https://themewagon.github.io/sogo/images/slider-3.jpg" alt="image" />}
+                                                {Object.keys(room).includes('room_images') ? <img className='rounded-md '
+                                                onClick={()=>activateImagesSlider(0, room?.room_images)} src={room?.room_images[0].image_link}></img> : <img className='rounded-md ' src="https://themewagon.github.io/sogo/images/slider-3.jpg" alt="image" />}
 
                                             </div>
 
@@ -124,6 +136,13 @@ function Rooms({ allRooms = [], roomDetailLoader }) {
 
 
                 </div>
+
+            </div>
+            <div className={imageSlideShow === 1 ? "block" : "hidden"}>
+                <ImagesSlider
+                    visibleImage={visibleImage}
+                    images={allImagesLink}
+                    setShowModal={(e) => setImageSlideShow(e)} />
 
             </div>
         </section>

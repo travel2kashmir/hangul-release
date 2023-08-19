@@ -86,7 +86,6 @@ function Hotel({ language, HotelDetails,
                 data={allHotelDetails?.Reviews}
                 title='TESTIMONIALS'
                 themeColor={themeColor}
-            // hotelDetailLoader={hotelDetailLoader}
             />
 
             <Footer

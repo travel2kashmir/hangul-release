@@ -16,7 +16,7 @@ function Home({ allHotelDetails, menu, setMenu, hotelDetailLoader, lang, setLang
     useEffect(() => {
         function findCoverPhoto() {
             try {
-                setMainPic(allHotelDetails?.images?.filter(i => i.image_title == 'Cover')[0].image_link);
+                allHotelDetails?.images?.filter(i => i.image_title == 'Cover')[0].image_link===undefined?setMainPic('/imghome.webp'):setMainPic(allHotelDetails?.images?.filter(i => i.image_title == 'Cover')[0].image_link);
             }
             catch (ex) {
                 setMainPic('/imghome.webp')

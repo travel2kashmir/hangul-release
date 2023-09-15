@@ -8,22 +8,22 @@ function About({allHotelDetails , hotelDetailLoader ,lang}) {
     useEffect(()=>{
         function findIntroPhoto(){
             try{
-                setIntroPic(allHotelDetails?.images?.filter(i=>i.image_title=='Introduction')[0].image_link);
+allHotelDetails?.images?.filter(i=>i.image_title=='Introduction')[0].image_link===undefined?setIntroPic('/aboutimg1.jpg'):setIntroPic(allHotelDetails?.images?.filter(i=>i.image_title=='Introduction')[0].image_link);
             }
             catch(ex){
                 setIntroPic('/aboutimg1.jpg')
             }
         }
-        findIntroPhoto();
         function findSmallPhoto(){
             try{
-                setSmallPic(allHotelDetails?.images?.filter(i=>i.image_title=='Small')[0].image_link);
+allHotelDetails.images.filter(i=>i.image_title=='Small')[0].image_link===undefined?setSmallPic('/aboutimg2.jpg'):setSmallPic(allHotelDetails?.images?.filter(i=>i.image_title=='Small')[0].image_link);
             }
             catch(ex){
                 setSmallPic('/aboutimg2.jpg')
             }
-        }
+            }
         findSmallPhoto();
+        findIntroPhoto();
     },[allHotelDetails])
     return (
         <section id='about' className="bg-slate-200 px-5 md:px-20 py-10 lg:py-24 2xl:px-40 z=0">

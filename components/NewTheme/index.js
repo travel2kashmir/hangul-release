@@ -32,7 +32,7 @@ function Hotel({ language, HotelDetails,
     const [lang, setLang] = useState(english);
     const [showContactUs, setShowContactUs] = useState(0);
     const [privacyPolicy, setPrivacyPolicy] = useState()
-   const [termsConditions, setTermsConditions] = useState()
+    const [termsConditions, setTermsConditions] = useState()
 
 
     useEffect(() => {
@@ -57,8 +57,8 @@ function Hotel({ language, HotelDetails,
     function getHotelDetails() {
         setHotelDetails(HotelDetails)
         setPrivacyPolicy(HotelDetails?.privacy_conditions[0]?.privacy_policy)
-      setTermsConditions(HotelDetails?.privacy_conditions[0]?.terms_condition)
-    setHotelDetailLoader(1)
+        setTermsConditions(HotelDetails?.privacy_conditions[0]?.terms_condition)
+        setHotelDetailLoader(1)
     }
 
     function getRoomDetails() {
@@ -76,7 +76,7 @@ function Hotel({ language, HotelDetails,
                 lang={lang}
                 setLang={setLang}
                 hotelDetailLoader={hotelDetailLoader}
-                setShowContactUs={(e)=>setShowContactUs(e)}
+                setShowContactUs={(e) => setShowContactUs(e)}
             />
             <About
                 allHotelDetails={allHotelDetails}
@@ -102,11 +102,12 @@ function Hotel({ language, HotelDetails,
             />
 
             <Services
+                allHotelDetails={allHotelDetails}
                 services={services}
                 hotelDetailLoader={hotelDetailLoader}
                 lang={lang}
             />
-            
+
             <CarousalComponent
                 id="reviews"
                 type='review'
@@ -114,10 +115,10 @@ function Hotel({ language, HotelDetails,
                 title={lang?.peopleSays}
                 hotelDetailLoader={hotelDetailLoader}
             />
-              {/* <div className='hidden lg:flex  lg:sticky lg:bottom-0'>
+            {/* <div className='hidden lg:flex  lg:sticky lg:bottom-0'>
                 <BookingForm color={Color?.light} />
             </div> */}
-            
+
 
             <Footer
                 setShowModalPrivacy={setShowModalPrivacy}
@@ -127,7 +128,7 @@ function Hotel({ language, HotelDetails,
                 lang={lang}
             />
 
-          
+
 
 
             {/* ------------------- modal view for footer-------------------------- */}
@@ -150,7 +151,7 @@ function Hotel({ language, HotelDetails,
 
             <div className={showContactUs === 1 ? "block" : "hidden"}>
                 <Modal
-                    description={<Contactus color={Color?.light} language={lang} property_id={HotelDetails?.property_id}/>}
+                    description={<Contactus color={Color?.light} language={lang} property_id={HotelDetails?.property_id} />}
                     setShowModal={(e) => setShowContactUs(e)}
                 />
             </div>
@@ -174,8 +175,8 @@ function Hotel({ language, HotelDetails,
                                         <a href={`${item?.id}`} key={index} onClick={() => setMenu(false)}><li className='pb-1 md:pb-2 hover:text-slate-500'>{item?.label}</li></a>
                                     )
                                 })}
-                               
-                               
+
+
                             </ul>
                         </div>
                     </div>

@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useMemo } from "react";
 import Router from 'next/router';
 import axios from "axios";
-import ButtonLoader from './ButtonLoader'
+import ButtonLoader from '../../../components/inventory/ButtonLoader'
 import ReactDatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import InventoryModal from "./InventoryModal";
+import InventoryModal from "../../../components/inventory/InventoryModal";
 import Title from "../../../components/title";
 import colorFile from "../../../components/colors/Color";
 import LoaderDarkTable from "../../../components/loaders/darktableloader";
@@ -266,28 +266,6 @@ function Inventory() {
                 <div className={(visible === 0 && colorToggle == false ? 'block' : 'hidden')}><LoaderTable /></div>
                 <div className={(visible === 0 && colorToggle == true ? 'block' : 'hidden')}><LoaderDarkTable /></div>
                 <div className={visible === 1 ? 'block' : 'hidden'}>
-
-                    {/* <Table
-                        gen={gen}
-                        setGen={setGen}
-                        add={() => setView(1)}
-                        edit={submitContactEdit}
-                        delSpin={language?.SpinnerDelete}
-                        saveSpinner={language?.SpinnerSave}
-                        spinner={spinner}
-                        setSpinner={setSpinner}
-                        color={color}
-                        language={language}
-                        deleteAll={contactDeleteMultiple}
-                        spin={spin}
-                        property_id={currentProperty?.property_id}
-                        delete={submitContactDelete}
-                        common={language?.common}
-                        // cols={language?.ContactCols}
-                        cols={language?.InventoryCols}
-                        name="Contact"
-                    /> */}
-
                     <div className="mx-4">
                         <h1 className={`text-xl sm:text-2xl font-semibold ${color?.text}`}>{"Inventory"}</h1>
                         <div className="sm:flex">

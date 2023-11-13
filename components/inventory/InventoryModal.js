@@ -1,31 +1,31 @@
 import React, { useState, useEffect } from 'react'
-import lang from '../../../components/GlobalData'
+import lang from '../GlobalData'
 import { ToastContainer, toast } from 'react-toastify';
-import Lineloader from '../../../components/loaders/lineloader';
+import Lineloader from '../loaders/lineloader';
 import Multiselect from 'multiselect-react-dropdown';
-import DarkModeLogic from '../../../components/darkmodelogic';
+import DarkModeLogic from '../darkmodelogic';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
 import Router from "next/router";
-import english from "../../../components/Languages/en"
-import french from "../../../components/Languages/fr"
-import arabic from "../../../components/Languages/ar";
-import Loader from '../../../components/loaders/loader';
-import Button from "../../../components/Button";
-import Footer from "../../../components/Footer";
-import Sidebar from '../../../components/Sidebar';
-import Header from '../../../components/Header';
-import Headloader from '../../../components/loaders/headloader';
-import Textboxloader from '../../../components/loaders/textboxloader';
+import english from "../Languages/en"
+import french from "../Languages/fr"
+import arabic from "../Languages/ar";
+import Loader from '../loaders/loader';
+import Button from "../Button";
+import Footer from "../Footer";
+import Sidebar from '../Sidebar';
+import Header from '../Header';
+import Headloader from '../loaders/headloader';
+import Textboxloader from '../loaders/textboxloader';
 import Link from "next/link";
-import validateInventory from '../../../components/validation/validateInventory';
+import validateInventory from '../validation/validateInventory';
 import ButtonLoader from './ButtonLoader';
 var language;
 var currentProperty;
 var currentRoom;
 var currentLogged;
 var days_of_week = 'mtwtfsu';
-const logger = require("../../../services/logger");
+const logger = require("../../services/logger");
 
 function InventoryModal({ error, setError, setView, setInventories, view, color, language }) {
   const [darkModeSwitcher, setDarkModeSwitcher] = useState()

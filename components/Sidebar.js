@@ -173,7 +173,7 @@ const Sidebar = (args) => {
               <li>
                 <button type="button" onClick={() => { setServices(!services) }}
                   className={`${args?.color?.text} ${args?.color?.sidebar} group  rounded-lg flex items-center p-2 
-            w-full p-2 text-base font-normal  transition duration-75`} >
+            w-full text-base font-normal  transition duration-75`} >
                   <svg
 
                     className={`w-6 h-6 ${args?.color?.textgray} flex-shrink-0  ${args?.color?.iconhover} transition duration-75`}
@@ -226,6 +226,7 @@ const Sidebar = (args) => {
                       {language?.rooms}</a>
                   </Link></span>
               </li>
+
               {/* t&c  */}
               <li className={`${args?.color?.text} ${args?.color?.sidebar} group text-base font-normal rounded-lg flex items-center p-2  group`}>
                 <svg
@@ -248,6 +249,7 @@ const Sidebar = (args) => {
                   </Link></span>
               </li>
 
+              {/* inventory */}
               <li className={`${args?.color?.text} ${args?.color?.sidebar} group text-base font-normal rounded-lg flex items-center p-2 pl-11`}>
                 <Link href={{ pathname: args?.Primary?.inventory, query: { id: 1 } }}>
                   <a>
@@ -257,7 +259,7 @@ const Sidebar = (args) => {
 
 
               {/* priceCalendar */}
-              {/* <li className={`${args?.color?.text} ${args?.color?.sidebar} group text-base font-normal rounded-lg flex items-center p-2  group`}>
+              <li className={`${args?.color?.text} ${args?.color?.sidebar} group text-base font-normal rounded-lg flex items-center p-2  group`}>
                 <svg
                   className={`w-6 h-6 ${args?.color?.textgray} flex-shrink-0  ${args?.color?.iconhover} transition duration-75`}
                   fill="currentColor"
@@ -276,7 +278,7 @@ const Sidebar = (args) => {
                     <a>
                       {language?.rooms} {language?.prices}</a>
                   </Link></span>
-              </li> */}
+              </li>
 
               {/* places */}
               {/* <li className={`${args?.color?.text} ${args?.color?.sidebar} group text-base font-normal rounded-lg flex items-center p-2  group`}>

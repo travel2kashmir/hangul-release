@@ -1,0 +1,400 @@
+{
+    "rates": [
+        {
+            "room_id": "r00911",
+            "room_name": "Random Room1",
+            "title": "Random Room 1 - 2000",
+            "date": "2023-11-01"
+        },
+        {
+            "room_id": "r00912",
+            "room_name": "Random Room2",
+            "title": "Random Room 2 - 2000",
+            "date": "2023-11-01"
+        },
+        {
+            "room_id": "r00913",
+            "room_name": "Random Room 3",
+            "title": "Random Room 3 - 2000",
+            "date": "2023-11-01"
+        },
+        {
+            "room_id": "r00910",
+            "room_name": "Random Room ",
+            "title": "Random Room - 2000",
+            "date": "2023-11-01"
+        },
+        {
+            "room_id": "r0091",
+            "room_name": "Family Room",
+            "title": "Family Room - 2000",
+            "date": "2023-11-01"
+        },
+        {
+            "room_id": "r0091",
+            "room_name": "Family Room",
+            "title": "Family Room - 5000",
+            "date": "2023-11-02"
+        },
+        {
+            "room_id": "r0091",
+            "room_name": "Family Room",
+            "title": "Family Room - 7000",
+            "date": "2023-11-03"
+        },
+        {
+            "room_id": "r0091",
+            "room_name": "Family Room",
+            "title": "Family Room - 1000",
+            "date": "2023-11-04"
+        },
+        {
+            "room_id": "r0091",
+            "room_name": "Family Room",
+            "title": "Family Room - 2500",
+            "date": "2023-11-05"
+        },
+        {
+            "room_id": "r0091",
+            "room_name": "Family Room",
+            "title": "Family Room - 2900",
+            "date": "2023-11-06"
+        },
+        {
+            "room_id": "r0091",
+            "room_name": "Family Room",
+            "title": "Family Room - 3200",
+            "date": "2023-11-07"
+        },
+        {
+            "room_id": "r0091",
+            "room_name": "Family Room",
+            "title": "Family Room - 7400",
+            "date": "2023-11-08"
+        },
+        {
+            "room_id": "r0091",
+            "room_name": "Family Room",
+            "title": "Family Room - 2000",
+            "date": "2023-11-09"
+        },
+        {
+            "room_id": "r0091",
+            "room_name": "Family Room",
+            "title": "Family Room - 6200",
+            "date": "2023-11-10"
+        },
+        {
+            "room_id": "r0091",
+            "room_name": "Family Room",
+            "title": "Family Room - 4900",
+            "date": "2023-11-11"
+        },
+        {
+            "room_id": "r0091",
+            "room_name": "Family Room",
+            "title": "Family Room - 3200",
+            "date": "2023-11-12"
+        },
+        {
+            "room_id": "r0091",
+            "room_name": "Family Room",
+            "title": "Family Room - 1750",
+            "date": "2023-11-13"
+        },
+        {
+            "room_id": "r0091",
+            "room_name": "Family Room",
+            "title": "Family Room - 2070",
+            "date": "2023-11-14"
+        },
+        {
+            "room_id": "r0091",
+            "room_name": "Family Room",
+            "title": "Family Room - 2900",
+            "date": "2023-11-15"
+        },
+        {
+            "room_id": "r0091",
+            "room_name": "Family Room",
+            "title": "Family Room - 3200",
+            "date": "2023-11-16"
+        },
+        {
+            "room_id": "r0091",
+            "room_name": "Family Room",
+            "title": "Family Room - 9600",
+            "date": "2023-11-17"
+        },
+        {
+            "room_id": "r0091",
+            "room_name": "Family Room",
+            "title": "Family Room - 1200",
+            "date": "2023-11-18"
+        },
+        {
+            "room_id": "r0091",
+            "room_name": "Family Room",
+            "title": "Family Room - 2000",
+            "date": "2023-11-19"
+        },
+        {
+            "room_id": "r0091",
+            "room_name": "Family Room",
+            "title": "Family Room - 2000",
+            "date": "2023-11-20"
+        },
+        {
+            "room_id": "r0091",
+            "room_name": "Family Room",
+            "title": "Family Room - 2000",
+            "date": "2023-11-21"
+        },
+        {
+            "room_id": "r0091",
+            "room_name": "Family Room",
+            "title": "Family Room - 2000",
+            "date": "2023-11-22"
+        },
+        {
+            "room_id": "r0091",
+            "room_name": "Family Room",
+            "title": "Family Room - 2000",
+            "date": "2023-11-23"
+        },
+        {
+            "room_id": "r0091",
+            "room_name": "Family Room",
+            "title": "Family Room - 2000",
+            "date": "2023-11-24"
+        },
+        {
+            "room_id": "r0091",
+            "room_name": "Family Room",
+            "title": "Family Room - 2000",
+            "date": "2023-11-25"
+        },
+        {
+            "room_id": "r0091",
+            "room_name": "Family Room",
+            "title": "Family Room - 2000",
+            "date": "2023-11-26"
+        },
+        {
+            "room_id": "r0091",
+            "room_name": "Family Room",
+            "title": "Family Room - 2000",
+            "date": "2023-11-27"
+        },
+        {
+            "room_id": "r0091",
+            "room_name": "Family Room",
+            "title": "Family Room - 2000",
+            "date": "2023-11-28"
+        },
+        {
+            "room_id": "r0091",
+            "room_name": "Family Room",
+            "title": "Family Room - 2000",
+            "date": "2023-11-29"
+        },
+        {
+            "room_id": "r0091",
+            "room_name": "Family Room",
+            "title": "Family Room - 2000",
+            "date": "2023-11-30"
+        },
+        {
+            "room_id": "r0091",
+            "room_name": "Family Room",
+            "title": "Family Room - 2000",
+            "date": "2023-11-31"
+        },
+        {
+            "room_id": "r0085",
+            "room_name": "Presidential Suite",
+            "title": "Presidential Suite - 8754",
+            "date": "2023-11-01"
+        },
+        {
+            "room_id": "r0085",
+            "room_name": "Presidential Suite",
+            "title": "Presidential Suite - 8754",
+            "date": "2023-11-02"
+        },
+        {
+            "room_id": "r0085",
+            "room_name": "Presidential Suite",
+            "title": "Presidential Suite - 8754",
+            "date": "2023-11-03"
+        },
+        {
+            "room_id": "r0085",
+            "room_name": "Presidential Suite",
+            "title": "Presidential Suite - 8754",
+            "date": "2023-11-04"
+        },
+        {
+            "room_id": "r0085",
+            "room_name": "Presidential Suite",
+            "title": "Presidential Suite - 8754",
+            "date": "2023-11-05"
+        },
+        {
+            "room_id": "r0085",
+            "room_name": "Presidential Suite",
+            "title": "Presidential Suite - 8754",
+            "date": "2023-11-06"
+        },
+        {
+            "room_id": "r0085",
+            "room_name": "Presidential Suite",
+            "title": "Presidential Suite - 8754",
+            "date": "2023-11-07"
+        },
+        {
+            "room_id": "r0085",
+            "room_name": "Presidential Suite",
+            "title": "Presidential Suite - 8754",
+            "date": "2023-11-08"
+        },
+        {
+            "room_id": "r0085",
+            "room_name": "Presidential Suite",
+            "title": "Presidential Suite - 5421",
+            "date": "2023-11-09"
+        },
+        {
+            "room_id": "r0085",
+            "room_name": "Presidential Suite",
+            "title": "Presidential Suite - 5421",
+            "date": "2023-11-10"
+        },
+        {
+            "room_id": "r0085",
+            "room_name": "Presidential Suite",
+            "title": "Presidential Suite - 5421",
+            "date": "2023-11-11"
+        },
+        {
+            "room_id": "r0085",
+            "room_name": "Presidential Suite",
+            "title": "Presidential Suite - 5421",
+            "date": "2023-11-12"
+        },
+        {
+            "room_id": "r0085",
+            "room_name": "Presidential Suite",
+            "title": "Presidential Suite - 5421",
+            "date": "2023-11-13"
+        },
+        {
+            "room_id": "r0085",
+            "room_name": "Presidential Suite",
+            "title": "Presidential Suite - 5421",
+            "date": "2023-11-14"
+        },
+        {
+            "room_id": "r0085",
+            "room_name": "Presidential Suite",
+            "title": "Presidential Suite - 5421",
+            "date": "2023-11-15"
+        },
+        {
+            "room_id": "r0085",
+            "room_name": "Presidential Suite",
+            "title": "Presidential Suite - 5421",
+            "date": "2023-11-16"
+        },
+        {
+            "room_id": "r0085",
+            "room_name": "Presidential Suite",
+            "title": "Presidential Suite - 2221",
+            "date": "2023-11-17"
+        },
+        {
+            "room_id": "r0085",
+            "room_name": "Presidential Suite",
+            "title": "Presidential Suite - 2221",
+            "date": "2023-11-18"
+        },
+        {
+            "room_id": "r0085",
+            "room_name": "Presidential Suite",
+            "title": "Presidential Suite - 2221",
+            "date": "2023-11-19"
+        },
+        {
+            "room_id": "r0085",
+            "room_name": "Presidential Suite",
+            "title": "Presidential Suite - 2221",
+            "date": "2023-11-20"
+        },
+        {
+            "room_id": "r0085",
+            "room_name": "Presidential Suite",
+            "title": "Presidential Suite - 2221",
+            "date": "2023-11-21"
+        },
+        {
+            "room_id": "r0085",
+            "room_name": "Presidential Suite",
+            "title": "Presidential Suite - 2221",
+            "date": "2023-11-22"
+        },
+        {
+            "room_id": "r0085",
+            "room_name": "Presidential Suite",
+            "title": "Presidential Suite - 2221",
+            "date": "2023-11-23"
+        },
+        {
+            "room_id": "r0085",
+            "room_name": "Presidential Suite",
+            "title": "Presidential Suite - 2221",
+            "date": "2023-11-24"
+        },
+        {
+            "room_id": "r0085",
+            "room_name": "Presidential Suite",
+            "title": "Presidential Suite - 2000",
+            "date": "2023-11-25"
+        },
+        {
+            "room_id": "r0085",
+            "room_name": "Presidential Suite",
+            "title": "Presidential Suite - 2900",
+            "date": "2023-11-26"
+        },
+        {
+            "room_id": "r0085",
+            "room_name": "Presidential Suite",
+            "title": "Presidential Suite - 4009",
+            "date": "2023-11-27"
+        },
+        {
+            "room_id": "r0085",
+            "room_name": "Presidential Suite",
+            "title": "Presidential Suite - 6510",
+            "date": "2023-11-28"
+        },
+        {
+            "room_id": "r0085",
+            "room_name": "Presidential Suite",
+            "title": "Presidential Suite - 2001",
+            "date": "2023-11-29"
+        },
+        {
+            "room_id": "r0085",
+            "room_name": "Presidential Suite",
+            "title": "Presidential Suite - 2020",
+            "date": "2023-11-30"
+        },
+        {
+            "room_id": "r0085",
+            "room_name": "Presidential Suite",
+            "title": "Presidential Suite - 2054",
+            "date": "2023-11-31"
+        }
+    ]
+}

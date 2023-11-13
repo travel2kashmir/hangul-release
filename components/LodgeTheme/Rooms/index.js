@@ -18,7 +18,7 @@ function Rooms({ allRooms = [], roomDetailLoader }) {
     const [imageSlideShow, setImageSlideShow] = useState(0);
     const [visibleImage, setVisibleImage] = useState();
     const [allImagesLink, setAllImagesLink] = useState([]);
-
+    
     useEffect(() => {
         setRooms(allRooms)
     }, [allRooms])
@@ -29,7 +29,7 @@ function Rooms({ allRooms = [], roomDetailLoader }) {
         setAllImagesLink(allImages.map(i => i.image_link))
         setImageSlideShow(1)
     }
-    return (
+ return (
         <section id='rooms' className='bg-custom-brown'>
             <div ref={ref} className={`py-10 md:pt-20 lg:pt-36 px-5 lg:px-28 lg:mx-24 ${inView ? 'animate-slide-in' : 'opacity-0'}`}>
                 <div>
@@ -49,7 +49,10 @@ function Rooms({ allRooms = [], roomDetailLoader }) {
                                         <div className='md:my-5 lg:mt-12 md:flex text-center md:text-start'>
                                             {/* room image */}
                                             <div className='md:w-3/12'>
-                                                {Object.keys(room).includes('room_images') ? <img className='rounded-md ' onClick={() => activateImagesSlider(0, room?.room_images)} src={room?.room_images[0].image_link}></img> : <img className='rounded-md ' src="https://themewagon.github.io/sogo/images/slider-3.jpg" alt="image" />}
+
+                                                {Object.keys(room).includes('room_images') ? <img className='rounded-md '
+                                                onClick={()=>activateImagesSlider(0, room?.room_images)} src={room?.room_images[0].image_link}></img> : <img className='rounded-md ' src="https://themewagon.github.io/sogo/images/slider-3.jpg" alt="image" />}
+
                                             </div>
 
                                             {/* room description */}
@@ -82,19 +85,18 @@ function Rooms({ allRooms = [], roomDetailLoader }) {
                                                     <div >
                                                         <ul>
                                                             <li className='flex justify-center md:justify-start text-slate-700'>
-                                                                <span className='my-auto '><TiTick /></span>
+                                                                <span className='my-auto'><TiTick /></span>
                                                                 <span className='pl-2'>{room?.minimum_number_of_occupants} - {room?.maximum_number_of_occupants} Persons</span>
 
                                                             </li>
-                                                            <li className='flex justify-center md:justify-start text-slate-700'>
-                                                                {Object.keys(room).includes("beds") ?
-                                                                    <p> <BedIcon />  &nbsp; {room.beds.length} {room.beds.length > 1 ? "Beds" : "Bed"}  ({room?.beds?.map((item, index) => {
-                                                                        return (
-                                                                            <span key={index}>{index === 0 ? '' : ' , '} {item?.bed_width} * {item?.bed_length}</span>
+                                                            {Object.keys(room).includes("beds") ?
+                                                                <p ><BedIcon />  &nbsp; {room.beds.length} {room.beds.length > 1 ? "Beds" : "Bed"} <span> ({room?.beds?.map((item, index) => {
+                                                                    return (
+                                                                        <span key={index}>{index === 0 ? '' : ' , '} {item?.bed_width} * {item?.bed_length}</span>
 
-                                                                        );
-                                                                    })}) cm </p> : <></>}
-                                                            </li>
+                                                                    );
+                                                                })}) cm</span>
+                                                                </p> : <></>}
                                                             <li className='flex justify-center md:justify-start text-slate-700'>
                                                                 <span className='my-auto'><BsFillHousesFill /></span>
                                                                 <span className='pl-2'>{room?.room_length * room?.room_length} Sq.Ft</span>
@@ -110,21 +112,21 @@ function Rooms({ allRooms = [], roomDetailLoader }) {
                                                     </div>
                                                 </div>
                                             </div>
-
+                                            
 
                                         </div>
                                         <Marquee
-                                            duration={40000} >{room?.room_facilities?.map((item, index) => {
-                                                return (
-                                                    <span className='text-gray-700 mx-4' key={index}>
-                                                        {/* &#10004 is code for tick mark  */}
-                                                        <span>&#10004;
-                                                            {item?.service_name.replaceAll("_", " ")}
+                                                duration={40000} >{room?.room_facilities?.map((item, index) => {
+                                                    return (
+                                                        <span className='text-gray-700 mx-4' key={index}>
+                                                            {/* &#10004 is code for tick mark  */}
+                                                            <span>&#10004;
+                                                                {item?.service_name.replaceAll("_", " ")}
+                                                            </span>
                                                         </span>
-                                                    </span>
-                                                );
-                                            })}
-                                        </Marquee>
+                                                    );
+                                                })}
+                                            </Marquee>
                                     </div>
 
                                 );

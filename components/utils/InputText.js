@@ -53,7 +53,7 @@ function InputText({
           <p
             data-testid="Error"
             title={error}
-            className="text-sm text-sm text-red-700 font-light"
+            className="text-sm text-red-700 font-light"
           >
             {error}
           </p>

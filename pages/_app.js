@@ -6,11 +6,11 @@ import 'nprogress/nprogress.css';
 // import Layout from '../components/Layout'
 import Router from "next/router";
 
-
 // redux libraries
 import { wrapper } from '../components/redux/store'; //actually store
 import { PersistGate } from 'redux-persist/integration/react';
 import { useStore } from 'react-redux';
+
 
 
 Router.events.on('routeChangeStart', () => NProgress.start());
@@ -21,14 +21,15 @@ function MyApp({ Component, pageProps }) {
 
   const store = useStore();
 
-
   return (
     <>
       <PersistGate persistor={store.__persistor} loading={<div>Loading...</div>}>
         <Component {...pageProps} />
       </PersistGate>
+
     </>
   )
 }
 export { reportWebVitals } from 'next-axiom';
+// export default MyApp
 export default wrapper.withRedux(MyApp);

@@ -247,7 +247,7 @@ function RoomSummary({ setDisplay, setShowModal, setSearched, checkinDate, check
           <div className=' mt-8 md:mt-5 mb-12'>
             <h1 className='text-4xl  text-black'>{selectedRoom?.room_name}</h1>
             <div className='mt-6'>
-              <ul className='flex justify-center lg:justify-normal gap-10'>
+              <ul className='flex justify-center lg:justify-start gap-10'>
                 <li className='text-slate-500 pb-2'><SquareFootIcon /> &nbsp; {selectedRoom.carpet_area} SQ.FT</li>
                 <li className='text-slate-500 pb-2'><GroupsIcon />  &nbsp; {selectedRoom.room_capacity} Adults</li>
                 <li className='text-slate-500 pb-2'>{selectedRoom?.views?.map((item, index) => {

@@ -12,10 +12,11 @@ import BookingForm from './Booking';
 import Color from '../colors/Color';
 import Contactus from '../utils/Contactus';
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-function Hotel({ language, HotelDetails,
-    allRooms, allPackages, services,
-    phone, email }) {
+
+function Hotel({ language, HotelDetails, allRooms, allPackages, services, phone, email }) {
 
     const [allHotelDetails, setHotelDetails] = useState([]);
     const [rooms, setRooms] = useState([]);
@@ -34,12 +35,16 @@ function Hotel({ language, HotelDetails,
     const [privacyPolicy, setPrivacyPolicy] = useState()
     const [termsConditions, setTermsConditions] = useState()
 
+    const [searched, setSearched] = useState(false)
 
     useEffect(() => {
         getLanguage();
         getHotelDetails();
         getRoomDetails();
+
     }, []);
+    // console.log("this is the hotel details: ", allHotelDetails)
+    // console.log("this is the rooms details: ", rooms)
 
     function getLanguage() {
 
@@ -66,18 +71,28 @@ function Hotel({ language, HotelDetails,
         setRoomDetailLoader(1);
     }
 
+
+
     return (
         <main>
 
-            <Home
-                allHotelDetails={allHotelDetails}
-                setMenu={setMenu}
-                menu={menu}
-                lang={lang}
-                setLang={setLang}
-                hotelDetailLoader={hotelDetailLoader}
-                setShowContactUs={(e) => setShowContactUs(e)}
-            />
+            <div className={searched === true ? 'z-0' : 'z-50'}>
+                <Home
+                    allHotelDetails={allHotelDetails}
+                    setMenu={setMenu}
+                    menu={menu}
+                    lang={lang}
+                    setLang={setLang}
+                    hotelDetailLoader={hotelDetailLoader}
+                    setShowContactUs={(e) => setShowContactUs(e)}
+
+                    color={Color?.light}
+                    rooms={rooms}
+                    searched={searched}
+                    setSearched={(e) => setSearched(e)}
+                />
+            </div>
+
             <About
                 allHotelDetails={allHotelDetails}
                 hotelDetailLoader={hotelDetailLoader}
@@ -102,7 +117,6 @@ function Hotel({ language, HotelDetails,
             />
 
             <Services
-                allHotelDetails={allHotelDetails}
                 services={services}
                 hotelDetailLoader={hotelDetailLoader}
                 lang={lang}
@@ -115,10 +129,29 @@ function Hotel({ language, HotelDetails,
                 title={lang?.peopleSays}
                 hotelDetailLoader={hotelDetailLoader}
             />
-            {/* <div className='hidden lg:flex  lg:sticky lg:bottom-0'>
-                <BookingForm color={Color?.light} />
-            </div> */}
 
+            <div id="booking_engine" className={`hidden lg:flex  lg:sticky lg:bottom-0 ${searched === false ? 'z-0' : 'z-50'}`}>
+                <BookingForm
+                    color={Color?.light}
+                    rooms={rooms}
+                    allHotelDetails={allHotelDetails}
+                    searched={searched}
+                    setSearched={(e) => setSearched(e)}
+                />
+            </div>
+
+            {/* Toast Container */}
+            <ToastContainer
+                position="top-center"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
 
             <Footer
                 setShowModalPrivacy={setShowModalPrivacy}
@@ -127,9 +160,6 @@ function Hotel({ language, HotelDetails,
                 hotelDetailLoader={hotelDetailLoader}
                 lang={lang}
             />
-
-
-
 
             {/* ------------------- modal view for footer-------------------------- */}
 
@@ -183,7 +213,6 @@ function Hotel({ language, HotelDetails,
                 </React.Fragment>
                 : <></>
             }
-
         </main>
     )
 }

@@ -22,7 +22,7 @@ var currentUser;
 var currentProperty;
 var currentLogged;
 let colorToggle;
-let premiumThemes = ["Neo", "Fusion", "Fusion-red", "Fusion-green", "Fusion-white","Cosmic"];
+let premiumThemes = ["Neo", "Fusion", "Fusion-red", "Fusion-green", "Fusion-white", "Cosmic"];
 
 function Theme() {
   /** State to store Current Property Details **/
@@ -126,6 +126,7 @@ function Theme() {
       .catch((error) => { logger.error("url to fetch property details, failed") });
   }
   const fetchRoomDetails = async () => {
+
     const url = `/api/all_rooms_details/${currentProperty.property_id}`;
     axios.get(url)
       .then((response) => {

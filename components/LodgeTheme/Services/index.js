@@ -5,14 +5,13 @@ import Loader from '../Loaders/Loader';
 
 
 
-function Services({ allHotelDetails, services, hotelDetailLoader }) {
+function Services({ services, hotelDetailLoader }) {
 
     const [ref, inView] = useInView({
         triggerOnce: true, // Trigger the animation only once
         threshold: 0.1,    // Trigger animation when 10% of the element is in view
     });
 
-    const filteredAdditionalService = allHotelDetails?.additional_services?.filter(service => service.status);
 
     let i = 0;
 
@@ -25,7 +24,7 @@ function Services({ allHotelDetails, services, hotelDetailLoader }) {
                             <h2 className='text-center text-4xl lg:text-6xl font-light'>UNPARALLELED AMENITIES</h2>
                         </div>
                     </div>
-
+                            
                     {hotelDetailLoader === 0 ? <Loader size={`h-72 w-full`} /> :
                         <div className=" pt-10 lg:pt-16 grid grid-flow-row-dense grid-cols-5 lg:grid-cols-5 md:grid-cols-4 md:col-span-9   md:gap-3 gap-1 lg:gap-3">
                             {
@@ -201,18 +200,6 @@ function Services({ allHotelDetails, services, hotelDetailLoader }) {
 
                         </div>
                     }
-
-                    <div className='pt-10 pb-14'>
-                        <h2 className="text-center text-4xl lg:text-6xl font-light">KEY HIGHLIGHTS</h2>
-                        <div className='grid grid-flow-row-dense grid-col-2 md:grid-cols-3 text-center pt-10 pb-0 md:py-10'>
-                            {filteredAdditionalService?.map((service) => {
-                                return <div key={service.add_service_id} className="mb-5">
-                                    <p className="font-semibold text-lg md:text-xl ">{service.add_service_name}</p>
-                                    <p className='text-sm '>{service.add_service_comment}</p>
-                                </div>
-                            })}
-                        </div>
-                    </div>
 
 
                 </div>

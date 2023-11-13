@@ -3,13 +3,13 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Loader from '../Loaders/Loader'
 import { english, arabic, french } from '../../Languages/NewTheme';
 
-function Header({ allHotelDetails, menu, setMenu, hotelDetailLoader, lang, setLang, setShowContactUs}) {
+function Header({ allHotelDetails, menu, setMenu, hotelDetailLoader, lang, setLang, setShowContactUs }) {
     return (
         <header className="relative px-7 md:px-10 py-12 md:py-16 font-bold">
             <div className="flex justify-between">
                 <h1 className="text-lg text-white md:text-lg hotelLogo">
                     {hotelDetailLoader === 0 ? <Loader size={`h-10 w-32`} /> :
-                     <>{allHotelDetails?.property_name}</>}
+                        <>{allHotelDetails?.property_name}</>}
 
                 </h1>
                 <div className='flex gap-5 md:gap-10'>
@@ -20,7 +20,7 @@ function Header({ allHotelDetails, menu, setMenu, hotelDetailLoader, lang, setLa
                             <a href="#photos"><li className='hover:text-slate-300 hover:underline'>{lang?.photos}</li></a>
                             <a href="#services"><li className='hover:text-slate-300 hover:underline'>{lang?.services}</li></a>
                             <a href="#reviews"><li className='hover:text-slate-300 hover:underline'>{lang?.reviews}</li></a>
-                            <a onClick={()=>setShowContactUs(1)}><li className='hover:text-slate-300 hover:underline'>{lang?.contactUs}</li></a>
+                            <a onClick={() => setShowContactUs(1)}><li className='hover:text-slate-300 hover:underline'>{lang?.contactUs}</li></a>
                         </ul>
                     </span>
 
@@ -44,7 +44,7 @@ function Header({ allHotelDetails, menu, setMenu, hotelDetailLoader, lang, setLa
                             <option className='text-gray-500 lg:text-xs' value={'french'}>Français</option>
                         </select>
                     </div>
-                    <i onClick={() => setMenu(true)} className={`text-white ${menu === true ? 'hidden' : 'block' }  lg:hidden `}><MenuIcon className='relative -top-1  md:text-3xl md:top-2 cursor-pointer' sx={{ fontSize: 20 }} /></i>
+                    <i onClick={() => setMenu(true)} className={`text-white ${menu === true ? 'hidden' : 'block'}  lg:hidden `}><MenuIcon className='relative -top-1  md:text-3xl md:top-2 cursor-pointer' sx={{ fontSize: 20 }} /></i>
                 </div>
             </div>
         </header>

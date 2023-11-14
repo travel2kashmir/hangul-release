@@ -130,8 +130,8 @@ function RoomDiscounts({ room_id }) {
 
                 </div> */}
 
-                <div className={`${color?.whitebackground} `}>
-                    <h3 className={`${color?.text} text-xl flex leading-none pl-6 lg:pt-2 pt-6  pb-2 font-bold`}>
+                <div className={`${color?.whitebackground} border-b rounded-lg`}>
+                    <h3 className={`${color?.text} text-xl flex leading-none pl-6  pb-2 pt-6 lg:pt- font-bold`}>
                         Discount
                     </h3>
                     <form id='discountForm'>
@@ -253,11 +253,17 @@ function RoomDiscounts({ room_id }) {
                     </form>
 
                     {/* button starts */}
-                    <div className='flex justify-end mr-2'>
-                        <Button
+                    <div className='flex justify-end mr-6 py-2'>
+                        <button
+                            className='bg-gradient-to-r text-white bg-cyan-700 sm:inline-flex focus:ring-4 focus:ring-cyan-200 font-semibold rounded-lg text-sm px-5 py-2 text-center items-center mb-1 ease-linear transition-all duration-150'
+                            onClick={() => { addDiscount() }}
+                        >
+                            Submit
+                        </button>
+                        {/* <Button
                             Primary={language?.Submit}
                             onClick={() => { addDiscount() }}
-                        />
+                        /> */}
                     </div>
                     {/* buttons end */}
 

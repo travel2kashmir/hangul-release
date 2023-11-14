@@ -174,7 +174,6 @@ const RoomPriceCalendar = ({ color, language }) => {
                 // event click works for a particular event
                 eventClick={(e) => {
                     handleDateClick(e.event)
-
                 }}
 
             />
@@ -235,6 +234,12 @@ const RoomPriceCalendar = ({ color, language }) => {
                                 <option value="modification">I want to do rate modification</option>
                             </select>
 
+                            {/* <div className="items-center p-4 border-t border-gray-200 rounded-b"> */}
+                            <div className={`items-center px-4 py-2 ${editUI === 'none' ? "" : "border-b"} border-gray-200 `}>
+                                <Button Primary={language?.Update} onClick={() => { updateRate() }} />
+
+                            </div>
+
                             {/* discount ui */}
                             {editUI === 'discount' ?
                                 <div>
@@ -248,10 +253,7 @@ const RoomPriceCalendar = ({ color, language }) => {
                                 </div> : undefined}
 
 
-                            <div className="items-center p-4 border-t border-gray-200 rounded-b">
-                                <Button Primary={language?.Update} onClick={() => { updateRate() }} />
 
-                            </div>
 
 
                         </div>

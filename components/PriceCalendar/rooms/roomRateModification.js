@@ -114,7 +114,7 @@ function RoomRateModification({ room_id }) {
         <>
 
             <div id="main-content"
-                className={`${color?.greybackground}`}>
+                className={`${color?.greybackground} border-b rounded-lg`}>
 
 
                 {/* <div className='flex items-center justify-between'>
@@ -129,7 +129,8 @@ function RoomRateModification({ room_id }) {
 
                 </div> */}
 
-                <div className={`${color?.whitebackground} shadow rounded-lg px-12 sm:p-6 xl:p-8  2xl:col-span-2`}>
+                {/* <div className={`${color?.whitebackground} shadow rounded-lg px-12 sm:p-6 xl:p-8  2xl:col-span-2`}> */}
+                <div className={`${color?.whitebackground} shadow rounded-lg  sm:p- xl:p-  2xl:col-span-2`}>
                     <h3 className={`${color?.text} text-xl flex leading-none pl-6 lg:pt-2 pt-6  pb-2 font-bold`}>
                         Rate Modification
                     </h3>
@@ -225,11 +226,17 @@ function RoomRateModification({ room_id }) {
                     })
 
                     }
-                    <div className=' flex justify-end'>
-                        <Button
+                    <div className=' flex justify-end mr-6 py-2'>
+                        <button
+                            className='bg-gradient-to-r text-white bg-cyan-700 sm:inline-flex focus:ring-4 focus:ring-cyan-200 font-semibold rounded-lg text-sm px-5 py-2 text-center items-center mb-1 ease-linear transition-all duration-150'
+                            onClick={() => addModification()}
+                        >
+                            Submit
+                        </button>
+                        {/* <Button
                             Primary={language?.Submit}
                             onClick={() => addModification()}
-                        />
+                        /> */}
                     </div>
                 </div>
 

@@ -291,6 +291,7 @@ function Reviewbooking({ setDisplay, rooms, setShowModal, setSearched, checkinDa
                 }
             ]
         }
+
         let guestsForThisBooking = {
             "guest_booking_link": guest.map((guestdetail) => {
                 return ({

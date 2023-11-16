@@ -93,7 +93,9 @@ function BookingForm({ color, rooms, allHotelDetails, searched, setSearched }) {
                             req={true}
                             onChangeAction={(e) => setEnquiry({ ...enquiry, number_of_rooms: e.target.value })}
                             defaultValue={enquiry?.number_of_adults}
-                            options={Array.from({ length: 20 }, (_, index) => index + 1).map((i) => ({ "label": i, "value": i }))} />
+                            options={Array.from({ length: 20 }, (_, index) => index + 1).map((i) => ({ "label": i, "value": i }))}
+
+                        />
 
                         <DropDown
                             label={"Number of Guest"}

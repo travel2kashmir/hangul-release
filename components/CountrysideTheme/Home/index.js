@@ -2,16 +2,17 @@ import React, { useState } from 'react'
 import Header from '../Header';
 import BookingForm from '../Utils/BookingForm';
 
-function Home({ allHotelDetails, hotelDetailLoader, setMenu }) {
 
-    const [showModalBooking, setShowModalBooking] = useState(0);
+function Home({ allHotelDetails, rooms, hotelDetailLoader, setMenu, setShowBookingEngine, setRoomsLoader, enquiry, setEnquiry, setSearched, searched }) {
+
+    // const [showModalBooking, setShowModalBooking] = useState(0);
 
     return (
         // <section id='home' className='homeBg bg-[url("/home1.jpg")] lg:bg-[url("/home1.jpg")]  md:h-screen lg:min-h-screen lg:h-fit bg-cover bg-no-repeat md:flex lg:flex-none'>
         <section id='home' className='home-bg relative md:h-screen lg:min-h-screen lg:h-fit'>
             {/* this div is used to set the bg-image and set the opacity for it */}
             <div className="absolute inset-0">
-                <div className="absolute inset-0 bg-[url('/home1.jpg')] bg-no-repeat bg-cover bg-center "></div>
+                <div className="absolute inset-0 bg-[url('/CountrySide-home1.jpg')] bg-no-repeat bg-cover bg-center "></div>
                 <div className="absolute inset-0 bg-black opacity-60"></div>
             </div>
 
@@ -53,7 +54,16 @@ function Home({ allHotelDetails, hotelDetailLoader, setMenu }) {
                                                 <h2 className='mt-2 text-white text-3xl font-medium tracking-wider font-family-marcellus'>BOOK YOUR STAY</h2>
                                             </div>
                                             <div className='text-white'>
-                                                <BookingForm />
+                                                <BookingForm
+                                                    setRoomsLoader={(e) => setRoomsLoader(e)}
+                                                    setShowBookingEngine={(e) => setShowBookingEngine(e)}
+                                                    setEnquiry={(e) => setEnquiry(e)}
+                                                    enquiry={enquiry}
+                                                    rooms={rooms}
+                                                    setSearched={(e) => setSearched(e)}
+                                                    searched={searched}
+
+                                                />
                                             </div>
 
                                         </div>

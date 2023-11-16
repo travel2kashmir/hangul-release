@@ -23,7 +23,7 @@ var currentUser;
 var currentProperty;
 var currentLogged;
 let colorToggle;
-let premiumThemes = ["Neo", "Fusion", "Fusion-red", "Fusion-green", "Fusion-white", "Cosmic", "Country-Side"];
+let premiumThemes = ["Fusion", "Fusion-red", "Fusion-green", "Fusion-white", "Cosmic", "Country-Side"];
 
 function Theme() {
   /** State to store Current Property Details **/

@@ -10,6 +10,9 @@ import ImagesSlider from '../../utils/ImagesSlider';
 
 
 function Rooms({ allRooms = [], roomDetailLoader }) {
+
+    alert(JSON.stringify(rooms))
+
     const [ref, inView] = useInView({
         triggerOnce: true, // Trigger the animation only once
         threshold: 0.1,    // Trigger animation when 10% of the element is in view
@@ -18,7 +21,7 @@ function Rooms({ allRooms = [], roomDetailLoader }) {
     const [imageSlideShow, setImageSlideShow] = useState(0);
     const [visibleImage, setVisibleImage] = useState();
     const [allImagesLink, setAllImagesLink] = useState([]);
-    
+
     useEffect(() => {
         setRooms(allRooms)
     }, [allRooms])
@@ -29,7 +32,7 @@ function Rooms({ allRooms = [], roomDetailLoader }) {
         setAllImagesLink(allImages.map(i => i.image_link))
         setImageSlideShow(1)
     }
- return (
+    return (
         <section id='rooms' className='bg-custom-brown'>
             <div ref={ref} className={`py-10 md:pt-20 lg:pt-36 px-5 lg:px-28 lg:mx-24 ${inView ? 'animate-slide-in' : 'opacity-0'}`}>
                 <div>
@@ -51,7 +54,7 @@ function Rooms({ allRooms = [], roomDetailLoader }) {
                                             <div className='md:w-3/12'>
 
                                                 {Object.keys(room).includes('room_images') ? <img className='rounded-md '
-                                                onClick={()=>activateImagesSlider(0, room?.room_images)} src={room?.room_images[0].image_link}></img> : <img className='rounded-md ' src="https://themewagon.github.io/sogo/images/slider-3.jpg" alt="image" />}
+                                                    onClick={() => activateImagesSlider(0, room?.room_images)} src={room?.room_images[0].image_link}></img> : <img className='rounded-md ' src="https://themewagon.github.io/sogo/images/slider-3.jpg" alt="image" />}
 
                                             </div>
 
@@ -112,21 +115,21 @@ function Rooms({ allRooms = [], roomDetailLoader }) {
                                                     </div>
                                                 </div>
                                             </div>
-                                            
+
 
                                         </div>
                                         <Marquee
-                                                duration={40000} >{room?.room_facilities?.map((item, index) => {
-                                                    return (
-                                                        <span className='text-gray-700 mx-4' key={index}>
-                                                            {/* &#10004 is code for tick mark  */}
-                                                            <span>&#10004;
-                                                                {item?.service_name.replaceAll("_", " ")}
-                                                            </span>
+                                            duration={40000} >{room?.room_facilities?.map((item, index) => {
+                                                return (
+                                                    <span className='text-gray-700 mx-4' key={index}>
+                                                        {/* &#10004 is code for tick mark  */}
+                                                        <span>&#10004;
+                                                            {item?.service_name.replaceAll("_", " ")}
                                                         </span>
-                                                    );
-                                                })}
-                                            </Marquee>
+                                                    </span>
+                                                );
+                                            })}
+                                        </Marquee>
                                     </div>
 
                                 );

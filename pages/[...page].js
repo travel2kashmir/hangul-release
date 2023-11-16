@@ -13,6 +13,7 @@ const logger = require("../services/logger");
 import Fusion from "../components/ModernTheme";
 import ModernThemeColors from "../components/ModernTheme/Data/Colors"
 import Cosmic from "../components/LodgeTheme";
+import CountrySide from "../components/CountrysideTheme"
 var language;
 function Page({ data, room_data, package_data }) {
   const [allHotelDetails, setAllHotelDetails] = useState([]);
@@ -99,6 +100,7 @@ function Page({ data, room_data, package_data }) {
 
     <>
       <Title name={`${data?.property_name}`} />
+
       {/* Classic Theme */}
       {theme === "Classic" ?
         <div className="sticky">
@@ -118,40 +120,47 @@ function Page({ data, room_data, package_data }) {
             allRooms={allRooms} allPackages={allPackages} services={services}
             phone={phone} email={email} /></div> : <div className="sticky"></div>}
 
-             {/* Fusion */}
-        {theme === "Fusion" ?
-          <div className="sticky">
-            <Fusion language={language?.activeThemeLanguage} HotelDetails={allHotelDetails}
-              allRooms={allRooms} allPackages={allPackages} services={services}
-              phone={phone} email={email} initialColor={ModernThemeColors.black} /></div> : <div className="sticky"></div>}
+      {/* Fusion */}
+      {theme === "Fusion" ?
+        <div className="sticky">
+          <Fusion language={language?.activeThemeLanguage} HotelDetails={allHotelDetails}
+            allRooms={allRooms} allPackages={allPackages} services={services}
+            phone={phone} email={email} initialColor={ModernThemeColors.black} /></div> : <div className="sticky"></div>}
 
-        {/* Fusion */}
-        {theme === "Fusion-red" ?
-          <div className="sticky">
-            <Fusion language={language?.activeThemeLanguage} HotelDetails={allHotelDetails}
-              allRooms={allRooms} allPackages={allPackages} services={services}
-              phone={phone} email={email} initialColor={ModernThemeColors.red} /></div> : <div className="sticky"></div>}
+      {/* Fusion */}
+      {theme === "Fusion-red" ?
+        <div className="sticky">
+          <Fusion language={language?.activeThemeLanguage} HotelDetails={allHotelDetails}
+            allRooms={allRooms} allPackages={allPackages} services={services}
+            phone={phone} email={email} initialColor={ModernThemeColors.red} /></div> : <div className="sticky"></div>}
 
-        {/* Fusion */}
-        {theme === "Fusion-green" ?
-          <div className="sticky">
-            <Fusion language={language?.activeThemeLanguage} HotelDetails={allHotelDetails}
-              allRooms={allRooms} allPackages={allPackages} services={services}
-              phone={phone} email={email} initialColor={ModernThemeColors.green} /></div> : <div className="sticky"></div>}
+      {/* Fusion */}
+      {theme === "Fusion-green" ?
+        <div className="sticky">
+          <Fusion language={language?.activeThemeLanguage} HotelDetails={allHotelDetails}
+            allRooms={allRooms} allPackages={allPackages} services={services}
+            phone={phone} email={email} initialColor={ModernThemeColors.green} /></div> : <div className="sticky"></div>}
 
-        {/* Fusion */}
-        {theme === "Fusion-white" ?
-          <div className="sticky">
-            <Fusion language={language?.activeThemeLanguage} HotelDetails={allHotelDetails}
-              allRooms={allRooms} allPackages={allPackages} services={services}
-              phone={phone} email={email} initialColor={ModernThemeColors.white} /></div> : <div className="sticky"></div>}
-       
-        {/* Cosmix */}
-        {theme === "Cosmic" ?
-          <div className="sticky">
-            <Cosmic language={language?.activeThemeLanguage} HotelDetails={allHotelDetails}
-              allRooms={allRooms} allPackages={allPackages} services={services}
-              phone={phone} email={email}  /></div> : <div className="sticky"></div>}
+      {/* Fusion */}
+      {theme === "Fusion-white" ?
+        <div className="sticky">
+          <Fusion language={language?.activeThemeLanguage} HotelDetails={allHotelDetails}
+            allRooms={allRooms} allPackages={allPackages} services={services}
+            phone={phone} email={email} initialColor={ModernThemeColors.white} /></div> : <div className="sticky"></div>}
+
+      {/* Cosmic */}
+      {theme === "Cosmic" ?
+        <div className="sticky">
+          <Cosmic language={language?.activeThemeLanguage} HotelDetails={allHotelDetails}
+            allRooms={allRooms} allPackages={allPackages} services={services}
+            phone={phone} email={email} /></div> : <div className="sticky"></div>}
+
+      {/* Country-Side */}
+      {theme === "Country-Side" ?
+        <div className="sticky">
+          <CountrySide language={language?.activeThemeLanguage} HotelDetails={allHotelDetails}
+            allRooms={allRooms} allPackages={allPackages} services={services}
+            phone={phone} email={email} /></div> : <div className="sticky"></div>}
 
 
     </>

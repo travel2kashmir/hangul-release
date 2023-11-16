@@ -16,14 +16,13 @@ import NewTheme from "../../components/NewTheme"
 import Fusion from "../../components/ModernTheme"
 import ModernThemeColors from "../../components/ModernTheme/Data/Colors"
 import Cosmic from "../../components/LodgeTheme"
-import CountrySide from "../../components/CountrysideTheme"
 import "react-toastify/dist/ReactToastify.css";
 var language;
 var currentUser;
 var currentProperty;
 var currentLogged;
 let colorToggle;
-let premiumThemes = ["Fusion", "Fusion-red", "Fusion-green", "Fusion-white", "Cosmic", "Country-Side"];
+let premiumThemes = ["Neo", "Fusion", "Fusion-red", "Fusion-green", "Fusion-white", "Cosmic"];
 
 function Theme() {
   /** State to store Current Property Details **/
@@ -350,24 +349,20 @@ function Theme() {
                     <li className={`block py-2 px-4 ${color?.sidebar} `}>
                       <button onClick={() => { setThemeName("Cosmic"); setThemes(!themes); changeTheme("Cosmic") }} >Cosmic</button>
                     </li>
-                    <li className={`block py-2 px-4 ${color?.sidebar} `}>
-                      <button onClick={() => { setThemeName("Country-Side"); setThemes(!themes); changeTheme("Country-Side") }} >Country-Side</button>
-                    </li>
                   </ul>
                 </div></div>
             </div>
-            <div>
-              {premiumThemes.includes(themeName) === true ?
-                <> {allHotelDetails.isPremium === "true" ?
-                  <button className="bg-cyan-600 text-sm text-center hover:bg-cyan-700 text-white  py-2 px-4 rounded" onClick={() => {
-                    submitTheme();
-                  }}>Save</button> :
-                  <button className="bg-cyan-600 hover:bg-cyan-700 mx-2 text-white opacity-60 cursor-not-allowed  py-2 px-4 rounded"
-                  >Save</button>} </> :
+            <div>{premiumThemes.includes(themeName) === true ?
+              <> {allHotelDetails.isPremium === "true" ?
                 <button className="bg-cyan-600 text-sm text-center hover:bg-cyan-700 text-white  py-2 px-4 rounded" onClick={() => {
                   submitTheme();
-                }}
-                >Save</button>}
+                }}>Save</button> :
+                <button className="bg-cyan-600 hover:bg-cyan-700 mx-2 text-white opacity-60 cursor-not-allowed  py-2 px-4 rounded"
+                >Save</button>} </> :
+              <button className="bg-cyan-600 text-sm text-center hover:bg-cyan-700 text-white  py-2 px-4 rounded" onClick={() => {
+                submitTheme();
+              }}
+              >Save</button>}
 
             </div>
 
@@ -449,13 +444,6 @@ function Theme() {
         {themeName === "Cosmic" ?
           <div className="sticky">
             <Cosmic language={language?.activeThemeLanguage} HotelDetails={allHotelDetails}
-              allRooms={allRooms} allPackages={allPackages} services={services}
-              phone={phone} email={email} /></div> : <div className="sticky"></div>}
-
-        {/* Country-Side */}
-        {themeName === "Country-Side" ?
-          <div className="sticky">
-            <CountrySide language={language?.activeThemeLanguage} HotelDetails={allHotelDetails}
               allRooms={allRooms} allPackages={allPackages} services={services}
               phone={phone} email={email} /></div> : <div className="sticky"></div>}
       </div>

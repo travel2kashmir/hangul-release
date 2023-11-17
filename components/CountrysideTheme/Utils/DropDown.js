@@ -43,7 +43,8 @@ const DropDown = ({
         <div data-testid="vis1" className={visible === 1 ? "block" : "hidden"}>
           <select data-testid="input"
             // className={`shadow-sm ${color?.greybackground}  capitalize border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
-            className={`shadow-sm ${color?.greybackground} lg:bg-custom-dark-green capitalize border border-custom-yellow ${color?.text} sm:text-sm rounded-lg block w-full p-2.5`}
+            // className={`shadow-sm ${color?.greybackground} lg:bg-custom-dark-green capitalize border border-custom-yellow ${color?.text} sm:text-sm rounded-lg block w-full p-2.5`}
+            className={`shadow-sm ${color?.greybackground} input-color capitalize border border-custom-yellow ${color?.text} sm:text-sm rounded-lg block w-full p-2.5`}
             onChange={(e) =>
               onChangeAction(e)
             }
@@ -69,7 +70,18 @@ const DropDown = ({
           {error}
         </p>
       </div>
+
+      <style jsx>
+        {`
+           @media (min-width: 1050px) {
+              .input-color{
+                background-color: #1F2E20 ;  
+                }
+           }
+      `}
+      </style>
     </div>
+
   );
 };
 

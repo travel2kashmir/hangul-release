@@ -35,8 +35,9 @@ function DateInput({ color, label, req, initialValue, onChangeAction, error, vis
             type="Date"
             // className={`shadow-sm ${color?.greybackground}  border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
             // className={`shadow-sm ${color?.greybackground} bg-transparent bg-custom-dark-green border border-custom-yellow ${color?.text} sm:text-sm rounded-lg block w-full p-2.5`}
-            className={`shadow-sm ${color?.greybackground}  lg:bg-transparent bg-custom-dark-green border border-custom-yellow ${color?.text} sm:text-sm rounded-lg block w-full p-2.5`}
-            defaultValue={initialValue} required
+            className={`shadow-sm ${color?.greybackground}  lg:bg-transparent custom-border-color border  ${color?.text} sm:text-sm rounded-lg block w-full p-2.5`}
+            defaultValue={initialValue}
+            required
             max={max}
             min={min}
             onChange={(e) => onChangeAction(e)}
@@ -46,6 +47,15 @@ function DateInput({ color, label, req, initialValue, onChangeAction, error, vis
           </p>
         </div>
       </div>
+      <style jsx>
+        {`
+           @media (min-width: 100px) {
+              .custom-border-color{
+                border-color: #B99D75;                  
+                }
+           }
+      `}
+      </style>
     </div>
   )
 }

@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
 import Header from '../Header';
 import BookingForm from '../Utils/BookingForm';
+import Modal from '../Modals/Modal'
 
 
 function Home({ allHotelDetails, rooms, hotelDetailLoader, setMenu, setShowBookingEngine, setRoomsLoader, enquiry, setEnquiry, setSearched, searched }) {
 
-    // const [showModalBooking, setShowModalBooking] = useState(0);
+    const [showModalBooking, setShowModalBooking] = useState(0);
 
     return (
         // <section id='home' className='homeBg bg-[url("/home1.jpg")] lg:bg-[url("/home1.jpg")]  md:h-screen lg:min-h-screen lg:h-fit bg-cover bg-no-repeat md:flex lg:flex-none'>
@@ -20,6 +21,7 @@ function Home({ allHotelDetails, rooms, hotelDetailLoader, setMenu, setShowBooki
                 allHotelDetails={allHotelDetails}
                 hotelDetailLoader={hotelDetailLoader}
                 setMenu={(e) => setMenu(e)}
+                setShowModalBooking={(e) => setShowModalBooking(e)}
             />
 
 
@@ -40,9 +42,22 @@ function Home({ allHotelDetails, rooms, hotelDetailLoader, setMenu, setShowBooki
                     </div>
                 </div>
 
-                {/* booking engine */}
-                {/* <div className='hidden lg:block lg:w-4/12'> */}
-                <div className='hidden booking-engine '>
+                {/* book now btn for small screen */}
+                <div className='pl-4 md:hidden'>
+                    <button
+                        className='bg-custom-yellow text-xs font-semibold text-white rounded-lg w-24 h-14 '
+                        onClick={() => {
+                            setShowModalBooking(1)
+                        }}
+                    >
+                        BOOK NOW
+                    </button>
+                </div>
+
+
+
+                {/* booking engine for lg screen*/}
+                <div className='hidden booking-engine'>
                     <div className='mt-20'>
                         <div className='bg-custom-dark-green backdrop-opacity-20'>
                             <div className='p-2'>
@@ -82,17 +97,33 @@ function Home({ allHotelDetails, rooms, hotelDetailLoader, setMenu, setShowBooki
 
             </div>
 
+
+
             {/* ---------------booking form for small and medium screen--------------- */}
-            {/* {showModalBooking === 1 ?
+            {showModalBooking === 1 ?
                 <Modal
-                    description={<BookingForm />}
+                    title={'BOOK YOUR STAY'}
+                    description={
+                        <BookingForm
+                            setRoomsLoader={(e) => setRoomsLoader(e)}
+                            setShowBookingEngine={(e) => setShowBookingEngine(e)}
+                            setEnquiry={(e) => setEnquiry(e)}
+                            enquiry={enquiry}
+                            rooms={rooms}
+                            setSearched={(e) => setSearched(e)}
+                            searched={searched}
+
+                        />
+                    }
                     setShowModal={(e) => setShowModalBooking(e)}
                 />
-                : <></>} */}
+                : <></>
+            }
 
 
             <style jsx>
                 {`
+               
                 @media (max-width: 1000px) {
                     .home-bg {
                         height:89vh;
@@ -100,8 +131,7 @@ function Home({ allHotelDetails, rooms, hotelDetailLoader, setMenu, setShowBooki
                 }
                 @media (max-width: 1100px) {
                     .booking-engine {
-                        display:hidden;
-                        
+                        display:hidden;   
                     }
                     .content-div{
                         width:100%;

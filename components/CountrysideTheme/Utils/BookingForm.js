@@ -5,16 +5,6 @@ import DropDown from './DropDown'
 
 function BookingForm({ setShowBookingEngine, enquiry, setEnquiry, setRoomsLoader, setSearched, searched }) {
 
-    // const [enquiry, setEnquiry] = useState({
-    //     "checkin": "",
-    //     "checkout": "",
-    //     "number_of_rooms": 1,
-    //     "number_of_guests": 1,
-    //     "number_of_adults": 1,
-    //     "child_below_six": 0,
-    //     "child_above_six": 0
-    // })
-
     const [maxDate, setMaxDate] = useState('');
     const [err, setErr] = useState(false);
     const [notSelectedErr, setNotSelectedErr] = useState({
@@ -108,7 +98,7 @@ function BookingForm({ setShowBookingEngine, enquiry, setEnquiry, setRoomsLoader
                             </div>
                         </div>
                     </div>
-                    <div className=' flex justify-center items-center'>
+                    <div className='flex justify-center items-center md:pt-10 lg:pt-0'>
                         <button
                             className='bg-custom-yellow h-12 w-full text-white'
                             onClick={() => {
@@ -126,38 +116,11 @@ function BookingForm({ setShowBookingEngine, enquiry, setEnquiry, setRoomsLoader
                                     setShowBookingEngine(1);
                                     setNotSelectedErr((prevValue) => ({ ...prevValue, "forCheckin": false, "forCheckout": false }))
                                 }
-
-
                             }}
                         >Search</button>
                     </div>
                 </div>
             </div>
-
-            {/* this div will only show up when the showBookingEngine is equal to 1 else there will be no such div, and the functions inside this div will only work when showBookingEngine is equal to 1 */}
-            {/* {showBookingEngine === 1 ?
-                <div className="block z-50">
-                    {allHotelDetails && <BookingModal
-                        title="Booking Engine"
-                        bookingComponent={
-                            <BookingEngine
-                                roomsLoader={roomsLoader}
-                                setRoomsLoader={(e) => setRoomsLoader(e)}
-                                display={display}
-                                setDisplay={(e) => setDisplay(e)}
-                                rooms={rooms}
-                                allHotelDetails={allHotelDetails}
-                                setShowModal={(e) => setShowBookingEngine(e)}
-                                setSearched={(e) => setSearched(false)}
-                                checkinDate={enquiry.checkin}
-                                checkoutDate={enquiry.checkout}
-                            />}
-                        setShowModal={(e) => setShowBookingEngine(e)}
-                        setDisplay={(e) => setDisplay(e)}
-                        setSearched={(e) => setSearched(false)}
-                    />}
-                </div> : undefined} */}
-
         </div>
     )
 }

@@ -4,13 +4,18 @@ import { CiMail } from "react-icons/ci";
 import { SlCalender } from "react-icons/sl";
 import StarRatings from 'react-star-ratings';
 import ContactUsModal from '../Modals/ContactUsModal';
+import Modal from '../Modals/Modal'
+
 
 // import ContactUsModal from '../Modals/ContactUsModal';
 import Loader from '../Loaders/Loader';
 
-function Header({ allHotelDetails, hotelDetailLoader, setMenu }) {
+function Header({ allHotelDetails, hotelDetailLoader, setMenu,
+    setShowModalBooking
+}) {
 
     const [showModalContactUs, setShowModalContactUs] = useState(0);
+
 
     return (
         <section className=' relative border-b-2 border-gray-400 bg-transparent'>
@@ -66,7 +71,12 @@ function Header({ allHotelDetails, hotelDetailLoader, setMenu }) {
                             }}> CONTACT US</span>
                     </div>
 
-                    <div className='book-now flex ml-5 md:mr-10'>
+                    <div
+                        className='book-now flex ml-5 md:mr-10'
+                        onClick={() => {
+                            setShowModalBooking(1)
+                        }}
+                    >
                         <span className='my-auto'><SlCalender /></span>
                         <span className='ml-2 text-sm'> BOOK NOW</span>
                     </div>
@@ -83,6 +93,14 @@ function Header({ allHotelDetails, hotelDetailLoader, setMenu }) {
                     setShowModalContactUs={setShowModalContactUs}
                 />
             </div>
+
+            {/* ---------------booking form for small and medium screen--------------- */}
+            {/* {showModalBooking === 1 ?
+                <Modal
+                    description={<BookingForm />}
+                    setShowModal={(e) => setShowModalBooking(e)}
+                />
+                : <></>} */}
 
 
 

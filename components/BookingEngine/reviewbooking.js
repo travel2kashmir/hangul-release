@@ -222,23 +222,22 @@ function Reviewbooking({ setDisplay, rooms, setShowModal, setSearched, checkinDa
     }
 
     function removeReservationFromDB(room_id, reservation_time, action) {
-        let url = `/api/reserve_rooms/${room_id}/${reservation_time}`;
-        axios.delete(url).then((response) => {
-            if (action === "close") {
-                setCancelBookingLoader(false)
-                setDisplay(0)
-                setShowModal(0)
-                setSearched(false)
-                dispatch(setAddMoreRoom(false))
-                dispatch(clearRoomsSelected())
-                dispatch(clearReservationIdentity())
-                dispatch(clearInventoryDetail())
-                deleteRoomDetails()
-            }
-        }).catch((err) => {
-            console.log("Error in deleting reservation from DB", err)
-        })
-
+        // let url = `/api/reserve_rooms/${room_id}/${reservation_time}`;
+        // axios.delete(url).then((response) => {
+        if (action === "close") {
+            setCancelBookingLoader(false)
+            setDisplay(0)
+            setShowModal(0)
+            setSearched(false)
+            dispatch(setAddMoreRoom(false))
+            dispatch(clearRoomsSelected())
+            dispatch(clearReservationIdentity())
+            dispatch(clearInventoryDetail())
+            deleteRoomDetails()
+        }
+        // }).catch((err) => {
+        // console.log("Error in deleting reservation from DB", err)
+        // })
     }
 
     function SubmitGuestDetails() {
@@ -279,7 +278,6 @@ function Reviewbooking({ setDisplay, rooms, setShowModal, setSearched, checkinDa
     }
 
     function bookingRoom() {
-
         let roomBookingData = {
             "bookings": [
                 {
@@ -291,7 +289,6 @@ function Reviewbooking({ setDisplay, rooms, setShowModal, setSearched, checkinDa
                 }
             ]
         }
-
         let guestsForThisBooking = {
             "guest_booking_link": guest.map((guestdetail) => {
                 return ({
@@ -304,6 +301,18 @@ function Reviewbooking({ setDisplay, rooms, setShowModal, setSearched, checkinDa
             }
             )
         }
+        
+        let bookingRoomArray = selectedRoomsArray.map((item, index) => {
+            return ({
+                "room_id": item.room_id,
+                "room_name": item.room_name,
+                "room_type": item.room_type,
+                "room_count": selectedQuantitiesMap?.get(item?.room_id),
+                "booking_id": ""
+            })
+        })
+        
+        let roomsForThisBooking = { "room_booking_link": bookingRoomArray }
         let invoiceForThisBooking = {
             "booking_invoice_link": [
                 {
@@ -321,45 +330,10 @@ function Reviewbooking({ setDisplay, rooms, setShowModal, setSearched, checkinDa
         }
 
         //multiple api call's will be performed in this bookRoom function so that is why it is divided in multiple functions.
-        bookRoom(roomBookingData, guestsForThisBooking, invoiceForThisBooking)
+        bookRoom(roomsForThisBooking, roomBookingData, guestsForThisBooking, invoiceForThisBooking)
+ }
 
-        // axios.post(roomBookingUrl, roomBookingData).then((responseFromRoomBookingUrl) => {
-        //     // alert(responseFromRoomBookingUrl.data.message)
-
-        //     // Update the booking_id property
-        //     guestsForThisBooking.guest_booking_link = guestsForThisBooking.guest_booking_link.map(item => {
-        //         item.booking_id = responseFromRoomBookingUrl.data.booking_id;
-        //         return item;
-        //     });
-        //     invoiceForThisBooking.booking_invoice_link = invoiceForThisBooking.booking_invoice_link.map(item => {
-        //         item.booking_id = responseFromRoomBookingUrl.data.booking_id;
-        //         return item;
-        //     });
-
-        //     // Now guestsForThisBooking is updated and you can use it for another post request if needed
-        //     axios.post(bookingLinkUrl, guestsForThisBooking).then((responseFromBookingLinkUrl) => {
-        //         // handle the second post response
-        //         // alert(responseFromBookingLinkUrl.data.message)
-
-        //         axios.post(invoiceLinkUrl, invoiceForThisBooking).then((responseFromInvoiceLinkUrl) => {
-        //             // handle the third post response
-        //             // alert(responseFromInvoiceLinkUrl.data.message)
-
-
-        //         }).catch((err) => {
-        //             console.log(err)
-        //         })
-
-        //     }).catch((err) => {
-        //         console.log(err)
-        //     });
-
-        // }).catch((err) => {
-        //     console.log(err)
-        // })
-    }
-
-    function bookRoom(roomBookingData, guestsForThisBooking, invoiceForThisBooking) {
+    function bookRoom(roomsForThisBooking, roomBookingData, guestsForThisBooking, invoiceForThisBooking) {
         let roomBookingUrl = "/api/room_bookings";
         axios.post(roomBookingUrl, roomBookingData).then((responseFromRoomBookingUrl) => {
             // Update the booking_id property
@@ -374,10 +348,23 @@ function Reviewbooking({ setDisplay, rooms, setShowModal, setSearched, checkinDa
 
             // Now guestsForThisBooking is updated and you can use it for another post request if needed
             linkBookingWithGuest(guestsForThisBooking, invoiceForThisBooking)
+            let roomsBooked = { "room_booking_link": roomsForThisBooking.room_booking_link.map((item) => { return ({ ...item, "booking_id": responseFromRoomBookingUrl.data.booking_id }) }) }
+            console.log(roomsBooked)
+            linkRoomsWithThisBooking(roomsBooked)
 
         }).catch((err) => {
             console.log(err)
         })
+    }
+
+    function linkRoomsWithThisBooking(roomsBooked) {
+        let url = `/api/room_bookings_link`;
+        axios.post(url, roomsBooked, { header: { "content-type": "application/json" } })
+            .then((response) => {
+                console.log("rooms linked sucessfully")
+            }).catch((error) => {
+                console.log("error in linking rooms")
+            })
     }
 
     function linkBookingWithGuest(guestsForThisBooking, invoiceForThisBooking) {
@@ -422,26 +409,7 @@ function Reviewbooking({ setDisplay, rooms, setShowModal, setSearched, checkinDa
         }).then((responseFromInvoiceLinkUrl) => {
             // handle the third post response
             console.log('payment sucessful')
-            //change state of reservation in reservation table 
-            changeReservationState()
-        }).catch((err) => {
-            console.log(err)
-        })
-    }
-
-    function changeReservationState() {
-        let reservedRooms = reservationIdentity.map((data, index) => {
-            return ({ ...data, "reservation_state": "paid" })
-        })
-        let data = { "reserved_rooms": reservedRooms }
-        console.log(JSON.stringify(data));
-        let url = '/api/reserve_rooms';
-        axios.put(url, data, {
-            header: { "content-type": "application/json" },
-        }).then((responseFromInvoiceLinkUrl) => {
-            // handle the third post response
-            console.log('reservation state changed')
-            //change state of reservation in reservation table
+            changeBookingCount()
             setpayNowLoader(false)
             setDisplay(3)
         }).catch((err) => {
@@ -449,6 +417,36 @@ function Reviewbooking({ setDisplay, rooms, setShowModal, setSearched, checkinDa
         })
     }
 
+    function changeBookingCount() {
+        const bookingDataArray = [];
+        // Function to get an array of dates between two dates
+        const datesBetween = getDates(checkinDate, checkoutDate);
+        // Iterate through each date between checkinDate and checkoutDate
+        datesBetween.forEach((date) => {
+            // For each selected room, create an object
+            selectedRoomsArray.forEach((item) => {
+                const room_id = item.room_id;
+                const booking_count = selectedQuantitiesMap.get(room_id);
+
+                // Add the object to the array
+                bookingDataArray.push({
+                    room_id,
+                    booking_count,
+                    date: date.toISOString().split('T')[0], // Format date as "YYYY-MM-DD"
+                });
+            });
+        });
+
+        // Now bookingDataArray contains the array of objects with room_id, booking_count, and date for each room and each day between checkinDate and checkoutDate
+        console.log(bookingDataArray);
+        let url = '/api/room_booking_update'
+        axios.put(url, bookingDataArray, { header: { "content-type": "application/json" } })
+            .then((response) => {
+                console.log(response.data)
+                setpayNowLoader(false)
+            })
+            .catch((error) => console.log(error))
+    }
 
     // this function resets the values
     function closeButtonAction() {
@@ -470,6 +468,18 @@ function Reviewbooking({ setDisplay, rooms, setShowModal, setSearched, checkinDa
             dispatch(clearInventoryDetail())
             deleteRoomDetails()
         }
+    }
+
+    function getDates(startDate, endDate) {
+        const dateArray = [];
+        let currentDate = new Date(startDate);
+
+        while (currentDate <= new Date(endDate)) {
+            dateArray.push(new Date(currentDate));
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+
+        return dateArray;
     }
 
     return (
@@ -564,15 +574,16 @@ function Reviewbooking({ setDisplay, rooms, setShowModal, setSearched, checkinDa
                                     <td>{room?.room_name}</td>
                                     <td>{room?.room_type}</td>
                                     <td className=' text-black '>
+                                        {/* drop down to change room quantity  */}
                                         <select
                                             className=' pl-3 pr-10'
                                             value={selectedQuantitiesMap?.get(room?.room_id) || "1"} // Use selected quantity from the Map
                                             onChange={(e) => {
                                                 const newQuantity = parseInt(e.target.value);
                                                 updateSelectedQuantity(room?.room_id, newQuantity); // Update selected quantity in the Map
-                                                let reservationData = reservationIdentity.filter((item) => item.room_id === room?.room_id)[0]
-                                                updateReserveRoom({ "reserve_rooms": [{ "room_count": newQuantity, ...reservationData }] })
-                                                setDisabled(true)
+                                                // let reservationData = reservationIdentity.filter((item) => item.room_id === room?.room_id)[0]
+                                                // updateReserveRoom({ "reserve_rooms": [{ "room_count": newQuantity, ...reservationData }] })
+                                                // setDisabled(true)
                                             }}
                                         >
                                             {/* Generate options for the dropdown based on inventory_available */}
@@ -584,13 +595,14 @@ function Reviewbooking({ setDisplay, rooms, setShowModal, setSearched, checkinDa
                                         </select>
                                     </td>
                                     <td className='text-red-800 '>
+                                        {/* delete icon  */}
                                         <button
                                             className="text-white bg-red-500 border-0 py-1 px-4 focus:outline-none hover:bg-red-600 rounded text-md"
                                             onClick={() => {
                                                 dispatch(removeRoomFromSelected(room?.room_id))
                                                 removeRoomRateByRoomId(room?.room_id)  //remove room_rate from local storage
-                                                let reservationdata = reservationIdentity.filter((item) => item.room_id === room?.room_id)[0]
-                                                removeReservationFromDB(room?.room_id, reservationdata?.reservation_time)
+                                                // let reservationdata = reservationIdentity.filter((item) => item.room_id === room?.room_id)[0]
+                                                // removeReservationFromDB(room?.room_id, reservationdata?.reservation_time)
                                                 dispatch(removeReservationFromReservationIdentity(room?.room_id))
                                             }}
                                         >
@@ -791,15 +803,12 @@ function Reviewbooking({ setDisplay, rooms, setShowModal, setSearched, checkinDa
                         />
                         :
                         <button
-                            disabled={reserveRoom || disabled || totalFinalRate + totalTaxAmount + totalOtherFees === 0}
+                            disabled={disabled || totalFinalRate + totalTaxAmount + totalOtherFees === 0}
                             onClick={() => {
                                 SubmitGuestDetails();
                             }}
                             className={`px-4 py-2 ${totalFinalRate + totalTaxAmount + totalOtherFees === 0
-                                ? "bg-gray-500"
-                                : reserveRoom === true || disabled === true
-                                    ? "bg-gray-500"
-                                    : "bg-green-700 hover:bg-green-900"
+                                ? "bg-gray-500" : "bg-green-700 hover:bg-green-900"
                                 } text-white rounded-lg w-full`}
                         >
                             Pay Now

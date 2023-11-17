@@ -76,15 +76,15 @@ function RoomSummary({ setDisplay, setShowModal, setSearched, checkinDate, check
     localStorage.removeItem('reservation_ids');
   }
 
-  function reserveRoom(roomdata) {
-    let url = "/api/reserve_rooms";
-    axios.post(url, roomdata).then((response) => {
-      dispatch(setReserveRoom(false))
-      setSearchBookingInventory(false)
-    }).catch((err) => {
-      console.log(err)
-    })
-  }
+  // function reserveRoom(roomdata) {
+  //   let url = "/api/reserve_rooms";
+  //   axios.post(url, roomdata).then((response) => {
+  //     dispatch(setReserveRoom(false))
+  //     setSearchBookingInventory(false)
+  //   }).catch((err) => {
+  //     console.log(err)
+  //   })
+  // }
 
   function removeReservationFromDB(room_id, reservation_time) {
     let url = `/api/reserve_rooms/${room_id}/${reservation_time}`;
@@ -104,27 +104,27 @@ function RoomSummary({ setDisplay, setShowModal, setSearched, checkinDate, check
 
   }
 
-  function generateBookingObjects(start_date, end_date, otherData) {
-    const bookingObjects = [];
-    let currentDate = new Date(start_date); // Start with the start_date
+  // function generateBookingObjects(start_date, end_date, otherData) {
+  //   const bookingObjects = [];
+  //   let currentDate = new Date(start_date); // Start with the start_date
 
-    while (currentDate <= new Date(end_date)) {
-      const bookingDate = new Date(currentDate);
-      const bookingDateString = bookingDate.toISOString().split('T')[0]; // Format the date as YYYY-MM-DD
+  //   while (currentDate <= new Date(end_date)) {
+  //     const bookingDate = new Date(currentDate);
+  //     const bookingDateString = bookingDate.toISOString().split('T')[0]; // Format the date as YYYY-MM-DD
 
-      const bookingObject = {
-        booking_date: bookingDateString,
-        ...otherData
-      };
+  //     const bookingObject = {
+  //       booking_date: bookingDateString,
+  //       ...otherData
+  //     };
 
-      bookingObjects.push(bookingObject);
+  //     bookingObjects.push(bookingObject);
 
-      // Move to the next day
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
+  //     // Move to the next day
+  //     currentDate.setDate(currentDate.getDate() + 1);
+  //   }
 
-    return bookingObjects;
-  }
+  //   return bookingObjects;
+  // }
 
 
   function closeButtonAction() {
@@ -178,9 +178,9 @@ function RoomSummary({ setDisplay, setShowModal, setSearched, checkinDate, check
                   }
                   dispatch(setReservationIdentity([reservationIdentity]))
 
-                  reserveRoom({
-                    "reserve_rooms": generateBookingObjects(checkinDate, checkoutDate, { "room_count": 1, ...reservationIdentity })
-                  }, selectedRoom?.room_id)
+                  // reserveRoom({
+                  //   "reserve_rooms": generateBookingObjects(checkinDate, checkoutDate, { "room_count": 1, ...reservationIdentity })
+                  // }, selectedRoom?.room_id)
 
                   dispatch(setReserveRoom(true))
                 }}

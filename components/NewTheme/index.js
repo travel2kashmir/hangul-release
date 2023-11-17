@@ -118,7 +118,6 @@ function Hotel({ language, HotelDetails, allRooms, allPackages, services, phone,
 
             <Services
                 services={services}
-                allHotelDetails={allHotelDetails}
                 hotelDetailLoader={hotelDetailLoader}
                 lang={lang}
             />

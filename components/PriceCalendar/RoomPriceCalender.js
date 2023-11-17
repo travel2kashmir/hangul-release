@@ -6,15 +6,16 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 // import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 // import resourceTimelinePlugin from '@fullcalendar/resource-timeline';
-import roomPrice from './roomPrice.json';
+// import roomPrice from './roomPrice.json';
 import randomColor from 'randomcolor';
 import RoomDiscounts from './rooms/roomDiscounts';
 import RoomRateModification from './rooms/roomRateModification';
 import Multiselect from 'multiselect-react-dropdown';
+import axios from 'axios';
 let i = 0;
 let lang;
 
-const RoomPriceCalendar = ({ color, language }) => {
+const RoomPriceCalendar = ({ color, language,currentProperty }) => {
     const [events, setEvents] = useState([])
     const [allRoomRates, setAllRoomRates] = useState([])
     const [rooms, setRooms] = useState([])
@@ -27,12 +28,17 @@ const RoomPriceCalendar = ({ color, language }) => {
     const [globalRoomData, setGlobalRoomData] = useState([])
     const [selectedColors, setSelectedColors] = useState([]);
     useEffect(() => {
-        (function initialData() {
+        currentProperty && (function initialData() {
             // creates an array of object and from that array duplicates are removed using set
-            let uniqueListOfRooms = Array.from(new Set(roomPrice?.rates?.map(item => ({ "room_id": item.room_id, "room_name": item.room_name })).map(JSON.stringify)), JSON.parse);
+            axios.get(`/api/room_prices/${currentProperty.property_id}`).then((response)=>{
+                console.log(response.data.map((i)=>({...i,"title":i.base_rate})))
+                let roomPrice=response.data.map((i)=>({...i,"title":i.base_rate}))
+
+
+                let uniqueListOfRooms = Array.from(new Set(roomPrice?.map(item => ({ "room_id": item.room_id, "room_name": item.room_name })).map(JSON.stringify)), JSON.parse);
             setRooms(uniqueListOfRooms);
             setAllRoomRates(uniqueListOfRooms)
-            let room_ids = roomPrice?.rates.map((rate) => {
+            let room_ids = roomPrice?.map((rate) => {
                 return rate?.room_id
             });
             const uniqueRoomIdArray = [...new Set(room_ids)];
@@ -75,7 +81,7 @@ const RoomPriceCalendar = ({ color, language }) => {
             const mergedColors = Object.assign({}, ...keycolors);
             setRoomColors(mergedColors)
             //object with color information
-            let final = roomPrice?.rates.map((rate, id) => {
+            let final = roomPrice?.map((rate, id) => {
                 let color = mergedColors[rate.room_id]
                 return (
                     { ...rate, "color": color, "id": id }
@@ -85,8 +91,12 @@ const RoomPriceCalendar = ({ color, language }) => {
             setEvents(final)
             setGlobalRoomData(final)
             lang = localStorage.getItem('Language') != undefined ? localStorage.getItem('Language') : 'en'
+            }).catch((error)=>{
+                console.log(error)
+            })
+            
         })()
-    }, [])
+    }, [currentProperty])
 
 
 

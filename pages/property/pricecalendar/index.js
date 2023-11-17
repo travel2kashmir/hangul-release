@@ -49,7 +49,7 @@ const RoomPricePage = () => {
             />
 
             <div className={`${color?.greybackground} px-4 pt-24 pb-2 relative overflow-y-auto lg:ml-64`}>
-                <RoomPriceCalendar color={color} language={language} />
+                <RoomPriceCalendar color={color} language={language} currentProperty={currentProperty}/>
             </div>
         </>
     );

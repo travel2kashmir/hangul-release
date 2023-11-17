@@ -13,7 +13,6 @@ import { AiOutlineClose } from "react-icons/ai";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-
 function Hotel({ language, HotelDetails, allRooms, allPackages, services, phone, email }) {
 
     const [allHotelDetails, setHotelDetails] = useState([]);

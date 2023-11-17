@@ -22,7 +22,7 @@ function RoomViewMobile({ rooms, selectedRoom, setSelectedRoom, showRoom, setSho
                                 <p className="mt-5 text-xl font-semibold">{room?.room_name}</p>
 
                                 {room?.unconditional_rates?.map((resource, index) => {
-                                    return <p key={index} className="text-lg text-gray-500 font-medium">{resource?.baserate_currency + " " + resource?.baserate_amount}</p>
+                                    return <p key={index} className="text-lg text-gray-500 font-medium">{resource?.baserate_currency.toUpperCase() + " " + resource?.baserate_amount}</p>
                                 })}
 
                             </div>

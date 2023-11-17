@@ -71,11 +71,11 @@ const Sidebar = (args) => {
               </li> */}
 
               {/* inbox  */}
-               <li className={`${args?.color?.text} ${args?.color?.sidebar} group text-base font-normal rounded-lg flex items-center p-2`}>
+              <li className={`${args?.color?.text} ${args?.color?.sidebar} group text-base font-normal rounded-lg flex items-center p-2`}>
                 <svg className={`w-6 h-6  ${args?.color?.textgray} flex-shrink-0  ${args?.color?.iconhover} transition duration-75`} fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M8.707 7.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l2-2a1 1 0 00-1.414-1.414L11 7.586V3a1 1 0 10-2 0v4.586l-.293-.293z"></path><path d="M3 5a2 2 0 012-2h1a1 1 0 010 2H5v7h2l1 2h4l1-2h2V5h-1a1 1 0 110-2h1a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V5z"></path></svg>
 
                 <span className="ml-3"><Link href={{ pathname: args?.Primary?.inbox, query: { id: 1 } }}><a>{language?.inbox} </a></Link> </span>
-              </li> 
+              </li>
 
               {/* basic details */}
               <li className={`${args?.color?.text} ${args?.color?.sidebar} group text-base font-normal rounded-lg flex items-center p-2  `}>
@@ -97,7 +97,7 @@ const Sidebar = (args) => {
                 </span>
               </li>
 
-                {/* address */}
+              {/* address */}
               <li className={`${args?.color?.text} ${args?.color?.sidebar} group text-base font-normal rounded-lg flex items-center p-2 `}>
                 <svg
                   className={`w-7 h-7  ${args?.color?.textgray} flex-shrink-0  ${args?.color?.iconhover} transition duration-75`}
@@ -115,7 +115,7 @@ const Sidebar = (args) => {
               </li>
 
 
-                {/* contacts  */}
+              {/* contacts  */}
               <li className={`${args?.color?.text} ${args?.color?.sidebar} group text-base font-normal rounded-lg flex items-center p-2  group`}>
                 <svg
                   className={`w-5 h-5 ${args?.color?.textgray} flex-shrink-0  ${args?.color?.iconhover} transition duration-75`}
@@ -130,7 +130,7 @@ const Sidebar = (args) => {
               </li>
 
 
-                {/* gallery  */}
+              {/* gallery  */}
               <li className={`${args?.color?.text} ${args?.color?.sidebar} group text-base font-normal rounded-lg flex items-center p-2  group`}>
                 <svg
                   className={`w-5 h-5 ${args?.color?.textgray} flex-shrink-0  ${args?.color?.iconhover} transition duration-75`}
@@ -148,7 +148,7 @@ const Sidebar = (args) => {
               </li>
 
               {/* reviews  */}
-               <li className={`${args?.color?.text} ${args?.color?.sidebar} group text-base font-normal rounded-lg flex items-center p-2  group`}>
+              <li className={`${args?.color?.text} ${args?.color?.sidebar} group text-base font-normal rounded-lg flex items-center p-2  group`}>
                 <svg
                   className={`w-6 h-6 ${args?.color?.textgray} flex-shrink-0  ${args?.color?.iconhover} transition duration-75`}
                   fill="currentColor"
@@ -173,7 +173,7 @@ const Sidebar = (args) => {
               <li>
                 <button type="button" onClick={() => { setServices(!services) }}
                   className={`${args?.color?.text} ${args?.color?.sidebar} group  rounded-lg flex items-center p-2 
-            w-full p-2 text-base font-normal  transition duration-75`} >
+            w-full text-base font-normal  transition duration-75`} >
                   <svg
 
                     className={`w-6 h-6 ${args?.color?.textgray} flex-shrink-0  ${args?.color?.iconhover} transition duration-75`}
@@ -205,7 +205,7 @@ const Sidebar = (args) => {
                   </ul></div>
               </li>
 
-                {/* rooms */}
+              {/* rooms */}
               <li className={`${args?.color?.text} ${args?.color?.sidebar} group text-base font-normal rounded-lg flex items-center p-2  group`}>
                 <svg
                   className={`w-6 h-6 ${args?.color?.textgray} flex-shrink-0  ${args?.color?.iconhover} transition duration-75`}
@@ -226,6 +226,7 @@ const Sidebar = (args) => {
                       {language?.rooms}</a>
                   </Link></span>
               </li>
+
               {/* t&c  */}
               <li className={`${args?.color?.text} ${args?.color?.sidebar} group text-base font-normal rounded-lg flex items-center p-2  group`}>
                 <svg
@@ -247,8 +248,18 @@ const Sidebar = (args) => {
                       {language?.privacypolicy}</a>
                   </Link></span>
               </li>
+
+              {/* inventory */}
+              <li className={`${args?.color?.text} ${args?.color?.sidebar} group text-base font-normal rounded-lg flex items-center p-2 pl-11`}>
+                <Link href={{ pathname: args?.Primary?.inventory, query: { id: 1 } }}>
+                  <a>
+                    {language?.inventory}</a>
+                </Link></li>
+
+
+
               {/* priceCalendar */}
-              {/* <li className={`${args?.color?.text} ${args?.color?.sidebar} group text-base font-normal rounded-lg flex items-center p-2  group`}>
+              <li className={`${args?.color?.text} ${args?.color?.sidebar} group text-base font-normal rounded-lg flex items-center p-2  group`}>
                 <svg
                   className={`w-6 h-6 ${args?.color?.textgray} flex-shrink-0  ${args?.color?.iconhover} transition duration-75`}
                   fill="currentColor"
@@ -267,7 +278,7 @@ const Sidebar = (args) => {
                     <a>
                       {language?.rooms} {language?.prices}</a>
                   </Link></span>
-              </li> */}
+              </li>
 
               {/* places */}
               {/* <li className={`${args?.color?.text} ${args?.color?.sidebar} group text-base font-normal rounded-lg flex items-center p-2  group`}>
@@ -339,8 +350,8 @@ const Sidebar = (args) => {
 
                   </ul></div>
               </li> */}
-             {/* ARI */}
-             {/* <li>
+              {/* ARI */}
+              {/* <li>
                     <button type="button" onClick={() => { setAri(!ari) }}
                       className={`${args?.color?.text} ${args?.color?.sidebar} group  rounded-lg flex items-center p-2 
             w-full p-2 text-base font-normal  transition duration-75`} >
@@ -365,32 +376,32 @@ const Sidebar = (args) => {
                           <Link href={{ pathname: args?.Primary?.availability, query: { id: 1 } }}>
                             <a>{language?.availability}</a></Link>
                         </li> */}
-                        {/* <li className={`${args?.color?.text} ${args?.color?.sidebar} group text-base font-normal rounded-lg flex items-center p-2 pl-11`}>
+              {/* <li className={`${args?.color?.text} ${args?.color?.sidebar} group text-base font-normal rounded-lg flex items-center p-2 pl-11`}>
                           <Link href={{ pathname: args?.Primary?.inventory, query: { id: 1 } }}>
                             <a
                             >
                               {language?.inventory}</a>
                           </Link></li> */}
-                        {/* <li className={`${args?.color?.text} ${args?.color?.sidebar} group text-base font-normal rounded-lg flex items-center p-2 pl-11`}>
+              {/* <li className={`${args?.color?.text} ${args?.color?.sidebar} group text-base font-normal rounded-lg flex items-center p-2 pl-11`}>
                           <Link href={{ pathname: args?.Primary?.promotion, query: { id: 1 } }}>
                             <a
                             >
                               {language?.promotions}</a>
                           </Link></li> */}
-                        {/* <li className={`${args?.color?.text} ${args?.color?.sidebar} group text-base font-normal rounded-lg flex items-center p-2 pl-11`}>
+              {/* <li className={`${args?.color?.text} ${args?.color?.sidebar} group text-base font-normal rounded-lg flex items-center p-2 pl-11`}>
                           <Link href={{ pathname: args?.Primary?.modification, query: { id: 1 } }}>
                             <a
                             >
                               {language?.ModificationCols?.name}</a>
                           </Link></li> */}
-                        {/* <li className={`${args?.color?.text} ${args?.color?.sidebar} group text-base font-normal rounded-lg flex items-center p-2 pl-11`}>
+              {/* <li className={`${args?.color?.text} ${args?.color?.sidebar} group text-base font-normal rounded-lg flex items-center p-2 pl-11`}>
                           <Link href={{ pathname: args?.Primary?.extraguestcharge, query: { id: 1 } }}>
                             <a
                             >
                               {language?.ExtraGuestCols?.name}</a>
                           </Link></li> */}
 
-                      {/* </ul></div>
+              {/* </ul></div>
                   </li>  */}
 
 

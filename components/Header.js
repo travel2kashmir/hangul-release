@@ -61,14 +61,11 @@ function Navbar(args) {
               <li className="text-2xl text-cyan-600 font-bold flex items-center lg:ml-2.5">
                 <span className="self-center whitespace-nowrap">enGage</span>
               </li>
-              
+
             </div>
 
 
             {/** Button for Sign out**/}
-
-           
-
             <div className="flex mr-2 items-center justify-end space-x-2 sm:space-x-3 ml-auto">
 
               {JSON.stringify(args?.mode) == "false" ?
@@ -78,7 +75,6 @@ function Navbar(args) {
                   className="text-gray-500  bg-gray-100  focus:outline-none focus:ring-4 Focus:ring-gray-200  rounded-lg text-sm p-2.5">
 
                   <svg
-
                     className="w-5 h-5"
                     fill="currentColor"
                     viewBox="0 0 20 20"
@@ -120,7 +116,7 @@ function Navbar(args) {
           </div>
 
           <div className="ml-auto mr-0 flex justify-end ">
-            <div id="dropdownInformation" className={flag === true ? `${args?.color?.whitebackground} absolute z-10 w-44 rounded divide-y divide-gray-100 shadow `: 'hidden'}>
+            <div id="dropdownInformation" className={flag === true ? `${args?.color?.whitebackground} absolute z-10 w-44 rounded divide-y divide-gray-100 shadow ` : 'hidden'}>
               <div className={`${args?.color?.text} py-3 px-4 text-sm `}>
                 <div className='capitalize'>{currentLogged?.name}</div>
                 <div className="font-medium truncate">{currentLogged?.email}</div>
@@ -189,7 +185,7 @@ function Navbar(args) {
                     <span className="ml-3"><Link href={{ pathname: args?.Primary?.inbox, query: { id: 1 } }}><a>{language?.inbox} </a></Link> </span>
                   </li>
 
-                    {/* basic details */}
+                  {/* basic details */}
                   <li className={`${args?.color?.text} ${args?.color?.sidebar} group text-base font-normal rounded-lg flex items-center p-2  `}>
                     <svg
                       className={`w-6 h-6 ${args?.color?.textgray} flex-shrink-0  ${args?.color?.iconhover} transition duration-75`}
@@ -209,7 +205,7 @@ function Navbar(args) {
                     </span>
                   </li>
 
-                    {/* address */}
+                  {/* address */}
                   <li className={`${args?.color?.text} ${args?.color?.sidebar} group text-base font-normal rounded-lg flex items-center p-2 `}>
                     <svg
                       className={`w-7 h-7  ${args?.color?.textgray} flex-shrink-0  ${args?.color?.iconhover} transition duration-75`}
@@ -227,7 +223,7 @@ function Navbar(args) {
                   </li>
 
 
-                    {/* contact  */}
+                  {/* contact  */}
                   <li className={`${args?.color?.text} ${args?.color?.sidebar} group text-base font-normal rounded-lg flex items-center p-2  group`}>
                     <svg
                       className={`w-5 h-5 ${args?.color?.textgray} flex-shrink-0  ${args?.color?.iconhover} transition duration-75`}
@@ -336,28 +332,28 @@ function Navbar(args) {
                       </Link></span>
                   </li>
 
-                   {/* t&c  */}
-              <li className={`${args?.color?.text} ${args?.color?.sidebar} group text-base font-normal rounded-lg flex items-center p-2  group`}>
-                <svg
-                  className={`w-6 h-6 ${args?.color?.textgray} flex-shrink-0  ${args?.color?.iconhover} transition duration-75`}
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4zm-6 3a1 1 0 112 0 1 1 0 01-2 0zm7-1a1 1 0 100 2 1 1 0 000-2z"
-                    clipRule="evenodd"
-                  ></path>
-                </svg>
-                <path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"></path>
-                <span className="ml-3 flex-1 whitespace-nowrap">
-                  <Link href={{ pathname: args?.Primary?.tc, query: { id: 1 } }}>
-                    <a>
-                      {language?.privacypolicy}</a>
-                  </Link></span>
-              </li>
-             
+                  {/* t&c  */}
+                  <li className={`${args?.color?.text} ${args?.color?.sidebar} group text-base font-normal rounded-lg flex items-center p-2  group`}>
+                    <svg
+                      className={`w-6 h-6 ${args?.color?.textgray} flex-shrink-0  ${args?.color?.iconhover} transition duration-75`}
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4zm-6 3a1 1 0 112 0 1 1 0 01-2 0zm7-1a1 1 0 100 2 1 1 0 000-2z"
+                        clipRule="evenodd"
+                      ></path>
+                    </svg>
+                    <path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"></path>
+                    <span className="ml-3 flex-1 whitespace-nowrap">
+                      <Link href={{ pathname: args?.Primary?.tc, query: { id: 1 } }}>
+                        <a>
+                          {language?.privacypolicy}</a>
+                      </Link></span>
+                  </li>
+
 
                   {/* priceCalendar */}
                   {/* <li className={`${args?.color?.text} ${args?.color?.sidebar} group text-base font-normal rounded-lg flex items-center p-2  group`}>
@@ -477,33 +473,33 @@ function Navbar(args) {
                           <Link href={{ pathname: args?.Primary?.availability, query: { id: 1 } }}>
                             <a>{language?.availability}</a></Link>
                         </li> */}
-                        {/* <li className={`${args?.color?.text} ${args?.color?.sidebar} group text-base font-normal rounded-lg flex items-center p-2 pl-11`}>
+                  {/* <li className={`${args?.color?.text} ${args?.color?.sidebar} group text-base font-normal rounded-lg flex items-center p-2 pl-11`}>
                           <Link href={{ pathname: args?.Primary?.inventory, query: { id: 1 } }}>
                             <a
                             >
                               {language?.inventory}</a>
                           </Link></li> */}
-                        {/* <li className={`${args?.color?.text} ${args?.color?.sidebar} group text-base font-normal rounded-lg flex items-center p-2 pl-11`}>
+                  {/* <li className={`${args?.color?.text} ${args?.color?.sidebar} group text-base font-normal rounded-lg flex items-center p-2 pl-11`}>
                           <Link href={{ pathname: args?.Primary?.promotion, query: { id: 1 } }}>
                             <a
                             >
                               {language?.promotions}</a>
                           </Link></li> */}
-                        {/* <li className={`${args?.color?.text} ${args?.color?.sidebar} group text-base font-normal rounded-lg flex items-center p-2 pl-11`}>
+                  {/* <li className={`${args?.color?.text} ${args?.color?.sidebar} group text-base font-normal rounded-lg flex items-center p-2 pl-11`}>
                           <Link href={{ pathname: args?.Primary?.modification, query: { id: 1 } }}>
                             <a
                             >
                               {language?.ModificationCols?.name}</a>
                           </Link></li> */}
-                        {/* <li className={`${args?.color?.text} ${args?.color?.sidebar} group text-base font-normal rounded-lg flex items-center p-2 pl-11`}>
+                  {/* <li className={`${args?.color?.text} ${args?.color?.sidebar} group text-base font-normal rounded-lg flex items-center p-2 pl-11`}>
                           <Link href={{ pathname: args?.Primary?.extraguestcharge, query: { id: 1 } }}>
                             <a
                             >
                               {language?.ExtraGuestCols?.name}</a>
                           </Link></li> */}
 
-                      {/* </ul></div>
-                  </li> */} 
+                  {/* </ul></div>
+                  </li> */}
 
 
                   {/* {JSON.stringify(args?.Type) === "2" ? <></> :
@@ -550,7 +546,7 @@ function Navbar(args) {
                       </li>
 
                       {/* ARI */}
-                      {/* <li>
+                  {/* <li>
                         <button type="button" onClick={() => { setAri(!ari) }}
                           className={`${args?.color?.text} ${args?.color?.sidebar} group  rounded-lg flex items-center p-2 
             w-full p-2 text-base font-normal  transition duration-75`} >
@@ -602,7 +598,7 @@ function Navbar(args) {
 
                           </ul></div>
                       </li> */}
-                    {/* </>}  */}
+                  {/* </>}  */}
                 </ul>
 
                 <div className="space-y-2 pt-2">

@@ -2,10 +2,8 @@ import React from 'react';
 import Loader from '../Loaders/Loader';
 import icon from '../../GlobalData';
 
-function Services({ allHotelDetails, services, hotelDetailLoader }) {
+function Services({ services, hotelDetailLoader }) {
     let i = 0;
-    const filteredAdditionalService = allHotelDetails?.additional_services?.filter(service => service.status);
-
 
     return (
         <section id='services' className="px-5 py-10 ">
@@ -15,7 +13,7 @@ function Services({ allHotelDetails, services, hotelDetailLoader }) {
                 </div>
                 {hotelDetailLoader === 0 ?
                     <Loader size={`w-full h-56 md:h-64 rounded-lg mt-10`} /> :
-                    <div className="py-10 grid grid-flow-row-dense grid-cols-5 lg:grid-cols-5 md:grid-cols-4 md:col-span-9  md:gap-3 gap-1 lg:gap-3">
+                    <div className="py-10 grid grid-flow-row-dense grid-cols-5 lg:grid-cols-5 md:grid-cols-4 md:col-span-9  grid-cols-2  md:gap-3 gap-1 lg:gap-3">
                         {
                             services?.map((item, idx) => {
                                 return (
@@ -193,20 +191,6 @@ function Services({ allHotelDetails, services, hotelDetailLoader }) {
 
                     </div>
                 }
-
-                <div className='pt-10 pb-14'>
-                    <div className='text-center'>
-                        <h2 className=" text-2xl md:text-3xl lg:text-3xl font-normal tracking-widest border-b-2 border-black inline-block uppercase">Key Highlights</h2>
-                    </div>
-                    <div className='grid grid-flow-row-dense grid-col-2 md:grid-cols-3 text-center pt-10 pb-0 md:py-10'>
-                        {filteredAdditionalService?.map((service) => {
-                            return <div key={service.add_service_id} className="mb-5">
-                                <p className="font-semibold text-lg md:text-xl ">{service.add_service_name}</p>
-                                <p className='text-sm '>{service.add_service_comment}</p>
-                            </div>
-                        })}
-                    </div>
-                </div>
 
             </div>
         </section>

@@ -12,6 +12,12 @@ const Table = (args) => {
     const [viewDel, setViewDel] = useState(0);
     const [flag, setFlag] = useState([]);
 
+    const [editContact, setEditContact] = useState({});
+    const [updateContact, setUpdateContact] = useState({});
+    const [deleteContact, setDeleteContact] = useState();
+    const [deleteMultiple, setDeleteMultiple] = useState(0);
+    const [spinner, setSpinner] = useState(0)
+
 
     const [update, setUpdate] = useState({
         "edit": 0,
@@ -92,11 +98,7 @@ const Table = (args) => {
         }
     }
 
-    const [editContact, setEditContact] = useState({});
-    const [updateContact, setUpdateContact] = useState({});
-    const [deleteContact, setDeleteContact] = useState();
-    const [deleteMultiple, setDeleteMultiple] = useState(0);
-    const [spinner, setSpinner] = useState(0)
+
 
 
     return (
@@ -138,12 +140,11 @@ const Table = (args) => {
                         </div>
                         {/* icons end*/}
                     </div>
+
                     {((args?.name != "Services") && (args?.name != "ARI") && (args?.name != "Inventory")) ?
                         <div className="flex items-center space-x-2 sm:space-x-3 ml-auto">
                             <button className="bg-gradient-to-r bg-cyan-600 hover:bg-cyan-700 text-white  sm:inline-flex  
-                             font-semibold
-                                    rounded-lg text-sm px-5 py-2 text-center 
-                              items-center ease-linear transition-all duration-150" onClick={args?.add} >
+                             font-semibold rounded-lg text-sm px-5 py-2 text-center items-center ease-linear transition-all duration-150" onClick={args?.add} >
                                 {args?.common?.Add}</button>
                             {/* <span className={`w-1/2 ${args?.color?.text} ${args?.color?.whitebackground} border border-gray-300 ${args?.color?.hover} focus:ring-4 focus:ring-cyan-200 font-semibold inline-flex items-center justify-center rounded-lg text-sm px-3 py-2 text-center sm:w-auto`}>
                                 <svg className="-ml-1 mr-2 h-6 w-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clipRule="evenodd"></path></svg>
@@ -168,6 +169,8 @@ const Table = (args) => {
                             </>}
                 </div>
             </div>
+
+
             {/* Table */}
             <div className="flex  flex-col mt-8 lg:-mr-20 sm:mr-0 w-full ">
                 <div className="overflow-x-auto">
@@ -206,7 +209,6 @@ const Table = (args) => {
                                 <tbody className={` ${args?.color?.whitebackground} divide-y  divide-gray-200 `} id="TableList" >
                                     {displayData?.map((item, idx) => (
                                         <>
-
                                             {update?.edit === 1 && update?.id === idx ?
                                                 //After Edit Clicked
                                                 <>
@@ -239,8 +241,8 @@ const Table = (args) => {
 
                                                             <td className="data text-left text-sm ">
                                                                 {args.name !== 'Additional Services' ? <>{item.name}</> : <input type="text"
-                                                                    onChange={(e) => setEditContact({ ...editContact, type: e.target.value }, setFlag(1))} 
-                                                                className={`shadow-sm capitalize ${args?.color?.whitebackground} border border-gray-300
+                                                                    onChange={(e) => setEditContact({ ...editContact, type: e.target.value }, setFlag(1))}
+                                                                    className={`shadow-sm capitalize ${args?.color?.whitebackground} border border-gray-300
                                                                 ${args?.color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600
                                                                 block w-64 p-2.5`}
                                                                     defaultValue={item?.type}></input>}
@@ -308,6 +310,7 @@ const Table = (args) => {
                                                                                         <option value="Not available">Not available</option>
                                                                                     </select>
                                                                                 </div>)
+
                                                                                 case 'ser0022': return (<div>
                                                                                     {/*Wifi Type*/}
 
@@ -392,12 +395,12 @@ const Table = (args) => {
                                                                 </span>
                                                             </td> : <></>}
                                                         <td className={`p-4 whitespace-nowrap ${args.name === "Contact" ? undefined : `capitalize`}  text-base font-normal ${args?.color?.text}`}>
-                                                            {args.name != "Contact" ? item?.name: item?.type} 
+                                                            {args.name != "Contact" ? item?.name : item?.type}
                                                         </td>
                                                         {args?.name === "Packages" ? <></> :
 
                                                             <td className={`p-4 whitespace-nowrap   text-base font-normal ${args?.color?.text} `}>
-                                                                {args?.name ==='Services' || args?.name ==='Additional Services' ? <h2>{item?.type}</h2>
+                                                                {args?.name === 'Services' || args?.name === 'Additional Services' ? <h2>{item?.type}</h2>
                                                                     : <Capsule title={args.name !== "Contact" ? item?.type : item?.name} action={undefined} selected={true} />}
 
                                                             </td>}
@@ -407,8 +410,8 @@ const Table = (args) => {
                                                                     <td className={`p-4 whitespace-nowrap lowercase text-base font-normal ${args?.color?.text}`}>
 
                                                                         <Capsule color='bg-green-200'
-                                                                        title={<span  className="flex items-center">
-                                                                            {args?.common?.Active}</span>} />
+                                                                            title={<span className="flex items-center">
+                                                                                {args?.common?.Active}</span>} />
 
                                                                     </td> :
                                                                     args?.status === "matchstatus" ? <></> :
@@ -506,12 +509,14 @@ const Table = (args) => {
                         }
                     }} className={`${args?.color?.textgray} hover:${args?.color?.text} cursor-pointer p-1 ${args?.color?.hover} rounded inline-flex justify-center mr-2`}>
                         <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path></svg>
-                    </ button>
+                    </button>
 
                     <span className={`text-sm font-normal ${args?.color?.textgray}`}>{args?.common?.Showing}
 
                         <span className={`${args?.color?.text} font-semibold ml-1`}>{page}</span> {args?.common?.Of} <span className={`${args?.color?.text} font-semibold`}>
-                            {Math.ceil(args?.gen?.length / itemsPerPage)}</span></span>
+                            {Math.ceil(args?.gen?.length / itemsPerPage)}
+                        </span>
+                    </span>
 
                 </div>
 
@@ -560,6 +565,8 @@ const Table = (args) => {
                     </div>
                 </div>
             </div>
+
+
             <ToastContainer
                 position="top-center"
                 autoClose={5000}

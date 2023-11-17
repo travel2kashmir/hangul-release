@@ -76,7 +76,6 @@ function Hotel({ language, HotelDetails,
 
             {/* hotel Services */}
             <Services
-                allHotelDetails={allHotelDetails}
                 services={services}
                 hotelDetailLoader={hotelDetailLoader}
             />

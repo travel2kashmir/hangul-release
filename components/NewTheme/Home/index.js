@@ -8,7 +8,7 @@ import Contactus from '../../utils/Contactus';
 import Color from '../../colors/Color';
 
 
-function Home({ allHotelDetails, menu, setMenu, hotelDetailLoader, lang, setLang, setShowContactUs }) {
+function Home({ allHotelDetails, menu, setMenu, hotelDetailLoader, lang, setLang, rooms, searched, setSearched, color, setShowContactUs }) {
 
     const [showModalBooking, setShowModalBooking] = useState(0);
     const [mainPic, setMainPic] = useState('/imghome.webp')
@@ -16,7 +16,7 @@ function Home({ allHotelDetails, menu, setMenu, hotelDetailLoader, lang, setLang
     useEffect(() => {
         function findCoverPhoto() {
             try {
-                allHotelDetails?.images?.filter(i => i.image_title == 'Cover')[0].image_link===undefined?setMainPic('/imghome.webp'):setMainPic(allHotelDetails?.images?.filter(i => i.image_title == 'Cover')[0].image_link);
+                allHotelDetails?.images?.filter(i => i.image_title == 'Cover')[0].image_link === undefined ? setMainPic('/imghome.webp') : setMainPic(allHotelDetails?.images?.filter(i => i.image_title == 'Cover')[0].image_link);
             }
             catch (ex) {
                 setMainPic('/imghome.webp')
@@ -25,7 +25,7 @@ function Home({ allHotelDetails, menu, setMenu, hotelDetailLoader, lang, setLang
         findCoverPhoto();
     }, [allHotelDetails])
     return (
-        <section className="relative h-screen md:h-screen z-50">
+        <section className="relative h-screen md:h-screen z-10">
             <div className="absolute inset-0">
                 {/* <div className="absolute inset-0 bg-[url('https://themewagon.github.io/sogo/images/slider-7.jpg')] bg-no-repeat bg-cover bg-center"></div> */}
                 <div className="absolute h-full w-full">
@@ -53,34 +53,49 @@ function Home({ allHotelDetails, menu, setMenu, hotelDetailLoader, lang, setLang
                             {new Array(allHotelDetails?.star_rating).fill(null).map((_, index) => (
                                 <i key={index}><StarIcon className="text-2xl" sx={{ color: 'orange' }} /> </i>
                             ))}
-                    </span>
-            </>}
-            <h1 className="text-3xl px-6 font-bold mt-3 text-white md:text-6xl lg:text-7xl"> {hotelDetailLoader === 0 ? <Loader size='h-8 w-44 md:h-9 md:w-5/12 lg:h-16 lg:w-6/12' /> : allHotelDetails?.description_title} </h1>
+                        </span>
+                    </>}
+                <h1 className="text-3xl px-6 font-bold mt-3 text-white md:text-6xl lg:text-7xl"> {hotelDetailLoader === 0 ? <Loader size='h-8 w-44 md:h-9 md:w-5/12 lg:h-16 lg:w-6/12' /> : allHotelDetails?.description_title} </h1>
 
-            <div className=' lg:hidden mt-40'>
-                <button className='bookNow bg-white py-2 px-3 text-xs rounded-lg'
-                    onClick={() => { setShowModalBooking(1) }}>
-                    {/* BOOK NOW */}
-                    Contact Us
-                </button>
-            </div>
+                <div className='lg:hidden mt-40'>
+                    <button className='bookNow bg-white py-2 px-3 text-xs rounded-lg'
+                        onClick={() => { setShowModalBooking(1) }}>
+                        BOOK NOW
+                        {/* Contact Us */}
+                    </button>
+                </div>
 
-            <div className={showModalBooking === 1 ? 'block h-2' : 'hidden'}>
-                {/* <Modal
-                        title='Contact Us'
-                        description={<BookingForm />}
+                {showModalBooking === 1 ?
+                    <div className={`block h-2 lg:hidden`}>
+                        <Modal
+                            title='Booking Form'
+                            description={
+                                <div className={`${searched === false ? 'z-0' : 'z-50 '}`}>
+                                    <BookingForm
+                                        color={Color?.light}
+                                        allHotelDetails={allHotelDetails}
+                                        rooms={rooms}
+                                        searched={searched}
+                                        setSearched={(e) => setSearched(e)}
+                                    />
+                                </div>
+
+                            }
+                            setShowModal={(e) => setShowModalBooking(e)}
+                        />
+
+                        {/* <Modal
+                        description={<Contactus color={Color?.light} language={lang} />}
                         setShowModal={(e) => setShowModalBooking(e)}
                     /> */}
-                <Modal
-                    description={<Contactus color={Color?.light} language={lang} />}
-                    setShowModal={(e) => setShowModalBooking(e)}
-                />
-            </div>
-        </div>
+                    </div> : undefined}
 
-            {/* style component of jsx */ }
-    <style jsx>
-        {`
+
+            </div>
+
+            {/* style component of jsx */}
+            <style jsx>
+                {`
                 @media (min-width: 340px) and (max-width:390px) {
                     .contentBox {
                         position:relative;
@@ -112,9 +127,9 @@ function Home({ allHotelDetails, menu, setMenu, hotelDetailLoader, lang, setLang
                     }
                 }    
                 `}
-    </style>
+            </style>
 
-        </section >
+        </section>
     )
 }
 

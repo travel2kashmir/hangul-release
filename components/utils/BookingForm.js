@@ -4,7 +4,7 @@ import DateInput from './DateInput'
 import DropDown from './DropDown'
 
 function BookingForm({ color }) {
-    
+
     const [enquiry, setEnquiry] = useState({
         "checkin": "",
         "checkout": "",
@@ -15,12 +15,12 @@ function BookingForm({ color }) {
         "child_above_six": 0
     })
     return (
-        <div className='mx-auto  border shadow-lg rounded-lg border-0'>
+        <div className='mx-auto border shadow-lg rounded-lg'>
             <div className={`pt-6 ${color?.whitebackground} tour-receipt-dark`} >
                 <h3
                     className={`${color?.text} text-4xl flex leading-none pl-6 lg:py-0 pt-6 my-4 font-bold`}
                 >
-                    Booking Form 
+                    Booking Form
                 </h3>
 
                 <div className=" md:px-4 mx-auto w-full">

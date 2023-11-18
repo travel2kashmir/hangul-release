@@ -80,7 +80,7 @@ function BookingForm({ color, rooms, allHotelDetails, searched, setSearched }) {
                             req={true}
                             initialValue={new Date() + 10}
                             visible={1}
-                            min={maxDate}
+                            min={enquiry.checkin === "" ? maxDate : enquiry.checkin}
                             onChangeAction={(e) => setEnquiry({ ...enquiry, checkout: e.target.value })}
                             error={err === true ? 'Checkout date cannot be earlier then the checkin date.' : notSelectedErr.forCheckout === true ? 'Select checkout date' : ''}
 

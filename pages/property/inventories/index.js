@@ -312,13 +312,11 @@ function Inventory() {
                                     {'Add'}</button>
 
                             </div>
-
                         </div>
                     </div>
-
                 </div>
 
-                <div className="flex  flex-col mt-8 lg:-mr-20 sm:mr-0 w-full ">
+                <div className="flex flex-col mt-8 lg:-mr-20 sm:mr-0 w-full ">
                     <div className="overflow-x-auto">
                         <div className="align-middle inline-block min-w-full">
                             <div className="shadow overflow-hidden">
@@ -368,10 +366,8 @@ function Inventory() {
                                                                     <ReactDatePicker
                                                                         selected={new Date(editInventory.start_date || inv.start_date)}
                                                                         minDate={new Date()}
-
                                                                         onChange={(date) => {
                                                                             const formattedDate = date.toISOString().substring(0, 10);
-
                                                                             setEditInventory({
                                                                                 ...editInventory,
                                                                                 'start_date': formattedDate

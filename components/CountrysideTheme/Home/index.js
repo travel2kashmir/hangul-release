@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import Header from '../Header';
-import BookingForm from '../Utils/BookingForm';
+import BookingForm from '../CustomizedUtils/BookingForm';
 import Modal from '../Modals/Modal'
 
 
-function Home({ allHotelDetails, rooms, hotelDetailLoader, setMenu, setShowBookingEngine, setRoomsLoader, enquiry, setEnquiry, setSearched, searched }) {
+function Home({ allHotelDetails, hotelDetailLoader, setMenu, setShowBookingEngine, setRoomsLoader, enquiry, setEnquiry, setSearched, searched }) {
 
     const [showModalBooking, setShowModalBooking] = useState(0);
 
@@ -74,7 +74,6 @@ function Home({ allHotelDetails, rooms, hotelDetailLoader, setMenu, setShowBooki
                                                     setShowBookingEngine={(e) => setShowBookingEngine(e)}
                                                     setEnquiry={(e) => setEnquiry(e)}
                                                     enquiry={enquiry}
-                                                    rooms={rooms}
                                                     setSearched={(e) => setSearched(e)}
                                                     searched={searched}
 
@@ -109,7 +108,6 @@ function Home({ allHotelDetails, rooms, hotelDetailLoader, setMenu, setShowBooki
                             setShowBookingEngine={(e) => setShowBookingEngine(e)}
                             setEnquiry={(e) => setEnquiry(e)}
                             enquiry={enquiry}
-                            rooms={rooms}
                             setSearched={(e) => setSearched(e)}
                             searched={searched}
 

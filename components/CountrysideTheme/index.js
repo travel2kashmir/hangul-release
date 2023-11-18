@@ -6,7 +6,7 @@ import Rooms from './Rooms';
 import Services from './Services';
 import CarousalComponent from './CarousalComponent';
 import Footer from './Footer';
-import BookingModal from './BookingModal';
+import BookingModal from './Modals/BookingModal';
 import BookingEngine from '../BookingEngine';
 import MenuSM from './MenuSM'
 import { ToastContainer, toast } from "react-toastify";
@@ -70,7 +70,6 @@ function Hotel({ language, HotelDetails, allRooms, allPackages, services, phone,
                 setShowBookingEngine={(e) => setShowBookingEngine(e)}
                 enquiry={enquiry}
                 setEnquiry={(e) => setEnquiry(e)}
-                rooms={rooms}
                 searched={searched}
                 setSearched={(e) => setSearched(e)}
                 setRoomsLoader={(e) => setRoomsLoader(e)}
@@ -118,7 +117,6 @@ function Hotel({ language, HotelDetails, allRooms, allPackages, services, phone,
             {showBookingEngine === 1 ?
                 <div className="block z-50">
                     {allHotelDetails && <BookingModal
-                        title="Booking Engine"
                         bookingComponent={
                             <BookingEngine
                                 roomsLoader={roomsLoader}

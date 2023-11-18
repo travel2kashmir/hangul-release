@@ -5,7 +5,7 @@ import { SlCalender } from "react-icons/sl";
 import ContactUsModal from '../../ModernTheme/Modals/ContactUsModal';
 import Loader from '../Loaders/Loader';
 
-function Header({ allHotelDetails, hotelDetailLoader, menu, setMenu }) {
+function Header({ allHotelDetails, hotelDetailLoader, setMenu }) {
 
   const [showModalContactUs, setShowModalContactUs] = useState(0);
 
@@ -44,16 +44,17 @@ function Header({ allHotelDetails, hotelDetailLoader, menu, setMenu }) {
 
         </div>
 
-        <div className='hidden md:block md:flex md:justify-end md:my-auto md:w-5/12 lg:w-4/12'>
+        <div className='hidden mr-5 md:flex md:justify-end md:my-auto md:w-5/12 lg:w-4/12'>
           <div className='flex hover:cursor-pointer hover:underline'>
             <span className='my-auto'><CiMail /></span>
             <span className='ml-2' onClick={() => { setShowModalContactUs(1) }}> Contact</span>
           </div>
 
-          <div className='flex ml-5 md:mr-10'>
+          {/* book now btn */}
+          {/* <div className=' flex ml-5 md:mr-10'>
             <span className='my-auto'><SlCalender /></span>
             <span className='ml-2'> BOOK NOW</span>
-          </div>
+          </div> */}
 
         </div>
 

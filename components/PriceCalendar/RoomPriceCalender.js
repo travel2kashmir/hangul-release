@@ -15,7 +15,7 @@ import axios from 'axios';
 let i = 0;
 let lang;
 
-const RoomPriceCalendar = ({ color, language,currentProperty }) => {
+const RoomPriceCalendar = ({ color, language, currentProperty }) => {
     const [events, setEvents] = useState([])
     const [allRoomRates, setAllRoomRates] = useState([])
     const [rooms, setRooms] = useState([])
@@ -30,71 +30,71 @@ const RoomPriceCalendar = ({ color, language,currentProperty }) => {
     useEffect(() => {
         currentProperty && (function initialData() {
             // creates an array of object and from that array duplicates are removed using set
-            axios.get(`/api/room_prices/${currentProperty.property_id}`).then((response)=>{
-                console.log(response.data.map((i)=>({...i,"title":i.base_rate})))
-                let roomPrice=response.data.map((i)=>({...i,"title":i.base_rate}))
+            axios.get(`/api/room_prices/${currentProperty.property_id}`).then((response) => {
+                console.log(response.data.map((i) => ({ ...i, "title": i.base_rate })))
+                let roomPrice = response.data.map((i) => ({ ...i, "title": i.base_rate }))
 
 
                 let uniqueListOfRooms = Array.from(new Set(roomPrice?.map(item => ({ "room_id": item.room_id, "room_name": item.room_name })).map(JSON.stringify)), JSON.parse);
-            setRooms(uniqueListOfRooms);
-            setAllRoomRates(uniqueListOfRooms)
-            let room_ids = roomPrice?.map((rate) => {
-                return rate?.room_id
-            });
-            const uniqueRoomIdArray = [...new Set(room_ids)];
-            //set is data type in js like array but has unique element
-            //aasign unique color for unique rooms
-            let colorList = [
-                '#007d9a',
-                '#0b96ba',
-                '#00789e',
-                '#128cb7',
-                '#0082a9',
-                '#0a85b5',
-                '#006f8a',
-                '#0c94b6',
-                '#00758e',
-                '#0d99c2',
-            ];
+                setRooms(uniqueListOfRooms);
+                setAllRoomRates(uniqueListOfRooms)
+                let room_ids = roomPrice?.map((rate) => {
+                    return rate?.room_id
+                });
+                const uniqueRoomIdArray = [...new Set(room_ids)];
+                //set is data type in js like array but has unique element
+                //aasign unique color for unique rooms
+                let colorList = [
+                    '#007d9a',
+                    '#0b96ba',
+                    '#00789e',
+                    '#128cb7',
+                    '#0082a9',
+                    '#0a85b5',
+                    '#006f8a',
+                    '#0c94b6',
+                    '#00758e',
+                    '#0d99c2',
+                ];
 
-            let keycolors = uniqueRoomIdArray.map((item) => {
-                if (selectedColors.length === colorList.length) {
-                    // All colorList have been used, reset selectedColorList
-                    setSelectedColors([]);
-                }
+                let keycolors = uniqueRoomIdArray.map((item) => {
+                    if (selectedColors.length === colorList.length) {
+                        // All colorList have been used, reset selectedColorList
+                        setSelectedColors([]);
+                    }
 
 
-                let randomColor = '';
-                do {
+                    let randomColor = '';
+                    do {
+                        return (
+                            {
+                                [item]: colorList[Math.floor(Math.random() * colorList.length)]
+                                //randomly giving colors to rooms 
+
+                            }
+                        )
+                    } while (selectedColors.includes(randomColor));
+                    setSelectedColors(prevColors => [...prevColors, randomColor]);
+                })
+
+                //    convert color array to object
+                const mergedColors = Object.assign({}, ...keycolors);
+                setRoomColors(mergedColors)
+                //object with color information
+                let final = roomPrice?.map((rate, id) => {
+                    let color = mergedColors[rate.room_id]
                     return (
-                        {
-                            [item]: colorList[Math.floor(Math.random() * colorList.length)]
-                            //randomly giving colors to rooms 
-
-                        }
+                        { ...rate, "color": color, "id": id }
                     )
-                } while (selectedColors.includes(randomColor));
-                setSelectedColors(prevColors => [...prevColors, randomColor]);
-            })
-
-            //    convert color array to object
-            const mergedColors = Object.assign({}, ...keycolors);
-            setRoomColors(mergedColors)
-            //object with color information
-            let final = roomPrice?.map((rate, id) => {
-                let color = mergedColors[rate.room_id]
-                return (
-                    { ...rate, "color": color, "id": id }
-                )
-            })
-            console.log(JSON.stringify(final))
-            setEvents(final)
-            setGlobalRoomData(final)
-            lang = localStorage.getItem('Language') != undefined ? localStorage.getItem('Language') : 'en'
-            }).catch((error)=>{
+                })
+                console.log(JSON.stringify(final))
+                setEvents(final)
+                setGlobalRoomData(final)
+                lang = localStorage.getItem('Language') != undefined ? localStorage.getItem('Language') : 'en'
+            }).catch((error) => {
                 console.log(error)
             })
-            
+
         })()
     }, [currentProperty])
 
@@ -245,6 +245,16 @@ const RoomPriceCalendar = ({ color, language,currentProperty }) => {
                                 <option value="modification">I want to do rate modification</option>
                             </select>
 
+                            {/* <div className="items-center p-4 border-t border-gray-200 rounded-b">
+                                <Button Primary={language?.Update} onClick={() => { updateRate() }} />
+                            </div> */}
+
+                            <div className={`items-center px-4 py-2 ${editUI === 'none' ? "" : "border-b"} border-gray-200 `}>
+                                <Button Primary={language?.Update} onClick={() => { updateRate() }} />
+
+                            </div>
+
+
                             {/* discount ui */}
                             {editUI === 'discount' ?
                                 <div>
@@ -258,10 +268,7 @@ const RoomPriceCalendar = ({ color, language,currentProperty }) => {
                                 </div> : undefined}
 
 
-                            <div className="items-center p-4 border-t border-gray-200 rounded-b">
-                                <Button Primary={language?.Update} onClick={() => { updateRate() }} />
 
-                            </div>
 
 
                         </div>

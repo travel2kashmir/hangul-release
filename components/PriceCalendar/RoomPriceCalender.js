@@ -172,9 +172,11 @@ const RoomPriceCalendar = ({ color, language, currentProperty }) => {
 
             </div>
 
+
             <FullCalendar
                 plugins={[dayGridPlugin, interactionPlugin]}
                 initialView="dayGridMonth"
+                height={530}
                 weekends={true}
                 events={events}
                 // dateClick={(event) => handleDateClick(event)} click works on whole date
@@ -187,7 +189,10 @@ const RoomPriceCalendar = ({ color, language, currentProperty }) => {
 
                 }}
 
+
             />
+
+
 
             {/* Tailwind CSS Modal */}
             {modalVisible === true ?

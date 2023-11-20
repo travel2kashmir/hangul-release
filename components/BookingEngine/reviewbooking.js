@@ -15,8 +15,8 @@ import formatDateToCustomFormat from '../generalUtility/timeStampMaker'
 import CountdownTimer from './CountDownTimer';
 import ButtonLoader from './ButtonLoader';
 import { v4 as uuidv4 } from 'uuid';
-import { result } from 'lodash';
-
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 function Reviewbooking({ setDisplay, rooms, setShowModal, setSearched, checkinDate, checkoutDate }) {
 
     let guestTemplate = {
@@ -211,15 +211,15 @@ function Reviewbooking({ setDisplay, rooms, setShowModal, setSearched, checkinDa
 
     }
 
-    function updateReserveRoom(roomdata) {
-        let url = "/api/reserve_rooms";
-        axios.put(url, roomdata).then((response) => {
-            setDisabled(false)  // this state is used to manage the css of paynow button
-            console.log(response)
-        }).catch((err) => {
-            console.log(err)
-        })
-    }
+    // function updateReserveRoom(roomdata) {
+    //     let url = "/api/reserve_rooms";
+    //     axios.put(url, roomdata).then((response) => {
+    //         setDisabled(false)  // this state is used to manage the css of paynow button
+    //         console.log(response)
+    //     }).catch((err) => {
+    //         console.log(err)
+    //     })
+    // }
 
     function removeReservationFromDB(room_id, reservation_time, action) {
         // let url = `/api/reserve_rooms/${room_id}/${reservation_time}`;
@@ -301,7 +301,7 @@ function Reviewbooking({ setDisplay, rooms, setShowModal, setSearched, checkinDa
             }
             )
         }
-        
+
         let bookingRoomArray = selectedRoomsArray.map((item, index) => {
             return ({
                 "room_id": item.room_id,
@@ -311,7 +311,7 @@ function Reviewbooking({ setDisplay, rooms, setShowModal, setSearched, checkinDa
                 "booking_id": ""
             })
         })
-        
+
         let roomsForThisBooking = { "room_booking_link": bookingRoomArray }
         let invoiceForThisBooking = {
             "booking_invoice_link": [
@@ -331,7 +331,7 @@ function Reviewbooking({ setDisplay, rooms, setShowModal, setSearched, checkinDa
 
         //multiple api call's will be performed in this bookRoom function so that is why it is divided in multiple functions.
         bookRoom(roomsForThisBooking, roomBookingData, guestsForThisBooking, invoiceForThisBooking)
- }
+    }
 
     function bookRoom(roomsForThisBooking, roomBookingData, guestsForThisBooking, invoiceForThisBooking) {
         let roomBookingUrl = "/api/room_bookings";
@@ -488,7 +488,7 @@ function Reviewbooking({ setDisplay, rooms, setShowModal, setSearched, checkinDa
             {/* app bar  */}
             <div>
                 {/* <div className='flex justify-between w-full py-5 px-3 md:px-5 border-b-2  bg-slate-100'> */}
-                <div className='flex justify-between w-full py-5 px-3 md:px-5   bg-slate-100'>
+                <div className='flex justify-between w-full py-5 px-3 md:px-5 bg-slate-100'>
                     <div className='flex'>
                         <i className='my-auto'
                             onClick={() => {
@@ -584,10 +584,22 @@ function Reviewbooking({ setDisplay, rooms, setShowModal, setSearched, checkinDa
                                                 // let reservationData = reservationIdentity.filter((item) => item.room_id === room?.room_id)[0]
                                                 // updateReserveRoom({ "reserve_rooms": [{ "room_count": newQuantity, ...reservationData }] })
                                                 // setDisabled(true)
+
+                                                // Check if selected quantity is greater than inventory_available
+                                                // if (newQuantity > inventory_available) {
+                                                //     toast.error('Inventory unavailable', { position: toast.POSITION.TOP_CENTER });
+                                                // }
                                             }}
                                         >
                                             {/* Generate options for the dropdown based on inventory_available */}
-                                            {Array.from({ length: inventory_available || 1 }, (_, index) => index + 1).map((quantity) => (
+                                            {/* {Array.from({ length: inventory_available || 1 }, (_, index) => index + 1).map((quantity) => (
+                                                <option key={quantity} value={quantity}>
+                                                    {quantity}
+                                                </option>
+                                            ))} */}
+
+                                            {/* Generate options based on inventory_available and maximum_number_of_occupants */}
+                                            {Array.from({ length: Math.min(inventory_available, room?.maximum_number_of_occupants) }, (_, index) => index + 1).map((quantity) => (
                                                 <option key={quantity} value={quantity}>
                                                     {quantity}
                                                 </option>

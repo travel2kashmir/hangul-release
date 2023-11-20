@@ -92,7 +92,8 @@ function BookingForm({ setShowBookingEngine, enquiry, setEnquiry, setRoomsLoader
                                     visible={1}
                                     // color={color}
                                     req={true}
-                                    onChangeAction={(e) => setEnquiry({ ...enquiry, child_below_six: e.target.value })}
+                                    // onChangeAction={(e) => setEnquiry({ ...enquiry, child_below_six: e.target.value })}
+                                    onChangeAction={(e) => setEnquiry({ ...enquiry, child_above_six: e.target.value })}
                                     defaultValue={enquiry?.child_below_six}
                                     options={Array.from({ length: 50 }, (_, index) => index + 1).map((i) => ({ "label": i, "value": i }))} />
                             </div>

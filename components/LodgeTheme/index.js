@@ -11,6 +11,9 @@ import Photos from './Photos';
 import BookingModal from './Modals/BookingModal';
 import BookingEngine from '../BookingEngine';
 import { AiOutlineClose } from "react-icons/ai";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 
 function Hotel({ language, HotelDetails,
@@ -36,9 +39,9 @@ function Hotel({ language, HotelDetails,
     "checkin": "",
     "checkout": "",
     "number_of_rooms": 1,
-    "number_of_guests": 1,
+    // "number_of_guests": 1,
     "number_of_adults": 1,
-    "child_below_six": 0,
+    // "child_below_six": 0,
     "child_above_six": 0
   })
 
@@ -140,6 +143,21 @@ function Hotel({ language, HotelDetails,
               />}
           />}
         </div> : undefined}
+
+
+      {/* Toast Container */}
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+
 
 
       {/* menu for small screen */}

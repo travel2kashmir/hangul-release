@@ -58,7 +58,7 @@ function Home({ allHotelDetails, hotelDetailLoader, setMenu, setShowBookingEngin
 
                 {/* booking engine for lg screen*/}
                 <div className='hidden booking-engine'>
-                    <div className='mt-20'>
+                    <div className='mt-10'>
                         <div className='bg-custom-dark-green backdrop-opacity-20'>
                             <div className='p-2'>
                                 <div className='px-8 pt-8 border-2 border-custom-yellow'>

@@ -67,34 +67,43 @@ function BookingForm({ setShowBookingEngine, enquiry, setEnquiry, setRoomsLoader
                         />
 
                         <DropDown
-                            label={"Number of Rooms"}
+                            label={"Number of Guests"}
                             visible={1}
                             // color={color}
                             req={true}
-                            onChangeAction={(e) => setEnquiry({ ...enquiry, number_of_rooms: e.target.value })}
-                            defaultValue={enquiry?.number_of_adults}
+                            onChangeAction={(e) => setEnquiry({ ...enquiry, number_of_guests: e.target.value })}
+                            defaultValue={enquiry?.number_of_guests}
                             options={Array.from({ length: 20 }, (_, index) => index + 1).map((i) => ({ "label": i, "value": i }))} />
+
+
+                        <DropDown
+                            label={"Number of Adults"}
+                            visible={1}
+                            // color={color}
+                            req={true}
+                            onChangeAction={(e) => setEnquiry({ ...enquiry, number_of_adults: e.target.value })}
+                            defaultValue={enquiry?.number_of_adults}
+                            options={Array.from({ length: 50 }, (_, index) => index + 1).map((i) => ({ "label": i, "value": i }))} />
 
                         <div className='flex justify-between'>
                             <div className='w-5/12'>
                                 <DropDown
-                                    label={"Number of Adults"}
+                                    label={"Guests < 6 (years)"}
                                     visible={1}
                                     // color={color}
                                     req={true}
-                                    onChangeAction={(e) => setEnquiry({ ...enquiry, number_of_adults: e.target.value })}
-                                    defaultValue={enquiry?.number_of_adults}
+                                    onChangeAction={(e) => setEnquiry({ ...enquiry, guests_below_six: e.target.value })}
+                                    defaultValue={enquiry?.guests_below_six}
                                     options={Array.from({ length: 50 }, (_, index) => index + 1).map((i) => ({ "label": i, "value": i }))} />
                             </div>
                             <div className='w-5/12'>
                                 <DropDown
-                                    label={"Number of Children"}
+                                    label={"Guests < 12 (years)"}
                                     visible={1}
                                     // color={color}
                                     req={true}
-                                    // onChangeAction={(e) => setEnquiry({ ...enquiry, child_below_six: e.target.value })}
-                                    onChangeAction={(e) => setEnquiry({ ...enquiry, child_above_six: e.target.value })}
-                                    defaultValue={enquiry?.child_below_six}
+                                    onChangeAction={(e) => setEnquiry({ ...enquiry, guests_below_twelve: e.target.value })}
+                                    defaultValue={enquiry?.guests_below_twelve}
                                     options={Array.from({ length: 50 }, (_, index) => index + 1).map((i) => ({ "label": i, "value": i }))} />
                             </div>
                         </div>

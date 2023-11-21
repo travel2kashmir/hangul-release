@@ -38,11 +38,11 @@ function Hotel({ language, HotelDetails,
   const [enquiry, setEnquiry] = useState({
     "checkin": "",
     "checkout": "",
-    "number_of_rooms": 1,
-    // "number_of_guests": 1,
+    // "number_of_rooms": 1,
+    "number_of_guests": 1,
     "number_of_adults": 1,
-    // "child_below_six": 0,
-    "child_above_six": 0
+    "guests_below_six": 0,
+    "guests_below_twelve": 0
   })
 
 

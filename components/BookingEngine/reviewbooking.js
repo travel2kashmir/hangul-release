@@ -38,6 +38,8 @@ function Reviewbooking({ setDisplay, rooms, setShowModal, setSearched, checkinDa
     // loaders
     const [cancelBookingLoader, setCancelBookingLoader] = useState(false)
     const [payNowLoader, setpayNowLoader] = useState(false)
+    // State for totalRoomsCapacity
+    const [totalRoomsCapacity, setTotalRoomsCapacity] = useState(0);
 
     const [totals, setTotals] = useState({
         totalFinalRate: 0,
@@ -58,9 +60,14 @@ function Reviewbooking({ setDisplay, rooms, setShowModal, setSearched, checkinDa
     const roomsSelected = useSelector(state => new Set(state.roomsSelected))
     // console.log("this is roomSelected set using redux", roomsSelected)
 
+    const [selectedRoomsArray, setSelectedRoomsArray] = useState([])
     // Create an array of rooms that match the room_ids in roomsSelected
-    const selectedRoomsArray = rooms.filter((room) => roomsSelected.has(room.room_id));
+    // const selectedRoomsArray = rooms.filter((room) => roomsSelected.has(room.room_id)) ;
     // console.log("Selected rooms:", selectedRoomsArray);
+
+    useEffect(() => {
+        setSelectedRoomsArray(rooms.filter((room) => roomsSelected.has(room.room_id)));
+    }, [roomsSelected])
 
 
     const inventoryDetail = useSelector(state => state.inventoryDetail)
@@ -76,7 +83,7 @@ function Reviewbooking({ setDisplay, rooms, setShowModal, setSearched, checkinDa
     const totalSelectedQuantities = [...selectedQuantitiesMap.values()].reduce((acc, quantity) => acc + quantity, 0);
 
     // check the boolean value of reserveRoom state and based on this changed the css of payNow button
-    const reserveRoom = useSelector(state => state.reserveRoom);
+    // const reserveRoom = useSelector(state => state.reserveRoom);
     const reservationIdentity = useSelector(state => state.reservationIdentity)
 
 
@@ -114,6 +121,20 @@ function Reviewbooking({ setDisplay, rooms, setShowModal, setSearched, checkinDa
         newMap.set(room_id, quantity);
         setSelectedQuantitiesMap(newMap);
     };
+
+    useEffect(() => {
+        let capacityArray = selectedRoomsArray.map((room) => ({
+            room_id: room.room_id,
+            room_capacity: room.room_capacity
+        }));
+        let totalCapacity = 0;
+        capacityArray.map((r) => {
+            totalCapacity += (selectedQuantitiesMap.get(r.room_id) || 1) * r.room_capacity
+        })
+        // Update the totalRoomsCapacity state
+        setTotalRoomsCapacity(totalCapacity);
+    }, [selectedQuantitiesMap, roomsSelected])
+
 
     // Function to calculate the total final rate from multiple objects
     function calculateTotalFinalRate(rate, selectedQuantitiesMap) {
@@ -592,18 +613,18 @@ function Reviewbooking({ setDisplay, rooms, setShowModal, setSearched, checkinDa
                                             }}
                                         >
                                             {/* Generate options for the dropdown based on inventory_available */}
-                                            {/* {Array.from({ length: inventory_available || 1 }, (_, index) => index + 1).map((quantity) => (
-                                                <option key={quantity} value={quantity}>
-                                                    {quantity}
-                                                </option>
-                                            ))} */}
-
-                                            {/* Generate options based on inventory_available and maximum_number_of_occupants */}
-                                            {Array.from({ length: Math.min(inventory_available, room?.maximum_number_of_occupants) }, (_, index) => index + 1).map((quantity) => (
+                                            {Array.from({ length: inventory_available || 1 }, (_, index) => index + 1).map((quantity) => (
                                                 <option key={quantity} value={quantity}>
                                                     {quantity}
                                                 </option>
                                             ))}
+
+                                            {/* Generate options based on inventory_available and maximum_number_of_occupants */}
+                                            {/* {Array.from({ length: Math.min(inventory_available, room?.maximum_number_of_occupants) }, (_, index) => index + 1).map((quantity) => (
+                                                <option key={quantity} value={quantity}>
+                                                    {quantity}
+                                                </option>
+                                            ))} */}
                                         </select>
                                     </td>
                                     <td className='text-red-800 '>
@@ -817,7 +838,11 @@ function Reviewbooking({ setDisplay, rooms, setShowModal, setSearched, checkinDa
                         <button
                             disabled={disabled || totalFinalRate + totalTaxAmount + totalOtherFees === 0}
                             onClick={() => {
-                                SubmitGuestDetails();
+                                if (guest.length <= totalRoomsCapacity) {
+                                    SubmitGuestDetails();
+                                } else {
+                                    alert('No available room can accommodate the current number of guests.');
+                                }
                             }}
                             className={`px-4 py-2 ${totalFinalRate + totalTaxAmount + totalOtherFees === 0
                                 ? "bg-gray-500" : "bg-green-700 hover:bg-green-900"

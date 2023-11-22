@@ -3,7 +3,6 @@ import RoomPriceCalendar from '../../../components/PriceCalendar/RoomPriceCalend
 import Sidebar from "../../../components/Sidebar";
 import Header from "../../../components/Header";
 import Title from "../../../components/title";
-import axios from "axios";
 import { InitialActions, ColorToggler } from '../../../components/initalActions';
 import { english, french, arabic } from "../../../components/Languages/Languages";
 
@@ -49,7 +48,7 @@ const RoomPricePage = () => {
             />
 
             <div className={`${color?.greybackground} px-4 pt-24 pb-2 relative overflow-y-auto lg:ml-64`}>
-                <RoomPriceCalendar color={color} language={language} currentProperty={currentProperty}/>
+                <RoomPriceCalendar color={color} language={language} currentProperty={currentProperty} />
             </div>
         </>
     );

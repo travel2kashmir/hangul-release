@@ -823,7 +823,9 @@ export default {
     providers: './itinerary/providers',
     packages: './itinerary/packages',
     itineraries: './itineraries',
-    roomsprices: './pricecalendar'
+    roomsprices: './pricecalendar',
+    bookings: './bookings'
+
   },
   "Side": {
     dashboard: './dashboard',
@@ -857,7 +859,8 @@ export default {
     providers: '../itinerary/providers',
     packages: '../itinerary/packages',
     itineraries: '../itineraries',
-    roomsprices: './pricecalendar'
+    roomsprices: './pricecalendar',
+    bookings: './bookings'
   },
   "PlaceSide": {
     dashboard: '../property/dashboard',
@@ -891,7 +894,8 @@ export default {
     providers: '../itinerary/providers',
     packages: '../itinerary/packages',
     itineraries: '../../itineraries',
-    roomsprices: '../../pricecalendar'
+    roomsprices: '../../pricecalendar',
+    bookings: '../../bookings'
   },
   "SideInventory": {
     dashboard: './dashboard',
@@ -925,7 +929,8 @@ export default {
     providers: './../itinerary/providers',
     packages: './../itinerary/packages',
     itineraries: './../itineraries',
-    roomsprices: './pricecalendar'
+    roomsprices: './pricecalendar',
+    bookings: './bookings'
   },
 
   "Side1": {
@@ -960,7 +965,8 @@ export default {
     providers: '../../itinerary/providers',
     packages: '../../itinerary/packages',
     itineraries: '../../itineraries',
-    roomsprices: '../../pricecalendar'
+    roomsprices: '../../pricecalendar',
+    bookings: '../bookings'
   },
 
   "Side2": {
@@ -994,7 +1000,8 @@ export default {
     providers: '../itinerary/providers',
     packages: '../itinerary/packages',
     itineraries: '../../itineraries',
-    roomsprices: '../../pricecalendar'
+    roomsprices: '../../pricecalendar',
+    bookings: '../../bookings'
   },
   "Foot": {
     termsandconditions: './termsandconditions',
@@ -1204,9 +1211,8 @@ export default {
   creatinguser: "Creating User",
   inactiveproperties: "List of Inactive Properties",
   activeproperties: "List of Active Properties",
-  prices: "Prices"
-
-
-
+  prices: "Prices",
+  bookings: "Bookings",
+  viewBooking: "View Booking"
 };
 

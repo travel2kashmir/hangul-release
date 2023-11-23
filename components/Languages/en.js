@@ -965,7 +965,7 @@ export default {
     providers: '../../itinerary/providers',
     packages: '../../itinerary/packages',
     itineraries: '../../itineraries',
-    roomsprices: '../../pricecalendar',
+    roomsprices: '../pricecalendar',
     bookings: '../bookings'
   },
 
@@ -1213,6 +1213,7 @@ export default {
   activeproperties: "List of Active Properties",
   prices: "Prices",
   bookings: "Bookings",
-  viewBooking: "View Booking"
+  viewBooking: "View Booking",
+  bookingDetails: "Booking Details",
 };
 

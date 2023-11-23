@@ -67,7 +67,7 @@ function Bookings() {
 
     /**Function to save Current property to be viewed to Local Storage**/
     const viewCurrentBookingDetails = (id) => {
-        // localStorage.setItem("BookingId", id);
+        localStorage.setItem("BookingId", id);
         Router.push("./bookings/viewBooking");
     };
 
@@ -94,7 +94,7 @@ function Bookings() {
                         "booking_to": "2023-11-29",
                         "is_cancelled": true,
                         "transaction_refrence_no": "tsxred124",
-                        "booking_id": "bk0090"
+                        "booking_id": "bk0091"
                     }
                 ]
             }
@@ -151,7 +151,7 @@ function Bookings() {
     }, [])
 
 
-    /* Delete Room Function*/
+    /* Delete booking Function*/
     const deleteBooking = (props) => {
         setDeleteRoomId(props);
         setDeleteMultiple(1);

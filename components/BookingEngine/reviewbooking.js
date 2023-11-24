@@ -802,6 +802,7 @@ function Reviewbooking({ property_id, setDisplay, rooms, setShowModal, setSearch
                         :
                         <button
                             disabled={disabled || totalFinalRate + totalTaxAmount + totalOtherFees === 0}
+                            // target="_blank"
                             onClick={() => {
                                 if (guest.length <= totalRoomsCapacity) {
                                     SubmitGuestDetails();

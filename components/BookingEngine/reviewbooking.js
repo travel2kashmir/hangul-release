@@ -837,12 +837,14 @@ function Reviewbooking({ setDisplay, rooms, setShowModal, setSearched, checkinDa
                         :
                         <button
                             disabled={disabled || totalFinalRate + totalTaxAmount + totalOtherFees === 0}
+                            // target="_blank"
                             onClick={() => {
-                                if (guest.length <= totalRoomsCapacity) {
-                                    SubmitGuestDetails();
-                                } else {
-                                    alert('No available room can accommodate the current number of guests.');
-                                }
+                                setDisplay(4)
+                                // if (guest.length <= totalRoomsCapacity) {
+                                //     SubmitGuestDetails();
+                                // } else {
+                                //     alert('No available room can accommodate the current number of guests.');
+                                // }
                             }}
                             className={`px-4 py-2 ${totalFinalRate + totalTaxAmount + totalOtherFees === 0
                                 ? "bg-gray-500" : "bg-green-700 hover:bg-green-900"

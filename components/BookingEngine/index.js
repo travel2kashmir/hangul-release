@@ -7,7 +7,6 @@ import RoomCalenderView from './RoomCalenderView';
 import RoomSummary from './RoomSummary';
 import Reviewbooking from './reviewbooking';
 import BookingSuccess from './BookingSuccess';
-import InvoicePdfViewer from './InvoicePdfViewer';
 import ReceiptView from './ReceiptView';
 
 
@@ -63,8 +62,7 @@ function BookingEngine({ allHotelDetails, rooms, display, setDisplay, setShowMod
             {display === 1 ? <RoomSummary setDisplay={(e) => setDisplay(e)} setShowModal={(e) => setShowModal(e)} setSearched={(e) => setSearched(false)} checkinDate={checkinDate} checkoutDate={checkoutDate} /> : undefined}
             {display === 2 ? <Reviewbooking setDisplay={(e) => setDisplay(e)} property_id={allHotelDetails?.property_id} rooms={rooms} setShowModal={(e) => setShowModal(e)} setSearched={(e) => setSearched(false)} checkinDate={checkinDate} checkoutDate={checkoutDate} /> : undefined}
             {display === 3 ? <BookingSuccess setDisplay={(e) => setDisplay(e)} rooms={rooms} setShowModal={(e) => setShowModal(e)} setSearched={(e) => setSearched(false)} checkinDate={checkinDate} checkoutDate={checkoutDate} /> : undefined}
-            {display === 4 ? <InvoicePdfViewer setDisplay={(e) => setDisplay(e)} setShowModal={(e) => setShowModal(e)} setSearched={(e) => setSearched(false)} /> : undefined}
-            {/* {display === 4 ? <ReceiptView setDisplay={(e) => setDisplay(e)} setShowModal={(e) => setShowModal(e)} setSearched={(e) => setSearched(false)} /> : undefined} */}
+            {display === 4 ? <ReceiptView setDisplay={(e) => setDisplay(e)} allHotelDetails={allHotelDetails} setShowModal={(e) => setShowModal(e)} setSearched={(e) => setSearched(false)} /> : undefined}
 
         </>
     )

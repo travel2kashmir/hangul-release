@@ -7,6 +7,7 @@ const initialState = {
     reserveRoom: false,
     reservationIdentity: [],
     guestDetails: {},
+    bookingId: 'bk0091',
 }
 
 

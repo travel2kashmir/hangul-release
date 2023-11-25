@@ -375,7 +375,7 @@ function Reviewbooking({ property_id, setDisplay, rooms, setShowModal, setSearch
             toast.error("API: Room Booking Failed,Try again Latter.");
             setpayNowLoader(false)
         })
-}
+    }
     //function to add payemtn gateway logic
     function PaymentGateway(booking_id, total_price) {
         let refrenceNumber = uuidv4(); // generating random id to replicate payment gateway response.
@@ -404,7 +404,7 @@ function Reviewbooking({ property_id, setDisplay, rooms, setShowModal, setSearch
         })
     }
 
-   //changes count of rooms available on that particular day
+    //changes count of rooms available on that particular day
     function changeBookingCount() {
         const bookingDataArray = [];
         // Function to get an array of dates between two dates
@@ -804,6 +804,7 @@ function Reviewbooking({ property_id, setDisplay, rooms, setShowModal, setSearch
                             disabled={disabled || totalFinalRate + totalTaxAmount + totalOtherFees === 0}
                             // target="_blank"
                             onClick={() => {
+                                // setDisplay(4)
                                 if (guest.length <= totalRoomsCapacity) {
                                     SubmitGuestDetails();
                                 } else {

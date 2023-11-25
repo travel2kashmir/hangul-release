@@ -89,16 +89,16 @@ function RoomCard({ filteredRoomData, roomImage, setDisplay, roomRates, checkinD
     })
   }
 
-  function reserveRoom(roomdata) {
-    let url = "/api/reserve_rooms";
-    axios.post(url, roomdata).then((response) => {
-      dispatch(setReserveRoom(false))
+  // function reserveRoom(roomdata) {
+  //   let url = "/api/reserve_rooms";
+  //   axios.post(url, roomdata).then((response) => {
+  //     dispatch(setReserveRoom(false))
 
-    }).catch((err) => {
-      console.log(err)
-    })
+  //   }).catch((err) => {
+  //     console.log(err)
+  //   })
 
-  }
+  // }
 
   // generate data to be fed for booking
   function generateBookingObjects(start_date, end_date, otherData) {
@@ -141,9 +141,9 @@ function RoomCard({ filteredRoomData, roomImage, setDisplay, roomRates, checkinD
       redirectToReviewPage(filteredRoomData, roomRates)
       dispatch(setReserveRoom(true))
       dispatch(setReservationIdentity([reservationIdentity]))
-      reserveRoom({
-        "reserve_rooms": generateBookingObjects(checkinDate, checkoutDate, { "room_count": 1, ...reservationIdentity })
-      }, roomRates?.room_id)
+      // reserveRoom({
+      //   "reserve_rooms": generateBookingObjects(checkinDate, checkoutDate, { "room_count": 1, ...reservationIdentity })
+      // }, roomRates?.room_id)
 
     } else {
       toast.error(`APP: Inventory for ${filteredRoomData?.room_name} not available for the selected days`);

@@ -81,7 +81,6 @@ export default function validateGuestDetail(data) {
     for (let i = 0; i < data.length; i++) {
         error.push({})
     }
-
     var flag = false;
 
     data.map((guest, index) => {

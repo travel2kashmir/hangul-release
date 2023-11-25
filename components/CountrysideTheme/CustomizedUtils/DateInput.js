@@ -1,7 +1,7 @@
 import React from 'react'
 import LineLoader from "../Loaders/lineloader";
 import Image from 'next/image'
-import Tooltip from "./Tooltip";
+import Tooltip from "../../utils/Tooltip";
 
 function DateInput({ color, label, req, initialValue, onChangeAction, error, visible, max, min, title, tooltip }) {
 

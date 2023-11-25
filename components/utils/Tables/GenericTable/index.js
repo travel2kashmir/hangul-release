@@ -1,4 +1,4 @@
-import React, { useState, useMemo,useEffect } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import SearchFunction from "../../Code/SearchFunction";
 import Button from "../../../Button";
@@ -8,17 +8,17 @@ import InlineTableBody from "./InlineTableBody";
 import Pagination from "./Pagination";
 var checked = [];
 
-function GenericTable({inlineTable, color, language, deleteAll, cols, addButton, tableName, addButtonAction,...args }) {
+function GenericTable({ inlineTable, color, language, deleteAll, cols, addButton, tableName, addButtonAction, ...args }) {
     const [itemsPerPage, setItemsPerPage] = useState(5);
     const [page, setPage] = useState(1);
     const [error, setError] = useState({});
     const [viewDel, setViewDel] = useState(0);
     const [flag, setFlag] = useState([]);
     const [isAllSelected, setIsAllSelected] = useState(false);
-    
-    const [data,setData]=useState(args.data)
-    useEffect(()=>{setData(args.data)},[args.data])
-   
+
+    const [data, setData] = useState(args.data)
+    useEffect(() => { setData(args.data) }, [args.data])
+
 
     //slices data as per requirment to be displayed 
     const displayData = useMemo(() => {
@@ -41,17 +41,17 @@ function GenericTable({inlineTable, color, language, deleteAll, cols, addButton,
 
     }
 
-    function handleSelectAll(e){
-       setIsAllSelected(!isAllSelected)
-        let displayedItem=displayData.map((i)=>i.id)
-       let nonDisplayedItems=data.filter(i=>!displayedItem.includes(i.id))
-       e.target.checked===true?displayData.map((i)=>checked.push(i.id)):checked=[];
-        let withTickData=displayData.map(item=>({...item,isChecked:e.target.checked===true?true:false}))
-        if(nonDisplayedItems.length===0){setData(withTickData);}
-        else{
-            setData([...withTickData,...nonDisplayedItems])
+    function handleSelectAll(e) {
+        setIsAllSelected(!isAllSelected)
+        let displayedItem = displayData.map((i) => i.id)
+        let nonDisplayedItems = data.filter(i => !displayedItem.includes(i.id))
+        e.target.checked === true ? displayData.map((i) => checked.push(i.id)) : checked = [];
+        let withTickData = displayData.map(item => ({ ...item, isChecked: e.target.checked === true ? true : false }))
+        if (nonDisplayedItems.length === 0) { setData(withTickData); }
+        else {
+            setData([...withTickData, ...nonDisplayedItems])
         }
-       
+
     }
     return (<>
         <div>
@@ -106,29 +106,32 @@ function GenericTable({inlineTable, color, language, deleteAll, cols, addButton,
                             <div className="align-middle inline-block w-full">
                                 <div className="shadow overflow-x-auto">
                                     <table id="dataTable" className="table data overflow-x-auto table-fixed w-full divide-y divide-gray-200">
-                                        <TableHead 
-                                        cols={cols}
-                                         color={color}
-                                         handleSelectAll={(e)=>handleSelectAll(e)} 
-                                         isAllSelected={isAllSelected}/>
+                                        <TableHead
+                                            cols={cols}
+                                            color={color}
+                                            handleSelectAll={(e) => handleSelectAll(e)}
+                                            isAllSelected={isAllSelected} />
 
-                                        {inlineTable===true?<InlineTableBody
-                                         cols={cols}
-                                          data={displayData} 
-                                          color={color} 
-                                          handlecheckbox={(e) => handlecheckbox(e)}
-                                           setDeleteMultiple={(e) => setDeleteMultiple(e)} />:
-                                           <TableBody
-                                           cols={cols}
-                                            data={displayData} 
-                                            color={color} 
+                                        {inlineTable === true ? <InlineTableBody
+                                            cols={cols}
+                                            data={displayData}
+                                            color={color}
                                             handlecheckbox={(e) => handlecheckbox(e)}
-                                             setDeleteMultiple={(e) => setDeleteMultiple(e)} />}
+                                            setDeleteMultiple={(e) => setDeleteMultiple(e)}
+
+                                        /> :
+                                            <TableBody
+                                                cols={cols}
+                                                data={displayData}
+                                                color={color}
+                                                handlecheckbox={(e) => handlecheckbox(e)}
+                                                setDeleteMultiple={(e) => setDeleteMultiple(e)}
+                                            />}
                                     </table>
                                     {/* Pagination */}
                                     <Pagination color={color}
                                         page={page}
-                                        setPage={(value)=>setPage(value)}
+                                        setPage={(value) => setPage(value)}
                                         data={data}
                                         itemsPerPage={itemsPerPage}
                                         ItemShow={(e) => ItemShow(e)} />

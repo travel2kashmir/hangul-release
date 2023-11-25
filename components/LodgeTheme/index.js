@@ -8,7 +8,12 @@ import Review from './Review';
 import Footer from './Footer';
 import Services from './Services';
 import Photos from './Photos';
+import BookingModal from './Modals/BookingModal';
+import BookingEngine from '../BookingEngine';
 import { AiOutlineClose } from "react-icons/ai";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 
 function Hotel({ language, HotelDetails,
@@ -23,6 +28,22 @@ function Hotel({ language, HotelDetails,
   const [roomDetailLoader, setRoomDetailLoader] = useState(0);
 
   const [menu, setMenu] = useState(0)
+
+  const [showBookingEngine, setShowBookingEngine] = useState(0);  // state to display the booking engine
+  const [display, setDisplay] = useState(0);  // state to display the different views in the booking modal
+  const [roomsLoader, setRoomsLoader] = useState(false);   // loader for booking engine rooms
+  const [searched, setSearched] = useState(false) // this is set to true when the search is clicked on the booking form.
+
+  // state to set the checkin and checkout state
+  const [enquiry, setEnquiry] = useState({
+    "checkin": "",
+    "checkout": "",
+    // "number_of_rooms": 1,
+    "number_of_guests": 1,
+    "number_of_adults": 1,
+    "guests_below_six": 0,
+    "guests_below_twelve": 0
+  })
 
 
   useEffect(() => {
@@ -51,7 +72,6 @@ function Hotel({ language, HotelDetails,
 
       <Header
         allHotelDetails={allHotelDetails}
-        menu={menu}
         setMenu={setMenu}
         hotelDetailLoader={hotelDetailLoader}
 
@@ -59,6 +79,12 @@ function Hotel({ language, HotelDetails,
 
       <Home
         allHotelDetails={allHotelDetails}
+        setShowBookingEngine={(e) => setShowBookingEngine(e)}
+        enquiry={enquiry}
+        setEnquiry={(e) => setEnquiry(e)}
+        searched={searched}
+        setSearched={(e) => setSearched(e)}
+        setRoomsLoader={(e) => setRoomsLoader(e)}
       />
 
       <About
@@ -97,6 +123,41 @@ function Hotel({ language, HotelDetails,
         privacy={allHotelDetails?.privacy_conditions === undefined ? '' : allHotelDetails?.privacy_conditions[0]?.privacy_policy}
 
       />
+
+      {/* this div will only show up when the showBookingEngine is equal to 1 else there will be no such div, and the functions inside this div will only work when showBookingEngine is equal to 1 */}
+      {showBookingEngine === 1 ?
+        <div className="block z-50">
+          {allHotelDetails && <BookingModal
+            bookingComponent={
+              <BookingEngine
+                roomsLoader={roomsLoader}
+                setRoomsLoader={(e) => setRoomsLoader(e)}
+                display={display}
+                setDisplay={(e) => setDisplay(e)}
+                rooms={rooms}
+                allHotelDetails={allHotelDetails}
+                setShowModal={(e) => setShowBookingEngine(e)}
+                setSearched={(e) => setSearched(false)}
+                checkinDate={enquiry.checkin}
+                checkoutDate={enquiry.checkout}
+              />}
+          />}
+        </div> : undefined}
+
+
+      {/* Toast Container */}
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+
 
 
       {/* menu for small screen */}

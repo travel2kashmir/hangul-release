@@ -15,9 +15,9 @@ import formatDateToCustomFormat from '../generalUtility/timeStampMaker'
 import CountdownTimer from './CountDownTimer';
 import ButtonLoader from './ButtonLoader';
 import { v4 as uuidv4 } from 'uuid';
-import { result } from 'lodash';
-
-function Reviewbooking({ setDisplay, rooms, setShowModal, setSearched, checkinDate, checkoutDate }) {
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+function Reviewbooking({ property_id, setDisplay, rooms, setShowModal, setSearched, checkinDate, checkoutDate }) {
 
     let guestTemplate = {
         "guest_name": "",
@@ -38,6 +38,8 @@ function Reviewbooking({ setDisplay, rooms, setShowModal, setSearched, checkinDa
     // loaders
     const [cancelBookingLoader, setCancelBookingLoader] = useState(false)
     const [payNowLoader, setpayNowLoader] = useState(false)
+    // State for totalRoomsCapacity
+    const [totalRoomsCapacity, setTotalRoomsCapacity] = useState(0);
 
     const [totals, setTotals] = useState({
         totalFinalRate: 0,
@@ -58,9 +60,14 @@ function Reviewbooking({ setDisplay, rooms, setShowModal, setSearched, checkinDa
     const roomsSelected = useSelector(state => new Set(state.roomsSelected))
     // console.log("this is roomSelected set using redux", roomsSelected)
 
+    const [selectedRoomsArray, setSelectedRoomsArray] = useState([])
     // Create an array of rooms that match the room_ids in roomsSelected
-    const selectedRoomsArray = rooms.filter((room) => roomsSelected.has(room.room_id));
+    // const selectedRoomsArray = rooms.filter((room) => roomsSelected.has(room.room_id)) ;
     // console.log("Selected rooms:", selectedRoomsArray);
+
+    useEffect(() => {
+        setSelectedRoomsArray(rooms.filter((room) => roomsSelected.has(room.room_id)));
+    }, [roomsSelected])
 
 
     const inventoryDetail = useSelector(state => state.inventoryDetail)
@@ -76,7 +83,7 @@ function Reviewbooking({ setDisplay, rooms, setShowModal, setSearched, checkinDa
     const totalSelectedQuantities = [...selectedQuantitiesMap.values()].reduce((acc, quantity) => acc + quantity, 0);
 
     // check the boolean value of reserveRoom state and based on this changed the css of payNow button
-    const reserveRoom = useSelector(state => state.reserveRoom);
+    // const reserveRoom = useSelector(state => state.reserveRoom);
     const reservationIdentity = useSelector(state => state.reservationIdentity)
 
 
@@ -114,6 +121,20 @@ function Reviewbooking({ setDisplay, rooms, setShowModal, setSearched, checkinDa
         newMap.set(room_id, quantity);
         setSelectedQuantitiesMap(newMap);
     };
+
+    useEffect(() => {
+        let capacityArray = selectedRoomsArray.map((room) => ({
+            room_id: room.room_id,
+            room_capacity: room.room_capacity
+        }));
+        let totalCapacity = 0;
+        capacityArray.map((r) => {
+            totalCapacity += (selectedQuantitiesMap.get(r.room_id) || 1) * r.room_capacity
+        })
+        // Update the totalRoomsCapacity state
+        setTotalRoomsCapacity(totalCapacity);
+    }, [selectedQuantitiesMap, roomsSelected])
+
 
     // Function to calculate the total final rate from multiple objects
     function calculateTotalFinalRate(rate, selectedQuantitiesMap) {
@@ -211,15 +232,15 @@ function Reviewbooking({ setDisplay, rooms, setShowModal, setSearched, checkinDa
 
     }
 
-    function updateReserveRoom(roomdata) {
-        let url = "/api/reserve_rooms";
-        axios.put(url, roomdata).then((response) => {
-            setDisabled(false)  // this state is used to manage the css of paynow button
-            console.log(response)
-        }).catch((err) => {
-            console.log(err)
-        })
-    }
+    // function updateReserveRoom(roomdata) {
+    //     let url = "/api/reserve_rooms";
+    //     axios.put(url, roomdata).then((response) => {
+    //         setDisabled(false)  // this state is used to manage the css of paynow button
+    //         console.log(response)
+    //     }).catch((err) => {
+    //         console.log(err)
+    //     })
+    // }
 
     function removeReservationFromDB(room_id, reservation_time, action) {
         // let url = `/api/reserve_rooms/${room_id}/${reservation_time}`;
@@ -279,129 +300,95 @@ function Reviewbooking({ setDisplay, rooms, setShowModal, setSearched, checkinDa
 
     function bookingRoom() {
         let roomBookingData = {
-            "bookings": [
-                {
-                    "booking_date_from": checkinDate,
-                    "booking_date_to": checkoutDate,
-                    "total_rooms_booked": 1,
-                    "is_cancelled": false,
-                    "booking_time": formatDateToCustomFormat(new Date())
-                }
-            ]
+            "booking_date_from": checkinDate,
+            "booking_date_to": checkoutDate,
+            "total_rooms_booked": 1,
+            "is_cancelled": false,
+            "booking_time": formatDateToCustomFormat(new Date()),
+            "property_id": property_id
         }
+
         let guestsForThisBooking = {
-            "guest_booking_link": guest.map((guestdetail) => {
+            "booking_guest_link": guest.map((guestdetail) => {
                 return ({
                     "guest_name": guestdetail.guest_name,
                     "guest_email": guestdetail.guest_email,
                     "guest_age": guestdetail.guest_age,
-                    "guest_phone_number": guestdetail.guest_phone_number,
-                    "booking_id": ""
+                    "guest_phone_number": guestdetail.guest_phone_number
                 })
             }
             )
         }
-        
+
         let bookingRoomArray = selectedRoomsArray.map((item, index) => {
             return ({
                 "room_id": item.room_id,
                 "room_name": item.room_name,
                 "room_type": item.room_type,
-                "room_count": selectedQuantitiesMap?.get(item?.room_id),
-                "booking_id": ""
+                "room_count": selectedQuantitiesMap?.get(item?.room_id)
             })
         })
-        
-        let roomsForThisBooking = { "room_booking_link": bookingRoomArray }
-        let invoiceForThisBooking = {
-            "booking_invoice_link": [
+
+        let roomsForThisBooking = { "booking_room_link": bookingRoomArray }
+
+        let finalInvoiceForThisBooking = {
+            "booking_invoice": [
                 {
                     "base_price": totalFinalRate,
                     "taxes": totalTaxAmount,
                     "other_fees": totalOtherFees,
                     "coupon_discount": couponDiscount,
                     "total_price": totalFinalRate + totalOtherFees + totalTaxAmount - couponDiscount,
-                    // "transaction_refrence_no": "tid123",
                     "invoice_time": formatDateToCustomFormat(new Date()),
-                    "booking_id": ""
+                    ...(addGst && {
+                        "booking_gst_link": [
+                            {
+                                "gst_registration_no": gstDetails.gst_registration_no,
+                                "gst_company_name": gstDetails.gst_company_name,
+                                "gst_company_address": gstDetails.gst_company_address,
+                            }
+                        ]
+                    })
                 }
             ]
-
-        }
+        };
 
         //multiple api call's will be performed in this bookRoom function so that is why it is divided in multiple functions.
-        bookRoom(roomsForThisBooking, roomBookingData, guestsForThisBooking, invoiceForThisBooking)
- }
+        bookRoom(roomsForThisBooking, roomBookingData, guestsForThisBooking, finalInvoiceForThisBooking)
+    }
 
-    function bookRoom(roomsForThisBooking, roomBookingData, guestsForThisBooking, invoiceForThisBooking) {
-        let roomBookingUrl = "/api/room_bookings";
-        axios.post(roomBookingUrl, roomBookingData).then((responseFromRoomBookingUrl) => {
-            // Update the booking_id property
-            guestsForThisBooking.guest_booking_link = guestsForThisBooking.guest_booking_link.map(item => {
-                item.booking_id = responseFromRoomBookingUrl.data.booking_id;
-                return item;
-            });
-            invoiceForThisBooking.booking_invoice_link = invoiceForThisBooking.booking_invoice_link.map(item => {
-                item.booking_id = responseFromRoomBookingUrl.data.booking_id;
-                return item;
-            });
+    function bookRoom(roomsForThisBooking, roomBookingData, guestsForThisBooking, finalInvoiceForThisBooking) {
+        let bookingURL = "/api/booking";
+        let bookingData = {
+            "booking": [{
+                ...roomBookingData, ...roomsForThisBooking, ...guestsForThisBooking, ...finalInvoiceForThisBooking
+            }]
+        }
+        axios.post(bookingURL, bookingData, {
+            header: { "content-type": "application/json" },
+        }).then((response) => {
+            let totalPrice = finalInvoiceForThisBooking?.booking_invoice[0].total_price;
+            let paymentRefrenceNumber = PaymentGateway(response.data.booking_id, totalPrice)
+            addRefrenceToInvoice(paymentRefrenceNumber, response.data.booking_id)
 
-            // Now guestsForThisBooking is updated and you can use it for another post request if needed
-            linkBookingWithGuest(guestsForThisBooking, invoiceForThisBooking)
-            let roomsBooked = { "room_booking_link": roomsForThisBooking.room_booking_link.map((item) => { return ({ ...item, "booking_id": responseFromRoomBookingUrl.data.booking_id }) }) }
-            console.log(roomsBooked)
-            linkRoomsWithThisBooking(roomsBooked)
-
-        }).catch((err) => {
-            console.log(err)
+        }).catch((error) => {
+            toast.error("API: Room Booking Failed,Try again Latter.");
+            setpayNowLoader(false)
         })
     }
-
-    function linkRoomsWithThisBooking(roomsBooked) {
-        let url = `/api/room_bookings_link`;
-        axios.post(url, roomsBooked, { header: { "content-type": "application/json" } })
-            .then((response) => {
-                console.log("rooms linked sucessfully")
-            }).catch((error) => {
-                console.log("error in linking rooms")
-            })
-    }
-
-    function linkBookingWithGuest(guestsForThisBooking, invoiceForThisBooking) {
-        let bookingLinkUrl = "/api/guest_booking_link";
-        axios.post(bookingLinkUrl, guestsForThisBooking).then((responseFromBookingLinkUrl) => {
-            // handle the second post response
-            linkInvoiceWithBooking(invoiceForThisBooking)
-
-        }).catch((err) => {
-            console.log(err)
-        });
-    }
-
-    function linkInvoiceWithBooking(invoiceForThisBooking) {
-        let invoiceLinkUrl = "/api/booking_invoice_link";
-        axios.post(invoiceLinkUrl, invoiceForThisBooking).then((responseFromInvoiceLinkUrl) => {
-            // handle the third post response
-            let paymentRefrenceNumber = PaymentGateway(invoiceForThisBooking.booking_invoice_link[0].booking_id, invoiceForThisBooking.booking_invoice_link[0].total_price)
-            addRefrenceToInvoice(paymentRefrenceNumber, responseFromInvoiceLinkUrl.data.invoice_id)
-
-        }).catch((err) => {
-            console.log(err)
-        })
-    }
-
     //function to add payemtn gateway logic
     function PaymentGateway(booking_id, total_price) {
         let refrenceNumber = uuidv4(); // generating random id to replicate payment gateway response.
         return refrenceNumber
+        // return {refrenceNumber,booking_id,total_price}
     }
     //function to update invoice id 
-    function addRefrenceToInvoice(paymentRefrenceNumber, invoice_id) {
+    function addRefrenceToInvoice(paymentRefrenceNumber, booking_id) {
         let invoiceLinkUrl = "/api/booking_invoice_link";
         let invoiceForThisBooking = {
             "booking_invoice_link": [{
                 "transaction_refrence_no": paymentRefrenceNumber,
-                "invoice_id": invoice_id
+                "booking_id": booking_id
             }]
         }
         axios.put(invoiceLinkUrl, invoiceForThisBooking, {
@@ -417,6 +404,7 @@ function Reviewbooking({ setDisplay, rooms, setShowModal, setSearched, checkinDa
         })
     }
 
+    //changes count of rooms available on that particular day
     function changeBookingCount() {
         const bookingDataArray = [];
         // Function to get an array of dates between two dates
@@ -438,11 +426,9 @@ function Reviewbooking({ setDisplay, rooms, setShowModal, setSearched, checkinDa
         });
 
         // Now bookingDataArray contains the array of objects with room_id, booking_count, and date for each room and each day between checkinDate and checkoutDate
-        console.log(bookingDataArray);
         let url = '/api/room_booking_update'
         axios.put(url, bookingDataArray, { header: { "content-type": "application/json" } })
             .then((response) => {
-                console.log(response.data)
                 setpayNowLoader(false)
             })
             .catch((error) => console.log(error))
@@ -488,7 +474,7 @@ function Reviewbooking({ setDisplay, rooms, setShowModal, setSearched, checkinDa
             {/* app bar  */}
             <div>
                 {/* <div className='flex justify-between w-full py-5 px-3 md:px-5 border-b-2  bg-slate-100'> */}
-                <div className='flex justify-between w-full py-5 px-3 md:px-5   bg-slate-100'>
+                <div className='flex justify-between w-full py-5 px-3 md:px-5 bg-slate-100'>
                     <div className='flex'>
                         <i className='my-auto'
                             onClick={() => {
@@ -584,6 +570,11 @@ function Reviewbooking({ setDisplay, rooms, setShowModal, setSearched, checkinDa
                                                 // let reservationData = reservationIdentity.filter((item) => item.room_id === room?.room_id)[0]
                                                 // updateReserveRoom({ "reserve_rooms": [{ "room_count": newQuantity, ...reservationData }] })
                                                 // setDisabled(true)
+
+                                                // Check if selected quantity is greater than inventory_available
+                                                // if (newQuantity > inventory_available) {
+                                                //     toast.error('Inventory unavailable', { position: toast.POSITION.TOP_CENTER });
+                                                // }
                                             }}
                                         >
                                             {/* Generate options for the dropdown based on inventory_available */}
@@ -592,6 +583,13 @@ function Reviewbooking({ setDisplay, rooms, setShowModal, setSearched, checkinDa
                                                     {quantity}
                                                 </option>
                                             ))}
+
+                                            {/* Generate options based on inventory_available and maximum_number_of_occupants */}
+                                            {/* {Array.from({ length: Math.min(inventory_available, room?.maximum_number_of_occupants) }, (_, index) => index + 1).map((quantity) => (
+                                                <option key={quantity} value={quantity}>
+                                                    {quantity}
+                                                </option>
+                                            ))} */}
                                         </select>
                                     </td>
                                     <td className='text-red-800 '>
@@ -804,8 +802,14 @@ function Reviewbooking({ setDisplay, rooms, setShowModal, setSearched, checkinDa
                         :
                         <button
                             disabled={disabled || totalFinalRate + totalTaxAmount + totalOtherFees === 0}
+                            // target="_blank"
                             onClick={() => {
-                                SubmitGuestDetails();
+                                // setDisplay(4)
+                                if (guest.length <= totalRoomsCapacity) {
+                                    SubmitGuestDetails();
+                                } else {
+                                    toast.error('APP: No selected room can accommodate the current number of guests.');
+                                }
                             }}
                             className={`px-4 py-2 ${totalFinalRate + totalTaxAmount + totalOtherFees === 0
                                 ? "bg-gray-500" : "bg-green-700 hover:bg-green-900"

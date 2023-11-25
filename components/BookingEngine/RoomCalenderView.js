@@ -116,8 +116,8 @@ function RoomCalenderView({ roomsLoader, rooms, allRoomRateDetails, dataOfRoomsA
     }
 
     function removeReservationFromDB(room_id, reservation_time) {
-        let url = `/api/reserve_rooms/${room_id}/${reservation_time}`;
-        axios.delete(url).then((response) => {
+        // let url = `/api/reserve_rooms/${room_id}/${reservation_time}`;
+        // axios.delete(url).then((response) => {
             setDisplay(0)
             setShowModal(0)
             setSearched(false)
@@ -126,11 +126,10 @@ function RoomCalenderView({ roomsLoader, rooms, allRoomRateDetails, dataOfRoomsA
             dispatch(clearReservationIdentity())
             dispatch(clearInventoryDetail())
             deleteRoomDetails()
-        }).catch((err) => {
-            toast.error("API:Error in deleting reservation from DB")
-        })
-
-    }
+        // }).catch((err) => {
+        //     toast.error("API:Error in deleting reservation from DB")
+        // })
+}
 
     function closeButtonAction() {
         // if there is any reservation in DB then remove them first else perform the other funtions

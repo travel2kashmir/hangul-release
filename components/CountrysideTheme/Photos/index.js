@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer';
 import PhotoAlbum from "react-photo-album";
-import ImagesSlider from '../Utils/ImagesSlider';
+import ImagesSlider from '../../utils/ImagesSlider';
 import { AiOutlineArrowDown, AiOutlineArrowUp } from 'react-icons/ai'
 import Loader from '../Loaders/Loader';
 

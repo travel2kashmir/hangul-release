@@ -169,9 +169,7 @@ function RoomSummary({ setDisplay, setShowModal, setSearched, checkinDate, check
                 className='w-full mt-auto px-1 py-2 bg-green-700 hover:bg-green-900 text-white rounded-md'
                 onClick={() => {
                   setSearchBookingInventory(true)
-                  redirectToReviewPage(rate)
                   dispatch(setRoomsSelected([selectedRoom?.room_id]))
-
                   let reservationIdentity = {
                     room_id: selectedRoom?.room_id,
                     reservation_time: formatDateToCustomFormat(new Date())
@@ -181,8 +179,8 @@ function RoomSummary({ setDisplay, setShowModal, setSearched, checkinDate, check
                   // reserveRoom({
                   //   "reserve_rooms": generateBookingObjects(checkinDate, checkoutDate, { "room_count": 1, ...reservationIdentity })
                   // }, selectedRoom?.room_id)
-
                   dispatch(setReserveRoom(true))
+                  redirectToReviewPage(rate)
                 }}
               >
                 Book Now

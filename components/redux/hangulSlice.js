@@ -8,6 +8,11 @@ const initialState = {
     reservationIdentity: [],
     guestDetails: {},
     bookingId: 'bk0091',
+    bookingInfo: {
+        booking_id: null,
+        property_id: null,
+    },
+
 }
 
 
@@ -62,7 +67,12 @@ export const hangulSlice = createSlice({
         },
         clearGuestDetails: (state, action) => {
             state.guestDetails = {};
-        }
+        },
+        updateBookingInfo: (state, action) => {
+            const { booking_id, property_id } = action.payload;
+            state.bookingInfo.booking_id = booking_id;
+            state.bookingInfo.property_id = property_id;
+        },
 
     }
 })
@@ -79,7 +89,8 @@ export const {
     removeReservationFromReservationIdentity,
     clearReservationIdentity,
     setGuestDetails,
-    clearGuestDetails
+    clearGuestDetails,
+    updateBookingInfo,
 } = hangulSlice.actions  //to be used in component files
 
 export default hangulSlice.reducer //this will be used to put in store

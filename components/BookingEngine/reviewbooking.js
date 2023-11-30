@@ -6,7 +6,7 @@ import { RxCross2, BiArrowBack, AiOutlineClose } from './Icons';
 // redux libraries
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
-import { removeRoomFromSelected, clearRoomsSelected, setAddMoreRoom, setGuestDetails, clearGuestDetails, clearInventoryDetail, clearReservationIdentity, removeReservationFromReservationIdentity } from '../redux/hangulSlice';
+import { removeRoomFromSelected, clearRoomsSelected, setAddMoreRoom, setGuestDetails, clearGuestDetails, clearInventoryDetail, clearReservationIdentity, removeReservationFromReservationIdentity, updateBookingInfo } from '../redux/hangulSlice';
 // validation
 import GuestDetailValidation from '../validation/bookingEngine/GuestDetailValidation'
 import GstValidation from '../validation/bookingEngine/GstDetailValidation'
@@ -370,6 +370,12 @@ function Reviewbooking({ property_id, setDisplay, rooms, setShowModal, setSearch
             let totalPrice = finalInvoiceForThisBooking?.booking_invoice[0].total_price;
             let paymentRefrenceNumber = PaymentGateway(response.data.booking_id, totalPrice)
             addRefrenceToInvoice(paymentRefrenceNumber, response.data.booking_id)
+
+            // Add booking_id and property_id to local storage
+            let propertyId = property_id; // Replace with the actual property_id
+            let bookingId = response.data.booking_id;
+
+            dispatch(updateBookingInfo({ booking_id: bookingId, property_id: propertyId }));
 
         }).catch((error) => {
             toast.error("API: Room Booking Failed,Try again Latter.");

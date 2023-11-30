@@ -7,6 +7,7 @@ import html2canvas from 'html2canvas';
 import { useSelector } from 'react-redux'
 
 function ReceiptView({ allHotelDetails }) {
+
     let bookingId = useSelector(state => state.bookingId)
 
     const [filteredBooking, setFilteredBooking] = useState(null);

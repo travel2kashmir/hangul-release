@@ -251,9 +251,9 @@ const Sidebar = (args) => {
 
               {/* inventory */}
               <li className={`${args?.color?.text} ${args?.color?.sidebar} group text-base font-normal rounded-lg flex items-center p-2 pl-11`}>
-                <Link href={{ pathname: args?.Primary?.inventory, query: { id: 1 } }}>
+                <Link href={{ pathname: args?.Primary?.unavailability, query: { id: 1 } }}>
                   <a>
-                    {language?.inventory}</a>
+                    {language?.unavailability}</a>
                 </Link></li>
 
 

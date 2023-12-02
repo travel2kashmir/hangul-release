@@ -15,7 +15,6 @@ function BookingForm({ color, rooms, allHotelDetails, searched, setSearched }) {
 
     const [roomsLoader, setRoomsLoader] = useState(false);
 
-
     const [err, setErr] = useState(false);
     const [notSelectedErr, setNotSelectedErr] = useState({
         "forCheckin": false,
@@ -164,7 +163,24 @@ function BookingForm({ color, rooms, allHotelDetails, searched, setSearched }) {
                 <div className="block z-50">
                     {allHotelDetails && <BookingModal
                         title="Booking Engine"
-                        bookingComponent={<BookingEngine roomsLoader={roomsLoader} setRoomsLoader={(e) => setRoomsLoader(e)} display={display} setDisplay={(e) => setDisplay(e)} rooms={rooms} allHotelDetails={allHotelDetails} setShowModal={(e) => setShowBookingEngine(e)} setSearched={(e) => setSearched(false)} checkinDate={enquiry.checkin} checkoutDate={enquiry.checkout} />}
+                        bookingComponent={
+                            <BookingEngine
+                                roomsLoader={roomsLoader}
+                                setRoomsLoader={(e) => setRoomsLoader(e)}
+                                display={display}
+                                setDisplay={(e) => setDisplay(e)}
+                                rooms={rooms}
+                                allHotelDetails={allHotelDetails}
+                                setShowModal={(e) => setShowBookingEngine(e)}
+                                setSearched={(e) => setSearched(false)}
+                                checkinDate={enquiry.checkin}
+                                checkoutDate={enquiry.checkout}
+                                color={{
+                                    "bgColor": "bg-slate-200",
+                                    "boxColor": "bg-slate-50",
+                                    "cardColor": "bg-slate-50"
+                                }}
+                            />}
                         setShowModal={(e) => setShowBookingEngine(e)}
                         setDisplay={(e) => setDisplay(e)}
                         setSearched={(e) => setSearched(false)}

@@ -1,41 +1,19 @@
 import React, { useState, useEffect } from 'react'
-import lang from '../GlobalData'
 import { ToastContainer, toast } from 'react-toastify';
 import Lineloader from '../loaders/lineloader';
-import Multiselect from 'multiselect-react-dropdown';
-import DarkModeLogic from '../darkmodelogic';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
-import Router from "next/router";
-import english from "../Languages/en"
-import french from "../Languages/fr"
-import arabic from "../Languages/ar";
-import Loader from '../loaders/loader';
-import Button from "../Button";
-import Footer from "../Footer";
-import Sidebar from '../Sidebar';
-import Header from '../Header';
-import Headloader from '../loaders/headloader';
-import Textboxloader from '../loaders/textboxloader';
-import Link from "next/link";
-import validateInventory from '../validation/validateInventory';
+import validateUnavailability from '../validation/room/roomUnavailability';
 import ButtonLoader from './ButtonLoader';
-var language;
 var currentProperty;
 var currentRoom;
 var currentLogged;
-var days_of_week = 'mtwtfsu';
 const logger = require("../../services/logger");
 
 function InventoryModal({ error, setError, setView, setInventories, view, color, language }) {
-  const [darkModeSwitcher, setDarkModeSwitcher] = useState()
   const [inventory, setInventory] = useState([])
-  // const [gen, setGen] = useState([])
   const [visible, setVisible] = useState(0);
-  // const [error, setError] = useState({})
-  // const [color, setColor] = useState({})
   const [allRooms, setAllRooms] = useState([])
-
   const [addLoader, setAddLoader] = useState(false)
 
   //fetch rooms with inventory
@@ -49,30 +27,21 @@ function InventoryModal({ error, setError, setView, setInventories, view, color,
       .catch((error) => { logger.error("url to fetch property details, failed") });
   }
 
-  //fetch all rooms and filter rooms without inv  
+  //fetch all rooms 
   const fetchRooms = async (args) => {
     const url = `/api/rooms/${currentProperty?.property_id}`;
     axios.get(url)
       .then((response) => {
 
-        var result = response?.data.filter(el => {
-          return !args?.find(element => {
-            return el.room_id === element.room_id;
-          });
-        });
+        // var result = response?.data.filter(el => {
+        //   return !args?.find(element => {
+        //     return el.room_id === element.room_id;
+        //   });
+        // });
 
-        setAllRooms(result);
-        if (result.length === 0) {
-          toast.warn("Inventory for all rooms is registered ", {
-            position: "top-center",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
-        }
+        // setAllRooms(result);
+        setAllRooms(response?.data);
+
       })
       .catch((error) => {
         logger.error("url to fetch property details, failed")
@@ -82,25 +51,12 @@ function InventoryModal({ error, setError, setView, setInventories, view, color,
   useEffect(() => {
     const firstfun = () => {
       if (typeof window !== 'undefined') {
-        // var locale = localStorage.getItem("Language");
-        // const colorToggle = JSON.parse(localStorage.getItem("ColorToggle"));
-        // const color = JSON.parse(localStorage.getItem("Color"));
-        // setColor(color);
-        // setDarkModeSwitcher(colorToggle);
-        // if (locale === "ar") {
-        //   language = arabic;
-        // }
-        // if (locale === "en") {
-        //   language = english;
-        // }
-        // if (locale === "fr") {
-        //   language = french;
-        // }
+
         /** Current Property Basic Details fetched from the local storage **/
         currentProperty = JSON.parse(localStorage.getItem('property'))
         currentLogged = JSON.parse(localStorage.getItem("Signin Details"));
         currentRoom = localStorage.getItem('RoomId');
-        fetchInventoryRooms()
+        fetchRooms();
         setVisible(1);
       }
     }
@@ -108,47 +64,46 @@ function InventoryModal({ error, setError, setView, setInventories, view, color,
   }, [view])
 
   // Fetch Hotel Details
-  const fetchHotelDetails = async () => {
-    const url = `/api/inventory/${currentProperty.property_id}`;
-    axios.get(url)
-      .then((response) => {
-        if (response.data.length > 0) {
-          setInventories(response.data)
-          setView(0)
-          fetchInventoryRooms()
+  // const fetchHotelDetails = async () => {
+  //   const url = `/api/inventory/${currentProperty.property_id}`;
+  //   axios.get(url)
+  //     .then((response) => {
+  //       if (response.data.length > 0) {
+  //         setInventories(response.data)
+  //         setView(0)
+  //         fetchInventoryRooms()
 
-        } else {
-          setInventories([])
-          fetchInventoryRooms()
+  //       } else {
+  //         setInventories([])
+  //         fetchInventoryRooms()
 
-        }
-      })
-      .catch((error) => {
-        logger.error("url to fetch property details, failed")
-      });
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       logger.error("url to fetch property details, failed")
+  //     });
 
 
-  }
+  // }
   // Inventory
-  const submitInventory = () => {
+  const submitUnavailability = () => {
     const current = new Date();
     const currentDateTime = current.toISOString();
     const final_data = {
-      "inventory": [{
+      "unavailablity": [{
         "property_id": currentProperty?.property_id,
-        "start_date": inventory?.start_date,
-        "end_date": inventory?.end_date,
-        "days_of_week": 'mtwtfss',
+        "date_from": inventory?.date_from,
+        "date_to": inventory?.date_to,
         "room_id": inventory?.room_id,
-        "inventory_count": inventory?.inventory_count,
-        "inventory_type": 2
+        "unavailablity_count": inventory?.unavailability_count,
+        "reason": inventory?.reason
       }]
     }
-    // const url = '/api/ari/inventory'
-    const url = '/api/inventory'
+
+    const url = '/api/unavailability'
     axios.post(url, final_data, { header: { "content-type": "application/json" } }).then
       ((response) => {
-        toast.success("Inventory Added successfully", {
+        toast.success("Unavailability Added successfully", {
           position: "top-center",
           autoClose: 5000,
           hideProgressBar: false,
@@ -162,11 +117,10 @@ function InventoryModal({ error, setError, setView, setInventories, view, color,
         document.getElementById("inventoryAddForm").reset();
         setError({})
         setAddLoader(false)
-        fetchHotelDetails()
       })
       .catch((error) => {
         setAddLoader(false)
-        toast.error("There was some Error in adding the Inventory ", {
+        toast.error("There was some Error in adding the Unavailability ", {
           position: "top-center",
           autoClose: 5000,
           hideProgressBar: false,
@@ -177,51 +131,21 @@ function InventoryModal({ error, setError, setView, setInventories, view, color,
         });
       })
   }
-  // Days
-  // const days = (days) => {
-  //   var days_present = ['-', '-', '-', '-', '-', '-', '-'];
-  //   days.map(day => {
-  //     if (day.day === 'mon') {
-  //       days_present[0] = 'm'
-  //     }
-  //     else if (day.day === 'tue') {
-  //       days_present[1] = 't'
-  //     }
-  //     else if (day.day === 'weds') {
-  //       days_present[2] = 'w'
-  //     }
-  //     else if (day.day === 'thur') {
-  //       days_present[3] = 't'
-  //     }
-  //     else if (day.day === 'fri') {
-  //       days_present[4] = 'f'
-  //     }
-  //     else if (day.day === 'sat') {
-  //       days_present[5] = 's'
-  //     }
-  //     else if (day.day === 'sun') {
-  //       days_present[6] = 's'
-  //     }
-  //   })
-  //   days_of_week = days_present.toString().replaceAll(',', '');
-  // }
-  // Validate Inventory
 
-  const validationInventory = () => {
-    var result = validateInventory(inventory, 'mtwtfss')
-    console.log("Result" + JSON.stringify(result))
+  // Validate Inventory
+  const validation = () => {
+    var result = validateUnavailability(inventory);
     if (result === true) {
-      submitInventory();
+      submitUnavailability();
     }
     else {
-      setError(result)
-      setAddLoader(false)
+      setError(result);
+      setAddLoader(false);
     }
   }
+
   return (
     <>
-      {/* <Header color={color} Primary={english?.Side} /> */}
-      {/* <Sidebar color={color} Primary={english?.Side} /> */}
 
       <div id="main-content"
         // className={`${color?.greybackground} px-4 pt-24 relative overflow-y-auto lg:ml-64`}>
@@ -230,7 +154,7 @@ function InventoryModal({ error, setError, setView, setInventories, view, color,
 
         <div className={`${color?.whitebackground} shadow rounded-lg px-12 sm:p-6 xl:p-8  2xl:col-span-2`}>
           <h6 className={`${color?.text} text-xl flex leading-none pl-6 lg:pt-2 pt-6  font-bold`}>
-            {language?.inventory}
+            {language?.unavailability}
           </h6>
           <div className="pt-6">
             <div className=" md:px-4 mx-auto w-full">
@@ -244,7 +168,7 @@ function InventoryModal({ error, setError, setView, setInventories, view, color,
                         className={`text-sm font-medium ${color?.text} block mb-2`}
                         htmlFor="grid-password"
                       >
-                        {language?.startdate} <span style={{ color: "#ff0000" }}>*</span>
+                        {language?.datefrom} <span style={{ color: "#ff0000" }}>*</span>
                       </label>
                       <div className={visible === 0 ? 'block' : 'hidden'}><Lineloader /></div>
                       <div className={visible === 1 ? 'block' : 'hidden'}>
@@ -253,12 +177,12 @@ function InventoryModal({ error, setError, setView, setInventories, view, color,
                           className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
                           onChange={
                             (e) => (
-                              setInventory({ ...inventory, start_date: e.target.value })
+                              setInventory({ ...inventory, date_from: e.target.value })
                             )
                           }
                         />
                         <p className="text-sm  text-red-700 font-light">
-                          {error?.start_date}</p></div>
+                          {error?.date_from}</p></div>
                     </div>
                   </div>
 
@@ -266,7 +190,7 @@ function InventoryModal({ error, setError, setView, setInventories, view, color,
                     <div className="relative w-full mb-3">
                       <label className={`text-sm font-medium ${color?.text} block mb-2`}
                         htmlFor="grid-password">
-                        {language?.enddate} <span style={{ color: "#ff0000" }}>*</span>
+                        {language?.dateto} <span style={{ color: "#ff0000" }}>*</span>
                       </label>
                       <div className={visible === 0 ? 'block' : 'hidden'}><Lineloader /></div>
                       <div className={visible === 1 ? 'block' : 'hidden'}>
@@ -275,12 +199,12 @@ function InventoryModal({ error, setError, setView, setInventories, view, color,
                           className={`shadow-sm ${color?.greybackground} ${color?.text}  border border-gray-300  sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
                           onChange={
                             (e) => (
-                              setInventory({ ...inventory, end_date: e.target.value })
+                              setInventory({ ...inventory, date_to: e.target.value })
                             )
                           }
                         />
                         <p className="text-sm text-red-700 font-light">
-                          {error?.end_date}</p>
+                          {error?.date_to}</p>
                       </div>
                     </div>
                   </div>
@@ -289,7 +213,7 @@ function InventoryModal({ error, setError, setView, setInventories, view, color,
                     <div className="relative w-full mb-3">
                       <label className={`text-sm font-medium ${color?.text} block mb-2`}
                         htmlFor="grid-password">
-                        {language?.rooms}  {language?.count} <span style={{ color: "#ff0000" }}>*</span>
+                        {language?.rooms} {language?.unavailability} {language?.count} <span style={{ color: "#ff0000" }}>*</span>
                       </label>
                       <div className={visible === 0 ? 'block' : 'hidden'}><Lineloader /></div>
                       <div className={visible === 1 ? 'block' : 'hidden'}>
@@ -298,12 +222,34 @@ function InventoryModal({ error, setError, setView, setInventories, view, color,
                           className={`shadow-sm ${color?.greybackground} ${color?.text}  border border-gray-300  sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
                           onChange={
                             (e) => (
-                              setInventory({ ...inventory, inventory_count: e.target.value })
+                              setInventory({ ...inventory, unavailability_count: e.target.value })
                             )
                           }
                         />
                         <p className="text-sm  text-red-700 font-light">
-                          {error?.inventory_count}</p>
+                          {error?.unavailability_count}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="w-full lg:w-6/12 px-4">
+                    <div className="relative w-full mb-3">
+                      <label className={`text-sm font-medium ${color?.text} block mb-2`}
+                        htmlFor="grid-password">
+                        {language?.rooms} {language?.unavailability} {`Reason`} <span style={{ color: "#ff0000" }}>*</span>
+                      </label>
+                      <div className={visible === 0 ? 'block' : 'hidden'}><Lineloader /></div>
+                      <div className={visible === 1 ? 'block' : 'hidden'}>
+                        <input
+                          type="text"
+                          className={`shadow-sm ${color?.greybackground} ${color?.text}  border border-gray-300  sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
+                          onChange={
+                            (e) => (
+                              setInventory({ ...inventory, reason: e.target.value })
+                            )
+                          }
+                        />
+                        <p className="text-sm  text-red-700 font-light">
+                          {error?.reason}</p>
                       </div>
                     </div>
                   </div>
@@ -323,7 +269,7 @@ function InventoryModal({ error, setError, setView, setInventories, view, color,
                           )
                           }
                           className={`shadow-sm ${color?.greybackground} ${color?.text}  border border-gray-300  sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
-                        // className={`shadow-sm ${color.greybackground} ${color?.text} border border-gray-300 text-white sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
+
                         >
                           <option selected>Select rooms</option>
                           {allRooms?.map((i) => {
@@ -365,7 +311,7 @@ function InventoryModal({ error, setError, setView, setInventories, view, color,
           : <button
             onClick={() => {
               setAddLoader(true)
-              validationInventory()
+              validation()
             }}
             className={`bg-gradient-to-r  bg-cyan-600 hover:bg-cyan-700 text-white  sm:inline-flex font-semibold rounded-lg text-sm px-5 py-2 text-center items-center ease-linear transition-all duration-150`}
           >
@@ -375,9 +321,6 @@ function InventoryModal({ error, setError, setView, setInventories, view, color,
       </div>
 
 
-
-
-      {/* <Footer color={color} Primary={english?.Side} /> */}
     </>
   )
 }

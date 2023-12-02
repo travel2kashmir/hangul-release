@@ -13,7 +13,6 @@ import { english, french, arabic } from "../../../components/Languages/Languages
 import LoaderTable from "../../../components/loadertable";
 import Headloader from "../../../components/loaders/headloader";
 import { InitialActions, ColorToggler } from '../../../components/initalActions';
-import Button from '../../../components/Button';
 var language;
 var currentProperty;
 var currentLogged;
@@ -25,9 +24,6 @@ function Bookings() {
     const [color, setColor] = useState({})
     const [mode, setMode] = useState()
     const [genericData, setGenericData] = useState([])
-    // const [allrooms, setAllRooms] = useState([])
-    const [deleteMultiple, setDeleteMultiple] = useState(0);
-    const [deleteRoomId, setDeleteRoomId] = useState()
     const [spinner, setSpinner] = useState(0)
 
     /** Use Effect to fetch details from the Local Storage **/
@@ -74,56 +70,57 @@ function Bookings() {
     const fetchBooking = async () => {
         try {
             var genData = [];
-            // const url = `/api/rooms/${currentProperty.property_id}`
-            // const response = await axios.get(url, { headers: { 'accept': 'application/json' } });
+            const url = `/api/all_bookings/${currentProperty.property_id}`
+            const response = await axios.get(url, { headers: { 'accept': 'application/json' } });
 
-            let response = {
-                "bookings": [
-                    {
-                        "guest_name": "Sahil",
-                        "booking_from": "2023-11-24",
-                        "booking_to": "2023-11-25",
-                        "is_cancelled": false,
-                        "transaction_refrence_no": "tsxred123",
-                        "booking_id": "bk0090"
+            // let response = {
+            //     "bookings": [
+            //         {
+            //             "guest_name": "Sahil",
+            //             "booking_from": "2023-11-24",
+            //             "booking_to": "2023-11-25",
+            //             "is_cancelled": false,
+            //             "transaction_refrence_no": "tsxred123",
+            //             "booking_id": "bk0090"
 
-                    },
-                    {
-                        "guest_name": "Ahmed",
-                        "booking_from": "2023-11-24",
-                        "booking_to": "2023-11-29",
-                        "is_cancelled": true,
-                        "transaction_refrence_no": "tsxred124",
-                        "booking_id": "bk0091"
-                    }
-                ]
-            }
-            // setAllRooms(response.bookings)
+            //         },
+            //         {
+            //             "guest_name": "Ahmed",
+            //             "booking_from": "2023-11-24",
+            //             "booking_to": "2023-11-29",
+            //             "is_cancelled": true,
+            //             "transaction_refrence_no": "tsxred124",
+            //             "booking_id": "bk0091"
+            //         }
+            //     ]
+            // }
+
             setVisible(1)
 
-            response?.bookings?.map((item) => {
+            // response?.bookings?.map((item) => {
+            response?.data?.map((item) => {
                 var temp = {
-                    "checkbox": { operation: undefined },
+                    // "checkbox": { operation: undefined },
                     "Guest Name": item.guest_name,
                     // "Booking From": item.booking_from,
                     // "Booking To": item.booking_to,
                     "Booking Date": `${item.booking_from} to ${item.booking_to}`,
-                    "Transaction No.": item.transaction_refrence_no,
-                    "status": JSON.stringify(!item.is_cancelled),
+                    "Transaction No.": item.transaction_id,
+                    "status": item.transaction_id && JSON.stringify(!item.is_cancelled),
                     "id": item.booking_id,
-                    isChecked: false,
+                    // isChecked: false,
                     // isChecked:true,
                     Actions: [
                         {
                             type: "button",
                             label: "View",
                             operation: (item) => { viewCurrentBookingDetails(item) }
-                        },
-                        {
-                            type: "button",
-                            label: "Delete",
-                            operation: (item) => { deleteBooking(item) }
                         }
+                        // {
+                        //     type: "button",
+                        //     label: "Delete",
+                        //     operation: (item) => { deleteBooking(item) }
+                        // }
                     ],
                 }
                 genData.push(temp)
@@ -133,11 +130,7 @@ function Bookings() {
 
         }
         catch (error) {
-
-            if (error.response) {
-            }
-            else {
-            }
+            console.log("error in fetching the booking details for this property" + error)
         }
     }
 
@@ -152,42 +145,41 @@ function Bookings() {
 
 
     /* Delete booking Function*/
-    const deleteBooking = (props) => {
-        setDeleteRoomId(props);
-        setDeleteMultiple(1);
-    }
+    // const deleteBooking = (props) => {
+    //     setDeleteRoomId(props);
+    // }
 
-    function confirmedDelete(props) {
-        setSpinner(1);
-        const url = `/api/${props}`
-        axios.delete(url).then((response) => {
-            toast.success(("Room Deleted Successfully!"), {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
-            setSpinner(0);
-            setDeleteMultiple(0);
-            fetchBooking();
-            Router.push("./rooms");
-        })
-            .catch((error) => {
-                setSpinner(0);
-                toast.error(("Room Delete Error!"), {
-                    position: "top-center",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
-            })
-    }
+    // function confirmedDelete(props) {
+    //     setSpinner(1);
+    //     const url = `/api/${props}`
+    //     axios.delete(url).then((response) => {
+    //         toast.success(("Room Deleted Successfully!"), {
+    //             position: "top-center",
+    //             autoClose: 5000,
+    //             hideProgressBar: false,
+    //             closeOnClick: true,
+    //             pauseOnHover: true,
+    //             draggable: true,
+    //             progress: undefined,
+    //         });
+    //         setSpinner(0);
+    //         setDeleteMultiple(0);
+    //         fetchBooking();
+    //         Router.push("./rooms");
+    //     })
+    //         .catch((error) => {
+    //             setSpinner(0);
+    //             toast.error(("Room Delete Error!"), {
+    //                 position: "top-center",
+    //                 autoClose: 5000,
+    //                 hideProgressBar: false,
+    //                 closeOnClick: true,
+    //                 pauseOnHover: true,
+    //                 draggable: true,
+    //                 progress: undefined,
+    //             });
+    //         })
+    // }
 
     return (
         <>
@@ -259,7 +251,7 @@ function Bookings() {
                         // cols={["checkbox", "Guest Name", "Booking From", "Booking To", "Transaction No.", "status", "Actions"]}
                         cols={["Guest Name", "Booking Date", "Transaction No.", "status", "Actions"]}
                         data={genericData}
-                        deleteAll={() => { alert("feature not functional"); }}
+                    // deleteAll={() => { alert("feature not functional"); }}
                     />
 
 
@@ -278,7 +270,7 @@ function Bookings() {
 
             </div>
             {/* Modal Delete */}
-            <div className={deleteMultiple === 1 ? 'block' : 'hidden'}>
+            {/* <div className={deleteMultiple === 1 ? 'block' : 'hidden'}>
                 <div className="overflow-x-hidden overflow-y-auto fixed top-4 left-0 right-0 backdrop-blur-xl bg-black/30 md:inset-0 z-50 flex justify-center items-center h-modal sm:h-full">
                     <div className="relative w-full max-w-md px-4 h-full md:h-auto">
                         <div className={`rounded-lg shadow relative ${color?.whitebackground}`}>
@@ -308,7 +300,7 @@ function Bookings() {
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> */}
 
         </>
     )

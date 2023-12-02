@@ -50,7 +50,7 @@ function Home({ allHotelDetails, setShowBookingEngine, setRoomsLoader, enquiry, 
 
             </div>
 
-            {/* ---------------booking form for small and medium screen--------------- */}
+            {/* ---------------booking form --------------- */}
             {showModalBooking === 1 ?
                 <Modal
                     title={'BOOK YOUR STAY'}
@@ -60,7 +60,6 @@ function Home({ allHotelDetails, setShowBookingEngine, setRoomsLoader, enquiry, 
                             setShowBookingEngine={(e) => setShowBookingEngine(e)}
                             setEnquiry={(e) => setEnquiry(e)}
                             enquiry={enquiry}
-                            rooms={rooms}
                             setSearched={(e) => setSearched(e)}
                             searched={searched}
 

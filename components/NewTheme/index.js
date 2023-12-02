@@ -37,6 +37,9 @@ function Hotel({ language, HotelDetails, allRooms, allPackages, services, phone,
 
     const [searched, setSearched] = useState(false)
 
+
+
+
     useEffect(() => {
         getLanguage();
         getHotelDetails();
@@ -61,8 +64,8 @@ function Hotel({ language, HotelDetails, allRooms, allPackages, services, phone,
 
     function getHotelDetails() {
         setHotelDetails(HotelDetails)
-        setPrivacyPolicy(HotelDetails?.privacy_conditions[0]?.privacy_policy)
-        setTermsConditions(HotelDetails?.privacy_conditions[0]?.terms_condition)
+        setPrivacyPolicy(HotelDetails?.privacy_conditions?.[0]?.privacy_policy)
+        setTermsConditions(HotelDetails?.privacy_conditions?.[0]?.terms_condition)
         setHotelDetailLoader(1)
     }
 

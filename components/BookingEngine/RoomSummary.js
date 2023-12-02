@@ -13,7 +13,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useDispatch, useSelector } from 'react-redux';
 import { setRoomsSelected, setAddMoreRoom, clearRoomsSelected, clearInventoryDetail, setReserveRoom, clearReservationIdentity, clearGuestDetails, setReservationIdentity } from '../redux/hangulSlice';
 
-function RoomSummary({ setDisplay, setShowModal, setSearched, checkinDate, checkoutDate }) {
+function RoomSummary({ color, setDisplay, setShowModal, setSearched, checkinDate, checkoutDate }) {
 
   const [searchBookingInventory, setSearchBookingInventory] = useState(false)
 
@@ -195,10 +195,10 @@ function RoomSummary({ setDisplay, setShowModal, setSearched, checkinDate, check
 
 
   return (
-    <section>
+    <section className={`${color?.bgColor}`}>
 
       {/* app bar */}
-      <div className='flex justify-between pt-5 mx-5'>
+      <div className={`flex justify-between pt-5 mx-5 `}>
         <div className='flex cursor-pointer' onClick={() => { setDisplay(0) }}>
           <i className='my-auto pl-1'><BiArrowBack size={30} /></i>
           {/* <span className='my-auto pl-1 font-medium'>Back</span> */}

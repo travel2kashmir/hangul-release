@@ -7,12 +7,13 @@ import ContactUsModal from '../Modals/ContactUsModal';
 import Contactus from '../../utils/Contactus';
 import Color from '../../colors/Color';
 import { english } from '../../Languages/Languages';
-import Modal from '../../NewTheme/modal';
+import BookingForm from '../CustomizedUtils/BookingForm'
+import Modal from '../Modals/Modal';
 
-function Header({ allHotelDetails, menu, setMenu, themeColor }) {
+function Header({ allHotelDetails, menu, setMenu, themeColor, setRoomsLoader, setShowBookingEngine, enquiry, setEnquiry, searched, setSearched }) {
 
     const [showModalContactUs, setShowModalContactUs] = useState(0);
-
+    const [showModalBookingForm, setShowModalBookingForm] = useState(0);
 
     function clickHandler(id, action) {
         action === 'modal' ? id() : Router.push(`${window?.location?.origin}${window?.location?.pathname}/${id}`)
@@ -53,10 +54,15 @@ function Header({ allHotelDetails, menu, setMenu, themeColor }) {
                         { "label": "Photos", "id": "#photos", "action": "href" },
                         { "label": "Services", "id": "#services", "action": "href" },
                         { "label": "Reviews", "id": "#reviews", "action": "href" },
-                        { "label": "Contact Us", "id": () => { setShowModalContactUs(1) }, "action": "modal" }
+                        { "label": "Contact Us", "id": () => { setShowModalContactUs(1) }, "action": "modal" },
+                        { "label": "Book Now", "id": () => { setShowModalBookingForm(1) }, "action": "modal" }
                         ].map((item, index) => {
                             return (
-                                <li key={index} onClick={() => clickHandler(item?.id, item?.action)} className='text-gray-400 cursor-pointer hover:text-white hover:underline'>{item?.label}</li>
+                                <li
+                                    key={index}
+                                    onClick={() => clickHandler(item?.id, item?.action)}
+                                    className='text-gray-400 cursor-pointer hover:text-white hover:underline'
+                                >{item?.label}</li>
                             )
                         })}
                     </ul>
@@ -65,12 +71,34 @@ function Header({ allHotelDetails, menu, setMenu, themeColor }) {
             </div>
 
             {/* modal for contact us*/}
-            <div className={showModalContactUs === 1 ? "block" : "hidden"}>
-                <ContactUsModal
-                    setShowModalContactUs={setShowModalContactUs}
-                    property_id={allHotelDetails?.property_id}
+            {showModalContactUs === 1 ?
+                <div >
+                    <ContactUsModal
+                        setShowModalContactUs={setShowModalContactUs}
+                        property_id={allHotelDetails?.property_id}
+                    />
+                </div> : <></>}
+
+            {/* ---------------booking form --------------- */}
+            {showModalBookingForm === 1 ?
+                <Modal
+                    title={'BOOK YOUR STAY'}
+                    description={
+                        <BookingForm
+                            setRoomsLoader={(e) => setRoomsLoader(e)}
+                            setShowBookingEngine={(e) => setShowBookingEngine(e)}
+                            setEnquiry={(e) => setEnquiry(e)}
+                            enquiry={enquiry}
+                            setSearched={(e) => setSearched(e)}
+                            searched={searched}
+
+                        />
+                    }
+                    setShowModal={(e) => setShowModalBookingForm(e)}
                 />
-            </div>
+                : <></>
+            }
+
         </header>
     )
 }

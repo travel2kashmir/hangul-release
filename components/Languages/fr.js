@@ -1,4 +1,6 @@
 export default {
+  datefrom:"dater de",
+  dateto:"date à",
   identifiers: "identifiants",
   send: "Envoyer",
   message: "Message",
@@ -83,6 +85,7 @@ export default {
   addratenotif: "Notif D'ajout de Taux",
   generatetransaction: 'Générer une Transaction',
   availability: 'Disponibilité',
+  unavailability: 'indisponibilité',
   replace: 'Remplacer',
   replacesub: '(Remplace tout ce qui a été précédemment défini pour la propriété)',
   modify: 'Modifier',

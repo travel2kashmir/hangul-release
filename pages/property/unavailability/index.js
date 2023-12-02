@@ -23,7 +23,7 @@ const logger = require("../../../services/logger");
 var currentLogged;
 let colorToggle;
 
-function Inventory() {
+function Unavailability() {
     const [gen, setGen] = useState([])
     const [error, setError] = useState({})
     const [color, setColor] = useState({})
@@ -107,11 +107,12 @@ function Inventory() {
 
     // Fetch Hotel Details
     const fetchHotelDetails = async () => {
-        const url = `/api/inventory/${currentProperty.property_id}`;
+        const url = `/api/unavailability/${currentProperty.property_id}`;
         axios.get(url)
             .then((response) => {
-                if (response.data.length > 0) {
-                    setInventories(response.data)
+                
+                if (response.data.room_unavailability.length > 0) {
+                    setInventories(response.data.room_unavailability)
                 } else {
                     setInventories([])
                 }
@@ -156,9 +157,9 @@ function Inventory() {
         setItemsPerPage(event.target.value);
     }
 
-    function updateInventory(inventorydata) {
-        let url = `/api/inventory`
-        axios.put(url, inventorydata,
+    function updateUnavailability(data) {
+        let url = `/api/unavailability`
+        axios.put(url, data,
             {
                 header: { "content-type": "application/json" }
             }
@@ -172,7 +173,7 @@ function Inventory() {
                 value: 0,
                 idx: undefined
             })
-            toast.success('Inventory updated successfully')
+            toast.success('Unavailability updated successfully')
 
         }).catch((err) => {
             console.log(err)
@@ -188,12 +189,12 @@ function Inventory() {
         })
     }
 
-    function deleteInventoryFromDB(room_id) {
-        let url = `/api/inventory/${room_id}`
-        axios.delete(url, room_id).then((response) => {
+    function deleteUnavailabilityFromDB(unavailablity_id) {
+        let url = `/api/unavailability/${unavailablity_id}`
+        axios.delete(url).then((response) => {
             fetchHotelDetails()
             setDeleteLoader(false)
-            toast.success('Inventory has been deleted')
+            toast.success('Unavailablity has been deleted')
             setDeleteInventory({
                 'value': 0,
                 'idx': undefined
@@ -255,7 +256,7 @@ function Inventory() {
                             <div className="flex items-center">
                                 <div className={`${color?.textgray} text-base font-medium  inline-flex items-center`}>
                                     <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path></svg>
-                                    <span className="text-gray-400 ml-1 md:ml-2 font-medium text-sm  " aria-current="page">{language?.inventory}</span>
+                                    <span className="text-gray-400 ml-1 md:ml-2 font-medium text-sm  " aria-current="page">{language?.unavailability}</span>
                                 </div>
                             </div>
                         </li>
@@ -267,7 +268,7 @@ function Inventory() {
                 <div className={(visible === 0 && colorToggle == true ? 'block' : 'hidden')}><LoaderDarkTable /></div>
                 <div className={visible === 1 ? 'block' : 'hidden'}>
                     <div className="mx-4">
-                        <h1 className={`text-xl sm:text-2xl font-semibold ${color?.text}`}>{"Inventory"}</h1>
+                        <h1 className={`text-xl sm:text-2xl font-semibold ${color?.text}`}>{language?.unavailability}</h1>
                         <div className="sm:flex">
                             <div className=" sm:flex items-center sm:divide-x sm:divide-gray-100 mb-3 sm:mb-0">
                                 {/* search form */}
@@ -330,14 +331,16 @@ function Inventory() {
                                             <th scope="col"
                                                 className={`p-4 text-left text-xs font-semibold ${color?.textgray} uppercase`}>{"End Date"}</th>
                                             <th scope="col"
-                                                className={`p-4 text-left text-xs font-semibold ${color?.textgray} uppercase`}>{"inventory Available"}</th>
+                                                className={`p-4 text-left text-xs font-semibold ${color?.textgray} uppercase`}>{"Inventory Unavailable"}</th>
+                                            <th scope="col"
+                                                className={`p-4 text-left text-xs font-semibold ${color?.textgray} uppercase`}>{"Unavailablity Reason"}</th>
                                             <th scope="col"
                                                 className={`p-4 text-left text-xs font-semibold ${color?.textgray} uppercase`}>{"Action"}
                                             </th>
                                         </tr>
                                     </thead>
 
-
+                                          
                                     <tbody className={` ${color?.whitebackground} divide-y divide-gray-200 `} id="TableList" >
                                         {displayData.map((inv, index) => (
                                             <>
@@ -364,13 +367,13 @@ function Inventory() {
                                                                     </input> */}
 
                                                                     <ReactDatePicker
-                                                                        selected={new Date(editInventory.start_date || inv.start_date)}
+                                                                        selected={new Date(editInventory.date_from || inv.date_from)}
                                                                         minDate={new Date()}
                                                                         onChange={(date) => {
                                                                             const formattedDate = date.toISOString().substring(0, 10);
                                                                             setEditInventory({
                                                                                 ...editInventory,
-                                                                                'start_date': formattedDate
+                                                                                'date_from': formattedDate
                                                                             })
                                                                         }}
                                                                         className={`shadow-sm  ${color?.whitebackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-32 p-2.5`}
@@ -391,12 +394,12 @@ function Inventory() {
                                                                         defaultValue={inv.end_date}>
                                                                     </input> */}
                                                                     <ReactDatePicker
-                                                                        selected={new Date(editInventory.end_date || inv.end_date)}
+                                                                        selected={new Date(editInventory.date_to || inv.date_to)}
                                                                         onChange={(date) => {
                                                                             const formattedDate = date.toISOString().substring(0, 10);
                                                                             setEditInventory({
                                                                                 ...editInventory,
-                                                                                'end_date': formattedDate
+                                                                                'date_to': formattedDate
                                                                             });
                                                                         }}
                                                                         minDate={new Date(editInventory.start_date || inv.start_date)}
@@ -408,10 +411,22 @@ function Inventory() {
                                                                         onChange={(e) => {
                                                                             setEditInventory({
                                                                                 ...editInventory,
-                                                                                'inventory_count': e.target.value
+                                                                                'unavailability_count': e.target.value
                                                                             })
                                                                         }} className={`shadow-sm  ${color?.whitebackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-32 p-2.5`}
-                                                                        defaultValue={inv.inventory_count}>
+                                                                        defaultValue={inv.unavailability_count}>
+                                                                    </input>
+                                                                </td>
+
+                                                                <td className={`p-4 whitespace-nowrap capitalize text-base font-normal ${color?.text}`}>
+                                                                    <input type="text"
+                                                                        onChange={(e) => {
+                                                                            setEditInventory({
+                                                                                ...editInventory,
+                                                                                'reason': e.target.value
+                                                                            })
+                                                                        }} className={`shadow-sm  ${color?.whitebackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-32 p-2.5`}
+                                                                        defaultValue={inv.reason}>
                                                                     </input>
                                                                 </td>
                                                                 <td className="py-4 whitespace-nowrap capitalize">
@@ -426,8 +441,7 @@ function Inventory() {
                                                                                 className="bg-gradient-to-r bg-green-600 hover:bg-green-700 text-white sm:inline-flex font-semibold rounded-lg text-sm px-5 py-2 text-center items-center ease-linear transition-all duration-150"
                                                                                 onClick={() => {
                                                                                     setSaveLoader(true)
-
-                                                                                    updateInventory({ "inventory": [{ ...editInventory, "room_id": inv.room_id }] })
+                                                                                    updateUnavailability({ "unavailablity": [{ ...editInventory, "room_id": inv.room_id,"unavailability_id":inv.unavailability_id }] })
                                                                                 }}
                                                                             >{'Save'}
                                                                             </button>
@@ -454,13 +468,16 @@ function Inventory() {
                                                                     {inv.room_name}
                                                                 </td>
                                                                 <td className={`p-4 whitespace-nowrap capitalize  text-base font-normal ${color?.text}`}>
-                                                                    {inv.start_date}
+                                                                    {inv.date_from}
                                                                 </td>
                                                                 <td className={`p-4 whitespace-nowrap capitalize  text-base font-normal ${color?.text}`}>
-                                                                    {inv.end_date}
+                                                                    {inv.date_to}
                                                                 </td>
                                                                 <td className={`p-4 whitespace-nowrap capitalize  text-base font-normal ${color?.text}`}>
-                                                                    {inv.inventory_count}
+                                                                    {inv.unavailability_count}
+                                                                </td>
+                                                                <td className={`p-4 whitespace-nowrap capitalize  text-base font-normal ${color?.text}`}>
+                                                                    {inv.reason}
                                                                 </td>
 
                                                                 {deleteInventory.value === 1 && deleteInventory.idx === index ?
@@ -483,7 +500,7 @@ function Inventory() {
                                                                                 className="ml-5 bg-gradient-to-r bg-red-600 hover:bg-red-700 text-white sm:inline-flex font-semibold rounded-lg text-sm px-5 py-2 text-center items-center ease-linear transition-all duration-150"
                                                                                 onClick={() => {
                                                                                     setDeleteLoader(true)
-                                                                                    deleteInventoryFromDB(inv.room_id)
+                                                                                    deleteUnavailabilityFromDB(inv.unavailability_id)
 
                                                                                 }}
                                                                             >{'Yes, I Confirm'} </button>
@@ -576,7 +593,7 @@ function Inventory() {
                             <div className={`${color?.whitebackground} rounded-lg shadow relative`}>
                                 <div className="flex items-start justify-between p-5 border-b rounded-t">
                                     {/* <h3 className={`${color?.text} text-xl font-semibold`}>{language?.add} {language?.new} {language?.contact}</h3> */}
-                                    <h3 className={`${color?.text} text-xl font-semibold`}>{'Add New Inventory'}</h3>
+                                    <h3 className={`${color?.text} text-xl font-semibold`}>{`${language?.add} ${language?.new} ${language?.unavailability}`}</h3>
                                     <button
                                         type="button"
                                         onClick={() => {
@@ -641,8 +658,8 @@ function Inventory() {
     );
 }
 
-export default Inventory
-Inventory.getLayout = function PageLayout(page) {
+export default Unavailability
+Unavailability.getLayout = function PageLayout(page) {
     return (
         <>
             {page}

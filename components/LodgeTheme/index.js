@@ -43,7 +43,14 @@ function Hotel({ language, HotelDetails,
     "number_of_adults": 1,
     "guests_below_six": 0,
     "guests_below_twelve": 0
-  })
+  });
+
+  const color = {
+    "bgColor": "bg-custom-brown",
+    "boxColor": "bg-custom-lightbrown",
+    "cardColor": "bg-white",
+
+  }
 
 
   useEffect(() => {
@@ -130,6 +137,7 @@ function Hotel({ language, HotelDetails,
           {allHotelDetails && <BookingModal
             bookingComponent={
               <BookingEngine
+                color={color}
                 roomsLoader={roomsLoader}
                 setRoomsLoader={(e) => setRoomsLoader(e)}
                 display={display}

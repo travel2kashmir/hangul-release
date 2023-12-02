@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import Animation from '../Animation';
 
 function Home({ hotelData }) {
+
     const [allHotelDetails, setAllHotelDetails] = useState()
     const [photo, setPhoto] = useState('https://max-themes.net/demos/hotelmaster/hotelmaster-dark/upload/slider-1.jpg')
+
     useEffect(() => {
         setAllHotelDetails(hotelData)
         if (allHotelDetails?.length != 0) {
@@ -32,8 +34,8 @@ function Home({ hotelData }) {
                     {(allHotelDetails?.property_name)?.toUpperCase()}</h2>
 
             </div>
-           
-            
+
+
 
             <style jsx>
                 {`

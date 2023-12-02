@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import axios from 'axios';
 import RoomCard from '../BookingEngine/RoomCard';
 import { AiOutlineShoppingCart, AiOutlineClose } from "react-icons/ai";
@@ -11,7 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 import RoomLoader from './RoomLoader';
 
 
-function RoomCalenderView({ roomsLoader, rooms, allRoomRateDetails, dataOfRoomsAsPerDateSelected, setDisplay, setShowModal, setSearched, color, checkinDate, checkoutDate }) {
+function RoomCalenderView({ color, roomsLoader, rooms, allRoomRateDetails, dataOfRoomsAsPerDateSelected, setDisplay, setShowModal, setSearched, checkinDate, checkoutDate }) {
 
     const reservationIdentity = useSelector(state => state.reservationIdentity)
     const dispatch = useDispatch() //creating object of dispatch 
@@ -118,18 +118,18 @@ function RoomCalenderView({ roomsLoader, rooms, allRoomRateDetails, dataOfRoomsA
     function removeReservationFromDB(room_id, reservation_time) {
         // let url = `/api/reserve_rooms/${room_id}/${reservation_time}`;
         // axios.delete(url).then((response) => {
-            setDisplay(0)
-            setShowModal(0)
-            setSearched(false)
-            dispatch(setAddMoreRoom(false))
-            dispatch(clearRoomsSelected())
-            dispatch(clearReservationIdentity())
-            dispatch(clearInventoryDetail())
-            deleteRoomDetails()
+        setDisplay(0)
+        setShowModal(0)
+        setSearched(false)
+        dispatch(setAddMoreRoom(false))
+        dispatch(clearRoomsSelected())
+        dispatch(clearReservationIdentity())
+        dispatch(clearInventoryDetail())
+        deleteRoomDetails()
         // }).catch((err) => {
         //     toast.error("API:Error in deleting reservation from DB")
         // })
-}
+    }
 
     function closeButtonAction() {
         // if there is any reservation in DB then remove them first else perform the other funtions
@@ -153,8 +153,8 @@ function RoomCalenderView({ roomsLoader, rooms, allRoomRateDetails, dataOfRoomsA
 
 
     return (
-        <div id="main-content" className={`${color?.light} px-4 `}>
-            <div className={`${color?.light} shadow rounded-lg lg:px-12 lg:py-3 `}>
+        <div id="main-content" className={` px-4 ${color?.bgColor}`}>
+            <div className={` shadow rounded-lg lg:px-12 lg:py-3 `}>
 
                 {/* app bar */}
                 <div className='flex justify-between py-6'>
@@ -190,6 +190,7 @@ function RoomCalenderView({ roomsLoader, rooms, allRoomRateDetails, dataOfRoomsA
                             return (
                                 <RoomCard
                                     key={index}
+                                    color={color}
                                     roomImage={`https://images.unsplash.com/photo-1598928506311-c55ded91a20c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80`}
                                     filteredRoomData={rooms?.find((item) => item.room_id === room.room_id)}
                                     roomRates={room}
@@ -206,6 +207,7 @@ function RoomCalenderView({ roomsLoader, rooms, allRoomRateDetails, dataOfRoomsA
                             {sortedFinalRate.map((room, index) => {
                                 return <RoomCard
                                     key={index}
+                                    color={color}
                                     roomImage={`https://images.unsplash.com/photo-1598928506311-c55ded91a20c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80`}
                                     filteredRoomData={rooms?.filter((item) => item.room_id == room.room_id)[0]}
                                     roomRates={room}

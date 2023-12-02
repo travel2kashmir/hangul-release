@@ -119,6 +119,11 @@ function Hotel({ language, HotelDetails, allRooms, allPackages, services, phone,
                     {allHotelDetails && <BookingModal
                         bookingComponent={
                             <BookingEngine
+                                color={{
+                                    "bgColor": "bg-custom-brown",
+                                    "cardColor": "bg-white",
+                                    "boxColor": "bg-custom-lightbrown",
+                                }}
                                 roomsLoader={roomsLoader}
                                 setRoomsLoader={(e) => setRoomsLoader(e)}
                                 display={display}
@@ -129,6 +134,7 @@ function Hotel({ language, HotelDetails, allRooms, allPackages, services, phone,
                                 setSearched={(e) => setSearched(false)}
                                 checkinDate={enquiry.checkin}
                                 checkoutDate={enquiry.checkout}
+
                             />}
                     />}
                 </div> : undefined}

@@ -7,7 +7,7 @@ import ButtonLoader from './ButtonLoader';
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-function RoomCard({ filteredRoomData, roomImage, setDisplay, roomRates, checkinDate, checkoutDate }) {
+function RoomCard({ color, filteredRoomData, roomImage, setDisplay, roomRates, checkinDate, checkoutDate }) {
 
   const dispatch = useDispatch();
 
@@ -58,7 +58,6 @@ function RoomCard({ filteredRoomData, roomImage, setDisplay, roomRates, checkinD
     setDisplay(2)
     dispatch(setRoomsSelected([room_rates?.room_id]))
   }
-
 
   // get inventory details for the rooms between the checkin and checkout date
   function getInventoryDetail(actionFrom) {
@@ -151,7 +150,7 @@ function RoomCard({ filteredRoomData, roomImage, setDisplay, roomRates, checkinD
   }
 
   return (
-    <div className=' w-100 h-1/4 text-black border border-gray-500 bg-white rounded-2xl p-4 mx-2 my-4 lg:m-4 flex flex-wrap justify-center items-center md:flex-row flex-col'>
+    <div className={` w-100 h-1/4 text-black border border-gray-500 ${color?.cardColor} rounded-2xl p-4 mx-2 my-4 lg:m-4 flex flex-wrap justify-center items-center md:flex-row flex-col`}>
 
       {/* room image */}
       <div className=' md:w-1/6'>

@@ -17,7 +17,7 @@ import ButtonLoader from './ButtonLoader';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-function Reviewbooking({ property_id, setDisplay, rooms, setShowModal, setSearched, checkinDate, checkoutDate }) {
+function Reviewbooking({ color, property_id, setDisplay, rooms, setShowModal, setSearched, checkinDate, checkoutDate }) {
 
     let guestTemplate = {
         "guest_name": "",
@@ -475,12 +475,13 @@ function Reviewbooking({ property_id, setDisplay, rooms, setShowModal, setSearch
     }
 
     return (
-        <div className='min-h-screen'>
+        <div className={`min-h-screen ${color?.bgColor}`}>
 
             {/* app bar  */}
             <div>
                 {/* <div className='flex justify-between w-full py-5 px-3 md:px-5 border-b-2  bg-slate-100'> */}
-                <div className='flex justify-between w-full py-5 px-3 md:px-5 bg-slate-100'>
+                {/* <div className='flex justify-between w-full py-5 px-3 md:px-5 bg-slate-100'> */}
+                <div className='flex justify-between w-full py-5 px-3 md:px-5 border-b'>
                     <div className='flex'>
                         <i className='my-auto'
                             onClick={() => {
@@ -531,10 +532,10 @@ function Reviewbooking({ property_id, setDisplay, rooms, setShowModal, setSearch
 
             </div>
 
-            <div id="main-content" className='h-fit text-white flex flex-wrap justify-around gap-2 mx-4 py-10'>
+            <div id="main-content" className={`h-fit text-white flex flex-wrap justify-around gap-2 mx-4 py-10 `}>
 
                 {/* left side div  */}
-                <div id="guest-detail-review" className='bg-white border border-gray-300 text-black h-fit w-full md:w-6/12  rounded-2xl'>
+                <div id="guest-detail-review" className={`${color.boxColor} border border-white text-black h-fit w-full md:w-6/12  rounded-2xl `}>
 
                     {/* rooms summary section */}
                     <div className=' border-b-2 border-gray justify-start p-2 md:p-4'>
@@ -780,7 +781,7 @@ function Reviewbooking({ property_id, setDisplay, rooms, setShowModal, setSearch
                 </div>
 
                 {/* right side div  */}
-                <div id="price-breakup" className='border border-gray-300 bg-white p-4 mt-10 md:mt-0 text-black h-fit w-full text-start  md:w-5/12 lg:w-4/12  rounded-2xl' >
+                <div id="price-breakup" className={`border border-gray-300 ${color?.boxColor} p-4 mt-10 md:mt-0 text-black h-fit w-full text-start  md:w-5/12 lg:w-4/12  rounded-2xl `}>
                     <div className='border-b border-gray rounded-lgg w-full h-1/2 my-2'>
                         <h1 className="font-extrabold p-2 text-xl">Price Breakup</h1>
                         <div className='flex justify-start items-start my-4  border-b-2'> <div className='p-2 w-4/5 font-semibold'>{totalSelectedQuantities} Room for {numberOfNights === 0 ? '1 Day' : numberOfNights === 1 ? '1 Night' : `${numberOfNights} Nights`}<br /> <div className='text-sm font-normal px-3'>base price</div></div> <div className='mx-2 my-auto flex justify-end w-full'>₹ {totalFinalRate}</div></div>

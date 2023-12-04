@@ -7,7 +7,7 @@ import Link from "next/link";
 import Headloader from "../../components/loaders/headloader";
 import Sidebar from "../../components/Sidebar";
 import Header from "../../components/Header";
-import { english,arabic,french} from "../../components/Languages/Languages"
+import { english, arabic, french } from "../../components/Languages/Languages"
 import Footer from '../../components/Footer';
 import Button from "../../components/Button";
 import { ToastContainer, toast } from "react-toastify";
@@ -16,13 +16,15 @@ import reviewImage from '../../public/review.png';
 import validateReview from "../../components/validation/review";
 import InputTextBox from "../../components/utils/InputTextBox";
 import Title from "../../components/title";
-var currentLogged;
-var language;
-var currentProperty;
 import Router from 'next/router'
 const logger = require("../../services/logger");
 import Image from 'next/image';
+import { InitialActions, ColorToggler } from "../../components/initalActions";
+
 let colorToggle;
+var currentLogged;
+var language;
+var currentProperty;
 
 function Reviews() {
   const [reviews, setReviews] = useState([]);
@@ -77,67 +79,83 @@ function Reviews() {
     )
   }
 
+  // useEffect(() => {
+  //   firstfun();
+  // }, [])
+  // const firstfun = () => {
+  //   if (typeof window !== 'undefined') {
+  //     var locale = localStorage.getItem("Language");
+  //     const colorToggle = localStorage.getItem("colorToggle");
+  //     if (colorToggle === "" || colorToggle === undefined || colorToggle === null || colorToggle === "system") {
+  //       window.matchMedia("(prefers-color-scheme:dark)").matches === true ? setColor(colorFile?.dark) : setColor(colorFile?.light)
+  //       setMode(window.matchMedia("(prefers-color-scheme:dark)").matches === true ? true : false);
+  //     }
+  //     else if (colorToggle === "true" || colorToggle === "false") {
+  //       setColor(colorToggle === "true" ? colorFile?.dark : colorFile?.light);
+  //       setMode(colorToggle === "true" ? true : false)
+  //     }
+
+  //     {
+  //       if (locale === "ar") {
+  //         language = arabic;
+  //       }
+  //       if (locale === "en") {
+  //         language = english;
+  //       }
+  //       if (locale === "fr") {
+  //         language = french;
+  //       }
+  //     }
+  //     /** Current Property Details fetched from the local storage **/
+  //     currentProperty = JSON.parse(localStorage.getItem("property"));
+  //     currentLogged = JSON.parse(localStorage.getItem("Signin Details"));
+  //   }
+  // }
+
+  // runs at load time
   useEffect(() => {
+    const resp = InitialActions({ setColor, setMode })
+    language = resp?.language;
+    currentLogged = resp?.currentLogged;
+    currentProperty = resp?.currentProperty;
+    colorToggle = resp?.colorToggle
 
-    firstfun();
-  }, [])
-  const firstfun = () => {
-    if (typeof window !== 'undefined') {
-      var locale = localStorage.getItem("Language");
-      const colorToggle = localStorage.getItem("colorToggle");
-      if (colorToggle === "" || colorToggle === undefined || colorToggle === null || colorToggle === "system") {
-        window.matchMedia("(prefers-color-scheme:dark)").matches === true ? setColor(colorFile?.dark) : setColor(colorFile?.light)
-        setMode(window.matchMedia("(prefers-color-scheme:dark)").matches === true ? true : false);
-      }
-      else if (colorToggle === "true" || colorToggle === "false") {
-        setColor(colorToggle === "true" ? colorFile?.dark : colorFile?.light);
-        setMode(colorToggle === "true" ? true : false)
-      }
-
-      {
-        if (locale === "ar") {
-          language = arabic;
-        }
-        if (locale === "en") {
-          language = english;
-        }
-        if (locale === "fr") {
-          language = french;
-        }
-      }
-      /** Current Property Details fetched from the local storage **/
-      currentProperty = JSON.parse(localStorage.getItem("property"));
-      currentLogged = JSON.parse(localStorage.getItem("Signin Details"));
-    }
-  }
-
-  useEffect(() => {
     if (JSON.stringify(currentLogged) === 'null') {
       Router.push(window.location.origin)
     }
     else {
       fetchReviews();
     }
-  }, []);
+  }, [])
 
 
-  const colorToggler = (newColor) => {
-    if (newColor === 'system') {
-      window.matchMedia("(prefers-color-scheme:dark)").matches === true ? setColor(colorFile?.dark)
-        : setColor(colorFile?.light)
-      localStorage.setItem("colorToggle", newColor)
-    }
-    else if (newColor === 'light') {
-      setColor(colorFile?.light)
-      localStorage.setItem("colorToggle", false)
-    }
-    else if (newColor === 'dark') {
-      setColor(colorFile?.dark)
-      localStorage.setItem("colorToggle", true)
-    }
-    firstfun();
-    Router.push('./reviews')
-  }
+  // useEffect(() => {
+  //   if (JSON.stringify(currentLogged) === 'null') {
+  //     Router.push(window.location.origin)
+  //   }
+  //   else {
+  //     fetchReviews();
+  //   }
+  // }, []);
+
+
+  // const colorToggler = (newColor) => {
+  //   if (newColor === 'system') {
+  //     window.matchMedia("(prefers-color-scheme:dark)").matches === true ? setColor(colorFile?.dark)
+  //       : setColor(colorFile?.light)
+  //     localStorage.setItem("colorToggle", newColor)
+  //   }
+  //   else if (newColor === 'light') {
+  //     setColor(colorFile?.light)
+  //     localStorage.setItem("colorToggle", false)
+  //   }
+  //   else if (newColor === 'dark') {
+  //     setColor(colorFile?.dark)
+  //     localStorage.setItem("colorToggle", true)
+  //   }
+  //   firstfun();
+  //   Router.push('./reviews')
+  // }
 
   const fetchReviews = async () => {
     const url = `/api/${currentProperty.address_province.replace(
@@ -313,9 +331,25 @@ function Reviews() {
   }
 
   return (
-    <> <Title name={`Engage |  ${language?.reviews}`} />
-      <Header color={color} setColor={setColor} Primary={english?.Side} Type={currentLogged?.user_type} Sec={colorToggler} mode={mode} setMode={setMode} />
-      <Sidebar Primary={english?.Side} color={color} Type={currentLogged?.user_type} />
+    <>
+      <Title name={`Engage |  ${language?.reviews}`} />
+
+      <Header
+        color={color}
+        setColor={setColor}
+        Primary={english?.Side}
+        Type={currentLogged?.user_type}
+        Sec={ColorToggler}
+        mode={mode}
+        setMode={setMode}
+      />
+
+      <Sidebar
+        Primary={english?.Side}
+        color={color}
+        Type={currentLogged?.user_type}
+      />
+
       <div id="main-content"
         className={`${color?.greybackground} px-4 pt-24 py-2 relative overflow-y-auto lg:ml-64`}>
         {/* bread crumb */}
@@ -503,7 +537,7 @@ function Reviews() {
                           </label>
                           <input
                             type="text"
-                           className={`${color.greybackground} shadow-sm  border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
+                            className={`${color.greybackground} shadow-sm  border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
                             onChange={e => onChange(e, review?.index, 'review_title')}
                             placeholder="Review title"
                           />
@@ -542,7 +576,7 @@ function Reviews() {
                           <select
                             onChange={e => onChange(e, review?.index, 'review_rating')}
                             className={`${color.greybackground} shadow-sm  border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
-                            >
+                          >
                             <option selected disabled>Select Rating </option>
                             <option value="1" >1</option>
                             <option value="2">2</option>
@@ -617,33 +651,33 @@ function Reviews() {
 
 
 
-                          {/*Review content */}
-                    <InputTextBox
-                      label={` ${language?.reviewcontent}`}
-                      visible={visible}
-                      defaultValue={review[0]?.review_content}
-                      wordLimit={1000}
-                      onChangeAction={(e) => {
-                        if (e.target.value.length >= 0 && e.target.value.length < 1000) {
-                          setError({})
-                          onChange(e, review?.index, 'review_content')
-                        }
-                        else {
-                          setError({ review_content: 'word limit reached' })
-                        }
+                        {/*Review content */}
+                        <InputTextBox
+                          label={` ${language?.reviewcontent}`}
+                          visible={visible}
+                          defaultValue={review[0]?.review_content}
+                          wordLimit={1000}
+                          onChangeAction={(e) => {
+                            if (e.target.value.length >= 0 && e.target.value.length < 1000) {
+                              setError({})
+                              onChange(e, review?.index, 'review_content')
+                            }
+                            else {
+                              setError({ review_content: 'word limit reached' })
+                            }
 
-                      }
+                          }
 
-                      }
-                      error={error?.review_content}
-                      color={color}
-                      req={true}
-                      tooltip={true}
-                    />
+                          }
+                          error={error?.review_content}
+                          color={color}
+                          req={true}
+                          tooltip={true}
+                        />
 
 
                       </div>
-                    
+
                     </div></div>)
                   )}
 
@@ -777,7 +811,7 @@ function Reviews() {
                         <select
                           onChange={e => setActive({ ...active, review_type: e.target.value })}
                           className={`${color.greybackground} shadow-sm  border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
-                          >
+                        >
                           <option selected disabled>{active?.review_type?.charAt(0).toUpperCase() + active?.review_type?.slice(1) || 'select'}</option>
                           <option value="user" >User</option>
                           <option value="editorial">Editorial</option>
@@ -826,32 +860,32 @@ function Reviews() {
                         </p>
                       </div>
 
-                       {/*Review content */}
-                    <InputTextBox
-                      label={` ${language?.reviewcontent}`}
-                      visible={visible}
-                      defaultValue={active?.review_content}
-                      wordLimit={1000}
-                      onChangeAction={(e) => {
-                        if (e.target.value.length >= 0 && e.target.value.length < 1000) {
-                          setError({})
-                          setActive({ ...active, review_content: e.target.value })
-                        }
-                        else {
-                          setError({ review_content: 'word limit reached' })
+                      {/*Review content */}
+                      <InputTextBox
+                        label={` ${language?.reviewcontent}`}
+                        visible={visible}
+                        defaultValue={active?.review_content}
+                        wordLimit={1000}
+                        onChangeAction={(e) => {
+                          if (e.target.value.length >= 0 && e.target.value.length < 1000) {
+                            setError({})
+                            setActive({ ...active, review_content: e.target.value })
+                          }
+                          else {
+                            setError({ review_content: 'word limit reached' })
+                          }
+
                         }
 
-                      }
-
-                      }
-                      error={error?.review_content}
-                      color={color}
-                      req={true}
-                      tooltip={true}
-                    />
+                        }
+                        error={error?.review_content}
+                        color={color}
+                        req={true}
+                        tooltip={true}
+                      />
 
                     </div>
-                   
+
                   </div>
                 </form>
 

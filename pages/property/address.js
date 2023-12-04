@@ -14,17 +14,19 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Button from "../../components/Button";
 import Router from "next/router";
-var language;
-var currentProperty;
 const logger = require("../../services/logger");
 import Link from "next/link";
 import Footer from "../../components/Footer";
-import {english,arabic,french} from "../../components/Languages/Languages"
+import { english, arabic, french } from "../../components/Languages/Languages"
 import InputText from "../../components/utils/InputText";
 import DropDown from "../../components/utils/DropDown";
+import { InitialActions, ColorToggler } from "../../components/initalActions";
+
 var i = 0;
 var country;
 var currentLogged;
+var language;
+var currentProperty;
 let colorToggle;
 
 function Address() {
@@ -46,82 +48,96 @@ function Address() {
       return { value: `${i?.country_code}`, label: `${i?.country_name}` };
     })
   );
-  useEffect(() => {
-    firstfun();
-  }, []);
+  // useEffect(() => {
+  //   firstfun();
+  // }, []);
 
-  const firstfun = () => {
-    if (typeof window !== "undefined") {
-      var locale = localStorage.getItem("Language");
-      colorToggle = localStorage.getItem("colorToggle");
-      if (
-        colorToggle === "" ||
-        colorToggle === undefined ||
-        colorToggle === null ||
-        colorToggle === "system"
-      ) {
-        window.matchMedia("(prefers-color-scheme:dark)").matches === true
-          ? setColor(colorFile?.dark)
-          : setColor(colorFile?.light);
-        setMode(
-          window.matchMedia("(prefers-color-scheme:dark)").matches === true
-            ? true
-            : false
-        );
-      } else if (colorToggle === "true" || colorToggle === "false") {
-        setColor(colorToggle === "true" ? colorFile?.dark : colorFile?.light);
-        setMode(colorToggle === "true" ? true : false);
-      }
-      {
-        if (locale === "ar") {
-          language = arabic;
-        }
-        if (locale === "en") {
-          language = english;
-        }
-        if (locale === "fr") {
-          language = french;
-        }
-      }
-      /** Current Property Details fetched from the local storage **/
-      currentProperty = JSON.parse(localStorage.getItem("property"));
-      currentLogged = JSON.parse(localStorage.getItem("Signin Details"));
-    }
-  };
+  // const firstfun = () => {
+  //   if (typeof window !== "undefined") {
+  //     var locale = localStorage.getItem("Language");
+  //     colorToggle = localStorage.getItem("colorToggle");
+  //     if (
+  //       colorToggle === "" ||
+  //       colorToggle === undefined ||
+  //       colorToggle === null ||
+  //       colorToggle === "system"
+  //     ) {
+  //       window.matchMedia("(prefers-color-scheme:dark)").matches === true
+  //         ? setColor(colorFile?.dark)
+  //         : setColor(colorFile?.light);
+  //       setMode(
+  //         window.matchMedia("(prefers-color-scheme:dark)").matches === true
+  //           ? true
+  //           : false
+  //       );
+  //     } else if (colorToggle === "true" || colorToggle === "false") {
+  //       setColor(colorToggle === "true" ? colorFile?.dark : colorFile?.light);
+  //       setMode(colorToggle === "true" ? true : false);
+  //     }
+  //     {
+  //       if (locale === "ar") {
+  //         language = arabic;
+  //       }
+  //       if (locale === "en") {
+  //         language = english;
+  //       }
+  //       if (locale === "fr") {
+  //         language = french;
+  //       }
+  //     }
+  //     /** Current Property Details fetched from the local storage **/
+  //     currentProperty = JSON.parse(localStorage.getItem("property"));
+  //     currentLogged = JSON.parse(localStorage.getItem("Signin Details"));
+  //   }
+  // };
 
+  // runs at load time
   useEffect(() => {
+    const resp = InitialActions({ setColor, setMode })
+    language = resp?.language;
+    currentLogged = resp?.currentLogged;
+    currentProperty = resp?.currentProperty;
+    colorToggle = resp?.colorToggle
+
     if (JSON.stringify(currentLogged) === "null") {
       Router.push(window.location.origin);
     } else {
       fetchHotelDetails();
     }
-  }, []);
+  }, [])
 
-  const colorToggler = (newColor) => {
-    if (newColor === "system") {
-      window.matchMedia("(prefers-color-scheme:dark)").matches === true
-        ? setColor(colorFile?.dark)
-        : setColor(colorFile?.light);
-      localStorage.setItem("colorToggle", newColor);
-    } else if (newColor === "light") {
-      setColor(colorFile?.light);
-      localStorage.setItem("colorToggle", false);
-    } else if (newColor === "dark") {
-      setColor(colorFile?.dark);
-      localStorage.setItem("colorToggle", true);
-    }
-    firstfun();
-    Router.push("./address");
-  };
+  // useEffect(() => {
+  //   if (JSON.stringify(currentLogged) === "null") {
+  //     Router.push(window.location.origin);
+  //   } else {
+  //     fetchHotelDetails();
+  //   }
+  // }, []);
+
+  // const colorToggler = (newColor) => {
+  //   if (newColor === "system") {
+  //     window.matchMedia("(prefers-color-scheme:dark)").matches === true
+  //       ? setColor(colorFile?.dark)
+  //       : setColor(colorFile?.light);
+  //     localStorage.setItem("colorToggle", newColor);
+  //   } else if (newColor === "light") {
+  //     setColor(colorFile?.light);
+  //     localStorage.setItem("colorToggle", false);
+  //   } else if (newColor === "dark") {
+  //     setColor(colorFile?.dark);
+  //     localStorage.setItem("colorToggle", true);
+  //   }
+  //   firstfun();
+  //   Router.push("./address");
+  // };
 
   /* Function call to fetch Current Property Details when page loads */
   const fetchHotelDetails = async () => {
     const url = `/api/${currentProperty.address_province.replace(
       /\s+/g,
       "-"
-    )}/${currentProperty.address_city}/${currentProperty.property_category}s/${
-      currentProperty.property_id
-    }`;
+    )}/${currentProperty.address_city}/${currentProperty.property_category}s/${currentProperty.property_id
+      }`;
     axios
       .get(url)
       .then((response) => {
@@ -264,14 +280,16 @@ function Address() {
     allHotelDetails?.address_country,
     allHotelDetails?.address_province_code,
   ]);
+
   return (
     <>
       <Title name={`Engage |  ${language?.address}`} />
       <Header
         color={color}
+        setColor={setColor}
         Primary={english?.Side}
         Type={currentLogged?.user_type}
-        Sec={colorToggler}
+        Sec={ColorToggler}
         mode={mode}
         setMode={setMode}
       />
@@ -391,10 +409,10 @@ function Address() {
           <div className="pt-6">
             <div className=" md:px-4 mx-auto w-full">
               <div className="flex flex-wrap">
-                
+
                 {/* //streetaddress */}
                 <InputText
-                data-testid="streetaddress"
+                  data-testid="streetaddress"
                   label={language?.streetaddress}
                   visible={visible}
                   defaultValue={address?.address_street_address}
@@ -412,11 +430,11 @@ function Address() {
                   req={true}
                   tooltip={true}
                 />
-                
+
                 {/* Landmark */}
 
                 <InputText
-                data-testid="landmark"
+                  data-testid="landmark"
                   label={language?.landmark}
                   visible={visible}
                   defaultValue={address?.address_landmark}
@@ -431,11 +449,11 @@ function Address() {
                   req={true}
                   tooltip={true}
                 />
-               
+
 
                 {/* country */}
                 <DropDown
-                data-testid="country"
+                  data-testid="country"
                   label={language?.country}
                   visible={visible}
                   defaultValue={country?.[i]?.country_name}
@@ -460,7 +478,7 @@ function Address() {
 
                 {/* province */}
                 <DropDown
-                data-testid="province"
+                  data-testid="province"
                   label={language?.province}
                   visible={visible}
                   defaultValue={
@@ -492,16 +510,16 @@ function Address() {
                     label: `${i?.name}`,
                   }))}
                 />
-              
+
                 {/*CITY*/}
 
                 <DropDown
-                data-testid="city"
+                  data-testid="city"
                   label={language?.city}
                   visible={visible}
                   defaultValue={
                     countryInitial === allHotelDetails?.address_country &&
-                    provinceInitial === allHotelDetails?.address_province ? (
+                      provinceInitial === allHotelDetails?.address_province ? (
                       <>{`${address?.address_city}`}</>
                     ) : (
                       <>{`${language?.select}`}</>
@@ -528,7 +546,7 @@ function Address() {
                 />
                 {/* POSTAL CODE */}
                 <InputText
-                data-testid="postalcode"
+                  data-testid="postalcode"
                   label={language?.postalcode}
                   visible={visible}
                   defaultValue={
@@ -549,11 +567,11 @@ function Address() {
                   tooltip={true}
                 />
 
-            
+
                 {/* Latitude */}
 
                 <InputText
-                data-testid="latitude"
+                  data-testid="latitude"
                   label={language?.latitude}
                   visible={visible}
                   defaultValue={address?.address_latitude}
@@ -569,11 +587,11 @@ function Address() {
                   req={true}
                   tooltip={true}
                 />
-               
+
                 {/* Longitude */}
 
                 <InputText
-                data-testid="longitude"
+                  data-testid="longitude"
                   label={language?.longitude}
                   visible={visible}
                   defaultValue={address?.address_longitude}
@@ -591,7 +609,7 @@ function Address() {
                 />
                 {/* PRECISION */}
                 <InputText
-                data-testid="precision"
+                  data-testid="precision"
                   label={`${language?.precision}(${language?.inmeters})`}
                   visible={visible}
                   defaultValue={address?.address_precision}
@@ -605,9 +623,9 @@ function Address() {
                   error={error?.address_precision}
                   color={color}
                   req={true}
-                  tooltip={true} 
+                  tooltip={true}
                 />
-             
+
                 <div className="w-full lg:w-6/12 px-4">
                   <div className="relative w-full mb-3"></div>
                 </div>

@@ -32,7 +32,7 @@ function RoomPricing() {
     const [mode, setMode] = useState()
     const [property_name, setProperty_name] = useState('')
     const [visible, setVisible] = useState(0)
-    const [error,setError]=useState([{}])
+    const [error, setError] = useState([{}])
     let discountTemplate = {
         "room_id": "",
         "date_from": "",
@@ -42,6 +42,7 @@ function RoomPricing() {
         "discount": ""
     }
     const [discount, setDiscount] = useState([discountTemplate]?.map((i, id) => { return { ...i, index: id } }))
+
     // runs at load time
     useEffect(() => {
         const resp = InitialActions({ setColor, setMode })
@@ -53,6 +54,7 @@ function RoomPricing() {
         colorToggle = resp?.colorToggle
         setVisible(1);
     }, [])
+
     function addDiscountTemplate() {
         setDiscount([...discount, discountTemplate]?.map((i, id) => { return { ...i, index: id } }))
     }
@@ -73,7 +75,7 @@ function RoomPricing() {
 
     const addDiscount = () => {
         let result = roomDiscountValidation(discount)
-       if (result === true) {
+        if (result === true) {
             let url = '/api/room_discount';
             axios.post(url, discount, { header: { "content-type": "application/json" } })
                 .then((response) => {
@@ -261,7 +263,7 @@ function RoomPricing() {
                                             ]}
                                             error={error[index]?.discount_type}
                                         />
-                                       
+
                                         {/* discount on */}
                                         <DropDown
                                             label={`Discount On`}

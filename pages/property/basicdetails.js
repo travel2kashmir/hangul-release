@@ -28,6 +28,7 @@ import InputText from "../../components/utils/InputText";
 import InputTextBox from "../../components/utils/InputTextBox";
 import DateInput from "../../components/utils/DateInput";
 import DropDown from "../../components/utils/DropDown";
+import { InitialActions, ColorToggler } from "../../components/initalActions";
 
 export default function BasicDetails() {
   const router = useRouter();
@@ -41,52 +42,76 @@ export default function BasicDetails() {
   const [mode, setMode] = useState();
   const [imageLogo, setImageLogo] = useState();
   const [uploadImageSpin, setUploadImageSpin] = useState(false);
-  
+
   /** Fetching language from the local storage **/
+  // useEffect(() => {
+  //   firstfun();
+  // }, []);
+
+  // runs at load time
   useEffect(() => {
-    firstfun();
-  }, []);
+    const resp = InitialActions({ setColor, setMode })
+    language = resp?.language;
+    currentLogged = resp?.currentLogged;
+    currentProperty = resp?.currentProperty;
+    colorToggle = resp?.colorToggle
 
-
-
-  const firstfun = () => {
-    if (typeof window !== "undefined") {
-      var locale = localStorage.getItem("Language");
-      colorToggle = localStorage.getItem("colorToggle");
-      if (
-        colorToggle === "" ||
-        colorToggle === undefined ||
-        colorToggle === null ||
-        colorToggle === "system"
-      ) {
-        window.matchMedia("(prefers-color-scheme:dark)").matches === true
-          ? setColor(colorFile?.dark)
-          : setColor(colorFile?.light);
-        setMode(
-          window.matchMedia("(prefers-color-scheme:dark)").matches === true
-            ? true
-            : false
-        );
-      } else if (colorToggle === "true" || colorToggle === "false") {
-        setColor(colorToggle === "true" ? colorFile?.dark : colorFile?.light);
-        setMode(colorToggle === "true" ? true : false);
-      }
-      {
-        if (locale === "ar") {
-          language = arabic;
-        }
-        if (locale === "en") {
-          language = english;
-        }
-        if (locale === "fr") {
-          language = french;
-        }
-      }
-      /** Current Property Details fetched from the local storage **/
-      currentProperty = JSON.parse(localStorage.getItem("property"));
-      currentLogged = JSON.parse(localStorage.getItem("Signin Details"));
+    if (JSON.stringify(currentLogged) === "null") {
+      router?.push(window.location.origin);
+    } else {
+      fetchAllPropertyTypes();
+      fetchBasicDetails();
     }
-  };
+  }, [])
+
+  /* Function call to fetch Current Property Details when page loads */
+  // useEffect(() => {
+  //   if (JSON.stringify(currentLogged) === "null") {
+  //     router?.push(window.location.origin);
+  //   } else {
+  //     fetchAllPropertyTypes();
+  //     fetchBasicDetails();
+  //   }
+  // }, []);
+
+
+  //optimise it 
+  // const firstfun = () => {
+  //   if (typeof window !== "undefined") {
+  //     var locale = localStorage.getItem("Language");
+  //     colorToggle = localStorage.getItem("colorToggle");
+  //     if (
+  //       colorToggle === "" ||
+  //       colorToggle === undefined ||
+  //       colorToggle === null ||
+  //       colorToggle === "system"
+  //     ) {
+  //       window.matchMedia("(prefers-color-scheme:dark)").matches === true ? setColor(colorFile?.dark) : setColor(colorFile?.light);
+  //       setMode(
+  //         window.matchMedia("(prefers-color-scheme:dark)").matches === true
+  //           ? true
+  //           : false
+  //       );
+  //     } else if (colorToggle === "true" || colorToggle === "false") {
+  //       setColor(colorToggle === "true" ? colorFile?.dark : colorFile?.light);
+  //       setMode(colorToggle === "true" ? true : false);
+  //     }
+  //     {
+  //       if (locale === "ar") {
+  //         language = arabic;
+  //       }
+  //       if (locale === "en") {
+  //         language = english;
+  //       }
+  //       if (locale === "fr") {
+  //         language = french;
+  //       }
+  //     }
+  //     /** Current Property Details fetched from the local storage **/
+  //     currentProperty = JSON.parse(localStorage.getItem("property"));
+  //     currentLogged = JSON.parse(localStorage.getItem("Signin Details"));
+  //   }
+  // };
 
   const fetchAllPropertyTypes = () => {
     const url = '/api/all_property_types';
@@ -100,7 +125,7 @@ export default function BasicDetails() {
         /\s+/g,
         "-"
       )}/${address_city}/${property_category}s/${property_id}`;
-      
+
       const response = await axios.get(url);
       setBasicDetails(response.data);
       setAllHotelDetails(response.data);
@@ -112,35 +137,29 @@ export default function BasicDetails() {
     }
   };
 
-  /* Function call to fetch Current Property Details when page loads */
-  useEffect(() => {
-    if (JSON.stringify(currentLogged) === "null") {
-      router?.push(window.location.origin);
-    } else {
-      fetchAllPropertyTypes();
-      fetchBasicDetails();
-    }
-  }, []);
 
-  const colorToggler = (newColor) => {
-    if (newColor === "system") {
-      window.matchMedia("(prefers-color-scheme:dark)").matches === true
-        ? setColor(colorFile?.dark)
-        : setColor(colorFile?.light);
-      localStorage.setItem("colorToggle", newColor);
-    } else if (newColor === "light") {
-      setColor(colorFile?.light);
-      localStorage.setItem("colorToggle", false);
-    } else if (newColor === "dark") {
-      setColor(colorFile?.dark);
-      localStorage.setItem("colorToggle", true);
-    }
-    firstfun();
-    router.push("./basicdetails");
-  };
+
+  // const colorToggler = (newColor) => {
+  //   if (newColor === "system") {
+  //     window.matchMedia("(prefers-color-scheme:dark)").matches === true
+  //       ? setColor(colorFile?.dark)
+  //       : setColor(colorFile?.light);
+  //     localStorage.setItem("colorToggle", newColor);
+  //   } else if (newColor === "light") {
+  //     setColor(colorFile?.light);
+  //     localStorage.setItem("colorToggle", false);
+  //   } else if (newColor === "dark") {
+  //     setColor(colorFile?.dark);
+  //     localStorage.setItem("colorToggle", true);
+  //   }
+  //   firstfun();
+  //   router.push("./basicdetails");
+  // };
 
   const current = new Date();
+
   let month = current.getMonth() + 1;
+
   const descriptionDate = `${current.getDate()}/${month < +10 ? `0${month}` : `${month + 1}`
     }/${current.getFullYear()}`;
   const [allHotelDetails, setAllHotelDetails] = useState([]);
@@ -321,9 +340,10 @@ export default function BasicDetails() {
       <Title name={`Engage |  ${language?.basicdetails}`} />
       <Header
         color={color}
+        setColor={setColor}
         Primary={english.Side}
         Type={currentLogged?.user_type}
-        Sec={colorToggler}
+        Sec={ColorToggler}
         mode={mode}
         setMode={setMode}
       />
@@ -457,14 +477,14 @@ export default function BasicDetails() {
 
                 {/* logo */}
                 <div className="w-full lg:w-6/12 px-4">
-                <label
-          data-testid="checkingcolor"
-          className={`text-sm font-medium ${color?.text} block mb-2`}
-          htmlFor="grid-password"
-        >
-          {`Logo`}
-         
-        </label>
+                  <label
+                    data-testid="checkingcolor"
+                    className={`text-sm font-medium ${color?.text} block mb-2`}
+                    htmlFor="grid-password"
+                  >
+                    {`Logo`}
+
+                  </label>
                   {imageLogo ? <img src={imageLogo} width="164px" height="40px" alt={basicDetails?.property_name} /> : <div className={`hotelLogo border border-2 
                   p-2 w-fit rounded-lg ${color?.text}`}>{basicDetails?.property_name}</div>}
 
@@ -579,7 +599,7 @@ export default function BasicDetails() {
                   onChangeAction={(e) => {
                     if (e.target.value.length >= 0 && e.target.value.length < 1000) {
                       setError({})
-                     setAllHotelDetails(
+                      setAllHotelDetails(
                         {
                           ...allHotelDetails,
                           description_body: e.target.value,

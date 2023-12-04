@@ -17,6 +17,7 @@ const RoomPricePage = () => {
     const [property_name, setProperty_name] = useState('')
     const [visible, setVisible] = useState(0)
     const [error, setError] = useState([{}])
+
     // runs first in the code
     useEffect(() => {
         const resp = InitialActions({ setColor, setMode })

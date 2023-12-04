@@ -11,8 +11,8 @@ import Footer from "../../../components/Footer";
 import Sidebar from '../../../components/Sidebar';
 import Header from '../../../components/Header';
 import Router from 'next/router'
-
 const logger = require("../../../services/logger");
+import { InitialActions, ColorToggler } from '../../../components/initalActions';
 var language;
 var currentProperty;
 var currentLogged;
@@ -34,6 +34,7 @@ function ViewBooking() {
         axios.get(url, { headers: { 'accept': 'application/json' } }).then((response) => {
             setBookingDetail(response?.data?.booking.map((i) => i));
             setBookingDetailLoader(false);
+
         }).catch((err) => {
             console.log(err)
         });
@@ -90,58 +91,65 @@ function ViewBooking() {
 
     /** Use Effect to fetch details from the Local Storage **/
     useEffect(() => {
-        firstfun();
+        // firstfun();
+        const resp = InitialActions({ setColor, setMode })
+        language = resp?.language;
+        currentLogged = resp?.currentLogged;
+        currentProperty = resp?.currentProperty;
+        colorToggle = resp?.colorToggle
         let currentBookingId = localStorage.getItem('BookingId');
         getBookingDetails(currentBookingId);
+        setVisible(1)
         // setBookingDetail(DummyBookingData?.booking.map((i) => i))
     }, [])
 
-    const firstfun = () => {
-        if (typeof window !== 'undefined') {
-            var locale = localStorage.getItem("Language");
-            colorToggle = localStorage.getItem("colorToggle");
-            if (colorToggle === "" || colorToggle === undefined || colorToggle === null || colorToggle === "system") {
-                window.matchMedia("(prefers-color-scheme:dark)").matches === true ? setColor(colorFile?.dark) : setColor(colorFile?.light)
-                setMode(window.matchMedia("(prefers-color-scheme:dark)").matches === true ? true : false);
-            }
-            else if (colorToggle === "true" || colorToggle === "false") {
-                setColor(colorToggle === "true" ? colorFile?.dark : colorFile?.light);
-                setMode(colorToggle === "true" ? true : false)
-            }
-            {
-                if (locale === "ar") {
-                    language = arabic;
-                }
-                if (locale === "en") {
-                    language = english;
-                }
-                if (locale === "fr") {
-                    language = french;
-                }
-            }
-            /** Current Property Details fetched from the local storage **/
-            currentProperty = JSON.parse(localStorage.getItem("property"));
-            currentLogged = JSON.parse(localStorage.getItem("Signin Details"));
-            setVisible(1)
-        }
-    }
-    const colorToggler = (newColor) => {
-        if (newColor === 'system') {
-            window.matchMedia("(prefers-color-scheme:dark)").matches === true ? setColor(colorFile?.dark)
-                : setColor(colorFile?.light)
-            localStorage.setItem("colorToggle", newColor)
-        }
-        else if (newColor === 'light') {
-            setColor(colorFile?.light)
-            localStorage.setItem("colorToggle", false)
-        }
-        else if (newColor === 'dark') {
-            setColor(colorFile?.dark)
-            localStorage.setItem("colorToggle", true)
-        }
-        firstfun();
-        Router.push('./viewBooking')
-    }
+    // const firstfun = () => {
+    //     if (typeof window !== 'undefined') {
+    //         var locale = localStorage.getItem("Language");
+    //         colorToggle = localStorage.getItem("colorToggle");
+    //         if (colorToggle === "" || colorToggle === undefined || colorToggle === null || colorToggle === "system") {
+    //             window.matchMedia("(prefers-color-scheme:dark)").matches === true ? setColor(colorFile?.dark) : setColor(colorFile?.light)
+    //             setMode(window.matchMedia("(prefers-color-scheme:dark)").matches === true ? true : false);
+    //         }
+    //         else if (colorToggle === "true" || colorToggle === "false") {
+    //             setColor(colorToggle === "true" ? colorFile?.dark : colorFile?.light);
+    //             setMode(colorToggle === "true" ? true : false)
+    //         }
+    //         {
+    //             if (locale === "ar") {
+    //                 language = arabic;
+    //             }
+    //             if (locale === "en") {
+    //                 language = english;
+    //             }
+    //             if (locale === "fr") {
+    //                 language = french;
+    //             }
+    //         }
+    //         /** Current Property Details fetched from the local storage **/
+    //         currentProperty = JSON.parse(localStorage.getItem("property"));
+    //         currentLogged = JSON.parse(localStorage.getItem("Signin Details"));
+    //         setVisible(1)
+    //     }
+    // }
+
+    // const colorToggler = (newColor) => {
+    //     if (newColor === 'system') {
+    //         window.matchMedia("(prefers-color-scheme:dark)").matches === true ? setColor(colorFile?.dark)
+    //             : setColor(colorFile?.light)
+    //         localStorage.setItem("colorToggle", newColor)
+    //     }
+    //     else if (newColor === 'light') {
+    //         setColor(colorFile?.light)
+    //         localStorage.setItem("colorToggle", false)
+    //     }
+    //     else if (newColor === 'dark') {
+    //         setColor(colorFile?.dark)
+    //         localStorage.setItem("colorToggle", true)
+    //     }
+    //     firstfun();
+    //     Router.push('./viewBooking')
+    // }
 
     return (
         <>
@@ -150,8 +158,9 @@ function ViewBooking() {
             <Header
                 Primary={english?.Side1}
                 color={color}
+                setColor={setColor}
                 Type={currentLogged?.user_type}
-                Sec={colorToggler}
+                Sec={ColorToggler}
                 mode={mode}
                 setMode={setMode}
             />

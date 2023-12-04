@@ -15,6 +15,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import objChecker from "lodash";
 import Footer from '../../components/Footer';
+import { InitialActions, ColorToggler } from "../../components/initalActions";
 var language;
 var currentProperty;
 var currentLogged;
@@ -29,69 +30,82 @@ function PrivacyPolicy() {
     const [spinner, setSpinner] = useState(0);
     const [error, setError] = useState({});
     const [flag, setFlag] = useState([]);
-    const firstfun = () => {
-        if (typeof window !== "undefined") {
-            var locale = localStorage.getItem("Language");
-            colorToggle = localStorage.getItem("colorToggle");
 
-            if (
-                colorToggle === "" ||
-                colorToggle === undefined ||
-                colorToggle === null ||
-                colorToggle === "system"
-            ) {
+    // const firstfun = () => {
+    //     if (typeof window !== "undefined") {
+    //         var locale = localStorage.getItem("Language");
+    //         colorToggle = localStorage.getItem("colorToggle");
 
-                window.matchMedia("(prefers-color-scheme:dark)").matches === true
-                    ? setColor(colorFile?.dark)
-                    : setColor(colorFile?.light);
-                setMode(
-                    window.matchMedia("(prefers-color-scheme:dark)").matches === true
-                        ? true
-                        : false
-                );
-            } else if (colorToggle === "true" || colorToggle === "false") {
-                setColor(colorToggle == "true" ? colorFile?.dark : colorFile?.light);
-                setMode(colorToggle === "true" ? true : false);
-            }
-            {
-                if (locale === "ar") {
-                    language = arabic;
-                }
-                if (locale === "en") {
-                    language = english;
-                }
-                if (locale === "fr") {
-                    language = french;
-                }
-            }
-            /** Current Property Details fetched from the local storage **/
-            currentProperty = JSON.parse(localStorage.getItem("property"));
-            currentLogged = JSON.parse(localStorage.getItem("Signin Details"));
-        }
-    };
+    //         if (
+    //             colorToggle === "" ||
+    //             colorToggle === undefined ||
+    //             colorToggle === null ||
+    //             colorToggle === "system"
+    //         ) {
+
+    //             window.matchMedia("(prefers-color-scheme:dark)").matches === true
+    //                 ? setColor(colorFile?.dark)
+    //                 : setColor(colorFile?.light);
+    //             setMode(
+    //                 window.matchMedia("(prefers-color-scheme:dark)").matches === true
+    //                     ? true
+    //                     : false
+    //             );
+    //         } else if (colorToggle === "true" || colorToggle === "false") {
+    //             setColor(colorToggle == "true" ? colorFile?.dark : colorFile?.light);
+    //             setMode(colorToggle === "true" ? true : false);
+    //         }
+    //         {
+    //             if (locale === "ar") {
+    //                 language = arabic;
+    //             }
+    //             if (locale === "en") {
+    //                 language = english;
+    //             }
+    //             if (locale === "fr") {
+    //                 language = french;
+    //             }
+    //         }
+    //         /** Current Property Details fetched from the local storage **/
+    //         currentProperty = JSON.parse(localStorage.getItem("property"));
+    //         currentLogged = JSON.parse(localStorage.getItem("Signin Details"));
+    //     }
+    // };
+
+    // runs at load time
 
     useEffect(() => {
+        const resp = InitialActions({ setColor, setMode })
+        language = resp?.language;
+        currentLogged = resp?.currentLogged;
+        currentProperty = resp?.currentProperty;
+        colorToggle = resp?.colorToggle
 
-        firstfun();
         fetchPrivacy();
         router.push(window.location)
     }, [])
 
-    const colorToggler = (newColor) => {
-        if (newColor === "system") {
-            window.matchMedia("(prefers-color-scheme:dark)").matches === true
-                ? setColor(colorFile?.dark)
-                : setColor(colorFile?.light);
-            localStorage.setItem("colorToggle", newColor);
-        } else if (newColor === "light") {
-            setColor(colorFile?.light);
-            localStorage.setItem("colorToggle", false);
-        } else if (newColor === "dark") {
-            setColor(colorFile?.dark);
-            localStorage.setItem("colorToggle", true);
-        }
+    // useEffect(() => {
+    //     // firstfun();
+    //     fetchPrivacy();
+    //     router.push(window.location)
+    // }, [])
 
-    };
+    // const colorToggler = (newColor) => {
+    //     if (newColor === "system") {
+    //         window.matchMedia("(prefers-color-scheme:dark)").matches === true
+    //             ? setColor(colorFile?.dark)
+    //             : setColor(colorFile?.light);
+    //         localStorage.setItem("colorToggle", newColor);
+    //     } else if (newColor === "light") {
+    //         setColor(colorFile?.light);
+    //         localStorage.setItem("colorToggle", false);
+    //     } else if (newColor === "dark") {
+    //         setColor(colorFile?.dark);
+    //         localStorage.setItem("colorToggle", true);
+    //     }
+
+    // };
 
     // fetch data 
     function fetchPrivacy() {
@@ -191,9 +205,10 @@ function PrivacyPolicy() {
             <Title name={`Engage |  ${language?.privacypolicy}`} />
             <Header
                 color={color}
+                setColor={setColor}
                 Primary={english.Side}
                 Type={currentLogged?.user_type}
-                Sec={colorToggler}
+                Sec={ColorToggler}
                 mode={mode}
                 setMode={setMode}
             />

@@ -14,14 +14,16 @@ import Header from "../../../components/Header";
 import "react-toastify/dist/ReactToastify.css";
 import Link from "next/link";
 import { english, french, arabic } from "../../../components/Languages/Languages";
-var language;
-var currentProperty;
-var propertyName;
 import Headloader from "../../../components/loaders/headloader";
 import LoaderTable from "../../../components/loadertable";
 const logger = require("../../../services/logger");
+import { InitialActions, ColorToggler } from "../../../components/initalActions";
+
 var currentLogged;
 let colorToggle;
+var language;
+var currentProperty;
+var propertyName;
 
 function Inventory() {
     const [gen, setGen] = useState([])
@@ -47,65 +49,83 @@ function Inventory() {
     const [itemsPerPage, setItemsPerPage] = useState(5);
     const [page, setPage] = useState(1);
 
-    useEffect(() => {
-        firstfun();
-    }, [])
+    // useEffect(() => {
+    //     firstfun();
+    // }, [])
+    // const firstfun = () => {
+    //     if (typeof window !== 'undefined') {
+    //         var locale = localStorage.getItem("Language");
+    //         colorToggle = localStorage.getItem("colorToggle");
+    //         if (colorToggle === "" || colorToggle === undefined || colorToggle === null || colorToggle === "system") {
+    //             window.matchMedia("(prefers-color-scheme:dark)").matches === true ? setColor(colorFile?.dark) : setColor(colorFile?.light);
+    //             setMode(window.matchMedia("(prefers-color-scheme:dark)").matches === true ? true : false);
+    //         }
+    //         else if (colorToggle === "true" || colorToggle === "false") {
+    //             setColor(colorToggle === "true" ? colorFile?.dark : colorFile?.light);
+    //             setMode(colorToggle === "true" ? true : false)
+    //         }
+    //         if (locale === "ar") {
+    //             language = arabic;
+    //         }
+    //         if (locale === "en") {
+    //             language = english;
+    //         }
+    //         if (locale === "fr") {
+    //             language = french;
+    //         }
+    //         /** Current Property Details fetched from the local storage **/
+    //         currentProperty = JSON.parse(localStorage.getItem("property"));
+    //         currentLogged = JSON.parse(localStorage.getItem("Signin Details"));
+    //     }
+    // }
 
+    // runs at load time
     useEffect(() => {
+        const resp = InitialActions({ setColor, setMode })
+        language = resp?.language;
+        currentLogged = resp?.currentLogged;
+        currentProperty = resp?.currentProperty;
+        colorToggle = resp?.colorToggle
+
         if (JSON.stringify(currentLogged) === 'null') {
             Router.push(window.location.origin)
         }
         else {
             fetchHotelDetails();
         }
-    }, []);
+    }, [])
 
-    const firstfun = () => {
-        if (typeof window !== 'undefined') {
-            var locale = localStorage.getItem("Language");
-            colorToggle = localStorage.getItem("colorToggle");
-            if (colorToggle === "" || colorToggle === undefined || colorToggle === null || colorToggle === "system") {
-                window.matchMedia("(prefers-color-scheme:dark)").matches === true ? setColor(colorFile?.dark) : setColor(colorFile?.light);
-                setMode(window.matchMedia("(prefers-color-scheme:dark)").matches === true ? true : false);
-            }
-            else if (colorToggle === "true" || colorToggle === "false") {
-                setColor(colorToggle === "true" ? colorFile?.dark : colorFile?.light);
-                setMode(colorToggle === "true" ? true : false)
-            }
-            if (locale === "ar") {
-                language = arabic;
-            }
-            if (locale === "en") {
-                language = english;
-            }
-            if (locale === "fr") {
-                language = french;
-            }
-            /** Current Property Details fetched from the local storage **/
-            currentProperty = JSON.parse(localStorage.getItem("property"));
-            currentLogged = JSON.parse(localStorage.getItem("Signin Details"));
-        }
-    }
+    // useEffect(() => {
+    //     if (JSON.stringify(currentLogged) === 'null') {
+    //         Router.push(window.location.origin)
+    //     }
+    //     else {
+    //         fetchHotelDetails();
+    //     }
+    // }, []);
 
-    const colorToggler = (newColor) => {
-        if (newColor === 'system') {
-            window.matchMedia("(prefers-color-scheme:dark)").matches === true ? setColor(colorFile?.dark)
-                : setColor(colorFile?.light)
-            localStorage.setItem("colorToggle", newColor)
-        }
-        else if (newColor === 'light') {
-            setColor(colorFile?.light)
-            localStorage.setItem("colorToggle", false)
-        }
-        else if (newColor === 'dark') {
-            setColor(colorFile?.dark)
-            localStorage.setItem("colorToggle", true)
-        }
-        firstfun();
-        Router.push(window.location.href)
-    }
+    // const colorToggler = (newColor) => {
+    //     if (newColor === 'system') {
+    //         window.matchMedia("(prefers-color-scheme:dark)").matches === true ? setColor(colorFile?.dark)
+    //             : setColor(colorFile?.light)
+    //         localStorage.setItem("colorToggle", newColor)
+    //     }
+    //     else if (newColor === 'light') {
+    //         setColor(colorFile?.light)
+    //         localStorage.setItem("colorToggle", false)
+    //     }
+    //     else if (newColor === 'dark') {
+    //         setColor(colorFile?.dark)
+    //         localStorage.setItem("colorToggle", true)
+    //     }
+    //     firstfun();
+    //     Router.push(window.location.href)
+    // }
+
+
 
     // Fetch Hotel Details
+
     const fetchHotelDetails = async () => {
         const url = `/api/inventory/${currentProperty.property_id}`;
         axios.get(url)
@@ -211,9 +231,10 @@ function Inventory() {
 
             <Header
                 color={color}
+                setColor={setColor}
                 Primary={english?.SideInventory}
                 Type={currentLogged?.user_type}
-                Sec={colorToggler}
+                Sec={ColorToggler}
                 mode={mode}
                 setMode={setMode}
 

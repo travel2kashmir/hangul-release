@@ -27,39 +27,55 @@ function Bookings() {
     const [spinner, setSpinner] = useState(0)
 
     /** Use Effect to fetch details from the Local Storage **/
+    // useEffect(() => {
+    //     firstfun();
+    // }, [])
+
+    // const firstfun = () => {
+    //     if (typeof window !== 'undefined') {
+    //         var locale = localStorage.getItem("Language");
+    //         colorToggle = localStorage.getItem("colorToggle");
+    //         if (colorToggle === "" || colorToggle === undefined || colorToggle === null || colorToggle === "system") {
+    //             window.matchMedia("(prefers-color-scheme:dark)").matches === true ? setColor(colorFile?.dark) : setColor(colorFile?.light)
+    //             setMode(window.matchMedia("(prefers-color-scheme:dark)").matches === true ? true : false);
+    //         }
+    //         else if (colorToggle === "true" || colorToggle === "false") {
+    //             setColor(colorToggle === "true" ? colorFile?.dark : colorFile?.light);
+    //             setMode(colorToggle === "true" ? true : false)
+    //         }
+    //         {
+    //             if (locale === "ar") {
+    //                 language = arabic;
+    //             }
+    //             if (locale === "en") {
+    //                 language = english;
+    //             }
+    //             if (locale === "fr") {
+    //                 language = french;
+    //             }
+    //         }
+
+    //         /** Current Property Details fetched from the local storage **/
+    //         currentProperty = JSON.parse(localStorage.getItem("property"));
+    //         currentLogged = JSON.parse(localStorage.getItem("Signin Details"));
+    //     }
+    // }
+
+
     useEffect(() => {
-        firstfun();
-    }, [])
+        const resp = InitialActions({ setColor, setMode })
+        language = resp?.language;
+        currentLogged = resp?.currentLogged;
+        currentProperty = resp?.currentProperty;
+        colorToggle = resp?.colorToggle;
 
-    const firstfun = () => {
-        if (typeof window !== 'undefined') {
-            var locale = localStorage.getItem("Language");
-            colorToggle = localStorage.getItem("colorToggle");
-            if (colorToggle === "" || colorToggle === undefined || colorToggle === null || colorToggle === "system") {
-                window.matchMedia("(prefers-color-scheme:dark)").matches === true ? setColor(colorFile?.dark) : setColor(colorFile?.light)
-                setMode(window.matchMedia("(prefers-color-scheme:dark)").matches === true ? true : false);
-            }
-            else if (colorToggle === "true" || colorToggle === "false") {
-                setColor(colorToggle === "true" ? colorFile?.dark : colorFile?.light);
-                setMode(colorToggle === "true" ? true : false)
-            }
-            {
-                if (locale === "ar") {
-                    language = arabic;
-                }
-                if (locale === "en") {
-                    language = english;
-                }
-                if (locale === "fr") {
-                    language = french;
-                }
-            }
-
-            /** Current Property Details fetched from the local storage **/
-            currentProperty = JSON.parse(localStorage.getItem("property"));
-            currentLogged = JSON.parse(localStorage.getItem("Signin Details"));
+        if (JSON.stringify(currentLogged) === 'null') {
+            Router.push(window.location.origin)
         }
-    }
+        else {
+            fetchBooking();
+        }
+    }, [])
 
     /**Function to save Current property to be viewed to Local Storage**/
     const viewCurrentBookingDetails = (id) => {
@@ -134,14 +150,14 @@ function Bookings() {
         }
     }
 
-    useEffect(() => {
-        if (JSON.stringify(currentLogged) === 'null') {
-            Router.push(window.location.origin)
-        }
-        else {
-            fetchBooking();
-        }
-    }, [])
+    // useEffect(() => {
+    //     if (JSON.stringify(currentLogged) === 'null') {
+    //         Router.push(window.location.origin)
+    //     }
+    //     else {
+    //         fetchBooking();
+    //     }
+    // }, [])
 
 
     /* Delete booking Function*/

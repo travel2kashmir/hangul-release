@@ -8,6 +8,7 @@ import Router from "next/router";
 
 let i = 0;
 
+// filtering the country from the global data
 function filterCountry(props) {
     let countryFiltered = globalData?.CountryData.filter((el) => {
         return props.address_country.toUpperCase() === el.country_code;
@@ -15,6 +16,7 @@ function filterCountry(props) {
     return countryFiltered;
 };
 
+// fetching the hotel details
 export async function fetchHotelDetails(currentProperty, setAddress, setCountry, setAllHotelDetails, setCountryInitial, setProvinceInitial, setCityInitial, setVisible) {
 
     const url = `/api/${currentProperty?.address_province.replace(
@@ -39,6 +41,7 @@ export async function fetchHotelDetails(currentProperty, setAddress, setCountry,
         });
 };
 
+// updates the address changes 
 export const submitAddressEdit = (flag, setFlag, allHotelDetails, address, setSpinner, currentProperty, setVisible, setError, setAddress, setAllHotelDetails, setCountryInitial, setProvinceInitial, setCityInitial) => {
     if (flag === 1) {
         if (objChecker.isEqual(allHotelDetails, address)) {

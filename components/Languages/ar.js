@@ -1,4 +1,7 @@
 export default {
+  datefrom:"التاريخ من",
+  dateto:"تاريخ ل",
+  unavailability:"عدم التوفر",
   identifiers: "معرفات",
   send: "يرسل",
   message: "رسالة",

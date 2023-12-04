@@ -84,6 +84,7 @@ function Room() {
 
   const [selectedImage, setSelectedImage] = useState(false);
   const [indexImage, setIndexImage] = useState();
+  const [isInventoryEdited, setIsInventoryEdited] = useState(false);
 
   const [enlargeImage, setEnlargeImage] = useState(0)
   const [enlargedImage, setEnlargedImage] = useState();
@@ -93,8 +94,6 @@ function Room() {
 
   const [actionEnlargeImage, setActionEnlargeImage] = useState({})
   const [property_name, setProperty_name] = useState("")
-  const [discount, setDiscount] = useState([])
-  const [rateModification, setRateModification] = useState([])
   const [editRow, setEditRow] = useState({
     edit: 0,
     id: undefined
@@ -104,10 +103,6 @@ function Room() {
   const [showSearchedImages, setShowSearchedImages] = useState(0);
   const [del, setDel] = useState(0);
   const [id, setId] = useState(-1);
-  const [editedDiscount, setEditedDiscount] = useState({})
-  const [editedModifications, setEditedModifications] = useState({})
-  const [selectAllDiscounts, setSelectAllDiscounts] = useState(0)
-  const [selectAllModifications, setSelectAllModifications] = useState(0)
   const [initalIdentifiers, setInitalIdentifiers] = useState()
   const [roomIdentifiers, setRoomIdentifiers] = useState()
   /** Use Effect to fetch details from the Local Storage **/
@@ -537,6 +532,30 @@ function Room() {
           });
         })
     }
+  }
+
+  //  update inventory 
+  function updateInventory() {
+    alert('update inventory invoked')
+    let url = `/api/inventory`
+    let inventorydata = {
+      "inventory": [{
+
+        "room_id": allRoomDetails.room_id,
+        "inventory_count": allRoomDetails.inventory_count
+      }]
+    }
+    axios.put(url, inventorydata,
+      {
+        header: { "content-type": "application/json" }
+      }
+    ).then((response) => {
+      console.log(response.data);
+      toast.success('Inventory updated successfully')
+    }).catch((err) => {
+      console.log(err)
+      toast.error('Not Able to update the inventory at the moment.')
+    })
   }
 
   // manage identifiers
@@ -1075,13 +1094,16 @@ function Room() {
 
   // Validate Room Description
   const validationRoomDescription = () => {
-    var result = validateRoom(allRoomDetails, finalView)
+    var result = validateRoom(allRoomDetails, finalView,roomIdentifiers?.split(","))
     if (result === true) {
       if (flag === 1) {
         submitRoomDescriptionEdit();
       }
       if (roomView === 1) {
         submitView();
+      }
+      if (isInventoryEdited) {
+        updateInventory();
       }
     }
     else {
@@ -1128,385 +1150,7 @@ function Room() {
       setError(result)
     }
   }
-  // update discount function 
-  const updateDiscount = () => {
-    let val = roomDiscountValidation([editedDiscount])
-    if (val === true) {
-      // url to be hit
-      const url = `/api/room_discount`;
-      // data formated as per api requirement 
-      let data = { "room_discounts": [editedDiscount] }
-      // network call to edit data
-      axios.put(url, data, {
-        header: { "content-type": "application/json" },
-      }).then((response) => {
-        // this block py-1 will execute on sucessfull completiion of network call 
-        setSpinner(0);
-        toast.success("API: Room Discount Updated Successfully!", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-        // to check if the discounts are more than one 
-        if (discount.length > 1) {
-          // filter out unedited discounts 
-          let uneditedDiscount = discount.filter(item => item.discount_id != editedDiscount.discount_id);
-          // save all discounts to state 
-          setDiscount([...uneditedDiscount, editedDiscount])
-        }
-        else {
-          setDiscount([editedDiscount])
-        }
-        // set edit back to initial values 
-        setEditRow({ edit: 0, id: undefined })
-      }).catch((error) => {
-        setSpinner(0);
-        toast.error("API: Room Discount Update Error!", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      })
-    }
-    else {
-      //find errors for the value being edited
-      let errors = Object.values(val[0]);
-      // for every error we print toast 
-      errors.map((res) => {
-        return (
-          toast.error(`${res}`, {
-            position: "top-center",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          })
-        )
-      })
-    }
-  }
 
-  // update discount function 
-  const updateModification = () => {
-    let result = roomRateModificationValidation([editedModifications])
-    if (result === true) {
-      // url to be hit
-      const url = `/api/room_rate_modification`;
-      // data formated as per api requirement 
-
-      let data = { "room_rate_modification": [editedModifications] }
-      // network call to edit data
-      axios.put(url, data, {
-        header: { "content-type": "application/json" },
-      }).then((response) => {
-        // this block py-1 will execute on sucessfull completiion of network call 
-        setSpinner(0);
-        toast.success("API: Room Rate Modification Updated Successfully!", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-        // to check if the discounts are more than one 
-        if (rateModification?.length > 1) {
-          // filter out unedited discounts 
-          let uneditedModifications = rateModification?.filter(item => item.modification_id != editedModifications.modification_id);
-          // save all discounts to state 
-          setRateModification([...uneditedModifications, editedModifications])
-        }
-        else {
-          setRateModification([editedModifications])
-        }
-        // set edit back to initial values 
-        setEditRow({ edit: 0, id: undefined })
-      }).catch((error) => {
-        setSpinner(0);
-        toast.error("API: Room Discount Update Error!", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      })
-    }
-    else {
-      //find errors for the value being edited
-      let errors = Object.values(result[0]);
-      // for every error we print toast 
-      errors.map((res) => {
-        return (
-          toast.error(`${res}`, {
-            position: "top-center",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          })
-        )
-      })
-    }
-  }
-
-  // delete modifications
-  function deleteModification(mod) {
-    const url = `/api/room_modification/${mod?.modification_id}`;
-    axios.delete(url).then((response) => {
-      toast.success("API:Modification delete success.", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-      let undeleted = rateModification?.filter((m) => m.modification_id != mod?.modification_id);
-      setRateModification(undeleted)
-    }).catch((error) => {
-      toast.error("API: Modification delete error.", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-
-    });
-  }
-  // delete discount
-  function deleteDiscount(dis) {
-    const url = `/api/room_discount/${dis.discount_id}`;
-    axios.delete(url).then((response) => {
-      toast.success("API:Discount delete success.", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-      let undeleted = discount.filter((m) => m.discount_id != dis.discount_id);
-      setDiscount(undeleted)
-    }).catch((error) => {
-      toast.error("API: Discount delete error.", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-
-    });
-  }
-  // function to handle check box of discount 
-  function handleCheckboxDiscount(e, item) {
-    const { name, checked } = e.target;
-    let tempattr;
-    if (item.isChecked === false) {
-      tempattr = discount.map((item) =>
-        item.discount_id === name ? { ...item, isChecked: 'checked' } : item
-      );
-    }
-
-    else {
-      tempattr = discount.map((item) =>
-        item.discount_id === name ? { ...item, isChecked: false } : item
-      );
-    }
-    setDiscount(tempattr);
-
-    checkDiscount = tempattr
-      .filter((i) => i.isChecked === 'checked')
-      .map((j) => {
-        return j.discount_id;
-      });
-
-  }
-  // function to handle check box of modification 
-  function handleCheckboxModification(e, item) {
-    const { name, checked } = e.target;
-    let tempattr;
-    if (item.isChecked === false) {
-      tempattr = rateModification?.map((item) =>
-        item.modification_id === name ? { ...item, isChecked: 'checked' } : item
-      );
-    }
-
-    else {
-      tempattr = rateModification?.map((item) =>
-        item.modification_id === name ? { ...item, isChecked: false } : item
-      );
-    }
-    setRateModification(tempattr);
-
-    checkModification = tempattr
-      .filter((i) => i.isChecked === 'checked')
-      .map((j) => {
-        return j.modification_id;
-      });
-
-  }
-
-  //delete selected discounts
-  function deleteMultipleDiscount() {
-    if (checkDiscount.length > 0) {
-      const tempData = checkDiscount.map((item) => ({ "discount_id": item }))
-      const data = { "room_discount": tempData };
-      const url = `/api/deleteall/room_discount`
-      axios.post(url, data, {
-        headers: {
-          "content-type": "application/json"
-        }
-      }).then((resp) => {
-        toast.success("Selected Discounts Deleted", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-        let undeleted = discount.filter((dis) => dis?.isChecked != 'checked');
-        setDiscount(undeleted);
-      }).catch((err) => {
-        toast.error("Selected Discounts Deleting Failed", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      })
-    } else {
-      toast.warn("No Discounts Selected", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-    }
-  }
-  //delete selected modification
-  function deleteMultipleModifications() {
-    if (checkModification.length > 0) {
-      const tempData = checkModification.map((item) => ({ "modification_id": item }))
-      const data = { "room_rate_modifications": tempData };
-      const url = `/api/deleteall/room_rate_modifications`
-      axios.post(url, data, {
-        headers: {
-          "content-type": "application/json"
-        }
-      }).then((resp) => {
-        toast.success("Selected Modificstions Deleted", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-        let undeleted = rateModification?.filter((mod) => mod?.isChecked != 'checked');
-        setRateModification(undeleted);
-      }).catch((err) => {
-        toast.error("Selected Modification Deleting Failed", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      })
-    } else {
-      toast.warn("No Modifications Selected", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-    }
-  }
-
-  //set all discounts
-  function setAllDiscount() {
-    if (selectAllDiscounts === 0) {
-      let checkedDiscounts = discount.map(dis => ({ ...dis, isChecked: 'checked' }));
-      setDiscount(checkedDiscounts);
-      checkedDiscounts.map((dis) => checkDiscount.push(dis?.discount_id))
-    }
-    else {
-      let checkedDiscounts = discount.map(dis => ({ ...dis, isChecked: false }));
-      setDiscount(checkedDiscounts);
-      checkDiscount = [];
-    }
-    setSelectAllDiscounts(selectAllDiscounts === 0 ? 1 : 0)
-
-  }
-  //set all modification
-  function setAllModification() {
-    if (selectAllModifications === 0) {
-      let checkedModifications = rateModification?.map(mod => ({ ...mod, isChecked: 'checked' }));
-      setRateModification(checkedModifications);
-      checkModification.map((mod) => checkedModifications.push(mod?.modification_id));
-    }
-    else {
-      let checkedModifications = rateModification?.map(mod => ({ ...mod, isChecked: false }));
-      setRateModification(checkedModifications);
-      checkDiscount = [];
-    }
-    setSelectAllModifications(selectAllModifications === 0 ? 1 : 0)
-  }
-  //to set table header check box of modifications
-  useEffect(() => {
-    function settingAll() {
-      if (rateModification?.length != 0)
-        setSelectAllModifications(checkModification.length === rateModification?.length ? 1 : 0)
-    }
-    settingAll();
-  }, [checkModification])
-
-  //to set table header check box of discount
-  useEffect(() => {
-    function settingAll() {
-      if (discount?.length != 0)
-        setSelectAllDiscounts(checkDiscount?.length === discount?.length ? 1 : 0)
-    }
-    settingAll();
-  }, [checkDiscount])
   return (
     <>
       <Title name={`Engage | Edit Room`} />
@@ -1871,13 +1515,32 @@ function Room() {
                       ]}
                     />
 
+                    {/* room inventory start */}
+                    <InputText
+                      label={`${language?.room} ${language?.inventory}`}
+                      visible={visible}
+                      defaultValue={allRoomDetails?.inventory_count}
+                      onChangeAction={(e) => {
+                        setAllRoomDetails({ ...allRoomDetails, inventory_count: e.target.value }, setFlag(1))
+                        setIsInventoryEdited(true)
+                      }}
+                      color={color}
+                      disabled={false}
+                      req={true}
+                      title={"Total number of rooms available"}
+                      tooltip={true}
+                      error={error?.inventory_count}
+                    />
+                    {/* room inventory end */}
+
+
                     {/* Room identifier field start */}
-                    
+
                     <InputText
                       label={`${language?.room} ${language?.identifiers}`}
                       visible={visible}
                       defaultValue={initalIdentifiers}
-                      onChangeAction={ (e) => {
+                      onChangeAction={(e) => {
                         setRoomIdentifiers(e.target.value);
                         setFlag(1);
                       }}
@@ -1889,7 +1552,6 @@ function Room() {
                       error={error?.room_identifier}
                     />
 
-                    {/*  Room identifier field end */}
                   </div>
                   <div className="flex items-center justify-end space-x-2 sm:space-x-3 ml-auto">
                     <div className={(spinner === 0 && (flag !== 1 && roomView != 1)) ? 'block py-1' : 'hidden'}>

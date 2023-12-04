@@ -16,16 +16,18 @@ import colorFile from '../../../components/colors/Color';
 import 'react-toastify/dist/ReactToastify.css';
 import Link from "next/link";
 import Title from '../../../components/title';
-import {english,french,arabic} from "../../../components/Languages/Languages"
+import { english, french, arabic } from "../../../components/Languages/Languages"
 import Footer from "../../../components/Footer";
 import Sidebar from '../../../components/Sidebar';
 import Header from '../../../components/Header';
 import ImageDemo from "../../../components/utils/ImageDemo";
 import InputTextBox from "../../../components/utils/InputTextBox";
+import InputText from '../../../components/utils/InputText';
 var language;
 var currentProperty;
 var addroom;
 import Router from 'next/router'
+import { addInventoryDetail } from '../../../components/redux/hangulSlice';
 const logger = require("../../../services/logger");
 var currentLogged;
 let colorToggle;
@@ -57,43 +59,44 @@ function Addroom() {
     firstfun();
   }, [])
 
-  function manageIdentifiers(room_id,room_type_id){
-    let id=roomIdentifiers?.split(",")
-    let final=[];
+  function manageIdentifiers(room_id, room_type_id) {
+    let id = roomIdentifiers?.split(",")
+    let final = [];
     let temp;
-    id.map((i)=>{
-      temp={
-        "room_id":room_id,
-        "room_type_id":room_type_id,
-        "room_identifier":i
+    id.map((i) => {
+      temp = {
+        "room_id": room_id,
+        "room_type_id": room_type_id,
+        "room_identifier": i
       }
       final.push(temp);
-    
+
     })
-    axios.post('/api/room_refrence', {"room_refrences":final},
-     { headers: { 'content-type': 'application/json' } })
-        .then(response => {
-          setSpinner(0);
-          toast.success("API: Room Refrences Added successfully", {
-            position: "top-center",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });}).catch(()=>{
-            toast.error("API: Room Refrences Added Failed", {
-              position: "top-center",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-            });
-          })
-    
+    axios.post('/api/room_refrence', { "room_refrences": final },
+      { headers: { 'content-type': 'application/json' } })
+      .then(response => {
+        setSpinner(0);
+        toast.success("API: Room Refrences Added successfully", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }).catch(() => {
+        toast.error("API: Room Refrences Added Failed", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      })
+
   }
 
   const firstfun = () => {
@@ -231,6 +234,49 @@ function Addroom() {
 
   /*For Room Description*/
   const [allRoomDes, setAllRoomDes] = useState([]);
+//add new inventory 
+const submitInventory = (room_id) => {
+  const current = new Date();
+  const currentDateTime = current.toISOString();
+  const final_data = {
+    "inventory": [{
+      "property_id": currentProperty?.property_id,
+      "start_date": new Date().toISOString().split('T')[0],
+      "end_date": new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0],
+      "days_of_week": 'mtwtfss',
+      "room_id": room_id,
+      "inventory_count": allRoomDes?.inventory_count,
+      "inventory_type": 2
+    }]
+  }
+  // const url = '/api/ari/inventory'
+  const url = '/api/inventory'
+  axios.post(url, final_data, { header: { "content-type": "application/json" } }).then
+    ((response) => {
+      toast.success("API:Inventory Added successfully", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+
+      
+    })
+    .catch((error) => {
+      toast.error("API:There was some Error in adding the Inventory ", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    })
+}
 
 
   /**  Submit Function for Room Description **/
@@ -255,7 +301,8 @@ function Addroom() {
           if (allRoomDes?.room_type_id === 'rt001' || allRoomDes?.room_type_id === 'rt002' || allRoomDes?.room_type_id === 'rt003'
             || allRoomDes?.room_type_id === 'rt004' || allRoomDes?.room_type_id === 'rt005') { submitBed(response.data.room_id) }
           submitView(response.data.room_id)
-          manageIdentifiers(response.data.room_id,allRoomDes?.room_type_id)
+          submitInventory(response.data.room_id)
+          manageIdentifiers(response.data.room_id, allRoomDes?.room_type_id)
           setAllRoomDes([]);
           setDisp(2);
           setError({});
@@ -573,7 +620,7 @@ function Addroom() {
 
   // Validate Room Description
   const validationRoomDescription = () => {
-    var result = validateRoom(allRoomDes, finalView)
+    var result = validateRoom(allRoomDes, finalView,roomIdentifiers?.split(","))
     if (result === true) {
       if (allRoomDes?.room_type_id === 'rt001' || allRoomDes?.room_type_id === 'rt002' || allRoomDes?.room_type_id === 'rt003' || allRoomDes?.room_type_id === 'rt004'
         || allRoomDes?.room_type_id === 'rt005') {
@@ -768,7 +815,7 @@ function Addroom() {
                     </div>
 
                     {/*Room Description */}
-                     <InputTextBox
+                    <InputTextBox
                       label={` ${language?.room} ${language?.description}`}
                       visible={visible}
                       defaultValue={allRoomDes?.room_description}
@@ -791,7 +838,7 @@ function Addroom() {
                       tooltip={true}
                     />
 
-                        {/* room capacity */}
+                    {/* room capacity */}
                     <div className="w-full lg:w-6/12 px-4">
                       <div className="relative w-full mb-3">
                         <label
@@ -975,7 +1022,7 @@ function Addroom() {
 
 
 
-                      
+
                     </div>
                     {/* is room shared  */}
                     <div className="w-full lg:w-6/12 px-4">
@@ -1032,6 +1079,25 @@ function Addroom() {
                       </div>
                     </div>
 
+                    {/* room inventory start */}
+                    <InputText
+                      label={`${language?.room} ${language?.inventory}`}
+                      visible={visible}
+                      defaultValue={''}
+                      onChangeAction={
+                        (e) => {
+                          setAllRoomDes({ ...allRoomDes, inventory_count: e.target.value })
+                        }
+                      }
+                      color={color}
+                      disabled={false}
+                      req={true}
+                      title={"Total number of rooms available"}
+                      tooltip={true}
+                      error={error?.inventory_count}
+                    />
+                    {/* room inventory end */}
+
 
                     {/* Room identifier field start */}
                     <div className="w-full lg:w-6/12 px-4">
@@ -1051,7 +1117,7 @@ function Addroom() {
                               )
                             }
                           />
-                          
+
                           <p className="text-sm text-red-700 font-light">
                             {error?.room_identifier}</p>
                         </div>
@@ -1441,7 +1507,7 @@ function Addroom() {
                             </div>
 
 
-                            
+
                           </div>
                         </div></>
                     ))}

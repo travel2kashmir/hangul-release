@@ -23,14 +23,17 @@ import Header from '../../../components/Header';
 import ImageDemo from "../../../components/utils/ImageDemo";
 import InputTextBox from "../../../components/utils/InputTextBox";
 import InputText from '../../../components/utils/InputText';
-var language;
-var currentProperty;
-var addroom;
+import { InitialActions, ColorToggler } from '../../../components/initalActions';
 import Router from 'next/router'
 import { addInventoryDetail } from '../../../components/redux/hangulSlice';
+import BreadCrumb from '../../../components/utils/BreadCrumb';
 const logger = require("../../../services/logger");
 var currentLogged;
 let colorToggle;
+var language;
+var currentProperty;
+var addroom;
+
 
 function Addroom() {
   const [allRoomDetails, setAllRoomDetails] = useState([])
@@ -55,8 +58,22 @@ function Addroom() {
   const [roomIdentifiers, setRoomIdentifiers] = useState()
 
   /** Use Effect to fetch details from the Local Storage **/
+
   useEffect(() => {
-    firstfun();
+    const resp = InitialActions({ setColor, setMode })
+    language = resp?.language;
+    currentLogged = resp?.currentLogged;
+    currentProperty = resp?.currentProperty;
+    colorToggle = resp?.colorToggle
+
+    /** To fetch room types and room services **/
+    if (JSON.stringify(currentLogged) === 'null') {
+      Router.push(window.location.origin)
+    }
+    else {
+      fetchRoomtypes();
+      fetchServices();
+    }
   }, [])
 
   function manageIdentifiers(room_id, room_type_id) {
@@ -97,35 +114,6 @@ function Addroom() {
         });
       })
 
-  }
-
-  const firstfun = () => {
-    if (typeof window !== 'undefined') {
-      var locale = localStorage.getItem("Language");
-      colorToggle = localStorage.getItem("colorToggle");
-      if (colorToggle === "" || colorToggle === undefined || colorToggle === null || colorToggle === "system") {
-        window.matchMedia("(prefers-color-scheme:dark)").matches === true ? setColor(colorFile?.dark) : setColor(colorFile?.light)
-        setMode(window.matchMedia("(prefers-color-scheme:dark)").matches === true ? true : false);
-      }
-      else if (colorToggle === "true" || colorToggle === "false") {
-        setColor(colorToggle === "true" ? colorFile?.dark : colorFile?.light);
-        setMode(colorToggle === "true" ? true : false)
-      }
-      {
-        if (locale === "ar") {
-          language = arabic;
-        }
-        if (locale === "en") {
-          language = english;
-        }
-        if (locale === "fr") {
-          language = french;
-        }
-      }
-      /** Current Property Details fetched from the local storage **/
-      currentProperty = JSON.parse(localStorage.getItem("property"));
-      currentLogged = JSON.parse(localStorage.getItem("Signin Details"));
-    }
   }
 
 
@@ -221,62 +209,51 @@ function Addroom() {
       .catch((error) => { logger.error("url to fetch roomtypes, failed") });
   }
 
-  /** To fetch room types and room services **/
-  useEffect(() => {
-    if (JSON.stringify(currentLogged) === 'null') {
-      Router.push(window.location.origin)
-    }
-    else {
-      fetchRoomtypes();
-      fetchServices();
-    }
-  }, [])
-
   /*For Room Description*/
   const [allRoomDes, setAllRoomDes] = useState([]);
-//add new inventory 
-const submitInventory = (room_id) => {
-  const current = new Date();
-  const currentDateTime = current.toISOString();
-  const final_data = {
-    "inventory": [{
-      "property_id": currentProperty?.property_id,
-      "start_date": new Date().toISOString().split('T')[0],
-      "end_date": new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0],
-      "days_of_week": 'mtwtfss',
-      "room_id": room_id,
-      "inventory_count": allRoomDes?.inventory_count,
-      "inventory_type": 2
-    }]
-  }
-  // const url = '/api/ari/inventory'
-  const url = '/api/inventory'
-  axios.post(url, final_data, { header: { "content-type": "application/json" } }).then
-    ((response) => {
-      toast.success("API:Inventory Added successfully", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+  //add new inventory 
+  const submitInventory = (room_id) => {
+    const current = new Date();
+    const currentDateTime = current.toISOString();
+    const final_data = {
+      "inventory": [{
+        "property_id": currentProperty?.property_id,
+        "start_date": new Date().toISOString().split('T')[0],
+        "end_date": new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0],
+        "days_of_week": 'mtwtfss',
+        "room_id": room_id,
+        "inventory_count": allRoomDes?.inventory_count,
+        "inventory_type": 2
+      }]
+    }
+    // const url = '/api/ari/inventory'
+    const url = '/api/inventory'
+    axios.post(url, final_data, { header: { "content-type": "application/json" } }).then
+      ((response) => {
+        toast.success("API:Inventory Added successfully", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
 
-      
-    })
-    .catch((error) => {
-      toast.error("API:There was some Error in adding the Inventory ", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-    })
-}
+
+      })
+      .catch((error) => {
+        toast.error("API:There was some Error in adding the Inventory ", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      })
+  }
 
 
   /**  Submit Function for Room Description **/
@@ -620,7 +597,7 @@ const submitInventory = (room_id) => {
 
   // Validate Room Description
   const validationRoomDescription = () => {
-    var result = validateRoom(allRoomDes, finalView,roomIdentifiers?.split(","))
+    var result = validateRoom(allRoomDes, finalView, roomIdentifiers?.split(","))
     if (result === true) {
       if (allRoomDes?.room_type_id === 'rt001' || allRoomDes?.room_type_id === 'rt002' || allRoomDes?.room_type_id === 'rt003' || allRoomDes?.room_type_id === 'rt004'
         || allRoomDes?.room_type_id === 'rt005') {
@@ -658,76 +635,62 @@ const submitInventory = (room_id) => {
     }
   }
 
-  const colorToggler = (newColor) => {
-    if (newColor === 'system') {
-      window.matchMedia("(prefers-color-scheme:dark)").matches === true ? setColor(colorFile?.dark)
-        : setColor(colorFile?.light)
-      localStorage.setItem("colorToggle", newColor)
-    }
-    else if (newColor === 'light') {
-      setColor(colorFile?.light)
-      localStorage.setItem("colorToggle", false)
-    }
-    else if (newColor === 'dark') {
-      setColor(colorFile?.dark)
-      localStorage.setItem("colorToggle", true)
-    }
-    firstfun();
-    Router.push('./addroom')
+  function navigationList(currentLogged, currentProperty) {
+    return ([
+      {
+        icon: "homeIcon",
+        text: "Home",
+        link: currentLogged?.id.match(/admin.[0-9]*/)
+          ? "../../admin/adminlanding"
+          : "../landing"
+      },
+      {
+        icon: "rightArrowIcon",
+        text: [currentProperty?.property_name],
+        link: "../propertysummary"
+      },
+      {
+        icon: "rightArrowIcon",
+        text: "Rooms",
+        link: "../rooms"
+      },
+      {
+        icon: "rightArrowIcon",
+        text: "Add Room",
+        link: ""
+      }
+    ])
   }
+
+
   return (
     <>
       <Title name={`Engage | Add Room`} />
-      <Header Primary={english?.Side1} color={color} Type={currentLogged?.user_type} Sec={colorToggler} mode={mode} setMode={setMode} />
-      <Sidebar Primary={english?.Side1} color={color} Type={currentLogged?.user_type} />
+
+      <Header
+        Primary={english?.Side1}
+        color={color}
+        setColor={setColor}
+        Type={currentLogged?.user_type}
+        Sec={ColorToggler}
+        mode={mode}
+        setMode={setMode}
+      />
+
+      <Sidebar
+        Primary={english?.Side1}
+        color={color}
+        Type={currentLogged?.user_type}
+      />
 
       <div id="main-content"
         className={`${color?.greybackground} px-4 pt-24 pb-2 relative overflow-y-auto lg:ml-64`}>
 
         {/* bread crumb */}
-        <nav className="flex mb-5 ml-4" aria-label="Breadcrumb">
-          <ol className="inline-flex items-center space-x-1 md:space-x-2">
-            <li className="inline-flex items-center">
-              <div className={`${color?.text} text-base font-medium  inline-flex items-center`}>
-                <svg className="w-5 h-5 mr-2.5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
-                <Link href={currentLogged?.id.match(/admin.[0-9]*/) ? "../../admin/adminlanding" : "../landing"}
-                  className={`${color?.text} text-base font-medium  inline-flex items-center`}><a>{language?.home}</a>
-                </Link></div>
-            </li>
-            <li>
-              <div className="flex items-center">
-                <div className={`${color?.text} text-base capitalize font-medium  inline-flex items-center`}>
-                  <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path></svg>
-                  <div className={visible === 0 ? 'block w-16' : 'hidden'}><Headloader /></div>
-                  <div className={visible === 1 ? 'block' : 'hidden'}>   <Link href="../propertysummary" className={`text-gray-700 text-sm ml-1 md:ml-2  font-medium hover:${color?.text} `}>
-                    <a>{currentProperty?.property_name}</a>
-                  </Link>
-                  </div></div>
-
-              </div>
-            </li>
-            <li>
-              <div className="flex items-center">
-                <div className={`${color?.text} text-base font-medium  inline-flex items-center`}>
-                  <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path></svg>
-                  <div className={visible === 0 ? 'block w-16' : 'hidden'}><Headloader /></div>
-                  <div className={visible === 1 ? 'block' : 'hidden'}>   <Link href="../rooms" className="text-gray-700 text-sm   font-medium hover:{`${color?.text} ml-1 md:ml-2">
-                    <a>{language?.rooms}</a>
-                  </Link>
-                  </div></div>
-
-              </div>
-            </li>
-            <li>
-              <div className="flex items-center">
-                <div className={`${color?.textgray} text-base font-medium  inline-flex items-center`}>
-                  <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path></svg>
-                  <span className="text-gray-400 ml-1 md:ml-2 font-medium text-sm  " aria-current="page">{language?.addroom}</span>
-                </div>
-              </div>
-            </li>
-          </ol>
-        </nav>
+        <BreadCrumb
+          color={color}
+          crumbList={navigationList(currentLogged, currentProperty)}
+        />
 
         {/* Title */}
         <div className=" pt-2 ">

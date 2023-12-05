@@ -10,16 +10,15 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Button from "../../components/Button";
 import Router from "next/router";
-import Link from "next/link";
 import Footer from "../../components/Footer";
 import { english, arabic, french } from "../../components/Languages/Languages"
 import InputText from "../../components/utils/InputText";
 import DropDown from "../../components/utils/DropDown";
 import { InitialActions, ColorToggler } from "../../components/initalActions";
-import { fetchHotelDetails, submitAddressEdit } from "../../components/logic/property/Address";
+import { fetchHotelDetails, submitAddressEdit, navigationList } from "../../components/logic/property/Address";
+import BreadCrumb from "../../components/utils/BreadCrumb";
 
 var i = 0;
-// var country;
 var currentLogged;
 var language;
 var currentProperty;
@@ -113,96 +112,10 @@ function Address() {
         className={`${color?.greybackground} px-4 py-2 pt-24 pb-2 relative overflow-y-auto lg:ml-64`}
       >
         {/* bread crumb */}
-        <nav
-          data-testid="nav"
-          className="flex mb-5 ml-4"
-          aria-label="Breadcrumb"
-        >
-          <ol className="inline-flex items-center space-x-1 md:space-x-2">
-            <li className="inline-flex items-center">
-              <div
-                className={`${color?.text} text-base font-medium  inline-flex items-center`}
-              >
-                <svg
-                  className="w-5 h-5 mr-2.5"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
-                </svg>
-                <Link
-                  href={
-                    currentLogged?.id.match(/admin.[0-9]*/)
-                      ? "../admin/adminlanding"
-                      : "./landing"
-                  }
-                  className={`${color?.text} text-base font-medium  inline-flex items-center`}
-                >
-                  <a>{language?.home}</a>
-                </Link>
-              </div>
-            </li>
-            <li>
-              <div className="flex items-center">
-                <div
-                  className={`${color?.text} capitalize text-base font-medium  inline-flex items-center`}
-                >
-                  <svg
-                    className="w-6 h-6 text-gray-400"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                      clipRule="evenodd"
-                    ></path>
-                  </svg>
-                  <div className={visible === 0 ? "block w-16" : "hidden"}>
-                    <Headloader />
-                  </div>
-                  <div className={visible === 1 ? "block" : "hidden"}>
-                    {" "}
-                    <Link
-                      href="./propertysummary"
-                      className="text-gray-700 text-sm   font-medium hover:{`${color?.text} ml-1 md:ml-2"
-                    >
-                      <a>{currentProperty?.property_name}</a>
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </li>
-            <li>
-              <div className="flex items-center">
-                <div
-                  className={`${color?.textgray} text-base font-medium  inline-flex items-center`}
-                >
-                  <svg
-                    className="w-6 h-6 text-gray-400"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                      clipRule="evenodd"
-                    ></path>
-                  </svg>
-                  <span
-                    className="text-gray-400 ml-1 md:ml-2 font-medium text-sm  "
-                    aria-current="page"
-                  >
-                    {language?.address}
-                  </span>
-                </div>
-              </div>
-            </li>
-          </ol>
-        </nav>
+        <BreadCrumb
+          color={color}
+          crumbList={navigationList(currentLogged, currentProperty)}
+        />
 
         {/* Update Address Form */}
         <div

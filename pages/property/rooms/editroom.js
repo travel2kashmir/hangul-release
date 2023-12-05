@@ -44,6 +44,7 @@ let checkModification = [];
 var resView = [];
 var currency;
 import Router from 'next/router'
+import BreadCrumb from '../../../components/utils/BreadCrumb';
 const logger = require("../../../services/logger");
 var currentLogged;
 var i = 0;
@@ -105,6 +106,7 @@ function Room() {
   const [id, setId] = useState(-1);
   const [initalIdentifiers, setInitalIdentifiers] = useState()
   const [roomIdentifiers, setRoomIdentifiers] = useState()
+
   /** Use Effect to fetch details from the Local Storage **/
   useEffect(() => {
     const resp = InitialActions({ setColor, setMode })
@@ -257,7 +259,6 @@ function Room() {
       .catch((error) => { logger.error("url to fetch roomtypes, failed") });
   }
 
-
   // Room Images
   const fetchImages = async () => {
     const url = `/api/images/${currentProperty?.property_id}`
@@ -284,7 +285,6 @@ function Room() {
       })
       .catch((error) => { logger.error("url to fetch roomtypes, failed") });
   }
-
 
   const onChangePhoto = (e, i) => {
     setImage({ ...image, imageFile: e.target.files[0] })
@@ -824,7 +824,6 @@ function Room() {
       })
   }
 
-
   /* Function to add bed */
   const addBed = () => {
     var result = validateBedAdd(modified);
@@ -1010,7 +1009,6 @@ function Room() {
       });
   }
 
-
   /* Function to edit single bed */
   const submitBedUpdate = () => {
     const current = new Date();
@@ -1090,11 +1088,10 @@ function Room() {
       })
   }
 
-  // Validation Functions
 
   // Validate Room Description
   const validationRoomDescription = () => {
-    var result = validateRoom(allRoomDetails, finalView,roomIdentifiers?.split(","))
+    var result = validateRoom(allRoomDetails, finalView, roomIdentifiers?.split(","))
     if (result === true) {
       if (flag === 1) {
         submitRoomDescriptionEdit();
@@ -1110,7 +1107,6 @@ function Room() {
       setError(result)
     }
   }
-
 
   // Validate Beds Data
   const validationBedData = () => {
@@ -1151,6 +1147,33 @@ function Room() {
     }
   }
 
+  function navigationList(currentLogged, currentProperty) {
+    return ([
+      {
+        icon: "homeIcon",
+        text: "Home",
+        link: currentLogged?.id.match(/admin.[0-9]*/)
+          ? "../../admin/adminlanding"
+          : "../landing"
+      },
+      {
+        icon: "rightArrowIcon",
+        text: [currentProperty?.property_name],
+        link: "../propertysummary"
+      },
+      {
+        icon: "rightArrowIcon",
+        text: "Rooms",
+        link: "../rooms"
+      },
+      {
+        icon: "rightArrowIcon",
+        text: "Edit Room",
+        link: ""
+      }
+    ])
+  }
+
   return (
     <>
       <Title name={`Engage | Edit Room`} />
@@ -1160,52 +1183,11 @@ function Room() {
       <div id="main-content"
         className={`${color?.greybackground} px-4 pt-24 relative overflow-y-auto lg:ml-64`}>
 
-        {/* Header */}
-        <nav className="flex mb-5 ml-4" aria-label="Breadcrumb">
-          <ol className="inline-flex items-center space-x-1 md:space-x-2">
-            <li className="inline-flex items-center">
-              <div className={`${color?.text} text-base font-medium  inline-flex items-center`}>
-                <svg className="w-5 h-5 mr-2.5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
-                <Link href={currentLogged?.id.match(/admin.[0-9]*/) ? "../../admin/adminlanding" : "../landing"}
-                  className={`${color?.text} text-base font-medium  inline-flex items-center`}><a>{language?.home}
-
-                  </a>
-                </Link></div>
-            </li>
-            <li>
-              <div className="flex items-center">
-                <div className={`${color?.text} text-base capitalize font-medium  inline-flex items-center`}>
-                  <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path></svg>
-                  <div className={visible === 0 ? 'block py-1 w-16' : 'hidden'}><Headloader /></div>
-                  <div className={visible === 1 ? 'block py-1' : 'hidden'}>   <Link href="../propertysummary" className={`text-gray-700 text-sm ml-1 md:ml-2  font-medium hover:${color?.text} `}>
-                    <a>{property_name}</a>
-                  </Link>
-                  </div></div>
-
-              </div>
-            </li>
-            <li>
-              <div className="flex items-center">
-                <div className={`${color?.text} text-base font-medium  inline-flex items-center`}>
-                  <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path></svg>
-                  <div className={visible === 0 ? 'block py-1 w-16' : 'hidden'}><Headloader /></div>
-                  <div className={visible === 1 ? 'block py-1' : 'hidden'}>   <Link href="../rooms" className="text-gray-700 text-sm   font-medium hover:{`${color?.text} ml-1 md:ml-2">
-                    <a>{language?.rooms}</a>
-                  </Link>
-                  </div></div>
-
-              </div>
-            </li>
-            <li>
-              <div className="flex items-center">
-                <div className={`${color?.textgray} text-base font-medium  inline-flex items-center`}>
-                  <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path></svg>
-                  <span className="text-gray-400 ml-1 md:ml-2 font-medium text-sm  " aria-current="page">{language?.edit} {language?.room}</span>
-                </div>
-              </div>
-            </li>
-          </ol>
-        </nav>
+        {/* breadcrumb */}
+        <BreadCrumb
+          color={color}
+          crumbList={navigationList(currentLogged, currentProperty)}
+        />
 
         {/* Room Forms Edit */}
         <div className=" pt-2">

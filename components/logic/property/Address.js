@@ -132,6 +132,27 @@ export const submitAddressEdit = (flag, setFlag, allHotelDetails, address, setSp
     }
 };
 
+export function navigationList(currentLogged, currentProperty) {
+    return ([
+        {
+            icon: "homeIcon",
+            text: "Home",
+            link: currentLogged?.id.match(/admin.[0-9]*/)
+                ? "../admin/adminlanding"
+                : "./landing"
+        },
+        {
+            icon: "rightArrowIcon",
+            text: [currentProperty?.property_name],
+            link: "./propertysummary"
+        },
+        {
+            icon: "rightArrowIcon",
+            text: "Address",
+            link: ""
+        }
+    ])
+}
 
 
 

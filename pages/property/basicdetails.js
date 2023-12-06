@@ -30,7 +30,7 @@ import DateInput from "../../components/utils/DateInput";
 import DropDown from "../../components/utils/DropDown";
 import { InitialActions, ColorToggler } from "../../components/initalActions";
 import BreadCrumb from "../../components/utils/BreadCrumb";
-import { fetchAllPropertyTypes, fetchBasicDetails, descriptionDate, validationBasicDetails, uploadImage } from "../../components/logic/property/BasicDetails";
+import { fetchAllPropertyTypes, fetchBasicDetails, descriptionDate, validationBasicDetails, uploadImage, submitPhotoEdit, navigationList } from "../../components/logic/property/BasicDetails";
 
 export default function BasicDetails() {
   const router = useRouter();
@@ -64,75 +64,75 @@ export default function BasicDetails() {
 
 
 
-  const onChange = async (event) => {
-    const file = event.target.files[0];
-    const image = await resizeFile(file);
-    console.log(image);
-  };
+  // const onChange = async (event) => {
+  //   const file = event.target.files[0];
+  //   const image = await resizeFile(file);
+  //   console.log(image);
+  // };
 
   /* Function to upload logo to cloud*/
-  // const uploadImage = async (image) => {
-  //   setUploadImageSpin(true);
-  //   image = await resizeFile(image);
-  //   const imageDetails = image;
-  //   const formData = new FormData();
-  //   formData.append("file", imageDetails);
-  //   formData.append("upload_preset", "Travel2Kashmir");
-  //   formData.append("enctype", "multipart/form-data");
-  //   axios
-  //     .post("https://api.cloudinary.com/v1_1/dvczoayyw/image/upload", formData)
-  //     .then((response) => {
-  //       setImageLogo(response?.data?.secure_url);
-  //     })
-  //     .catch((error) => {
-  //       toast.error("Image upload error. ", {
-  //         position: "top-center",
-  //         autoClose: 5000,
-  //         hideProgressBar: false,
-  //         closeOnClick: true,
-  //         pauseOnHover: true,
-  //         draggable: true,
-  //         progress: undefined,
-  //       });
-  //     });
-  // };
+  const uploadImage = async (image) => {
+    setUploadImageSpin(true);
+    image = await resizeFile(image);
+    const imageDetails = image;
+    const formData = new FormData();
+    formData.append("file", imageDetails);
+    formData.append("upload_preset", "Travel2Kashmir");
+    formData.append("enctype", "multipart/form-data");
+    axios
+      .post("https://api.cloudinary.com/v1_1/dvczoayyw/image/upload", formData)
+      .then((response) => {
+        setImageLogo(response?.data?.secure_url);
+      })
+      .catch((error) => {
+        toast.error("Image upload error. ", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      });
+  };
 
 
   // Logo Upload
-  // const submitPhotoEdit = () => {
-  //   const final_data = {
-  //     property_id: currentProperty?.property_id,
-  //     logo_link: imageLogo,
-  //   };
-  //   const url = "/api/basic";
-  //   axios
-  //     .put(url, final_data, { header: { "content-type": "application/json" } })
-  //     .then((response) => {
-  //       toast.success("API: Logo update success.", {
-  //         position: "top-center",
-  //         autoClose: 5000,
-  //         hideProgressBar: false,
-  //         closeOnClick: true,
-  //         pauseOnHover: true,
-  //         draggable: true,
-  //         progress: undefined,
-  //       });
-  //       fetchBasicDetails(currentProperty, setBasicDetails, setAllHotelDetails, setImageLogo, setVisible);
-  //       router.push("./basicdetails");
-  //       setUploadImageSpin(false);
-  //     })
-  //     .catch((error) => {
-  //       toast.error("API:Logo Update error.", {
-  //         position: "top-center",
-  //         autoClose: 5000,
-  //         hideProgressBar: false,
-  //         closeOnClick: true,
-  //         pauseOnHover: true,
-  //         draggable: true,
-  //         progress: undefined,
-  //       });
-  //     });
-  // };
+  const submitPhotoEdit = () => {
+    const final_data = {
+      property_id: currentProperty?.property_id,
+      logo_link: imageLogo,
+    };
+    const url = "/api/basic";
+    axios
+      .put(url, final_data, { header: { "content-type": "application/json" } })
+      .then((response) => {
+        toast.success("API: Logo update success.", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        fetchBasicDetails(currentProperty, setBasicDetails, setAllHotelDetails, setImageLogo, setVisible);
+        router.push("./basicdetails");
+        setUploadImageSpin(false);
+      })
+      .catch((error) => {
+        toast.error("API:Logo Update error.", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      });
+  };
 
   const resizeFile = (file) =>
     new Promise((resolve) => {
@@ -150,27 +150,7 @@ export default function BasicDetails() {
       );
     });
 
-  function navigationList(currentLogged, currentProperty) {
-    return ([
-      {
-        icon: "homeIcon",
-        text: "Home",
-        link: currentLogged?.id.match(/admin.[0-9]*/)
-          ? "../admin/adminlanding"
-          : "./landing"
-      },
-      {
-        icon: "rightArrowIcon",
-        text: [currentProperty?.property_name],
-        link: "./propertysummary"
-      },
-      {
-        icon: "rightArrowIcon",
-        text: "Basic Details",
-        link: ""
-      }
-    ])
-  }
+
 
   return (
     <>
@@ -420,8 +400,8 @@ export default function BasicDetails() {
                         name="myImage"
                         accept="image/png, image/gif, image/jpeg, image/jpg"
                         onChange={(e) => {
-                          // uploadImage(e.target.files[0]);
-                          uploadImage(e.target.files[0], setUploadImageSpin, setImageLogo);
+                          uploadImage(e.target.files[0]);
+                          // uploadImage(e.target.files[0], setUploadImageSpin, setImageLogo, Resizer);
                         }}
                         className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg 
                         focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
@@ -431,7 +411,8 @@ export default function BasicDetails() {
                     <Button
                       Primary={language?.Upload}
                       onClick={() => {
-                        submitPhotoEdit(currentProperty, imageLogo, setBasicDetails, setAllHotelDetails, setImageLogo, setVisible, setUploadImageSpin, router);
+                        submitPhotoEdit();
+                        // submitPhotoEdit(currentProperty, imageLogo, setBasicDetails, setAllHotelDetails, setImageLogo, setVisible, setUploadImageSpin, router);
                       }}
                     />
                   </div>

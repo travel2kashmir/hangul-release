@@ -3,7 +3,7 @@ import objChecker from "lodash";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import validatebasicDetails from "../../validation/basicdetails";
-import Resizer from "react-image-file-resizer";
+// import Resizer from "react-image-file-resizer";
 
 // import { useRouter } from "next/router";
 
@@ -124,80 +124,109 @@ export function validationBasicDetails(setError, flag, setFlag, setSpinner, curr
     }
 };
 
+export function navigationList(currentLogged, currentProperty) {
+    return ([
+        {
+            icon: "homeIcon",
+            text: "Home",
+            link: currentLogged?.id.match(/admin.[0-9]*/)
+                ? "../admin/adminlanding"
+                : "./landing"
+        },
+        {
+            icon: "rightArrowIcon",
+            text: [currentProperty?.property_name],
+            link: "./propertysummary"
+        },
+        {
+            icon: "rightArrowIcon",
+            text: "Basic Details",
+            link: ""
+        }
+    ])
+}
+
 /* Function to upload logo to cloud*/
-export function uploadImage(image, setUploadImageSpin, setImageLogo) {
-    setUploadImageSpin(true);
-    image = resizeFile(image);
-    const imageDetails = image;
-    const formData = new FormData();
-    formData.append("file", imageDetails);
-    formData.append("upload_preset", "Travel2Kashmir");
-    formData.append("enctype", "multipart/form-data");
-    axios.post("https://api.cloudinary.com/v1_1/dvczoayyw/image/upload", formData)
-        .then((response) => {
-            setImageLogo(response?.data?.secure_url);
-        })
-        .catch((error) => {
-            toast.error("Image upload error. ", {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
-        });
-};
+// export function uploadImage(image, setUploadImageSpin, setImageLogo, Resizer) {
+//     setUploadImageSpin(true);
+//     image = resizeFile(image, Resizer);
+//     const imageDetails = image;
+//     console.log(imageDetails)
+
+//     const formData = new FormData();
+//     formData.append("file", imageDetails);
+//     formData.append("upload_preset", "Travel2Kashmir");
+//     formData.append("enctype", "multipart/form-data");
+//     console.log(formData)
+//     axios.post("https://api.cloudinary.com/v1_1/dvczoayyw/image/upload", formData)
+//         .then((response) => {
+
+//             setImageLogo(response?.data?.secure_url);
+//         })
+//         .catch((error) => {
+//             toast.error("Image upload error. ", {
+//                 position: "top-center",
+//                 autoClose: 5000,
+//                 hideProgressBar: false,
+//                 closeOnClick: true,
+//                 pauseOnHover: true,
+//                 draggable: true,
+//                 progress: undefined,
+//             });
+//         });
+// };
 
 
-// Logo Upload
-export function submitPhotoEdit(currentProperty, imageLogo, setBasicDetails, setAllHotelDetails, setImageLogo, setVisible, setUploadImageSpin, router) {
-    const final_data = {
-        property_id: currentProperty?.property_id,
-        logo_link: imageLogo,
-    };
-    const url = "/api/basic";
-    axios.put(url, final_data, { header: { "content-type": "application/json" } })
-        .then((response) => {
-            toast.success("API: Logo update success.", {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
-            fetchBasicDetails(currentProperty, setBasicDetails, setAllHotelDetails, setImageLogo, setVisible);
-            router.push("./basicdetails");
-            setUploadImageSpin(false);
-        })
-        .catch((error) => {
-            toast.error("API:Logo Update error.", {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
-        });
-};
+// // Logo Upload
+// export function submitPhotoEdit(currentProperty, imageLogo, setBasicDetails, setAllHotelDetails, setImageLogo, setVisible, setUploadImageSpin, router) {
+//     const final_data = {
+//         property_id: currentProperty?.property_id,
+//         logo_link: imageLogo,
+//     };
+//     const url = "/api/basic";
+//     axios.put(url, final_data, { header: { "content-type": "application/json" } })
+//         .then((response) => {
+//             toast.success("API: Logo update success.", {
+//                 position: "top-center",
+//                 autoClose: 5000,
+//                 hideProgressBar: false,
+//                 closeOnClick: true,
+//                 pauseOnHover: true,
+//                 draggable: true,
+//                 progress: undefined,
+//             });
+//             fetchBasicDetails(currentProperty, setBasicDetails, setAllHotelDetails, setImageLogo, setVisible);
+//             router.push("./basicdetails");
+//             setUploadImageSpin(false);
+//         })
+//         .catch((error) => {
+//             toast.error("API:Logo Update error.", {
+//                 position: "top-center",
+//                 autoClose: 5000,
+//                 hideProgressBar: false,
+//                 closeOnClick: true,
+//                 pauseOnHover: true,
+//                 draggable: true,
+//                 progress: undefined,
+//             });
+//         });
+// };
 
-const resizeFile = (file) =>
-    new Promise((resolve) => {
-        Resizer.imageFileResizer(
-            file,
-            164,
-            40,
-            "PNG",
-            100,
-            0,
-            (uri) => {
-                resolve(uri);
-            },
-            "base64"
-        );
-    });
+// function resizeFile(file, Resizer) {
+//     return new Promise(function (resolve) {
+//         Resizer.imageFileResizer(
+//             file,
+//             164,
+//             40,
+//             "PNG",
+//             100,
+//             0,
+//             function (uri) {
+//                 resolve(uri);
+//             },
+//             "base64"
+//         );
+//     });
+// }
+
+

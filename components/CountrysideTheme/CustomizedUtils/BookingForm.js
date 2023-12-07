@@ -3,7 +3,7 @@ import DateInput from './DateInput'
 import DropDown from './DropDown'
 
 
-function BookingForm({ setShowBookingEngine, enquiry, setEnquiry, setRoomsLoader, setSearched, searched }) {
+function BookingForm({ setShowModalBooking, setShowBookingEngine, enquiry, setEnquiry, setRoomsLoader, setSearched, searched }) {
 
     const [maxDate, setMaxDate] = useState('');
     const [err, setErr] = useState(false);
@@ -124,6 +124,7 @@ function BookingForm({ setShowBookingEngine, enquiry, setEnquiry, setRoomsLoader
                                     setRoomsLoader(true)
                                     setSearched(!searched);
                                     setShowBookingEngine(1);
+                                    setShowModalBooking(0);
                                     setNotSelectedErr((prevValue) => ({ ...prevValue, "forCheckin": false, "forCheckout": false }))
                                 }
                             }}

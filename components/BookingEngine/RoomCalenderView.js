@@ -5,7 +5,7 @@ import { AiOutlineShoppingCart, AiOutlineClose } from "react-icons/ai";
 // useDispatch is used to store the data in the store of the redux, while useSelector is used to get the data from the store.
 import { useDispatch, useSelector } from 'react-redux';
 // reducer functions are being imported from the redux
-import { clearRoomsSelected, setAddMoreRoom, clearReservationIdentity, clearInventoryDetail, clearGuestDetails } from '../redux/hangulSlice'
+import { clearRoomsSelected, setAddMoreRoom, clearReservationIdentity, clearInventoryDetail, clearGuestDetails, updateBookingInfo } from '../redux/hangulSlice'
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import RoomLoader from './RoomLoader';
@@ -147,6 +147,7 @@ function RoomCalenderView({ color, roomsLoader, rooms, allRoomRateDetails, dataO
             dispatch(clearGuestDetails())
             dispatch(clearReservationIdentity())
             dispatch(clearInventoryDetail())
+            dispatch(updateBookingInfo({ booking_id: null, property_id: null }))
             deleteRoomDetails()
         }
     }

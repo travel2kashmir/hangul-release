@@ -62,6 +62,7 @@ function Home({ allHotelDetails, setShowBookingEngine, setRoomsLoader, enquiry, 
                             enquiry={enquiry}
                             setSearched={(e) => setSearched(e)}
                             searched={searched}
+                            setShowModalBooking={(e) => setShowModalBooking(e)}
 
                         />
                     }

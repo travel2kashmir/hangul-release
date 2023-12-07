@@ -91,10 +91,11 @@ function Header({ allHotelDetails, menu, setMenu, themeColor, setRoomsLoader, se
                             enquiry={enquiry}
                             setSearched={(e) => setSearched(e)}
                             searched={searched}
+                            setShowModalBookingForm={(e) => setShowModalBookingForm(e)}
 
                         />
                     }
-                    setShowModal={(e) => setShowModalBookingForm(e)}
+                    setShowModalBookingForm={(e) => setShowModalBookingForm(e)}
                 />
                 : <></>
             }

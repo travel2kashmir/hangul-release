@@ -6,7 +6,7 @@ import html2canvas from 'html2canvas';
 
 import { useSelector } from 'react-redux'
 
-function ReceiptView({ allHotelDetails }) {
+function ReceiptView({ allHotelDetails, setShowModal, setDisplay }) {
 
     let bookingInfo = useSelector(state => state.bookingInfo)
     let bookingId = bookingInfo.booking_id
@@ -117,6 +117,7 @@ function ReceiptView({ allHotelDetails }) {
                         <p > {bookingDetails?.[0]?.booking_invoice?.[0].invoice_id}</p>
                         <h2 className='md:text-lg font-semibold pt-2'>Date </h2>
                         <p>{bookingDetails?.[0]?.booking_invoice?.[0].invoice_time}</p>
+
                     </div>
                 </div>
 
@@ -158,6 +159,11 @@ function ReceiptView({ allHotelDetails }) {
                             <p className='px-2 text-right'>{bookingDetails?.[0]?.booking_invoice?.[0]?.transaction_refrence_no}</p>
                         </div>
                         <div className='flex justify-between items-end border-b'>
+                            <h2 className='font-semibold pt-2'>Booking Date </h2>
+                            <p className='px-2'>{bookingDetails[0]?.booking_date_from} to {bookingDetails[0]?.booking_date_to}</p>
+                        </div>       
+
+                        <div className='flex justify-between items-end border-b'>
                             <h2 className='font-semibold pt-2 '>Base Price:</h2>
                             <p className='px-2'>₹{bookingDetails?.[0]?.booking_invoice?.[0]?.base_price}</p>
                         </div>
@@ -173,15 +179,17 @@ function ReceiptView({ allHotelDetails }) {
                             <div className='flex justify-between items-end border-b'>
                                 <h2 className='font-semibold pt-2'>Coupon Discount:</h2>
                                 <p className='px-2'>₹{bookingDetails?.[0]?.booking_invoice?.[0]?.coupon_discount}</p>
-                            </div>
-                        }
+                            </div>}
+                        
+
                     </div>
                 </div>
             </div>
 
 
             <div className='flex justify-center py-10'>
-                <button onClick={generatePDF} className='px-3 py-2 bg-green-600 text-white rounded-lg'>Download PDF</button>
+                <button onClick={generatePDF} className='px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 hover:rounded-md'>Download PDF</button>
+                <button onClick={() => { setDisplay(0); setShowModal(0) }} className='px-3 py-2 mx-1 bg-red-600 hover:bg-red-700 text-white rounded-lg hover:rounded-md'>Back To Home</button>
             </div>
         </section>
     )

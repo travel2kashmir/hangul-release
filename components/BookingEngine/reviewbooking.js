@@ -501,7 +501,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setShowModal, se
                     {/* timer for medium and large screen */}
                     <div className='hidden md:block'>
                         <CountdownTimer
-                            minutes={15}
+                            time={15}
                             onTimerComplete={closeButtonAction}
 
                         />
@@ -524,7 +524,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setShowModal, se
                 {/* timer for mobile screen */}
                 <div className='block md:hidden bg-slate-100 border-b-2 pb-2'>
                     <CountdownTimer
-                        minutes={15}
+                        time={15}
                         onTimerComplete={closeButtonAction}
 
                     />

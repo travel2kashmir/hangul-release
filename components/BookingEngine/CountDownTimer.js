@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const CountdownTimer = ({ time, onTimerComplete,Text="Time Left:",unit='minutes' }) => {
+const CountdownTimer = ({ time, onTimerComplete,Text="Time Left:",unit='minutes'}) => {
     const [seconds, setSeconds] = useState(unit==='second'?time:time * 60);
 
     useEffect(() => {

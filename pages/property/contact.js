@@ -404,15 +404,27 @@ function Contact() {
           /> */}
 
 
-          <Table gen={gen} setGen={setGen} add={() => setView(1)} edit={submitContactEdit}
-            delSpin={language?.SpinnerDelete} saveSpinner={language?.SpinnerSave} spinner={spinner}
-            setSpinner={setSpinner} color={color} language={language} deleteAll={contactDeleteMultiple}
-            spin={spin} property_id={currentProperty?.property_id}
-            delete={submitContactDelete} common={language?.common} cols={language?.ContactCols}
-            name="Contact" />
+          <Table
+            gen={gen}
+            setGen={setGen}
+            add={() => setView(1)}
+            edit={submitContactEdit}
+            delSpin={language?.SpinnerDelete}
+            saveSpinner={language?.SpinnerSave}
+            spinner={spinner}
+            setSpinner={setSpinner}
+            color={color}
+            language={language}
+            deleteAll={contactDeleteMultiple}
+            spin={spin}
+            property_id={currentProperty?.property_id}
+            delete={submitContactDelete}
+            common={language?.common}
+            cols={language?.ContactCols}
+            name="Contact"
+          />
+
         </div>
-
-
 
         {/* Modal Add */}
         <div className={view === 1 ? "block" : "hidden"}>

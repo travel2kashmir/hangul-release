@@ -20,26 +20,26 @@ function BookingEngine({ color, allHotelDetails, rooms, display, setDisplay, set
     const [dataAsPerDate, setDataAsPerDate] = useState([]);
 
     // useEffect with empty dependency array runs as soon as the component loads.
-    useEffect(() => {
-        getRoomDetails()
-    }, [])
+    // useEffect(() => {
+    //     getRoomDetails()
+    // }, [])
 
     // useEffect with dependency array runs as soon as the value for the dependency array changes.
     useEffect(() => {
         getRatesForTheSelectedDate()
     }, [checkinDate, checkoutDate])
 
-    function getRoomDetails() {
-        // room rates for this property
-        let url = `/api/rates/${allHotelDetails?.property_id}`;
-        axios.get(url)
-            .then((response) => {
-                setAllRoomRateDetails(response.data)
+    // function getRoomDetails() {
+    //     // room rates for this property
+    //     let url = `/api/rates/${allHotelDetails?.property_id}`;
+    //     axios.get(url)
+    //         .then((response) => {
+    //             setAllRoomRateDetails(response.data)
 
-            }).catch((err) => {
-                console.log(JSON.stringify(err))
-            })
-    }
+    //         }).catch((err) => {
+    //             console.log(JSON.stringify(err))
+    //         })
+    // }
 
     function getRatesForTheSelectedDate() {
         // this function gives rates of the rooms for the selected dates

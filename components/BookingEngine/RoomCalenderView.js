@@ -19,35 +19,35 @@ function RoomCalenderView({ color, roomsLoader, rooms, allRoomRateDetails, dataO
     const addMoreRooms = useSelector(state => state.addMoreRoom) //reads addMoreRoom from state into const
     const roomsSelected = useSelector(state => state.roomsSelected)
 
-    // Create an object to group room rates by room_id and calculate the total final rate for each room
-    const roomData = {};
+    const calculateTotalFinalRate = () => {
+        // Create an object to group room rates by room_id and calculate the total final rate for each room
+        const roomData = {};
 
-    // taking out the data from the dataOfRoomsAsPerDateSelected and storing them in roomData object.
-    dataOfRoomsAsPerDateSelected.forEach((rate) => {
-        const { room_id, property_id, final_rate, tax_amount, otherfees_amount } = rate;
-        if (!roomData[room_id]) {
-            roomData[room_id] = {
-                room_id,
-                property_id,
-                total_final_rate: final_rate,
-                total_tax_amount: tax_amount,
-                total_otherfees_amount: otherfees_amount
-            };
-        } else {
-            roomData[room_id].total_final_rate += final_rate;
-            roomData[room_id].total_tax_amount += tax_amount;
-            roomData[room_id].total_otherfees_amount += otherfees_amount;
-        }
-    });
+        // taking out the data from the dataOfRoomsAsPerDateSelected and storing them in roomData object.
+        dataOfRoomsAsPerDateSelected.forEach((rate) => {
+            const { room_id, property_id, final_rate, tax_amount, otherfees_amount } = rate;
+            if (!roomData[room_id]) {
+                roomData[room_id] = {
+                    room_id,
+                    property_id,
+                    total_final_rate: final_rate,
+                    total_tax_amount: tax_amount,
+                    total_otherfees_amount: otherfees_amount
+                };
+            } else {
+                roomData[room_id].total_final_rate += final_rate;
+                roomData[room_id].total_tax_amount += tax_amount;
+                roomData[room_id].total_otherfees_amount += otherfees_amount;
+            }
+        });
+        return Object.values(roomData);
+    };
 
-    // Convert the grouped data into an array of rooms
-    const roomsArray = Object.values(roomData);
-    // console.log("this is rooms array ", roomsArray)
+    const roomsArray = calculateTotalFinalRate();
 
     // Sort the roomsArray in ascending order based on total_final_rate
     const sortedFinalRate = roomsArray.slice().sort((room1, room2) => room1.total_final_rate - room2.total_final_rate);
     // console.log("this is the sorted final rate", sortedData)
-
 
     // only those rooms whose room_id is not in roomsSelected state
     const roomsToDisplay = sortedFinalRate.filter((room) => {
@@ -55,30 +55,31 @@ function RoomCalenderView({ color, roomsLoader, rooms, allRoomRateDetails, dataO
         return !roomsSelected.includes(room.room_id);
     });
 
-    useEffect(() => {
-        groupingByDate()
-    }, [allRoomRateDetails])
+    // useEffect(() => {
+    //     groupingByDate()
+    // }, [allRoomRateDetails])
 
-    // Create an object to store room details grouped by rate_date
-    const groupedByDate = {};
+    // // Create an object to store room details grouped by rate_date
+    // const groupedByDate = {};
 
-    function groupingByDate() {
-        // Loop through the roomDetails array
-        allRoomRateDetails.forEach((room) => {
-            const rate_date = room.rate_date;
+    // function groupingByDate() {
+    //     // Loop through the roomDetails array
+    //     allRoomRateDetails.forEach((room) => {
+    //         const rate_date = room.rate_date;
 
-            // If the rate_date is not in groupedByDate, create an empty array for it
-            if (!groupedByDate[rate_date]) {
-                groupedByDate[rate_date] = [];
-            }
-            // Push the room details into the corresponding rate_date array
-            groupedByDate[rate_date].push(room);
-        });
+    //         // If the rate_date is not in groupedByDate, create an empty array for it
+    //         if (!groupedByDate[rate_date]) {
+    //             groupedByDate[rate_date] = [];
+    //         }
+    //         // Push the room details into the corresponding rate_date array
+    //         groupedByDate[rate_date].push(room);
+    //     });
 
-        // Now, groupedByDate will contain separate arrays for each rate_date
-        // console.log("grouped by date:- ", groupedByDate);
-        return groupedByDate;
-    }
+    //     // Now, groupedByDate will contain separate arrays for each rate_date
+    //     console.log("grouped by date:- ", groupedByDate);
+    //     return groupedByDate;
+    // }
+
     // console.log("returning group", groupingByDate())
 
     // if incase we need this function in future, this function is used to take out the lowest rate on the particular date

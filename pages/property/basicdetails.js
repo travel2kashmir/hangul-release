@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Title from "../../components/title";
-import objChecker from "lodash";
 import Lineloader from "../../components/loaders/lineloader";
 import Sidebar from "../../components/Sidebar";
 import Header from "../../components/Header";
-import axios from "axios";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import english from "../../components/Languages/en";
 import french from "../../components/Languages/fr";
@@ -21,7 +18,6 @@ var currentProperty;
 var currentLogged;
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Resizer from "react-image-file-resizer";
 const logger = require("../../services/logger");
 let colorToggle;
 import InputText from "../../components/utils/InputText";
@@ -69,86 +65,6 @@ export default function BasicDetails() {
   //   const image = await resizeFile(file);
   //   console.log(image);
   // };
-
-  /* Function to upload logo to cloud*/
-  const uploadImage = async (image) => {
-    setUploadImageSpin(true);
-    image = await resizeFile(image);
-    const imageDetails = image;
-    const formData = new FormData();
-    formData.append("file", imageDetails);
-    formData.append("upload_preset", "Travel2Kashmir");
-    formData.append("enctype", "multipart/form-data");
-    axios
-      .post("https://api.cloudinary.com/v1_1/dvczoayyw/image/upload", formData)
-      .then((response) => {
-        setImageLogo(response?.data?.secure_url);
-      })
-      .catch((error) => {
-        toast.error("Image upload error. ", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      });
-  };
-
-
-  // Logo Upload
-  const submitPhotoEdit = () => {
-    const final_data = {
-      property_id: currentProperty?.property_id,
-      logo_link: imageLogo,
-    };
-    const url = "/api/basic";
-    axios
-      .put(url, final_data, { header: { "content-type": "application/json" } })
-      .then((response) => {
-        toast.success("API: Logo update success.", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-        fetchBasicDetails(currentProperty, setBasicDetails, setAllHotelDetails, setImageLogo, setVisible);
-        router.push("./basicdetails");
-        setUploadImageSpin(false);
-      })
-      .catch((error) => {
-        toast.error("API:Logo Update error.", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      });
-  };
-
-  const resizeFile = (file) =>
-    new Promise((resolve) => {
-      Resizer.imageFileResizer(
-        file,
-        164,
-        40,
-        "PNG",
-        100,
-        0,
-        (uri) => {
-          resolve(uri);
-        },
-        "base64"
-      );
-    });
 
 
 
@@ -223,7 +139,8 @@ export default function BasicDetails() {
                     {`Logo`}
 
                   </label>
-                  {imageLogo ? <img src={imageLogo} width="164px" height="40px" alt={basicDetails?.property_name} /> : <div className={`hotelLogo  border-2 
+                  {imageLogo ? <img src={imageLogo} width="164px" height="40px" alt={basicDetails?.property_name} /> :
+                   <div className={`hotelLogo border-2 
                   p-2 w-fit rounded-lg ${color?.text}`}>{basicDetails?.property_name}</div>}
 
                 </div>
@@ -400,8 +317,9 @@ export default function BasicDetails() {
                         name="myImage"
                         accept="image/png, image/gif, image/jpeg, image/jpg"
                         onChange={(e) => {
-                          uploadImage(e.target.files[0]);
-                          // uploadImage(e.target.files[0], setUploadImageSpin, setImageLogo, Resizer);
+                          // uploadImage(e.target.files[0]);
+                          
+                          uploadImage(e.target.files[0],(e)=>setUploadImageSpin(e),(e)=>setImageLogo(e));
                         }}
                         className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg 
                         focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
@@ -411,8 +329,8 @@ export default function BasicDetails() {
                     <Button
                       Primary={language?.Upload}
                       onClick={() => {
-                        submitPhotoEdit();
-                        // submitPhotoEdit(currentProperty, imageLogo, setBasicDetails, setAllHotelDetails, setImageLogo, setVisible, setUploadImageSpin, router);
+                        // submitPhotoEdit();
+                        submitPhotoEdit(currentProperty, imageLogo, setBasicDetails, setAllHotelDetails, setImageLogo, setVisible, setUploadImageSpin, router);
                       }}
                     />
                   </div>

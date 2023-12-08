@@ -259,7 +259,7 @@ function Contact() {
             gen={gen}
             setGen={setGen}
             add={() => setView(1)}
-            edit={submitContactEdit}
+            edit={submitContactEdit} //isko bolte hai passing function refrence
             delSpin={language?.SpinnerDelete}
             saveSpinner={language?.SpinnerSave}
             spinner={spinner}

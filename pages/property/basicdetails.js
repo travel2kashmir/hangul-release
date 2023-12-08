@@ -223,7 +223,7 @@ export default function BasicDetails() {
                     {`Logo`}
 
                   </label>
-                  {imageLogo ? <img src={imageLogo} width="164px" height="40px" alt={basicDetails?.property_name} /> : <div className={`hotelLogo border border-2 
+                  {imageLogo ? <img src={imageLogo} width="164px" height="40px" alt={basicDetails?.property_name} /> : <div className={`hotelLogo  border-2 
                   p-2 w-fit rounded-lg ${color?.text}`}>{basicDetails?.property_name}</div>}
 
                 </div>

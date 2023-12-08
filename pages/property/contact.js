@@ -21,6 +21,8 @@ import GenericTable from "../../components/utils/Tables/GenericTable";
 const logger = require("../../services/logger");
 import { InitialActions, ColorToggler } from "../../components/initalActions";
 import BreadCrumb from "../../components/utils/BreadCrumb";
+import { fetchHotelDetails, submitContactAdd, navigationList, validationContact } from "../../components/logic/property/Contact";
+
 var currentLogged;
 var i = 0;
 let colorToggle;
@@ -56,83 +58,20 @@ function Contact() {
       Router.push(window.location.origin)
     }
     else {
-      fetchHotelDetails();
+      fetchHotelDetails(currentProperty, setContacts, setCountryCode, propertyName, setGen, setVisible);
     }
   }, [])
 
-  // Fetch Hotel Details
-  const fetchHotelDetails = async () => {
-    var genData = [];
-    const url = `/api/${currentProperty.address_province.replace(
-      /\s+/g,
-      "-"
-    )}/${currentProperty.address_city}/${currentProperty.property_category
-      }s/${currentProperty.property_id}`;
-    axios.get(url)
-      .then((response) => {
-        setContacts(response.data.contacts);
-        setCountryCode(response.data.address?.[i]?.address_country);
-        propertyName = response.data.property_name;
-        {
-          response.data?.contacts?.map((item) => {
-            // var temp = {
-            //   "checkbox": { operation: undefined },
-            //   "Contact Details": {
-            //     "value": item.contact_data,
-            //     "inputType": "text",
-            //     "onChangeAction": () => alert("hello")
-            //   },
-            //   "Contact Type": {
-            //     "value": item.contact_type,
-            //     "inputType": undefined,
-            //     "onChangeAction": undefined
-            //   },
-            //   "status": item.status,
-            //   "id": item.contact_id,
-            //   "Actions": [
-
-            //     {
-            //       type: "button",
-            //       label: "Edit",
-            //       operation: (item) => { currentRoom(item) }
-            //     },
-            //     {
-            //       type: "button",
-            //       label: "Delete",
-            //       operation: (item) => { currentRoom(item) }
-            //     }
-
-            //   ]
-
-
-            // }
-            var temp = {
-              name: item.contact_type,
-              type: item.contact_data,
-              status: item.status,
-              id: item.contact_id
-            }
-            genData.push(temp)
-          })
-
-          setGen(genData);
-        }
-        setVisible(1);
-      })
-      .catch((error) => { logger.error("url to fetch property details, failed") });
-
-
-  }
   /* Function Add Contact*/
   function contactDeleteMultiple(checked, setDeleteMultiple) {
     const data = checked?.map((item) => { return ({ contact_id: item, property_id: currentProperty?.property_id }) })
     setSpinner(1);
     const contactdata = data;
     const finalContact = { contacts: contactdata };
-    axios
-      .post(`/api/deleteall/contacts`, finalContact, {
-        headers: { "content-type": "application/json" },
-      })
+
+    axios.post(`/api/deleteall/contacts`, finalContact, {
+      headers: { "content-type": "application/json" },
+    })
       .then((response) => {
         setSpinner(0)
         toast.success("API: Contact delete success.", {
@@ -144,7 +83,7 @@ function Contact() {
           draggable: true,
           progress: undefined,
         });
-        fetchHotelDetails();
+        fetchHotelDetails(currentProperty, setContacts, setCountryCode, propertyName, setGen, setVisible);
         Router.push("./contact");
         setDeleteMultiple(0);
       })
@@ -166,60 +105,6 @@ function Contact() {
 
   }
 
-  /* Function Add Contact*/
-  function submitContactAdd() {
-    if (flag === 1) {
-      setSpinner(1);
-      if (contact.contact_type !== undefined) {
-        const contactdata = [{
-          property_id: currentProperty?.property_id,
-          contact_type: contact?.contact_type,
-          contact_data: contact?.contact_data,
-          status: true
-        }];
-        const finalContact = { contacts: contactdata };
-        axios
-          .post(`/api/contact`, finalContact, {
-            headers: { "content-type": "application/json" },
-          })
-          .then((response) => {
-            setSpinner(0)
-            toast.success("API: Contact add success.", {
-              position: "top-center",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-            });
-            document.getElementById('addcontactform').reset();
-            setView(0)
-            fetchHotelDetails();
-            Router.push("./contact");
-            setContact([]);
-            setSpin(0)
-            setError({});
-            setFlag([]);
-          })
-          .catch((error) => {
-            setSpinner(0)
-            toast.error("API: Contact add error.", {
-              position: "top-center",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-            });
-            setView(0)
-            setFlag([]);
-          });
-      }
-    }
-  }
-
   /* Function Edit Contact*/
   const submitContactEdit = (props, noChange) => {
     if (objChecker.isEqual(props, noChange)) {
@@ -237,7 +122,7 @@ function Contact() {
       setError({})
       var result = validateContactEdit(props, countryCode)
       if (result === true) {
-        submitContactAdd();
+        submitContactAdd(flag, setSpinner, contact, currentProperty, setView, setContacts, setCountryCode, propertyName, setGen, setVisible, Router, setContact, setSpin, setError, setFlag);
 
         const final_data = {
           contact_id: props.id,
@@ -257,7 +142,7 @@ function Contact() {
               draggable: true,
               progress: undefined,
             });
-            fetchHotelDetails();
+            fetchHotelDetails(currentProperty, setContacts, setCountryCode, propertyName, setGen, setVisible);
             Router.push("./contact");
           })
           .catch((error) => {
@@ -305,7 +190,7 @@ function Contact() {
           draggable: true,
           progress: undefined,
         });
-        fetchHotelDetails();
+        fetchHotelDetails(currentProperty, setContacts, setCountryCode, propertyName, setGen, setVisible);
         setDeleteContact(0)
         Router.push("./contact");
       })
@@ -323,41 +208,7 @@ function Contact() {
       });
   };
 
-  // Add Validation Contact
-  const validationContact = () => {
-    setError({})
-    var result = validateContact(contact, countryCode)
-    console.log("Result" + JSON.stringify(result))
-    if (result === true) {
-      submitContactAdd();
-    }
-    else {
-      setError(result)
-    }
-  }
 
-
-  function navigationList(currentLogged, currentProperty) {
-    return ([
-      {
-        icon: "homeIcon",
-        text: "Home",
-        link: currentLogged?.id.match(/admin.[0-9]*/)
-          ? "../admin/adminlanding"
-          : "./landing"
-      },
-      {
-        icon: "rightArrowIcon",
-        text: [currentProperty?.property_name],
-        link: "./propertysummary"
-      },
-      {
-        icon: "rightArrowIcon",
-        text: "Contact",
-        link: ""
-      }
-    ])
-  }
   return (
     <>
       <Title name={`Engage |  ${language?.contact}`} />
@@ -489,7 +340,7 @@ function Contact() {
                           </option>
                           <option value="tdd number">TDD number</option>
                         </select>
-                        <p className="text-sm text-sm text-red-700 font-light">
+                        <p className="text-sm text-red-700 font-light">
                           {error?.contact_type}</p>
                       </div>
                       <div className="col-span-6 sm:col-span-3">
@@ -513,7 +364,7 @@ function Contact() {
                         focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
                           required
                         />
-                        <p className="text-sm text-sm text-red-700 font-light">
+                        <p className="text-sm text-red-700 font-light">
                           {error?.contact_data}</p>
                       </div>
                     </div>
@@ -524,7 +375,7 @@ function Contact() {
                   <div className={flag !== 1 && spinner === 0 ? 'block' : 'hidden'}>
                     <Button Primary={language?.AddDisabled} /></div>
                   <div className={spinner === 0 && flag === 1 ? 'block' : 'hidden'}>
-                    <Button Primary={language?.Add} onClick={() => { validationContact(contact) }} />
+                    <Button Primary={language?.Add} onClick={() => { validationContact(setError, contact, countryCode, flag, setSpinner, currentProperty, setView, setContacts, setCountryCode, propertyName, setGen, setVisible, Router, setContact, setSpin, setFlag) }} />
                   </div>
                   <div className={spinner === 1 && flag === 1 ? 'block' : 'hidden'}>
                     <Button Primary={language?.SpinnerAdd} />

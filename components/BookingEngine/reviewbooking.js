@@ -501,7 +501,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setShowModal, se
                     {/* timer for medium and large screen */}
                     <div className='hidden md:block'>
                         <CountdownTimer
-                            minutes={15}
+                            time={15}
                             onTimerComplete={closeButtonAction}
 
                         />
@@ -524,7 +524,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setShowModal, se
                 {/* timer for mobile screen */}
                 <div className='block md:hidden bg-slate-100 border-b-2 pb-2'>
                     <CountdownTimer
-                        minutes={15}
+                        time={15}
                         onTimerComplete={closeButtonAction}
 
                     />
@@ -809,14 +809,13 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setShowModal, se
                         :
                         <button
                             disabled={disabled || totalFinalRate + totalTaxAmount + totalOtherFees === 0}
-                            // target="_blank"
                             onClick={() => {
-                                setDisplay(4)
-                                // if (guest.length <= totalRoomsCapacity) {
-                                //     SubmitGuestDetails();
-                                // } else {
-                                //     toast.error('APP: No selected room can accommodate the current number of guests.');
-                                // }
+                                // setDisplay(4)
+                                if (guest.length <= totalRoomsCapacity) {
+                                    SubmitGuestDetails();
+                                } else {
+                                    toast.error('APP: No selected room can accommodate the current number of guests.');
+                                }
                             }}
                             className={`px-4 py-2 ${totalFinalRate + totalTaxAmount + totalOtherFees === 0
                                 ? "bg-gray-500" : "bg-green-700 hover:bg-green-900"

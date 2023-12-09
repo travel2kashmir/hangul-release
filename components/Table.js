@@ -367,7 +367,12 @@ const Table = (args) => {
                                                                     <button className="bg-gradient-to-r bg-green-600 hover:bg-green-700 text-white  sm:inline-flex 
                                                           font-semibold rounded-lg text-sm px-5 py-2 text-center items-center ease-linear transition-all
                                                            duration-150"
-                                                                        onClick={() => { if (flag.length != 0) { { setUpdate({ ...update, edit: 0, id: '' }) }; args.edit(editContact, updateContact); setFlag([]) } }}
+                                                                        onClick={() => {
+                                                                            if (flag.length != 0) {
+                                                                                { setUpdate({ ...update, edit: 0, id: '' }) }; args.edit(editContact, updateContact
+                                                                                ); setFlag([])
+                                                                            }
+                                                                        }}
                                                                     >{args?.common?.Save}</button>
 
 

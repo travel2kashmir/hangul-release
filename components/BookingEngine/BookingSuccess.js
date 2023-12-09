@@ -1,6 +1,7 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { clearRoomsSelected, clearReservationIdentity, setAddMoreRoom, clearGuestDetails, clearInventoryDetail } from '../redux/hangulSlice';
+import CountdownTimer from './CountDownTimer';
 
 function BookingSuccess({ setDisplay, setShowModal, setSearched, rooms, checkinDate, checkoutDate }) {
 
@@ -54,6 +55,7 @@ function BookingSuccess({ setDisplay, setShowModal, setSearched, rooms, checkinD
                     <div className='pl-8 md:pl-20  lg:pl-32 lg:pr-10 '>
                         <div>
                             <h2 className=' text-3xl md:text-5xl lg:text-5xl text-cyan-700'> BOOKING SUCCESSFULL</h2>
+                            <CountdownTimer time={5} onTimerComplete={(e)=>setDisplay(4)} Text={'Redirecting in'} unit={'second'}/>
                             <p className='pt-8 md:text-lg lg:text-lg'>The hotel booking has been successfully completed for :</p>
                             <div className='pt-5 capitalize font-medium text-lg'>
                                 {guestdetails.length > 1 ? <p>{guestdetails[0]?.guest_name + " +" + (guestdetails.length - 1)}</p> : <p>{guestdetails[0]?.guest_name}</p>}
@@ -76,6 +78,7 @@ function BookingSuccess({ setDisplay, setShowModal, setSearched, rooms, checkinD
                             </div>
 
                             <div className='pt-10'>
+                               
                                 <button
                                     onClick={() => {
                                         setDisplay(0)

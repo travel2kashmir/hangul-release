@@ -11,8 +11,9 @@ import Footer from "../../../components/Footer";
 import Sidebar from '../../../components/Sidebar';
 import Header from '../../../components/Header';
 import Router from 'next/router'
-
 const logger = require("../../../services/logger");
+import { InitialActions, ColorToggler } from '../../../components/initalActions';
+import BreadCrumb from '../../../components/utils/BreadCrumb';
 var language;
 var currentProperty;
 var currentLogged;
@@ -29,119 +30,58 @@ function ViewBooking() {
     const [bookingDetail, setBookingDetail] = useState([])
     const [bookingDetailLoader, setBookingDetailLoader] = useState(true)
 
+   
+    /** Use Effect to fetch details from the Local Storage **/
+    useEffect(() => {
+        const resp = InitialActions({ setColor, setMode })
+        language = resp?.language;
+        currentLogged = resp?.currentLogged;
+        currentProperty = resp?.currentProperty;
+        colorToggle = resp?.colorToggle
+        let currentBookingId = localStorage.getItem('BookingId');
+        getBookingDetails(currentBookingId);
+        setVisible(1)
+        // setBookingDetail(DummyBookingData?.booking.map((i) => i))
+    }, [])
+
     function getBookingDetails(bookingId) {
         const url = `/api/all_bookings/${currentProperty.property_id}/${bookingId}`
         axios.get(url, { headers: { 'accept': 'application/json' } }).then((response) => {
             setBookingDetail(response?.data?.booking.map((i) => i));
             setBookingDetailLoader(false);
+
         }).catch((err) => {
             console.log(err)
         });
     }
 
-
-    // let DummyBookingData = {
-    //     "booking": [
-    //         {
-    //             "booking_id": "bk0090",
-    //             "booking_date_from": "2023-11-24",
-    //             "booking_date_to": "2023-11-25",
-    //             "total_rooms_booked": 1,
-    //             "is_cancelled": false,
-    //             "booking_time": "2023-11-22 13:03:44.222",
-    //             "booking_room_link": [
-    //                 {
-    //                     "room_name": "Capsule",
-    //                     "room_type": "single",
-    //                     "room_count": 1,
-    //                     "room_id": "r0011"
-    //                 }
-    //             ],
-    //             "booking_guest_link": [
-    //                 {
-    //                     "guest_name": "Roshan ALi dar",
-    //                     "guest_email": "roshanali@mail.in",
-    //                     "guest_age": 20,
-    //                     "guest_phone_number": 7006177645
-    //                 }
-    //             ],
-    //             "booking_invoice": [
-    //                 {
-    //                     "base_price": 2200,
-    //                     "taxes": 220,
-    //                     "other_fees": 200,
-    //                     "coupon_discount": 120,
-    //                     "total_price": 2400,
-    //                     "transaction_refrence_no": "rx12345",
-    //                     "invoice_time": "2023-11-22 13:03:44.222",
-    //                     "booking_gst_link": [
-    //                         {
-    //                             "gst_registration_no": "RX12aa4",
-    //                             "gst_company_name": "ABC Co",
-    //                             "gst_company_address": "12 Rashan Ghat",
-    //                             "invoice_id": "inv001"
-    //                         }
-    //                     ]
-    //                 }
-    //             ]
-    //         }
-    //     ]
-    // }
-
-    /** Use Effect to fetch details from the Local Storage **/
-    useEffect(() => {
-        firstfun();
-        let currentBookingId = localStorage.getItem('BookingId');
-        getBookingDetails(currentBookingId);
-        // setBookingDetail(DummyBookingData?.booking.map((i) => i))
-    }, [])
-
-    const firstfun = () => {
-        if (typeof window !== 'undefined') {
-            var locale = localStorage.getItem("Language");
-            colorToggle = localStorage.getItem("colorToggle");
-            if (colorToggle === "" || colorToggle === undefined || colorToggle === null || colorToggle === "system") {
-                window.matchMedia("(prefers-color-scheme:dark)").matches === true ? setColor(colorFile?.dark) : setColor(colorFile?.light)
-                setMode(window.matchMedia("(prefers-color-scheme:dark)").matches === true ? true : false);
-            }
-            else if (colorToggle === "true" || colorToggle === "false") {
-                setColor(colorToggle === "true" ? colorFile?.dark : colorFile?.light);
-                setMode(colorToggle === "true" ? true : false)
-            }
+    function navigationList(currentLogged, currentProperty) {
+        return ([
             {
-                if (locale === "ar") {
-                    language = arabic;
-                }
-                if (locale === "en") {
-                    language = english;
-                }
-                if (locale === "fr") {
-                    language = french;
-                }
+                icon: "homeIcon",
+                text: "Home",
+                link: currentLogged?.id.match(/admin.[0-9]*/)
+                    ? "../../admin/adminlanding"
+                    : "../landing"
+            },
+            {
+                icon: "rightArrowIcon",
+                text: [currentProperty?.property_name],
+                link: "../propertysummary"
+            },
+            {
+                icon: "rightArrowIcon",
+                text: "Bookings",
+                link: "../bookings"
+            },
+            {
+                icon: "rightArrowIcon",
+                text: "View Booking",
+                link: ""
             }
-            /** Current Property Details fetched from the local storage **/
-            currentProperty = JSON.parse(localStorage.getItem("property"));
-            currentLogged = JSON.parse(localStorage.getItem("Signin Details"));
-            setVisible(1)
-        }
+        ])
     }
-    const colorToggler = (newColor) => {
-        if (newColor === 'system') {
-            window.matchMedia("(prefers-color-scheme:dark)").matches === true ? setColor(colorFile?.dark)
-                : setColor(colorFile?.light)
-            localStorage.setItem("colorToggle", newColor)
-        }
-        else if (newColor === 'light') {
-            setColor(colorFile?.light)
-            localStorage.setItem("colorToggle", false)
-        }
-        else if (newColor === 'dark') {
-            setColor(colorFile?.dark)
-            localStorage.setItem("colorToggle", true)
-        }
-        firstfun();
-        Router.push('./viewBooking')
-    }
+
 
     return (
         <>
@@ -150,16 +90,17 @@ function ViewBooking() {
             <Header
                 Primary={english?.Side1}
                 color={color}
+                setColor={setColor}
                 Type={currentLogged?.user_type}
-                Sec={colorToggler}
+                Sec={ColorToggler}
                 mode={mode}
                 setMode={setMode}
             />
 
             <Sidebar
                 Primary={english?.Side1}
-                color={color} T
-                ype={currentLogged?.user_type}
+                color={color}
+                Type={currentLogged?.user_type}
 
             />
 
@@ -167,50 +108,10 @@ function ViewBooking() {
                 className={`${color?.greybackground} px-4 pt-24 pb-2 relative overflow-y-auto lg:ml-64`}>
 
                 {/* bread crumb */}
-                <nav className="flex mb-5 ml-4" aria-label="Breadcrumb">
-                    <ol className="inline-flex items-center space-x-1 md:space-x-2">
-                        <li className="inline-flex items-center">
-                            <div className={`${color?.text} text-base font-medium  inline-flex items-center`}>
-                                <svg className="w-5 h-5 mr-2.5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
-                                <Link href={currentLogged?.id.match(/admin.[0-9]*/) ? "../../admin/adminlanding" : "../landing"}
-                                    className={`${color?.text} text-base font-medium  inline-flex items-center`}><a>{language?.home}</a>
-                                </Link></div>
-                        </li>
-                        <li>
-                            <div className="flex items-center">
-
-                                <div className={`${color?.text} text-base capitalize font-medium  inline-flex items-center`}>
-                                    <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path></svg>
-                                    <div className={visible === 0 ? 'block w-16' : 'hidden'}><Headloader /></div>
-                                    <div className={visible === 1 ? 'block' : 'hidden'}>   <Link href="../propertysummary" className={`text-gray-700 text-sm ml-1 md:ml-2  font-medium hover:${color?.text} `}>
-                                        <a>{currentProperty?.property_name}</a>
-                                    </Link>
-                                    </div></div>
-
-                            </div>
-                        </li>
-                        <li>
-                            <div className="flex items-center">
-                                <div className={`${color?.text} text-base font-medium  inline-flex items-center`}>
-                                    <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path></svg>
-                                    <div className={visible === 0 ? 'block w-16' : 'hidden'}><Headloader /></div>
-                                    <div className={visible === 1 ? 'block' : 'hidden'}>   <Link href="../bookings" className="text-gray-700 text-sm   font-medium hover:{`${color?.text} ml-1 md:ml-2">
-                                        <a>{language?.bookings}</a>
-                                    </Link>
-                                    </div></div>
-
-                            </div>
-                        </li>
-                        <li>
-                            <div className="flex items-center">
-                                <div className={`${color?.textgray} text-base font-medium  inline-flex items-center`}>
-                                    <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path></svg>
-                                    <span className="text-gray-400 ml-1 md:ml-2 font-medium text-sm  " aria-current="page">{language?.viewBooking}</span>
-                                </div>
-                            </div>
-                        </li>
-                    </ol>
-                </nav>
+                <BreadCrumb
+                    color={color}
+                    crumbList={navigationList(currentLogged, currentProperty)}
+                />
 
                 {/* Title */}
                 <div className=" pt-2 ">

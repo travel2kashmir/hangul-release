@@ -100,27 +100,27 @@ function RoomCard({ color, filteredRoomData, roomImage, setDisplay, roomRates, c
   // }
 
   // generate data to be fed for booking
-  function generateBookingObjects(start_date, end_date, otherData) {
-    const bookingObjects = [];
-    let currentDate = new Date(start_date); // Start with the start_date
+  // function generateBookingObjects(start_date, end_date, otherData) {
+  //   const bookingObjects = [];
+  //   let currentDate = new Date(start_date); // Start with the start_date
 
-    while (currentDate <= new Date(end_date)) {
-      const bookingDate = new Date(currentDate);
-      const bookingDateString = bookingDate.toISOString().split('T')[0]; // Format the date as YYYY-MM-DD
+  //   while (currentDate <= new Date(end_date)) {
+  //     const bookingDate = new Date(currentDate);
+  //     const bookingDateString = bookingDate.toISOString().split('T')[0]; // Format the date as YYYY-MM-DD
 
-      const bookingObject = {
-        booking_date: bookingDateString,
-        ...otherData
-      };
+  //     const bookingObject = {
+  //       booking_date: bookingDateString,
+  //       ...otherData
+  //     };
 
-      bookingObjects.push(bookingObject);
+  //     bookingObjects.push(bookingObject);
 
-      // Move to the next day
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
+  //     // Move to the next day
+  //     currentDate.setDate(currentDate.getDate() + 1);
+  //   }
 
-    return bookingObjects;
-  }
+  //   return bookingObjects;
+  // }
 
 
   function toCheckInventoryAvailable() {

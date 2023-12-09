@@ -7,7 +7,7 @@ import Modal from '../NewTheme/modal';
 import BookingModal from './BookingModal'
 
 
-function BookingForm({ color, rooms, allHotelDetails, searched, setSearched }) {
+function BookingForm({ setShowModalBooking, color, rooms, allHotelDetails, searched, setSearched }) {
 
     const [showBookingEngine, setShowBookingEngine] = useState(0);
 
@@ -148,6 +148,7 @@ function BookingForm({ color, rooms, allHotelDetails, searched, setSearched }) {
                                     setRoomsLoader(true)
                                     setSearched(!searched);
                                     setShowBookingEngine(1);
+                                    setShowModalBooking(0)
                                     setNotSelectedErr((prevValue) => ({ ...prevValue, "forCheckin": false, "forCheckout": false }))
                                 }
                             }}

@@ -14,14 +14,17 @@ import Header from "../../../components/Header";
 import "react-toastify/dist/ReactToastify.css";
 import Link from "next/link";
 import { english, french, arabic } from "../../../components/Languages/Languages";
-var language;
-var currentProperty;
-var propertyName;
 import Headloader from "../../../components/loaders/headloader";
 import LoaderTable from "../../../components/loadertable";
 const logger = require("../../../services/logger");
+import { InitialActions, ColorToggler } from "../../../components/initalActions";
+import BreadCrumb from "../../../components/utils/BreadCrumb";
+
 var currentLogged;
 let colorToggle;
+var language;
+var currentProperty;
+var propertyName;
 
 function Unavailability() {
     const [gen, setGen] = useState([])
@@ -47,70 +50,29 @@ function Unavailability() {
     const [itemsPerPage, setItemsPerPage] = useState(5);
     const [page, setPage] = useState(1);
 
+    // runs at load time
     useEffect(() => {
-        firstfun();
-    }, [])
+        const resp = InitialActions({ setColor, setMode })
+        language = resp?.language;
+        currentLogged = resp?.currentLogged;
+        currentProperty = resp?.currentProperty;
+        colorToggle = resp?.colorToggle
 
-    useEffect(() => {
         if (JSON.stringify(currentLogged) === 'null') {
             Router.push(window.location.origin)
         }
         else {
             fetchHotelDetails();
         }
-    }, []);
+    }, [])
 
-    const firstfun = () => {
-        if (typeof window !== 'undefined') {
-            var locale = localStorage.getItem("Language");
-            colorToggle = localStorage.getItem("colorToggle");
-            if (colorToggle === "" || colorToggle === undefined || colorToggle === null || colorToggle === "system") {
-                window.matchMedia("(prefers-color-scheme:dark)").matches === true ? setColor(colorFile?.dark) : setColor(colorFile?.light);
-                setMode(window.matchMedia("(prefers-color-scheme:dark)").matches === true ? true : false);
-            }
-            else if (colorToggle === "true" || colorToggle === "false") {
-                setColor(colorToggle === "true" ? colorFile?.dark : colorFile?.light);
-                setMode(colorToggle === "true" ? true : false)
-            }
-            if (locale === "ar") {
-                language = arabic;
-            }
-            if (locale === "en") {
-                language = english;
-            }
-            if (locale === "fr") {
-                language = french;
-            }
-            /** Current Property Details fetched from the local storage **/
-            currentProperty = JSON.parse(localStorage.getItem("property"));
-            currentLogged = JSON.parse(localStorage.getItem("Signin Details"));
-        }
-    }
-
-    const colorToggler = (newColor) => {
-        if (newColor === 'system') {
-            window.matchMedia("(prefers-color-scheme:dark)").matches === true ? setColor(colorFile?.dark)
-                : setColor(colorFile?.light)
-            localStorage.setItem("colorToggle", newColor)
-        }
-        else if (newColor === 'light') {
-            setColor(colorFile?.light)
-            localStorage.setItem("colorToggle", false)
-        }
-        else if (newColor === 'dark') {
-            setColor(colorFile?.dark)
-            localStorage.setItem("colorToggle", true)
-        }
-        firstfun();
-        Router.push(window.location.href)
-    }
 
     // Fetch Hotel Details
     const fetchHotelDetails = async () => {
         const url = `/api/unavailability/${currentProperty.property_id}`;
         axios.get(url)
             .then((response) => {
-                
+
                 if (response.data.room_unavailability.length > 0) {
                     setInventories(response.data.room_unavailability)
                 } else {
@@ -206,15 +168,39 @@ function Unavailability() {
         })
     }
 
+    function navigationList(currentLogged, currentProperty) {
+        return ([
+            {
+                icon: "homeIcon",
+                text: "Home",
+                link: currentLogged?.id.match(/admin.[0-9]*/)
+                    ? "../admin/adminlanding"
+                    : "./landing"
+            },
+            {
+                icon: "rightArrowIcon",
+                text: [currentProperty?.property_name],
+                link: "./propertysummary"
+            },
+            {
+                icon: "rightArrowIcon",
+                text: "Unavailability",
+                link: ""
+            }
+        ])
+    }
+
+
     return (
         <>
             <Title name={`Engage |  ${language?.inventory}`} />
 
             <Header
                 color={color}
+                setColor={setColor}
                 Primary={english?.SideInventory}
                 Type={currentLogged?.user_type}
-                Sec={colorToggler}
+                Sec={ColorToggler}
                 mode={mode}
                 setMode={setMode}
 
@@ -230,38 +216,12 @@ function Unavailability() {
             <div
                 id="main-content"
                 className={`${color?.whitebackground} min-h-screen pt-24 relative overflow-y-auto lg:ml-64`}>
-                {/* bread crumb */}
-                <nav className="flex mb-5 ml-4" aria-label="Breadcrumb">
-                    <ol className="inline-flex items-center space-x-1 md:space-x-2">
-                        <li className="inline-flex items-center">
-                            <div className={`${color?.text} text-base font-medium  inline-flex items-center`}>
-                                <svg className="w-5 h-5 mr-2.5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
-                                <Link href={currentLogged?.id.match(/admin.[0-9]*/) ? "../admin/adminlanding" : "./landing"}
-                                    className={`${color?.text} text-base font-medium  inline-flex items-center`}><a>{language?.home}</a>
-                                </Link></div>
-                        </li>
-                        <li>
-                            <div className="flex items-center">
-                                <div className={`${color?.text} text-base font-medium capitalize  inline-flex items-center`}>
-                                    <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path></svg>
-                                    <div className={visible === 0 ? 'block w-16' : 'hidden'}><Headloader /></div>
-                                    <div className={visible === 1 ? 'block' : 'hidden'}>   <Link href="./propertysummary" className="text-gray-700 text-sm   font-medium hover:{`${color?.text} ml-1 md:ml-2">
-                                        <a>{currentProperty?.property_name}</a>
-                                    </Link>
-                                    </div></div>
 
-                            </div>
-                        </li>
-                        <li>
-                            <div className="flex items-center">
-                                <div className={`${color?.textgray} text-base font-medium  inline-flex items-center`}>
-                                    <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path></svg>
-                                    <span className="text-gray-400 ml-1 md:ml-2 font-medium text-sm  " aria-current="page">{language?.unavailability}</span>
-                                </div>
-                            </div>
-                        </li>
-                    </ol>
-                </nav>
+                {/* bread crumb */}
+                <BreadCrumb
+                    color={color}
+                    crumbList={navigationList(currentLogged, currentProperty)}
+                />
 
                 {/* Header */}
                 <div className={(visible === 0 && colorToggle == false ? 'block' : 'hidden')}><LoaderTable /></div>
@@ -340,7 +300,7 @@ function Unavailability() {
                                         </tr>
                                     </thead>
 
-                                          
+
                                     <tbody className={` ${color?.whitebackground} divide-y divide-gray-200 `} id="TableList" >
                                         {displayData.map((inv, index) => (
                                             <>
@@ -441,7 +401,7 @@ function Unavailability() {
                                                                                 className="bg-gradient-to-r bg-green-600 hover:bg-green-700 text-white sm:inline-flex font-semibold rounded-lg text-sm px-5 py-2 text-center items-center ease-linear transition-all duration-150"
                                                                                 onClick={() => {
                                                                                     setSaveLoader(true)
-                                                                                    updateUnavailability({ "unavailablity": [{ ...editInventory, "room_id": inv.room_id,"unavailability_id":inv.unavailability_id }] })
+                                                                                    updateUnavailability({ "unavailablity": [{ ...editInventory, "room_id": inv.room_id, "unavailability_id": inv.unavailability_id }] })
                                                                                 }}
                                                                             >{'Save'}
                                                                             </button>

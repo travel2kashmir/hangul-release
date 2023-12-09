@@ -7,7 +7,7 @@ import Link from "next/link";
 import Headloader from "../../components/loaders/headloader";
 import Sidebar from "../../components/Sidebar";
 import Header from "../../components/Header";
-import { english,arabic,french} from "../../components/Languages/Languages"
+import { english, arabic, french } from "../../components/Languages/Languages"
 import Footer from '../../components/Footer';
 import Button from "../../components/Button";
 import { ToastContainer, toast } from "react-toastify";
@@ -16,13 +16,16 @@ import reviewImage from '../../public/review.png';
 import validateReview from "../../components/validation/review";
 import InputTextBox from "../../components/utils/InputTextBox";
 import Title from "../../components/title";
-var currentLogged;
-var language;
-var currentProperty;
 import Router from 'next/router'
 const logger = require("../../services/logger");
 import Image from 'next/image';
+import { InitialActions, ColorToggler } from "../../components/initalActions";
+import BreadCrumb from "../../components/utils/BreadCrumb";
+
 let colorToggle;
+var currentLogged;
+var language;
+var currentProperty;
 
 function Reviews() {
   const [reviews, setReviews] = useState([]);
@@ -77,67 +80,21 @@ function Reviews() {
     )
   }
 
+  // runs at load time
   useEffect(() => {
+    const resp = InitialActions({ setColor, setMode })
+    language = resp?.language;
+    currentLogged = resp?.currentLogged;
+    currentProperty = resp?.currentProperty;
+    colorToggle = resp?.colorToggle
 
-    firstfun();
-  }, [])
-  const firstfun = () => {
-    if (typeof window !== 'undefined') {
-      var locale = localStorage.getItem("Language");
-      const colorToggle = localStorage.getItem("colorToggle");
-      if (colorToggle === "" || colorToggle === undefined || colorToggle === null || colorToggle === "system") {
-        window.matchMedia("(prefers-color-scheme:dark)").matches === true ? setColor(colorFile?.dark) : setColor(colorFile?.light)
-        setMode(window.matchMedia("(prefers-color-scheme:dark)").matches === true ? true : false);
-      }
-      else if (colorToggle === "true" || colorToggle === "false") {
-        setColor(colorToggle === "true" ? colorFile?.dark : colorFile?.light);
-        setMode(colorToggle === "true" ? true : false)
-      }
-
-      {
-        if (locale === "ar") {
-          language = arabic;
-        }
-        if (locale === "en") {
-          language = english;
-        }
-        if (locale === "fr") {
-          language = french;
-        }
-      }
-      /** Current Property Details fetched from the local storage **/
-      currentProperty = JSON.parse(localStorage.getItem("property"));
-      currentLogged = JSON.parse(localStorage.getItem("Signin Details"));
-    }
-  }
-
-  useEffect(() => {
     if (JSON.stringify(currentLogged) === 'null') {
       Router.push(window.location.origin)
     }
     else {
       fetchReviews();
     }
-  }, []);
-
-
-  const colorToggler = (newColor) => {
-    if (newColor === 'system') {
-      window.matchMedia("(prefers-color-scheme:dark)").matches === true ? setColor(colorFile?.dark)
-        : setColor(colorFile?.light)
-      localStorage.setItem("colorToggle", newColor)
-    }
-    else if (newColor === 'light') {
-      setColor(colorFile?.light)
-      localStorage.setItem("colorToggle", false)
-    }
-    else if (newColor === 'dark') {
-      setColor(colorFile?.dark)
-      localStorage.setItem("colorToggle", true)
-    }
-    firstfun();
-    Router.push('./reviews')
-  }
+  }, [])
 
   const fetchReviews = async () => {
     const url = `/api/${currentProperty.address_province.replace(
@@ -312,46 +269,58 @@ function Reviews() {
     }
   }
 
+  function navigationList(currentLogged, currentProperty) {
+    return ([
+      {
+        icon: "homeIcon",
+        text: "Home",
+        link: currentLogged?.id.match(/admin.[0-9]*/)
+          ? "../admin/adminlanding"
+          : "./landing"
+      },
+      {
+        icon: "rightArrowIcon",
+        text: [currentProperty?.property_name],
+        link: "./propertysummary"
+      },
+      {
+        icon: "rightArrowIcon",
+        text: "Reviews",
+        link: ""
+      }
+    ])
+  }
+
   return (
-    <> <Title name={`Engage |  ${language?.reviews}`} />
-      <Header color={color} setColor={setColor} Primary={english?.Side} Type={currentLogged?.user_type} Sec={colorToggler} mode={mode} setMode={setMode} />
-      <Sidebar Primary={english?.Side} color={color} Type={currentLogged?.user_type} />
+    <>
+      <Title name={`Engage |  ${language?.reviews}`} />
+
+      <Header
+        color={color}
+        setColor={setColor}
+        Primary={english?.Side}
+        Type={currentLogged?.user_type}
+        Sec={ColorToggler}
+        mode={mode}
+        setMode={setMode}
+      />
+
+      <Sidebar
+        Primary={english?.Side}
+        color={color}
+        Type={currentLogged?.user_type}
+      />
+
       <div id="main-content"
         className={`${color?.greybackground} px-4 pt-24 py-2 relative overflow-y-auto lg:ml-64`}>
+
         {/* bread crumb */}
-        <nav className="flex mb-5 ml-4" aria-label="Breadcrumb">
-          <ol className="inline-flex items-center space-x-1 md:space-x-2">
-            <li className="inline-flex items-center">
-              <div className={`${color?.text} text-base font-medium  inline-flex items-center`}>
-                <svg className="w-5 h-5 mr-2.5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
-                <Link href={currentLogged?.id.match(/admin.[0-9]*/) ? "../admin/adminlanding" : "./landing"}
-                  className={`${color?.text} text-base font-medium  inline-flex items-center`}><a>{language?.home}</a>
-                </Link></div>
-            </li>
-            <li>
-              <div className="flex items-center">
-                <div className={`${color?.text} capitalize text-base font-medium  inline-flex items-center`}>
-                  <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path></svg>
-                  <div className={visible === 0 ? 'block w-16' : 'hidden'}><Headloader /></div>
-                  <div className={visible === 1 ? 'block' : 'hidden'}>   <Link href="./propertysummary" className="text-gray-700 text-sm   font-medium hover:{`${color?.text} ml-1 md:ml-2">
-                    <a>{currentProperty?.property_name}</a>
-                  </Link>
-                  </div></div>
+        <BreadCrumb
+          color={color}
+          crumbList={navigationList(currentLogged, currentProperty)}
+        />
 
-              </div>
-            </li>
-            <li>
-              <div className="flex items-center">
-                <div className={`${color?.textgray} capitalize text-base font-medium  inline-flex items-center`}>
-                  <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path></svg>
-                  <span className="text-gray-400 ml-1 md:ml-2 font-medium text-sm  " aria-current="page">{language?.reviews}</span>
-                </div>
-              </div>
-            </li>
-          </ol>
-        </nav>
         {/* Header */}
-
         <div className="flex justify-between">
           <h1 className=" text-xl sm:text-2xl mx-2 font-semibold mb-2 text-gray-900">{language?.reviews} </h1>
           <div className="mx-8"> <Button Primary={language?.Add} onClick={(e) => { setView(1) }} /></div>
@@ -503,7 +472,7 @@ function Reviews() {
                           </label>
                           <input
                             type="text"
-                           className={`${color.greybackground} shadow-sm  border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
+                            className={`${color.greybackground} shadow-sm  border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
                             onChange={e => onChange(e, review?.index, 'review_title')}
                             placeholder="Review title"
                           />
@@ -542,7 +511,7 @@ function Reviews() {
                           <select
                             onChange={e => onChange(e, review?.index, 'review_rating')}
                             className={`${color.greybackground} shadow-sm  border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
-                            >
+                          >
                             <option selected disabled>Select Rating </option>
                             <option value="1" >1</option>
                             <option value="2">2</option>
@@ -617,33 +586,33 @@ function Reviews() {
 
 
 
-                          {/*Review content */}
-                    <InputTextBox
-                      label={` ${language?.reviewcontent}`}
-                      visible={visible}
-                      defaultValue={review[0]?.review_content}
-                      wordLimit={1000}
-                      onChangeAction={(e) => {
-                        if (e.target.value.length >= 0 && e.target.value.length < 1000) {
-                          setError({})
-                          onChange(e, review?.index, 'review_content')
-                        }
-                        else {
-                          setError({ review_content: 'word limit reached' })
-                        }
+                        {/*Review content */}
+                        <InputTextBox
+                          label={` ${language?.reviewcontent}`}
+                          visible={visible}
+                          defaultValue={review[0]?.review_content}
+                          wordLimit={1000}
+                          onChangeAction={(e) => {
+                            if (e.target.value.length >= 0 && e.target.value.length < 1000) {
+                              setError({})
+                              onChange(e, review?.index, 'review_content')
+                            }
+                            else {
+                              setError({ review_content: 'word limit reached' })
+                            }
 
-                      }
+                          }
 
-                      }
-                      error={error?.review_content}
-                      color={color}
-                      req={true}
-                      tooltip={true}
-                    />
+                          }
+                          error={error?.review_content}
+                          color={color}
+                          req={true}
+                          tooltip={true}
+                        />
 
 
                       </div>
-                    
+
                     </div></div>)
                   )}
 
@@ -777,7 +746,7 @@ function Reviews() {
                         <select
                           onChange={e => setActive({ ...active, review_type: e.target.value })}
                           className={`${color.greybackground} shadow-sm  border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
-                          >
+                        >
                           <option selected disabled>{active?.review_type?.charAt(0).toUpperCase() + active?.review_type?.slice(1) || 'select'}</option>
                           <option value="user" >User</option>
                           <option value="editorial">Editorial</option>
@@ -826,32 +795,32 @@ function Reviews() {
                         </p>
                       </div>
 
-                       {/*Review content */}
-                    <InputTextBox
-                      label={` ${language?.reviewcontent}`}
-                      visible={visible}
-                      defaultValue={active?.review_content}
-                      wordLimit={1000}
-                      onChangeAction={(e) => {
-                        if (e.target.value.length >= 0 && e.target.value.length < 1000) {
-                          setError({})
-                          setActive({ ...active, review_content: e.target.value })
-                        }
-                        else {
-                          setError({ review_content: 'word limit reached' })
+                      {/*Review content */}
+                      <InputTextBox
+                        label={` ${language?.reviewcontent}`}
+                        visible={visible}
+                        defaultValue={active?.review_content}
+                        wordLimit={1000}
+                        onChangeAction={(e) => {
+                          if (e.target.value.length >= 0 && e.target.value.length < 1000) {
+                            setError({})
+                            setActive({ ...active, review_content: e.target.value })
+                          }
+                          else {
+                            setError({ review_content: 'word limit reached' })
+                          }
+
                         }
 
-                      }
-
-                      }
-                      error={error?.review_content}
-                      color={color}
-                      req={true}
-                      tooltip={true}
-                    />
+                        }
+                        error={error?.review_content}
+                        color={color}
+                        req={true}
+                        tooltip={true}
+                      />
 
                     </div>
-                   
+
                   </div>
                 </form>
 

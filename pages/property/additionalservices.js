@@ -19,60 +19,49 @@ import english from "../../components/Languages/en";
 import french from "../../components/Languages/fr";
 import arabic from "../../components/Languages/ar";
 const logger = require("../../services/logger");
+import { InitialActions, ColorToggler } from "../../components/initalActions";
+
 var language;
 var currentProperty;
 var currentLogged;
 import Router from 'next/router';
+import BreadCrumb from '../../components/utils/BreadCrumb';
 let colorToggle;
 
 function AdditionalServices() {
-        const [visible,setVisible]=useState(0); 
-        const [spinner, setSpinner] = useState(0)
-        const [additionalServices, setAdditionalServices] = useState({})
-        const [error, setError] = useState({})
-        const [color, setColor] = useState({})
-        const[mode,setMode] = useState()
-        const [services, setServices] = useState([])
-        const [flag, setFlag] = useState([])
-        const [view, setView] = useState(0);
-        const [modified, setModified] = useState([])
-        const [add, setAdd] = useState(0)
-        const [gen, setGen] = useState([])
-        const [gene, setGene] = useState([])
+    const [visible, setVisible] = useState(0);
+    const [spinner, setSpinner] = useState(0)
+    const [additionalServices, setAdditionalServices] = useState({})
+    const [error, setError] = useState({})
+    const [color, setColor] = useState({})
+    const [mode, setMode] = useState()
+    const [services, setServices] = useState([])
+    const [flag, setFlag] = useState([])
+    const [view, setView] = useState(0);
+    const [modified, setModified] = useState([])
+    const [add, setAdd] = useState(0)
+    const [gen, setGen] = useState([])
+    const [gene, setGene] = useState([])
 
+    // runs at load time
     useEffect(() => {
-        firstfun();
-       
+        const resp = InitialActions({ setColor, setMode })
+        language = resp?.language;
+        currentLogged = resp?.currentLogged;
+        currentProperty = resp?.currentProperty;
+        colorToggle = resp?.colorToggle
+
+        if (JSON.stringify(currentLogged) === 'null') {
+            Router.push(window.location.origin)
+        }
+        else {
+            fetchAdditionalServices();
+            fetchHotelDetails();
+
+        }
     }, [])
 
-    const firstfun = () => {
-        if (typeof window !== 'undefined') {
-            var locale = localStorage.getItem("Language");
-             colorToggle = localStorage.getItem("colorToggle");
-            if(colorToggle === "" || colorToggle === undefined ||  colorToggle ===null ||colorToggle === "system"){
-                window.matchMedia("(prefers-color-scheme:dark)").matches === true ? setColor(colorFile?.dark) :setColor(colorFile?.light) 
-                setMode(window.matchMedia("(prefers-color-scheme:dark)").matches === true ? true : false);
-            }
-             else if(colorToggle === "true" || colorToggle === "false") {
-               setColor(colorToggle=== "true" ? colorFile?.dark: colorFile?.light);
-               setMode(colorToggle === "true" ? true : false)
-             } 
-           { if (locale === "ar") {
-                language = arabic;
-            }
-            if (locale === "en") {
-                language = english;
-            }
-            if (locale === "fr") {
-                language = french;
-            }
-            }
-           /** Current Property Details fetched from the local storage **/
-            currentProperty = JSON.parse(localStorage.getItem("property"));
-            currentLogged = JSON.parse(localStorage.getItem("Signin Details"));
-        }
-    }
-    
+
     const fetchAdditionalServices = async () => {
         var geneData = [];
         const url = `/api/additional_services/${currentProperty.property_id}`
@@ -94,132 +83,119 @@ function AdditionalServices() {
                     setGene(geneData);
                     setVisible(1);
                 }
-              
+
             })
             .catch((error) => { logger.error("url to fetch additional services, failed") });
     }
 
-    useEffect(() => {
-        if(JSON.stringify(currentLogged)==='null'){
-            Router.push(window.location.origin)
-          }    
-          else{
-            fetchAdditionalServices();
-            fetchHotelDetails();
-    
-          }
-    }, [])
-
-  /* Function call to fetch Current Property Details when page loads */
-  const fetchHotelDetails = async () => {
-    var genData = [];
-    const url = `/api/${currentProperty.address_province.replace(
-        /\s+/g,
-        "-"
-    )}/${currentProperty.address_city}/${currentProperty.property_category
-        }s/${currentProperty.property_id}`;
-    axios.get(url)
-        .then((response) => {
-            setServices(response.data);
-            logger.info("url  to fetch property details hitted successfully")
-            {
-                response.data?.services?.map((item) => {
-                    var temp = {
-                        name: item.local_service_name,
-                        description: item.service_comment,
-                        type: item.service_value,
-                        status: item.status,
-                        id: item.service_id
-                    }
-                    genData.push(temp)
-                })
-                setGen(genData);
-            }
-            setVisible(1)
-        })
-        .catch((error) => { logger.error("url to fetch property details, failed") });
-}
+    /* Function call to fetch Current Property Details when page loads */
+    const fetchHotelDetails = async () => {
+        var genData = [];
+        const url = `/api/${currentProperty.address_province.replace(
+            /\s+/g,
+            "-"
+        )}/${currentProperty.address_city}/${currentProperty.property_category
+            }s/${currentProperty.property_id}`;
+        axios.get(url)
+            .then((response) => {
+                setServices(response.data);
+                logger.info("url  to fetch property details hitted successfully")
+                {
+                    response.data?.services?.map((item) => {
+                        var temp = {
+                            name: item.local_service_name,
+                            description: item.service_comment,
+                            type: item.service_value,
+                            status: item.status,
+                            id: item.service_id
+                        }
+                        genData.push(temp)
+                    })
+                    setGen(genData);
+                }
+                setVisible(1)
+            })
+            .catch((error) => { logger.error("url to fetch property details, failed") });
+    }
 
     /* Function to edit additional services */
-      const editAdditionalServices = (props,noChange) => { 
-        if(objChecker.isEqual(props,noChange)){
+    const editAdditionalServices = (props, noChange) => {
+        if (objChecker.isEqual(props, noChange)) {
             toast.warn('No change in  Additional Services detected. ', {
-              position: "top-center",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              });
-          }
- else{
-    var result = validateAdditionalServicesEdit(props)
-    if(result===true)
-    {
-
-        const final_data = {
-            "add_service_id": props.id,
-            "add_service_name": props.name,
-            "property_id": currentProperty.property_id,
-            "add_service_comment": props?.type,
-            "status":props.status
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
         }
-        const url = '/api/additional_services'
-        axios.put(url, final_data, { header: { "content-type": "application/json" } }).then
-            ((response) => {
-                toast.success("Additional Services Updated Successfully!", {
+        else {
+            var result = validateAdditionalServicesEdit(props)
+            if (result === true) {
+
+                const final_data = {
+                    "add_service_id": props.id,
+                    "add_service_name": props.name,
+                    "property_id": currentProperty.property_id,
+                    "add_service_comment": props?.type,
+                    "status": props.status
+                }
+                const url = '/api/additional_services'
+                axios.put(url, final_data, { header: { "content-type": "application/json" } }).then
+                    ((response) => {
+                        toast.success("Additional Services Updated Successfully!", {
+                            position: "top-center",
+                            autoClose: 5000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                        });
+                        fetchAdditionalServices();
+                        Router.push("./additionalservices");
+                        setModified([])
+                    })
+                    .catch((error) => {
+                        toast.error("Additional Services Update Error!", {
+                            position: "top-center",
+                            autoClose: 5000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                        });
+                    })
+            }
+            else {
+                toast.warn(result?.name, {
                     position: "top-center",
-                    autoClose: 5000,
+                    autoClose: 7000,
                     hideProgressBar: false,
                     closeOnClick: true,
                     pauseOnHover: true,
                     draggable: true,
                     progress: undefined,
                 });
-                fetchAdditionalServices();
-                Router.push("./additionalservices");
-                setModified([])
-            })
-            .catch((error) => {
-                toast.error("Additional Services Update Error!", {
+                toast.warn(result?.type, {
                     position: "top-center",
-                    autoClose: 5000,
+                    autoClose: 7000,
                     hideProgressBar: false,
                     closeOnClick: true,
                     pauseOnHover: true,
                     draggable: true,
                     progress: undefined,
                 });
-            })
-    }
-    else
-    {
-      toast.warn(result?.name, {
-        position: "top-center",
-        autoClose: 7000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-      toast.warn(result?.type, {
-        position: "top-center",
-        autoClose: 7000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-    }
+            }
         }
     }
 
-     /* Function to delete additional services */
-     const deleteAdditionalServices = (props) => {
-      const url = `/api/additional_service/${props}`
+    /* Function to delete additional services */
+    const deleteAdditionalServices = (props) => {
+        const url = `/api/additional_service/${props}`
         axios.delete(url).then((response) => {
             toast.success(("Additional Service Deleted Successfully!"), {
                 position: "top-center",
@@ -291,173 +267,162 @@ function AdditionalServices() {
                         progress: undefined,
                     });
                     setFlag([]);
-                  
+
                 })
         }
 
     }
 
-     // Add Validation Gallery
-  const validationAdditionalServices = () => {
-    setError({});
-    var result = validateAdditionalServices(modified);
-       console.log("Result" +JSON.stringify(result))
-       if(result===true)
-       {
-         newAdditionalService()
-       
-       }
-       else
-       {
-        setError(result)
-       }
-}
+    // Add Validation Gallery
+    const validationAdditionalServices = () => {
+        setError({});
+        var result = validateAdditionalServices(modified);
+        console.log("Result" + JSON.stringify(result))
+        if (result === true) {
+            newAdditionalService()
 
-const colorToggler = (newColor) => {
-    if (newColor === 'system') {
-      window.matchMedia("(prefers-color-scheme:dark)").matches === true ? setColor(colorFile?.dark)
-      : setColor(colorFile?.light)
-      localStorage.setItem("colorToggle", newColor)
+        }
+        else {
+            setError(result)
+        }
     }
-    else if (newColor === 'light') {
-      setColor(colorFile?.light)
-      localStorage.setItem("colorToggle", false)
+
+    function navigationList(currentLogged, currentProperty) {
+        return ([
+            {
+                icon: "homeIcon",
+                text: "Home",
+                link: currentLogged?.id.match(/admin.[0-9]*/)
+                    ? "../admin/adminlanding"
+                    : "./landing"
+            },
+            {
+                icon: "rightArrowIcon",
+                text: [currentProperty?.property_name],
+                link: "./propertysummary"
+            },
+            {
+                icon: "rightArrowIcon",
+                text: "Additional Services",
+                link: ""
+            }
+        ])
     }
-    else if (newColor === 'dark') {
-      setColor(colorFile?.dark)
-      localStorage.setItem("colorToggle", true)
-    }
-   firstfun();
-   Router.push('./additionalservices')
-  }
-  
-return (
+
+    return (
         <>
-        <Header color={color} Primary={english?.Side} Type={currentLogged?.user_type} Sec={colorToggler} mode={mode} setMode={setMode} />
-            <Sidebar color={color} Primary={english?.Side} Type={currentLogged?.user_type}/>
+            <Header
+                color={color}
+                setColor={setColor}
+                Primary={english?.Side}
+                Type={currentLogged?.user_type}
+                Sec={ColorToggler}
+                mode={mode}
+                setMode={setMode}
+            />
+
+            <Sidebar
+                color={color}
+                Primary={english?.Side}
+                Type={currentLogged?.user_type}
+            />
+
             <div id="main-content" className={`${color?.whitebackground} min-h-screen pt-24 relative overflow-y-auto lg:ml-64`}>
+
                 {/* bread crumb */}
-             <nav className="flex mb-5 ml-4" aria-label="Breadcrumb">
-              <ol className="inline-flex items-center space-x-1 md:space-x-2">
-              <li className="inline-flex items-center">
-              <div className={`${color?.text} text-base font-medium  inline-flex items-center`}>
-                <svg className="w-5 h-5 mr-2.5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
-                <Link href={currentLogged?.id.match(/admin.[0-9]*/) ? "../admin/adminlanding" : "./landing"} 
-                className={`${color?.text} text-base font-medium  inline-flex items-center`}><a>{language?.home}</a>
-                </Link></div>
-              </li>
-              <li>
-                <div className="flex items-center">
-                <div className={`${color?.text} text-base font-medium capitalize  inline-flex items-center`}>
-                  <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path></svg>
-                  <div className={visible === 0 ? 'block w-16' : 'hidden'}><Headloader /></div>
-                  <div className={visible === 1 ? 'block' : 'hidden'}>   <Link href="./propertysummary" className="text-gray-700 text-sm   font-medium hover:{`${color?.text} ml-1 md:ml-2">
-                    <a>{currentProperty?.property_name}</a>
-                  </Link>
-                  </div></div>
+                <BreadCrumb
+                    color={color}
+                    crumbList={navigationList(currentLogged, currentProperty)}
+                />
 
-                </div>
-              </li>
-              <li>
-                <div className="flex items-center">
-                <div className={`${color?.textgray} text-base font-medium  inline-flex items-center`}>
-                  <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path></svg>
-                  <span className="text-gray-400 ml-1 md:ml-2 font-medium text-sm  " aria-current="page">{language?.additional} {language?.services}</span>
-                </div>
-                </div>
-              </li>
-            </ol>
-               </nav>
+                <div className={(visible === 0 && colorToggle == false ? 'block' : 'hidden')}><LoaderTable /></div>
+                <div className={(visible === 0 && colorToggle == true ? 'block' : 'hidden')}><LoaderDarkTable /></div>
+                <div className={visible === 1 ? 'block' : 'hidden'}>
+                    <Table gen={gene} setGen={setGene} add={() => setView(1)} name="Additional Services"
+                        edit={editAdditionalServices} color={color}
+                        delete={deleteAdditionalServices}
+                        common={language?.common} cols={language?.AdditionalServicesCols} /> </div>
 
-            
-               <div className={(visible === 0 && colorToggle == false ? 'block' : 'hidden')}><LoaderTable /></div>
-               <div className={(visible === 0 && colorToggle == true ? 'block' : 'hidden')}><LoaderDarkTable /></div>
-                 <div className={visible === 1 ? 'block' : 'hidden'}>
-                <Table  gen={gene} setGen={setGene} add={()=> setView(1)} name="Additional Services"
-                edit={editAdditionalServices} color={color}
-                delete={deleteAdditionalServices}
-                common={language?.common} cols={language?.AdditionalServicesCols}  /> </div>
 
-                
-                 {/* Modal Add */}
-                 <div className={view === 1 ? 'block' : 'hidden'}>
+                {/* Modal Add */}
+                <div className={view === 1 ? 'block' : 'hidden'}>
 
-            <div className="overflow-x-hidden overflow-y-auto fixed top-4 left-0 right-0 backdrop-blur-xl bg-black/30 md:inset-0 z-50 flex justify-center items-center h-modal sm:h-full">
-          <div className="relative w-full max-w-2xl px-4 h-full md:h-auto">
-        <form id='asform'>
-        <div className={`${color?.whitebackground} rounded-lg shadow relative`}>
-            <div className="flex items-start justify-between p-5 border-b rounded-t">
-                <h3 className={`${color?.text} text-xl font-semibold`}>
-                    {language?.add} {language?.new} {language?.service} 
-                </h3>
-                <button type="button" onClick={() =>{
-                    document.getElementById('asform').reset();
-                    setError({})
-                    setModified([])
-                    setView(0);
-                } } className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center" data-modal-toggle="add-user-modal">
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>
-                </button>
-            </div>
-            <div className="p-6 space-y-6">
-                <div className="grid grid-cols-6 gap-6">
-                    <div className="col-span-6 sm:col-span-3">
-                        <label htmlFor="first-name" className={`text-sm ${color?.text} font-medium  block mb-2`}>{language?.service} {language?.name}</label>
-                        <input type="text" name="first-name"
-                            onChange={(e) => { setModified({ ...modified, add_service_name: e.target.value },setFlag(1)) }}
-                            id="first-name"
-                            className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg 
+                    <div className="overflow-x-hidden overflow-y-auto fixed top-4 left-0 right-0 backdrop-blur-xl bg-black/30 md:inset-0 z-50 flex justify-center items-center h-modal sm:h-full">
+                        <div className="relative w-full max-w-2xl px-4 h-full md:h-auto">
+                            <form id='asform'>
+                                <div className={`${color?.whitebackground} rounded-lg shadow relative`}>
+                                    <div className="flex items-start justify-between p-5 border-b rounded-t">
+                                        <h3 className={`${color?.text} text-xl font-semibold`}>
+                                            {language?.add} {language?.new} {language?.service}
+                                        </h3>
+                                        <button type="button" onClick={() => {
+                                            document.getElementById('asform').reset();
+                                            setError({})
+                                            setModified([])
+                                            setView(0);
+                                        }} className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center" data-modal-toggle="add-user-modal">
+                                            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>
+                                        </button>
+                                    </div>
+                                    <div className="p-6 space-y-6">
+                                        <div className="grid grid-cols-6 gap-6">
+                                            <div className="col-span-6 sm:col-span-3">
+                                                <label htmlFor="first-name" className={`text-sm ${color?.text} font-medium  block mb-2`}>{language?.service} {language?.name}</label>
+                                                <input type="text" name="first-name"
+                                                    onChange={(e) => { setModified({ ...modified, add_service_name: e.target.value }, setFlag(1)) }}
+                                                    id="first-name"
+                                                    className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg 
                             focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`} required />
-                             <p className="text-sm text-sm text-red-700 font-light">
-                                          {error?.add_service_name}</p>
-                    </div>
-                    <div className="col-span-6 sm:col-span-3">
-                        <label htmlFor="last-name" className={`text-sm ${color?.text} font-medium  block mb-2`}>{language?.service} {language?.description}</label>
-                        <textarea rows="2" columns="50" name="last-name"
-                            onChange={(e) => { setModified({ ...modified, add_service_comment: e.target.value },setFlag(1)) }}
-                            id="last-name" className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg 
+                                                <p className="text-sm text-sm text-red-700 font-light">
+                                                    {error?.add_service_name}</p>
+                                            </div>
+                                            <div className="col-span-6 sm:col-span-3">
+                                                <label htmlFor="last-name" className={`text-sm ${color?.text} font-medium  block mb-2`}>{language?.service} {language?.description}</label>
+                                                <textarea rows="2" columns="50" name="last-name"
+                                                    onChange={(e) => { setModified({ ...modified, add_service_comment: e.target.value }, setFlag(1)) }}
+                                                    id="last-name" className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg 
                             focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`} required />
-                             <p className="text-sm text-sm text-red-700 font-light">
-                                          {error?.add_service_comment}</p>
+                                                <p className="text-sm text-sm text-red-700 font-light">
+                                                    {error?.add_service_comment}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="items-center p-6 border-t border-gray-200 rounded-b">
+                                        <div className={flag !== 1 && spinner === 0 ? 'block' : 'hidden'}>
+                                            <Button Primary={language?.AddDisabled} /></div>
+                                        <div className={spinner === 0 && flag === 1 ? 'block' : 'hidden'}>
+                                            <Button Primary={language?.Add} onClick={() => { validationAdditionalServices() }} />
+                                        </div>
+                                        <div className={spinner === 1 && flag === 1 ? 'block' : 'hidden'}>
+                                            <Button Primary={language?.SpinnerAdd} />
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
+
+
+                {/* Toast Container */}
+                <ToastContainer position="top-center"
+                    autoClose={5000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover />
             </div>
-
-            <div className="items-center p-6 border-t border-gray-200 rounded-b">
-            <div className={flag !== 1 && spinner === 0? 'block' : 'hidden'}>
-                      <Button Primary={language?.AddDisabled}  /></div>
-                    <div className={spinner === 0 && flag === 1 ? 'block' : 'hidden'}>
-                      <Button Primary={language?.Add} onClick={() => { validationAdditionalServices() }} />
-                     </div>
-                     <div className={spinner === 1 && flag === 1? 'block' : 'hidden'}>
-                   <Button Primary={language?.SpinnerAdd} />
-                       </div>
-            </div>
-        </div>
-        </form>
-    </div>
-</div>
-</div>
-
-
-{/* Toast Container */}
-<ToastContainer position="top-center"
-autoClose={5000}
-hideProgressBar={false}
-newestOnTop={false}
-closeOnClick
-rtl={false}
-pauseOnFocusLoss
-draggable
-pauseOnHover />
-        </div>
         </>)
 }
 export default AdditionalServices
-AdditionalServices.getLayout = function PageLayout(page){
-    return(
-      <>
-      {page}
-      </>
+AdditionalServices.getLayout = function PageLayout(page) {
+    return (
+        <>
+            {page}
+        </>
     )
 }

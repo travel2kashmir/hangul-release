@@ -5,61 +5,61 @@ import { clearRoomsSelected, setAddMoreRoom, clearGuestDetails, clearReservation
 
 function BookingModal({ title, bookingComponent, setShowModal, setDisplay, setSearched }) {
 
-    const dispatch = useDispatch();
-    const reservationIdentity = useSelector(state => state.reservationIdentity)
+    // const dispatch = useDispatch();
+    // const reservationIdentity = useSelector(state => state.reservationIdentity)
 
     // Function to delete room_rates and room_data from local storage
-    function deleteRoomDetails() {
-        // Remove the room_rates key from local storage
-        localStorage.removeItem('room_rates');
-        localStorage.removeItem('temp_room_rate');
+    // function deleteRoomDetails() {
+    //     // Remove the room_rates key from local storage
+    //     localStorage.removeItem('room_rates');
+    //     localStorage.removeItem('temp_room_rate');
 
-        // Remove the room_data key from local storage
-        localStorage.removeItem('room_data');
+    //     // Remove the room_data key from local storage
+    //     localStorage.removeItem('room_data');
 
-        // Remove the room reservation_ids key from local storage
-        localStorage.removeItem('reservation_ids');
-    }
+    //     // Remove the room reservation_ids key from local storage
+    //     localStorage.removeItem('reservation_ids');
+    // }
 
-    function removeReservationFromDB(room_id, reservation_time) {
-        let url = `/api/reserve_rooms/${room_id}/${reservation_time}`;
-        axios.delete(url).then((response) => {
-            // once the reservations are removed from DB then these functions will take place 
-            setShowModal(0)
-            setDisplay(0)
-            setSearched(false)
-            dispatch(setAddMoreRoom(false))
-            dispatch(clearRoomsSelected())
-            dispatch(clearGuestDetails())
-            dispatch(clearReservationIdentity())
-            dispatch(clearInventoryDetail())
-            deleteRoomDetails()
+    // function removeReservationFromDB(room_id, reservation_time) {
+    //     let url = `/api/reserve_rooms/${room_id}/${reservation_time}`;
+    //     axios.delete(url).then((response) => {
+    //         // once the reservations are removed from DB then these functions will take place 
+    //         setShowModal(0)
+    //         setDisplay(0)
+    //         setSearched(false)
+    //         dispatch(setAddMoreRoom(false))
+    //         dispatch(clearRoomsSelected())
+    //         dispatch(clearGuestDetails())
+    //         dispatch(clearReservationIdentity())
+    //         dispatch(clearInventoryDetail())
+    //         deleteRoomDetails()
 
-        }).catch((err) => {
-            console.log("API: Error in deleting reservation from DB", err)
-        })
+    //     }).catch((err) => {
+    //         console.log("API: Error in deleting reservation from DB", err)
+    //     })
 
-    }
+    // }
 
-    function closeButtonAction() {
-        // if there is any reservation in DB then remove them first else perform the other funtions
-        if (reservationIdentity.length > 0) {
-            reservationIdentity?.map((room) => {
-                removeReservationFromDB(room?.room_id, room?.reservation_time);
-            });
-        }
-        else {
-            setShowModal(0)
-            setDisplay(0)
-            setSearched(false)
-            dispatch(setAddMoreRoom(false))
-            dispatch(clearRoomsSelected())
-            dispatch(clearGuestDetails())
-            dispatch(clearReservationIdentity())
-            dispatch(clearInventoryDetail())
-            deleteRoomDetails()
-        }
-    }
+    // function closeButtonAction() {
+    //     // if there is any reservation in DB then remove them first else perform the other funtions
+    //     if (reservationIdentity.length > 0) {
+    //         reservationIdentity?.map((room) => {
+    //             removeReservationFromDB(room?.room_id, room?.reservation_time);
+    //         });
+    //     }
+    //     else {
+    //         setShowModal(0)
+    //         setDisplay(0)
+    //         setSearched(false)
+    //         dispatch(setAddMoreRoom(false))
+    //         dispatch(clearRoomsSelected())
+    //         dispatch(clearGuestDetails())
+    //         dispatch(clearReservationIdentity())
+    //         dispatch(clearInventoryDetail())
+    //         deleteRoomDetails()
+    //     }
+    // }
 
 
     return (

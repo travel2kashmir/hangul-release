@@ -65,6 +65,7 @@ function Home({ allHotelDetails, menu, setMenu, hotelDetailLoader, lang, setLang
                     </button>
                 </div>
 
+                {/* booking form for sm and md screen */}
                 {showModalBooking === 1 ?
                     <div className={`block h-2 lg:hidden`}>
                         <Modal
@@ -77,6 +78,7 @@ function Home({ allHotelDetails, menu, setMenu, hotelDetailLoader, lang, setLang
                                         rooms={rooms}
                                         searched={searched}
                                         setSearched={(e) => setSearched(e)}
+                                        setShowModalBooking={(e) => setShowModalBooking(e)}
                                     />
                                 </div>
 

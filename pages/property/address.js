@@ -1,30 +1,27 @@
 import React, { useEffect, useState } from "react";
 import { Country, State, City } from "country-state-city";
 import globalData from "../../components/GlobalData";
-import axios from "axios";
 import colorFile from "../../components/colors/Color";
-import objChecker, { filter } from "lodash";
 import Title from "../../components/title";
 import Sidebar from "../../components/Sidebar";
 import Headloader from "../../components/loaders/headloader";
-import validateAddress from "../../components/validation/address";
-import Lineloader from "../../components/loaders/lineloader";
 import Header from "../../components/Header";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Button from "../../components/Button";
 import Router from "next/router";
-var language;
-var currentProperty;
-const logger = require("../../services/logger");
-import Link from "next/link";
 import Footer from "../../components/Footer";
-import {english,arabic,french} from "../../components/Languages/Languages"
+import { english, arabic, french } from "../../components/Languages/Languages"
 import InputText from "../../components/utils/InputText";
 import DropDown from "../../components/utils/DropDown";
+import { InitialActions, ColorToggler } from "../../components/initalActions";
+import { fetchHotelDetails, submitAddressEdit, navigationList } from "../../components/logic/property/Address";
+import BreadCrumb from "../../components/utils/BreadCrumb";
+
 var i = 0;
-var country;
 var currentLogged;
+var language;
+var currentProperty;
 let colorToggle;
 
 function Address() {
@@ -41,201 +38,28 @@ function Address() {
   const [error, setError] = useState({});
   const [allHotelDetails, setAllHotelDetails] = useState([]);
   const [address, setAddress] = useState([]);
+  const [country, setCountry] = useState('');
   const [countries, setCountries] = useState(
     globalData?.CountryData?.map((i) => {
       return { value: `${i?.country_code}`, label: `${i?.country_name}` };
     })
   );
-  useEffect(() => {
-    firstfun();
-  }, []);
 
-  const firstfun = () => {
-    if (typeof window !== "undefined") {
-      var locale = localStorage.getItem("Language");
-      colorToggle = localStorage.getItem("colorToggle");
-      if (
-        colorToggle === "" ||
-        colorToggle === undefined ||
-        colorToggle === null ||
-        colorToggle === "system"
-      ) {
-        window.matchMedia("(prefers-color-scheme:dark)").matches === true
-          ? setColor(colorFile?.dark)
-          : setColor(colorFile?.light);
-        setMode(
-          window.matchMedia("(prefers-color-scheme:dark)").matches === true
-            ? true
-            : false
-        );
-      } else if (colorToggle === "true" || colorToggle === "false") {
-        setColor(colorToggle === "true" ? colorFile?.dark : colorFile?.light);
-        setMode(colorToggle === "true" ? true : false);
-      }
-      {
-        if (locale === "ar") {
-          language = arabic;
-        }
-        if (locale === "en") {
-          language = english;
-        }
-        if (locale === "fr") {
-          language = french;
-        }
-      }
-      /** Current Property Details fetched from the local storage **/
-      currentProperty = JSON.parse(localStorage.getItem("property"));
-      currentLogged = JSON.parse(localStorage.getItem("Signin Details"));
-    }
-  };
-
+  // runs at load time
   useEffect(() => {
+    const resp = InitialActions({ setColor, setMode })
+    language = resp?.language;
+    currentLogged = resp?.currentLogged;
+    currentProperty = resp?.currentProperty;
+    colorToggle = resp?.colorToggle
+
     if (JSON.stringify(currentLogged) === "null") {
       Router.push(window.location.origin);
     } else {
-      fetchHotelDetails();
+      fetchHotelDetails(currentProperty, setAddress, setCountry, setAllHotelDetails, setCountryInitial, setProvinceInitial, setCityInitial, setVisible);
     }
-  }, []);
 
-  const colorToggler = (newColor) => {
-    if (newColor === "system") {
-      window.matchMedia("(prefers-color-scheme:dark)").matches === true
-        ? setColor(colorFile?.dark)
-        : setColor(colorFile?.light);
-      localStorage.setItem("colorToggle", newColor);
-    } else if (newColor === "light") {
-      setColor(colorFile?.light);
-      localStorage.setItem("colorToggle", false);
-    } else if (newColor === "dark") {
-      setColor(colorFile?.dark);
-      localStorage.setItem("colorToggle", true);
-    }
-    firstfun();
-    Router.push("./address");
-  };
-
-  /* Function call to fetch Current Property Details when page loads */
-  const fetchHotelDetails = async () => {
-    const url = `/api/${currentProperty.address_province.replace(
-      /\s+/g,
-      "-"
-    )}/${currentProperty.address_city}/${currentProperty.property_category}s/${
-      currentProperty.property_id
-    }`;
-    axios
-      .get(url)
-      .then((response) => {
-        setAddress(response.data.address?.[i]);
-        filterCountry(response.data.address?.[i]);
-        setAllHotelDetails(response.data.address?.[i]);
-        setCountryInitial(response.data.address?.[i]?.address_country);
-        setProvinceInitial(response.data.address?.[i]?.address_province);
-        setCityInitial(response.data.address?.[i]?.address_city);
-        logger.info("url  to fetch property details hitted successfully");
-        setVisible(1);
-      })
-      .catch((error) => {
-        logger.error("url to fetch property details, failed");
-      });
-  };
-
-  /* Edit Address Function */
-  const submitAddressEdit = () => {
-    if (flag === 1) {
-      if (objChecker.isEqual(allHotelDetails, address)) {
-        toast.warn("No change in Address detected. ", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-        setFlag([]);
-      } else {
-        var result = validateAddress(allHotelDetails);
-
-        if (result === true) {
-          setSpinner(1);
-          const final_data = {
-            property_id: currentProperty?.property_id,
-            address_id: address?.address_id,
-            address_street_address: allHotelDetails.address_street_address,
-            address_longitude: allHotelDetails.address_longitude,
-            address_latitude: allHotelDetails.address_latitude,
-            address_landmark: allHotelDetails.address_landmark,
-            address_city: allHotelDetails.address_city?.toLowerCase(),
-            address_precision: allHotelDetails.address_precision,
-            address_zipcode: allHotelDetails.address_zipcode,
-            address_province: allHotelDetails.address_province?.toLowerCase(),
-            address_country: allHotelDetails.address_country,
-          };
-
-          const url = "/api/address";
-          axios
-            .put(url, final_data, {
-              header: { "content-type": "application/json" },
-            })
-            .then((response) => {
-              setSpinner(0);
-              setFlag([]);
-              setVisible(1);
-              toast.success("Address Updated Successfully!", {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-              });
-              setError({});
-              fetchHotelDetails();
-              localStorage.setItem(
-                "property",
-                JSON.stringify({
-                  property_id: currentProperty?.property_id,
-                  user_id: currentProperty?.user_id,
-                  property_name: currentProperty?.property_name,
-                  address_province:
-                    allHotelDetails.address_province?.toLowerCase(),
-                  address_city: allHotelDetails.address_city?.toLowerCase(),
-                  property_category: currentProperty?.property_category,
-                  status: currentProperty?.status,
-                  language: currentProperty?.language,
-                })
-              );
-              Router.push("./address");
-
-              setAllHotelDetails([]);
-            })
-            .catch((error) => {
-              setSpinner(0);
-              setFlag([]);
-              toast.error("Address Update Error!", {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-              });
-            });
-        } else {
-          setError(result);
-        }
-      }
-    }
-  };
-
-  // Filter Country
-  const filterCountry = (props) => {
-    country = globalData?.CountryData.filter((el) => {
-      return props.address_country.toUpperCase() === el.country_code;
-    });
-  };
+  }, [])
 
   useEffect(() => {
     var state_code;
@@ -264,14 +88,16 @@ function Address() {
     allHotelDetails?.address_country,
     allHotelDetails?.address_province_code,
   ]);
+
   return (
     <>
       <Title name={`Engage |  ${language?.address}`} />
       <Header
         color={color}
+        setColor={setColor}
         Primary={english?.Side}
         Type={currentLogged?.user_type}
-        Sec={colorToggler}
+        Sec={ColorToggler}
         mode={mode}
         setMode={setMode}
       />
@@ -286,96 +112,10 @@ function Address() {
         className={`${color?.greybackground} px-4 py-2 pt-24 pb-2 relative overflow-y-auto lg:ml-64`}
       >
         {/* bread crumb */}
-        <nav
-          data-testid="nav"
-          className="flex mb-5 ml-4"
-          aria-label="Breadcrumb"
-        >
-          <ol className="inline-flex items-center space-x-1 md:space-x-2">
-            <li className="inline-flex items-center">
-              <div
-                className={`${color?.text} text-base font-medium  inline-flex items-center`}
-              >
-                <svg
-                  className="w-5 h-5 mr-2.5"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
-                </svg>
-                <Link
-                  href={
-                    currentLogged?.id.match(/admin.[0-9]*/)
-                      ? "../admin/adminlanding"
-                      : "./landing"
-                  }
-                  className={`${color?.text} text-base font-medium  inline-flex items-center`}
-                >
-                  <a>{language?.home}</a>
-                </Link>
-              </div>
-            </li>
-            <li>
-              <div className="flex items-center">
-                <div
-                  className={`${color?.text} capitalize text-base font-medium  inline-flex items-center`}
-                >
-                  <svg
-                    className="w-6 h-6 text-gray-400"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                      clipRule="evenodd"
-                    ></path>
-                  </svg>
-                  <div className={visible === 0 ? "block w-16" : "hidden"}>
-                    <Headloader />
-                  </div>
-                  <div className={visible === 1 ? "block" : "hidden"}>
-                    {" "}
-                    <Link
-                      href="./propertysummary"
-                      className="text-gray-700 text-sm   font-medium hover:{`${color?.text} ml-1 md:ml-2"
-                    >
-                      <a>{currentProperty?.property_name}</a>
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </li>
-            <li>
-              <div className="flex items-center">
-                <div
-                  className={`${color?.textgray} text-base font-medium  inline-flex items-center`}
-                >
-                  <svg
-                    className="w-6 h-6 text-gray-400"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                      clipRule="evenodd"
-                    ></path>
-                  </svg>
-                  <span
-                    className="text-gray-400 ml-1 md:ml-2 font-medium text-sm  "
-                    aria-current="page"
-                  >
-                    {language?.address}
-                  </span>
-                </div>
-              </div>
-            </li>
-          </ol>
-        </nav>
+        <BreadCrumb
+          color={color}
+          crumbList={navigationList(currentLogged, currentProperty)}
+        />
 
         {/* Update Address Form */}
         <div
@@ -391,10 +131,10 @@ function Address() {
           <div className="pt-6">
             <div className=" md:px-4 mx-auto w-full">
               <div className="flex flex-wrap">
-                
+
                 {/* //streetaddress */}
                 <InputText
-                data-testid="streetaddress"
+                  data-testid="streetaddress"
                   label={language?.streetaddress}
                   visible={visible}
                   defaultValue={address?.address_street_address}
@@ -412,11 +152,11 @@ function Address() {
                   req={true}
                   tooltip={true}
                 />
-                
+
                 {/* Landmark */}
 
                 <InputText
-                data-testid="landmark"
+                  data-testid="landmark"
                   label={language?.landmark}
                   visible={visible}
                   defaultValue={address?.address_landmark}
@@ -431,11 +171,11 @@ function Address() {
                   req={true}
                   tooltip={true}
                 />
-               
+
 
                 {/* country */}
                 <DropDown
-                data-testid="country"
+                  data-testid="country"
                   label={language?.country}
                   visible={visible}
                   defaultValue={country?.[i]?.country_name}
@@ -460,7 +200,7 @@ function Address() {
 
                 {/* province */}
                 <DropDown
-                data-testid="province"
+                  data-testid="province"
                   label={language?.province}
                   visible={visible}
                   defaultValue={
@@ -492,16 +232,16 @@ function Address() {
                     label: `${i?.name}`,
                   }))}
                 />
-              
+
                 {/*CITY*/}
 
                 <DropDown
-                data-testid="city"
+                  data-testid="city"
                   label={language?.city}
                   visible={visible}
                   defaultValue={
                     countryInitial === allHotelDetails?.address_country &&
-                    provinceInitial === allHotelDetails?.address_province ? (
+                      provinceInitial === allHotelDetails?.address_province ? (
                       <>{`${address?.address_city}`}</>
                     ) : (
                       <>{`${language?.select}`}</>
@@ -528,7 +268,7 @@ function Address() {
                 />
                 {/* POSTAL CODE */}
                 <InputText
-                data-testid="postalcode"
+                  data-testid="postalcode"
                   label={language?.postalcode}
                   visible={visible}
                   defaultValue={
@@ -549,11 +289,11 @@ function Address() {
                   tooltip={true}
                 />
 
-            
+
                 {/* Latitude */}
 
                 <InputText
-                data-testid="latitude"
+                  data-testid="latitude"
                   label={language?.latitude}
                   visible={visible}
                   defaultValue={address?.address_latitude}
@@ -569,11 +309,11 @@ function Address() {
                   req={true}
                   tooltip={true}
                 />
-               
+
                 {/* Longitude */}
 
                 <InputText
-                data-testid="longitude"
+                  data-testid="longitude"
                   label={language?.longitude}
                   visible={visible}
                   defaultValue={address?.address_longitude}
@@ -591,7 +331,7 @@ function Address() {
                 />
                 {/* PRECISION */}
                 <InputText
-                data-testid="precision"
+                  data-testid="precision"
                   label={`${language?.precision}(${language?.inmeters})`}
                   visible={visible}
                   defaultValue={address?.address_precision}
@@ -605,9 +345,9 @@ function Address() {
                   error={error?.address_precision}
                   color={color}
                   req={true}
-                  tooltip={true} 
+                  tooltip={true}
                 />
-             
+
                 <div className="w-full lg:w-6/12 px-4">
                   <div className="relative w-full mb-3"></div>
                 </div>
@@ -627,7 +367,8 @@ function Address() {
                     <Button
                       Primary={language?.Update}
                       onClick={() => {
-                        submitAddressEdit();
+                        submitAddressEdit(flag, setFlag, allHotelDetails, address, setSpinner, currentProperty, setVisible, setError, setAddress, filterCountry, setAllHotelDetails, setCountryInitial, setProvinceInitial, setCityInitial);
+                        // submitAddressEdit();
                       }}
                     />
                   </div>

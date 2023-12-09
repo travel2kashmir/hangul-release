@@ -20,13 +20,17 @@ import "react-toastify/dist/ReactToastify.css";
 import Headloader from "../../components/loaders/headloader";
 import ImageDemo from "../../components/utils/ImageDemo";
 const logger = require("../../services/logger");
+import Router from "next/router";
+import { InitialActions, ColorToggler } from "../../components/initalActions";
+import BreadCrumb from "../../components/utils/BreadCrumb";
+import { fetchHotelDetails, navigationList } from "../../components/logic/property/Gallery";
+
 var language;
 var currentProperty;
 var currentLogged;
 let checked;
 let check = [];
 let colorToggle;
-import Router from "next/router";
 
 function Gallery() {
   const [visible, setVisible] = useState(0);
@@ -51,106 +55,25 @@ function Gallery() {
   const [mode, setMode] = useState();
   const [indexImage, setIndexImage] = useState();
   const [actionEnlargeImage, setActionEnlargeImage] = useState({});
+  // function to search image
+  const [searchedImages, setSearchedImages] = useState([{}]);
+  const [showSearchedImages, setShowSearchedImages] = useState(0);
 
+  // runs at load time
   useEffect(() => {
-    firstfun();
-  }, []);
+    const resp = InitialActions({ setColor, setMode })
+    language = resp?.language;
+    currentLogged = resp?.currentLogged;
+    currentProperty = resp?.currentProperty;
+    colorToggle = resp?.colorToggle
 
-  const firstfun = () => {
-    if (typeof window !== "undefined") {
-      var locale = localStorage.getItem("Language");
-      colorToggle = localStorage.getItem("colorToggle");
-      if (
-        colorToggle === "" ||
-        colorToggle === undefined ||
-        colorToggle === null ||
-        colorToggle === "system"
-      ) {
-        window.matchMedia("(prefers-color-scheme:dark)").matches === true
-          ? setColor(colorFile?.dark)
-          : setColor(colorFile?.light);
-        setMode(
-          window.matchMedia("(prefers-color-scheme:dark)").matches === true
-            ? true
-            : false
-        );
-      } else if (colorToggle === "true" || colorToggle === "false") {
-        setColor(colorToggle === "true" ? colorFile?.dark : colorFile?.light);
-        setMode(colorToggle === "true" ? true : false);
-      }
-
-      {
-        if (locale === "ar") {
-          language = arabic;
-        }
-        if (locale === "en") {
-          language = english;
-        }
-        if (locale === "fr") {
-          language = french;
-        }
-      }
-      /** Current Property Details fetched from the local storage **/
-      currentProperty = JSON.parse(localStorage.getItem("property"));
-      currentLogged = JSON.parse(localStorage.getItem("Signin Details"));
-    }
-  };
-
-  useEffect(() => {
     if (JSON.stringify(currentLogged) === "null") {
       Router.push(window.location.origin);
     } else {
-      fetchHotelDetails();
+      fetchHotelDetails(currentProperty, setGallery, setImages, setEnlargedImage, setVisible);
     }
-  }, []);
+  }, [])
 
-  const colorToggler = (newColor) => {
-    if (newColor === "system") {
-      window.matchMedia("(prefers-color-scheme:dark)").matches === true
-        ? setColor(colorFile?.dark)
-        : setColor(colorFile?.light);
-      localStorage.setItem("colorToggle", newColor);
-    } else if (newColor === "light") {
-      setColor(colorFile?.light);
-      localStorage.setItem("colorToggle", false);
-    } else if (newColor === "dark") {
-      setColor(colorFile?.dark);
-      localStorage.setItem("colorToggle", true);
-    }
-    firstfun();
-    Router.push("./gallery");
-  };
-
-  /* Function call to fetch Current Property Details when page loads */
-  const fetchHotelDetails = async () => {
-    const url = `/api/${currentProperty.address_province.replace(
-      /\s+/g,
-      "-"
-    )}/${currentProperty.address_city}/${currentProperty.property_category}s/${currentProperty.property_id
-      }`;
-    axios
-      .get(url)
-      .then((response) => {
-        setGallery(response.data);
-        setImages(response.data?.images);
-        setEnlargedImage(
-          response.data?.images?.map((item, idx) => {
-            return {
-              image_id: item?.image_id,
-              image_title: item?.image_title,
-              image_link: item?.image_link,
-              image_idx: idx,
-              image_description: item?.image_description,
-            };
-          })
-        );
-        logger.info("url  to fetch property details hitted successfully");
-        setVisible(1);
-      })
-      .catch((error) => {
-        logger.error("url to fetch property details, failed");
-      });
-  };
 
   const onChangePhoto = (e, imageFile) => {
     setImage({ ...image, imageFile: e.target.files[0] });
@@ -214,7 +137,7 @@ function Gallery() {
               progress: undefined,
             });
 
-            fetchHotelDetails();
+            fetchHotelDetails(currentProperty, setGallery, setImages, setEnlargedImage, setVisible);
             setImage({});
             setActionImage({});
             Router.push("./gallery");
@@ -288,7 +211,7 @@ function Gallery() {
               progress: undefined,
             });
             document.getElementById("editImage").reset();
-            fetchHotelDetails();
+            fetchHotelDetails(currentProperty, setGallery, setImages, setEnlargedImage, setVisible);
             setAllHotelDetails([]);
             setEnlargeImage(0);
             setActionImage({});
@@ -329,7 +252,7 @@ function Gallery() {
           draggable: true,
           progress: undefined,
         });
-        fetchHotelDetails();
+        fetchHotelDetails(currentProperty, setGallery, setImages, setEnlargedImage, setVisible);
         Router.push("./gallery");
       })
       .catch((error) => {
@@ -412,7 +335,7 @@ function Gallery() {
           draggable: true,
           progress: undefined,
         });
-        fetchHotelDetails();
+        fetchHotelDetails(currentProperty, setGallery, setImages, setEnlargedImage, setVisible);
         Router.push("./gallery");
         setdeleteImage(0);
       })
@@ -430,9 +353,7 @@ function Gallery() {
       });
   }
 
-  // function to search image
-  const [searchedImages, setSearchedImages] = useState([{}]);
-  const [showSearchedImages, setShowSearchedImages] = useState(0);
+
   const clearSearchField = () => {
     document.getElementById("imageSearchBox").reset();
   };
@@ -446,6 +367,7 @@ function Gallery() {
 
     setShowSearchedImages(1);
   };
+
 
   // key detection left right to be usedd when implementing keyboard change of images
   // useEffect(() => {
@@ -501,9 +423,10 @@ function Gallery() {
       {/* Header   */}
       <Header
         color={color}
+        setColor={setColor}
         Primary={english.Side}
         Type={currentLogged?.user_type}
-        Sec={colorToggler}
+        Sec={ColorToggler}
         mode={mode}
         setMode={setMode}
       />
@@ -520,92 +443,11 @@ function Gallery() {
         className={`${color?.greybackground} px-4 pt-24 pb-6 relative overflow-y-auto lg:ml-64`}
       >
         {/* bread crumb */}
-        <nav className="flex mb-5 ml-4" aria-label="Breadcrumb">
-          <ol className="inline-flex items-center space-x-1 md:space-x-2">
-            <li className="inline-flex items-center">
-              <div
-                className={`${color?.text} text-base font-medium  inline-flex items-center`}
-              >
-                <svg
-                  className="w-5 h-5 mr-2.5"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
-                </svg>
-                <Link
-                  href={
-                    currentLogged?.id.match(/admin.[0-9]*/)
-                      ? "../admin/adminlanding"
-                      : "./landing"
-                  }
-                  className={`${color?.text} text-base font-medium  inline-flex items-center`}
-                >
-                  <a>{language?.home}</a>
-                </Link>
-              </div>
-            </li>
-            <li>
-              <div className="flex items-center">
-                <div
-                  className={`${color?.text} capitalize text-base font-medium  inline-flex items-center`}
-                >
-                  <svg
-                    className="w-6 h-6 text-gray-400"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                      clipRule="evenodd"
-                    ></path>
-                  </svg>
-                  <div className={visible === 0 ? "block w-16" : "hidden"}>
-                    <Headloader />
-                  </div>
-                  <div className={visible === 1 ? "block" : "hidden"}>
-                    {" "}
-                    <Link
-                      href="./propertysummary"
-                      className="text-gray-700 text-sm   font-medium hover:{`${color?.text} ml-1 md:ml-2"
-                    >
-                      <a>{currentProperty?.property_name}</a>
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </li>
-            <li>
-              <div className="flex items-center">
-                <div
-                  className={`${color?.textgray} capitalize text-base font-medium  inline-flex items-center`}
-                >
-                  <svg
-                    className="w-6 h-6 text-gray-400"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                      clipRule="evenodd"
-                    ></path>
-                  </svg>
-                  <span
-                    className="text-gray-400 ml-1 md:ml-2 font-medium text-sm  "
-                    aria-current="page"
-                  >
-                    {language?.gallery}
-                  </span>
-                </div>
-              </div>
-            </li>
-          </ol>
-        </nav>
+
+        <BreadCrumb
+          color={color}
+          crumbList={navigationList(currentLogged, currentProperty)}
+        />
 
         {/* Gallery */}
         <div
@@ -678,6 +520,7 @@ function Gallery() {
                       ></path>
                     </svg>
                   </a>
+
                   <a
                     onClick={allDelete}
                     className={
@@ -701,6 +544,7 @@ function Gallery() {
                       ></path>
                     </svg>
                   </a>
+
                   <a
                     href="#"
                     className={`${color?.textgray} hover:${color?.text} cursor-pointer p-1 ${color?.hover} rounded inline-flex justify-center`}
@@ -718,6 +562,7 @@ function Gallery() {
                       ></path>
                     </svg>
                   </a>
+
                   <a
                     href="#"
                     className={`${color?.textgray} hover:${color?.text} cursor-pointer p-1 ${color?.hover} rounded inline-flex justify-center`}
@@ -731,7 +576,9 @@ function Gallery() {
                       <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path>
                     </svg>
                   </a>
+
                 </div>
+
               </div>
               {/* icons for delete and other operations end */}
 
@@ -790,6 +637,7 @@ function Gallery() {
                           title="Click here to view or edit."
                         >
                           <a href="#" className="relative flex">
+
                             <input
                               type="checkbox"
                               id={item?.image_id}
@@ -800,7 +648,7 @@ function Gallery() {
                               onChange={(e) => {
                                 handlecheckbox(e);
                               }}
-                              className="bottom-0 right-0 cursor-pointer absolute bg-gray-30 opacity-30 m-1 border-gray-300 text-cyan-600  checked:opacity-100 focus:ring-3 focus:ring-cyan-200 h-4 w-4 rounded-full"
+                              className="bottom-0 right-0 cursor-pointer absolute bg-gray-500 opacity-30 m-1 border-gray-300 text-cyan-600  checked:opacity-100 focus:ring-3 focus:ring-cyan-200 h-4 w-4 rounded-full"
                               onClick={() => {
                                 setSelectedImage(!selectedImage);
                               }}

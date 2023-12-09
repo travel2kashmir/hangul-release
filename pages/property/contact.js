@@ -15,16 +15,20 @@ import "react-toastify/dist/ReactToastify.css";
 import Link from "next/link";
 import objChecker from "lodash";
 import { english, french, arabic } from "../../components/Languages/Languages";
-var language;
-var currentProperty;
-var propertyName;
 import Headloader from "../../components/loaders/headloader";
 import LoaderTable from "../../components/loadertable";
 import GenericTable from "../../components/utils/Tables/GenericTable";
 const logger = require("../../services/logger");
+import { InitialActions, ColorToggler } from "../../components/initalActions";
+import BreadCrumb from "../../components/utils/BreadCrumb";
+import { fetchHotelDetails, submitContactAdd, navigationList, validationContact } from "../../components/logic/property/Contact";
+
 var currentLogged;
 var i = 0;
 let colorToggle;
+var language;
+var currentProperty;
+var propertyName;
 
 function Contact() {
   const [gen, setGen] = useState([])
@@ -42,137 +46,32 @@ function Contact() {
   const [contact, setContact] = useState([]);
   const [deleteMultiple, setDeleteMultiple] = useState(0);
 
+  // runs at load time
   useEffect(() => {
-    firstfun();
-  }, [])
+    const resp = InitialActions({ setColor, setMode })
+    language = resp?.language;
+    currentLogged = resp?.currentLogged;
+    currentProperty = resp?.currentProperty;
+    colorToggle = resp?.colorToggle
 
-  const firstfun = () => {
-    if (typeof window !== 'undefined') {
-      var locale = localStorage.getItem("Language");
-      colorToggle = localStorage.getItem("colorToggle");
-      if (colorToggle === "" || colorToggle === undefined || colorToggle === null || colorToggle === "system") {
-        window.matchMedia("(prefers-color-scheme:dark)").matches === true ? setColor(colorFile?.dark) : setColor(colorFile?.light);
-        setMode(window.matchMedia("(prefers-color-scheme:dark)").matches === true ? true : false);
-      }
-      else if (colorToggle === "true" || colorToggle === "false") {
-        setColor(colorToggle === "true" ? colorFile?.dark : colorFile?.light);
-        setMode(colorToggle === "true" ? true : false)
-      }
-      if (locale === "ar") {
-        language = arabic;
-      }
-      if (locale === "en") {
-        language = english;
-      }
-      if (locale === "fr") {
-        language = french;
-      }
-      /** Current Property Details fetched from the local storage **/
-      currentProperty = JSON.parse(localStorage.getItem("property"));
-      currentLogged = JSON.parse(localStorage.getItem("Signin Details"));
-    }
-  }
-
-
-  useEffect(() => {
     if (JSON.stringify(currentLogged) === 'null') {
       Router.push(window.location.origin)
     }
     else {
-      fetchHotelDetails();
+      fetchHotelDetails(currentProperty, setContacts, setCountryCode, propertyName, setGen, setVisible);
     }
-  }, []);
+  }, [])
 
-  const colorToggler = (newColor) => {
-    if (newColor === 'system') {
-      window.matchMedia("(prefers-color-scheme:dark)").matches === true ? setColor(colorFile?.dark)
-        : setColor(colorFile?.light)
-      localStorage.setItem("colorToggle", newColor)
-    }
-    else if (newColor === 'light') {
-      setColor(colorFile?.light)
-      localStorage.setItem("colorToggle", false)
-    }
-    else if (newColor === 'dark') {
-      setColor(colorFile?.dark)
-      localStorage.setItem("colorToggle", true)
-    }
-    firstfun();
-    Router.push('./contact')
-  }
-  // Fetch Hotel Details
-  const fetchHotelDetails = async () => {
-    var genData = [];
-    const url = `/api/${currentProperty.address_province.replace(
-      /\s+/g,
-      "-"
-    )}/${currentProperty.address_city}/${currentProperty.property_category
-      }s/${currentProperty.property_id}`;
-    axios.get(url)
-      .then((response) => {
-        setContacts(response.data.contacts);
-        setCountryCode(response.data.address?.[i]?.address_country);
-        propertyName = response.data.property_name;
-        {
-          response.data?.contacts?.map((item) => {
-            // var temp = {
-            //   "checkbox": { operation: undefined },
-            //   "Contact Details": {
-            //     "value": item.contact_data,
-            //     "inputType": "text",
-            //     "onChangeAction": () => alert("hello")
-            //   },
-            //   "Contact Type": {
-            //     "value": item.contact_type,
-            //     "inputType": undefined,
-            //     "onChangeAction": undefined
-            //   },
-            //   "status": item.status,
-            //   "id": item.contact_id,
-            //   "Actions": [
-
-            //     {
-            //       type: "button",
-            //       label: "Edit",
-            //       operation: (item) => { currentRoom(item) }
-            //     },
-            //     {
-            //       type: "button",
-            //       label: "Delete",
-            //       operation: (item) => { currentRoom(item) }
-            //     }
-
-            //   ]
-
-
-            // }
-            var temp = {
-              name: item.contact_type,
-              type: item.contact_data,
-              status: item.status,
-              id: item.contact_id
-            }
-            genData.push(temp)
-          })
-          
-          setGen(genData);
-        }
-        setVisible(1);
-      })
-      .catch((error) => { logger.error("url to fetch property details, failed") });
-
-
-  }
   /* Function Add Contact*/
   function contactDeleteMultiple(checked, setDeleteMultiple) {
     const data = checked?.map((item) => { return ({ contact_id: item, property_id: currentProperty?.property_id }) })
     setSpinner(1);
     const contactdata = data;
     const finalContact = { contacts: contactdata };
-    axios
-      .post(`/api/deleteall/contacts`, finalContact, {
-        headers: { "content-type": "application/json" },
-      })
+
+    axios.post(`/api/deleteall/contacts`, finalContact, {
+      headers: { "content-type": "application/json" },
+    })
       .then((response) => {
         setSpinner(0)
         toast.success("API: Contact delete success.", {
@@ -184,7 +83,7 @@ function Contact() {
           draggable: true,
           progress: undefined,
         });
-        fetchHotelDetails();
+        fetchHotelDetails(currentProperty, setContacts, setCountryCode, propertyName, setGen, setVisible);
         Router.push("./contact");
         setDeleteMultiple(0);
       })
@@ -206,60 +105,6 @@ function Contact() {
 
   }
 
-  /* Function Add Contact*/
-  function submitContactAdd() {
-    if (flag === 1) {
-      setSpinner(1);
-      if (contact.contact_type !== undefined) {
-        const contactdata = [{
-          property_id: currentProperty?.property_id,
-          contact_type: contact?.contact_type,
-          contact_data: contact?.contact_data,
-          status: true
-        }];
-        const finalContact = { contacts: contactdata };
-        axios
-          .post(`/api/contact`, finalContact, {
-            headers: { "content-type": "application/json" },
-          })
-          .then((response) => {
-            setSpinner(0)
-            toast.success("API: Contact add success.", {
-              position: "top-center",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-            });
-            document.getElementById('addcontactform').reset();
-            setView(0)
-            fetchHotelDetails();
-            Router.push("./contact");
-            setContact([]);
-            setSpin(0)
-            setError({});
-            setFlag([]);
-          })
-          .catch((error) => {
-            setSpinner(0)
-            toast.error("API: Contact add error.", {
-              position: "top-center",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-            });
-            setView(0)
-            setFlag([]);
-          });
-      }
-    }
-  }
-
   /* Function Edit Contact*/
   const submitContactEdit = (props, noChange) => {
     if (objChecker.isEqual(props, noChange)) {
@@ -277,7 +122,7 @@ function Contact() {
       setError({})
       var result = validateContactEdit(props, countryCode)
       if (result === true) {
-        submitContactAdd();
+        submitContactAdd(flag, setSpinner, contact, currentProperty, setView, setContacts, setCountryCode, propertyName, setGen, setVisible, Router, setContact, setSpin, setError, setFlag);
 
         const final_data = {
           contact_id: props.id,
@@ -297,7 +142,7 @@ function Contact() {
               draggable: true,
               progress: undefined,
             });
-            fetchHotelDetails();
+            fetchHotelDetails(currentProperty, setContacts, setCountryCode, propertyName, setGen, setVisible);
             Router.push("./contact");
           })
           .catch((error) => {
@@ -345,7 +190,7 @@ function Contact() {
           draggable: true,
           progress: undefined,
         });
-        fetchHotelDetails();
+        fetchHotelDetails(currentProperty, setContacts, setCountryCode, propertyName, setGen, setVisible);
         setDeleteContact(0)
         Router.push("./contact");
       })
@@ -363,61 +208,35 @@ function Contact() {
       });
   };
 
-  // Add Validation Contact
-  const validationContact = () => {
-    setError({})
-    var result = validateContact(contact, countryCode)
-    console.log("Result" + JSON.stringify(result))
-    if (result === true) {
-      submitContactAdd();
-    }
-    else {
-      setError(result)
-    }
-  }
 
   return (
     <>
       <Title name={`Engage |  ${language?.contact}`} />
-      <Header color={color} Primary={english?.Side} Type={currentLogged?.user_type}
-        Sec={colorToggler} mode={mode} setMode={setMode} />
-      <Sidebar color={color} Primary={english?.Side} Type={currentLogged?.user_type} />
+
+      <Header
+        color={color}
+        setColor={setColor}
+        Primary={english?.Side}
+        Type={currentLogged?.user_type}
+        Sec={ColorToggler}
+        mode={mode}
+        setMode={setMode} />
+
+      <Sidebar
+        color={color}
+        Primary={english?.Side}
+        Type={currentLogged?.user_type} />
 
       <div
         id="main-content"
         className={`${color?.whitebackground} min-h-screen pt-24 relative overflow-y-auto lg:ml-64`}>
         {/* bread crumb */}
-        <nav className="flex mb-5 ml-4" aria-label="Breadcrumb">
-          <ol className="inline-flex items-center space-x-1 md:space-x-2">
-            <li className="inline-flex items-center">
-              <div className={`${color?.text} text-base font-medium  inline-flex items-center`}>
-                <svg className="w-5 h-5 mr-2.5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
-                <Link href={currentLogged?.id.match(/admin.[0-9]*/) ? "../admin/adminlanding" : "./landing"}
-                  className={`${color?.text} text-base font-medium  inline-flex items-center`}><a>{language?.home}</a>
-                </Link></div>
-            </li>
-            <li>
-              <div className="flex items-center">
-                <div className={`${color?.text} text-base font-medium capitalize  inline-flex items-center`}>
-                  <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path></svg>
-                  <div className={visible === 0 ? 'block w-16' : 'hidden'}><Headloader /></div>
-                  <div className={visible === 1 ? 'block' : 'hidden'}>   <Link href="./propertysummary" className="text-gray-700 text-sm   font-medium hover:{`${color?.text} ml-1 md:ml-2">
-                    <a>{currentProperty?.property_name}</a>
-                  </Link>
-                  </div></div>
 
-              </div>
-            </li>
-            <li>
-              <div className="flex items-center">
-                <div className={`${color?.textgray} text-base font-medium  inline-flex items-center`}>
-                  <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path></svg>
-                  <span className="text-gray-400 ml-1 md:ml-2 font-medium text-sm  " aria-current="page">{language?.contact}</span>
-                </div>
-              </div>
-            </li>
-          </ol>
-        </nav>
+        <BreadCrumb
+          color={color}
+          crumbList={navigationList(currentLogged, currentProperty)}
+        />
+
         {/* Header */}
         <div className={(visible === 0 && colorToggle == false ? 'block' : 'hidden')}><LoaderTable /></div>
         <div className={(visible === 0 && colorToggle == true ? 'block' : 'hidden')}><LoaderDarkTable /></div>
@@ -436,15 +255,27 @@ function Contact() {
           /> */}
 
 
-          <Table gen={gen} setGen={setGen} add={() => setView(1)} edit={submitContactEdit}
-            delSpin={language?.SpinnerDelete} saveSpinner={language?.SpinnerSave} spinner={spinner}
-            setSpinner={setSpinner} color={color} language={language} deleteAll={contactDeleteMultiple}
-            spin={spin} property_id={currentProperty?.property_id}
-            delete={submitContactDelete} common={language?.common} cols={language?.ContactCols}
-            name="Contact" />
+          <Table
+            gen={gen}
+            setGen={setGen}
+            add={() => setView(1)}
+            edit={submitContactEdit} //isko bolte hai passing function refrence
+            delSpin={language?.SpinnerDelete}
+            saveSpinner={language?.SpinnerSave}
+            spinner={spinner}
+            setSpinner={setSpinner}
+            color={color}
+            language={language}
+            deleteAll={contactDeleteMultiple}
+            spin={spin}
+            property_id={currentProperty?.property_id}
+            delete={submitContactDelete}
+            common={language?.common}
+            cols={language?.ContactCols}
+            name="Contact"
+          />
+
         </div>
-
-
 
         {/* Modal Add */}
         <div className={view === 1 ? "block" : "hidden"}>
@@ -509,7 +340,7 @@ function Contact() {
                           </option>
                           <option value="tdd number">TDD number</option>
                         </select>
-                        <p className="text-sm text-sm text-red-700 font-light">
+                        <p className="text-sm text-red-700 font-light">
                           {error?.contact_type}</p>
                       </div>
                       <div className="col-span-6 sm:col-span-3">
@@ -533,7 +364,7 @@ function Contact() {
                         focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
                           required
                         />
-                        <p className="text-sm text-sm text-red-700 font-light">
+                        <p className="text-sm text-red-700 font-light">
                           {error?.contact_data}</p>
                       </div>
                     </div>
@@ -544,7 +375,7 @@ function Contact() {
                   <div className={flag !== 1 && spinner === 0 ? 'block' : 'hidden'}>
                     <Button Primary={language?.AddDisabled} /></div>
                   <div className={spinner === 0 && flag === 1 ? 'block' : 'hidden'}>
-                    <Button Primary={language?.Add} onClick={() => { validationContact(contact) }} />
+                    <Button Primary={language?.Add} onClick={() => { validationContact(setError, contact, countryCode, flag, setSpinner, currentProperty, setView, setContacts, setCountryCode, propertyName, setGen, setVisible, Router, setContact, setSpin, setFlag) }} />
                   </div>
                   <div className={spinner === 1 && flag === 1 ? 'block' : 'hidden'}>
                     <Button Primary={language?.SpinnerAdd} />

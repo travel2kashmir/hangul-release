@@ -5,17 +5,11 @@ import { SlCalender } from "react-icons/sl";
 import StarRatings from 'react-star-ratings';
 import ContactUsModal from '../Modals/ContactUsModal';
 import Modal from '../Modals/Modal'
-
-
-// import ContactUsModal from '../Modals/ContactUsModal';
 import Loader from '../Loaders/Loader';
 
-function Header({ allHotelDetails, hotelDetailLoader, setMenu,
-    setShowModalBooking
-}) {
+function Header({ allHotelDetails, hotelDetailLoader, setMenu, setShowModalBooking }) {
 
     const [showModalContactUs, setShowModalContactUs] = useState(0);
-
 
     return (
         <section className=' relative border-b-2 border-gray-400 bg-transparent'>

@@ -49,7 +49,7 @@ function RoomCalenderView({ allHotelDetails, color, roomsLoader, setRoomsLoader,
             console.log(JSON.stringify(err))
         })
     }
-    // console.log(invData)
+    console.log(invData)
 
     // Filter out items with zero available inventory
     const roomIdsWithNonZeroInventory = [...new Set(invData.filter(item => item.available_inventory !== 0).map(item => item.room_id))]

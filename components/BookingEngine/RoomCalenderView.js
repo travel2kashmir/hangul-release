@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios';
 import RoomCard from '../BookingEngine/RoomCard';
 import { AiOutlineShoppingCart, AiOutlineClose } from "react-icons/ai";
@@ -11,7 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 import RoomLoader from './RoomLoader';
 
 
-function RoomCalenderView({ color, roomsLoader, rooms, allRoomRateDetails, dataOfRoomsAsPerDateSelected, setDisplay, setShowModal, setSearched, checkinDate, checkoutDate }) {
+function RoomCalenderView({ allHotelDetails, color, roomsLoader, setRoomsLoader, rooms, setDisplay, setShowModal, setSearched, checkinDate, checkoutDate }) {
 
     const reservationIdentity = useSelector(state => state.reservationIdentity)
     const dispatch = useDispatch() //creating object of dispatch 
@@ -19,12 +19,52 @@ function RoomCalenderView({ color, roomsLoader, rooms, allRoomRateDetails, dataO
     const addMoreRooms = useSelector(state => state.addMoreRoom) //reads addMoreRoom from state into const
     const roomsSelected = useSelector(state => state.roomsSelected)
 
+    const [dataAsPerDate, setDataAsPerDate] = useState([]);
+    const [invData, setInvData] = useState([]);
+
+    useEffect(() => {
+        getRatesForTheSelectedDate()
+        getInventoryDetail()
+    }, [])
+
+    function getRatesForTheSelectedDate() {
+        // this function gives rates of the rooms for the selected dates
+        let url = `/api/rates/${allHotelDetails?.property_id}/${checkinDate}/${checkoutDate}`
+        axios.get(url).then((response) => {
+            setDataAsPerDate(response.data)
+            setRoomsLoader(false)
+        }).catch((err) => {
+            console.log(JSON.stringify(err))
+        })
+    }
+
+    // console.log(dataAsPerDate)
+
+    function getInventoryDetail() {
+        let url = `/api/inv_data/${allHotelDetails?.property_id}/${checkinDate}/${checkoutDate}`
+        axios.get(url).then((response) => {
+            setInvData(response.data)
+            // setRoomsLoader(false)
+        }).catch((err) => {
+            console.log(JSON.stringify(err))
+        })
+    }
+    // console.log(invData)
+
+    // Filter out items with zero available inventory
+    const roomIdsWithNonZeroInventory = [...new Set(invData.filter(item => item.available_inventory !== 0).map(item => item.room_id))]
+    // console.log(roomIdsWithNonZeroInventory);
+
+    // Filter data based on roomIdsWithNonZeroInventory
+    const filteredData = dataAsPerDate.filter(item => roomIdsWithNonZeroInventory.includes(item.room_id));
+    // console.log(filteredData);
+
     const calculateTotalFinalRate = () => {
         // Create an object to group room rates by room_id and calculate the total final rate for each room
         const roomData = {};
 
-        // taking out the data from the dataOfRoomsAsPerDateSelected and storing them in roomData object.
-        dataOfRoomsAsPerDateSelected.forEach((rate) => {
+        // taking out the data from the filteredData and storing them in roomData object.
+        filteredData.forEach((rate) => {
             const { room_id, property_id, final_rate, tax_amount, otherfees_amount } = rate;
             if (!roomData[room_id]) {
                 roomData[room_id] = {

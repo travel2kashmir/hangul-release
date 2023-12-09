@@ -23,6 +23,7 @@ const logger = require("../../services/logger");
 import Router from "next/router";
 import { InitialActions, ColorToggler } from "../../components/initalActions";
 import BreadCrumb from "../../components/utils/BreadCrumb";
+import { fetchHotelDetails, navigationList } from "../../components/logic/property/Gallery";
 
 var language;
 var currentProperty;
@@ -54,6 +55,9 @@ function Gallery() {
   const [mode, setMode] = useState();
   const [indexImage, setIndexImage] = useState();
   const [actionEnlargeImage, setActionEnlargeImage] = useState({});
+  // function to search image
+  const [searchedImages, setSearchedImages] = useState([{}]);
+  const [showSearchedImages, setShowSearchedImages] = useState(0);
 
   // runs at load time
   useEffect(() => {
@@ -66,40 +70,10 @@ function Gallery() {
     if (JSON.stringify(currentLogged) === "null") {
       Router.push(window.location.origin);
     } else {
-      fetchHotelDetails();
+      fetchHotelDetails(currentProperty, setGallery, setImages, setEnlargedImage, setVisible);
     }
   }, [])
 
-  /* Function call to fetch Current Property Details when page loads */
-  const fetchHotelDetails = async () => {
-    const url = `/api/${currentProperty.address_province.replace(
-      /\s+/g,
-      "-"
-    )}/${currentProperty.address_city}/${currentProperty.property_category}s/${currentProperty.property_id
-      }`;
-    axios
-      .get(url)
-      .then((response) => {
-        setGallery(response.data);
-        setImages(response.data?.images);
-        setEnlargedImage(
-          response.data?.images?.map((item, idx) => {
-            return {
-              image_id: item?.image_id,
-              image_title: item?.image_title,
-              image_link: item?.image_link,
-              image_idx: idx,
-              image_description: item?.image_description,
-            };
-          })
-        );
-        logger.info("url  to fetch property details hitted successfully");
-        setVisible(1);
-      })
-      .catch((error) => {
-        logger.error("url to fetch property details, failed");
-      });
-  };
 
   const onChangePhoto = (e, imageFile) => {
     setImage({ ...image, imageFile: e.target.files[0] });
@@ -163,7 +137,7 @@ function Gallery() {
               progress: undefined,
             });
 
-            fetchHotelDetails();
+            fetchHotelDetails(currentProperty, setGallery, setImages, setEnlargedImage, setVisible);
             setImage({});
             setActionImage({});
             Router.push("./gallery");
@@ -237,7 +211,7 @@ function Gallery() {
               progress: undefined,
             });
             document.getElementById("editImage").reset();
-            fetchHotelDetails();
+            fetchHotelDetails(currentProperty, setGallery, setImages, setEnlargedImage, setVisible);
             setAllHotelDetails([]);
             setEnlargeImage(0);
             setActionImage({});
@@ -278,7 +252,7 @@ function Gallery() {
           draggable: true,
           progress: undefined,
         });
-        fetchHotelDetails();
+        fetchHotelDetails(currentProperty, setGallery, setImages, setEnlargedImage, setVisible);
         Router.push("./gallery");
       })
       .catch((error) => {
@@ -361,7 +335,7 @@ function Gallery() {
           draggable: true,
           progress: undefined,
         });
-        fetchHotelDetails();
+        fetchHotelDetails(currentProperty, setGallery, setImages, setEnlargedImage, setVisible);
         Router.push("./gallery");
         setdeleteImage(0);
       })
@@ -379,9 +353,7 @@ function Gallery() {
       });
   }
 
-  // function to search image
-  const [searchedImages, setSearchedImages] = useState([{}]);
-  const [showSearchedImages, setShowSearchedImages] = useState(0);
+
   const clearSearchField = () => {
     document.getElementById("imageSearchBox").reset();
   };
@@ -396,27 +368,6 @@ function Gallery() {
     setShowSearchedImages(1);
   };
 
-  function navigationList(currentLogged, currentProperty) {
-    return ([
-      {
-        icon: "homeIcon",
-        text: "Home",
-        link: currentLogged?.id.match(/admin.[0-9]*/)
-          ? "../admin/adminlanding"
-          : "./landing"
-      },
-      {
-        icon: "rightArrowIcon",
-        text: [currentProperty?.property_name],
-        link: "./propertysummary"
-      },
-      {
-        icon: "rightArrowIcon",
-        text: "Gallery",
-        link: ""
-      }
-    ])
-  }
 
   // key detection left right to be usedd when implementing keyboard change of images
   // useEffect(() => {
@@ -569,6 +520,7 @@ function Gallery() {
                       ></path>
                     </svg>
                   </a>
+
                   <a
                     onClick={allDelete}
                     className={
@@ -592,6 +544,7 @@ function Gallery() {
                       ></path>
                     </svg>
                   </a>
+
                   <a
                     href="#"
                     className={`${color?.textgray} hover:${color?.text} cursor-pointer p-1 ${color?.hover} rounded inline-flex justify-center`}
@@ -609,6 +562,7 @@ function Gallery() {
                       ></path>
                     </svg>
                   </a>
+
                   <a
                     href="#"
                     className={`${color?.textgray} hover:${color?.text} cursor-pointer p-1 ${color?.hover} rounded inline-flex justify-center`}
@@ -622,7 +576,9 @@ function Gallery() {
                       <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path>
                     </svg>
                   </a>
+
                 </div>
+
               </div>
               {/* icons for delete and other operations end */}
 
@@ -681,6 +637,7 @@ function Gallery() {
                           title="Click here to view or edit."
                         >
                           <a href="#" className="relative flex">
+
                             <input
                               type="checkbox"
                               id={item?.image_id}
@@ -691,7 +648,7 @@ function Gallery() {
                               onChange={(e) => {
                                 handlecheckbox(e);
                               }}
-                              className="bottom-0 right-0 cursor-pointer absolute bg-gray-30 opacity-30 m-1 border-gray-300 text-cyan-600  checked:opacity-100 focus:ring-3 focus:ring-cyan-200 h-4 w-4 rounded-full"
+                              className="bottom-0 right-0 cursor-pointer absolute bg-gray-500 opacity-30 m-1 border-gray-300 text-cyan-600  checked:opacity-100 focus:ring-3 focus:ring-cyan-200 h-4 w-4 rounded-full"
                               onClick={() => {
                                 setSelectedImage(!selectedImage);
                               }}

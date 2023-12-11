@@ -628,7 +628,7 @@ function Gallery() {
                   return (
                     <>
                       <div
-                        className="block text-blueGray-600  text-xs font-bold "
+                        className="block text-blueGray-600  text-xs font-bold border rounded-lg"
                         key={idx}
                       >
                         <div
@@ -648,7 +648,7 @@ function Gallery() {
                               onChange={(e) => {
                                 handlecheckbox(e);
                               }}
-                              className="bottom-0 right-0 cursor-pointer absolute bg-gray-500 opacity-30 m-1 border-gray-300 text-cyan-600  checked:opacity-100 focus:ring-3 focus:ring-cyan-200 h-4 w-4 rounded-full"
+                              className="bottom-0 right-0 cursor-pointer absolute bg-gray-900 opacity-30 m-1 border-gray-300 text-cyan-600  checked:opacity-100 focus:ring-3 focus:ring-cyan-200 h-4 w-4 rounded-full"
                               onClick={() => {
                                 setSelectedImage(!selectedImage);
                               }}
@@ -1080,8 +1080,7 @@ function Gallery() {
                             onChange={(e) => {
                               onChangePhoto(e, "imageFile");
                             }}
-                            className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg 
-                                                focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
+                            className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg  focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
                             defaultValue=""
                           />
                         </div>

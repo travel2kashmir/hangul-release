@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { setRoomsSelected, setReserveRoom, setReservationIdentity, addInventoryDetail } from '../redux/hangulSlice';
 import axios from 'axios';
@@ -7,11 +7,14 @@ import ButtonLoader from './ButtonLoader';
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-function RoomCard({ color, filteredRoomData, roomImage, setDisplay, roomRates, checkinDate, checkoutDate }) {
+function RoomCard({ color, filteredRoomData, roomImage, setDisplay, roomRates, checkinDate, checkoutDate, property_id }) {
 
   const dispatch = useDispatch();
 
   const inventoryDetail = useSelector(state => state.inventoryDetail)
+
+  const [invData, setInvData] = useState([]);
+
 
   const [searchInventory, setSearchInventory] = useState(false)
   const [searchBookingInventory, setSearchBookingInventory] = useState(false)
@@ -149,6 +152,86 @@ function RoomCard({ color, filteredRoomData, roomImage, setDisplay, roomRates, c
     }
   }
 
+
+  // ----------------------------------------------------------
+
+  useEffect(() => {
+    getInventoryDetails()
+  }, [])
+
+  function getInventoryDetails() {
+    let url = `/api/inv_data/${property_id}/${checkinDate}/${checkoutDate}`
+    axios.get(url).then((response) => {
+      setInvData(response.data)
+      // setRoomsLoader(false)
+    }).catch((err) => {
+      console.log(JSON.stringify(err))
+    })
+  }
+  // console.log('inv data ', invData)
+
+  // let invData = [
+  //   {
+  //     "room_id": "r0011",
+  //     "update_date": "2023-12-18",
+  //     "inventory_count": 25,
+  //     "inv_booked": 0,
+  //     "available_inventory": 25
+  //   },
+  //   {
+  //     "room_id": "r0011",
+  //     "update_date": "2023-12-19",
+  //     "inventory_count": 25,
+  //     "inv_booked": 0,
+  //     "available_inventory": 25
+  //   },
+  //   {
+  //     "room_id": "r004",
+  //     "update_date": "2023-12-18",
+  //     "inventory_count": 2,
+  //     "inv_booked": 0,
+  //     "available_inventory": 2
+  //   },
+  //   {
+  //     "room_id": "r004",
+  //     "update_date": "2023-12-19",
+  //     "inventory_count": 2,
+  //     "inv_booked": 0,
+  //     "available_inventory": 2
+  //   },
+  //   {
+  //     "room_id": "r005",
+  //     "update_date": "2023-12-18",
+  //     "inventory_count": 4,
+  //     "inv_booked": 0,
+  //     "available_inventory": 4
+  //   },
+  //   {
+  //     "room_id": "r005",
+  //     "update_date": "2023-12-19",
+  //     "inventory_count": 4,
+  //     "inv_booked": 0,
+  //     "available_inventory": 0
+  //   }
+  // ]
+  // Initialize sets for non-zero and zero inventory
+
+  const { nonZeroInventory, zeroInventory } = invData.reduce(
+    (acc, item) => {
+      // Check if available_inventory is not equal to 0
+      // Use ternary operator to conditionally select the set
+      (item.available_inventory !== 0 ? acc.nonZeroInventory : acc.zeroInventory).add(item.room_id);
+      return acc;
+    },
+    { nonZeroInventory: new Set(), zeroInventory: new Set() }
+  );
+
+  // Iterate through invData to remove room_ids with available_inventory equal to 0 from nonZeroInventory
+  invData.forEach(item => item.available_inventory === 0 && nonZeroInventory.delete(item.room_id));
+
+  // console.log('non zero inventory ', [...nonZeroInventory]);
+  // console.log('zero inventory ', [...zeroInventory]);
+
   return (
     <div className={` w-100 h-1/4 text-black border border-gray-500 ${color?.cardColor} rounded-2xl p-4 mx-2 my-4 lg:m-4 flex flex-wrap justify-center items-center md:flex-row flex-col`}>
 
@@ -171,11 +254,66 @@ function RoomCard({ color, filteredRoomData, roomImage, setDisplay, roomRates, c
       {/* additional information */}
       <div className='flex flex-col items-center justify-center w-fit lg:w-1/6 md:w-1/6'>
         <div className='py-4 md:py-2'>
-          <h3 className='text-3xl font-bold  text-center'>₹ {roomRates.total_final_rate}</h3>
-          <p className='text-xs py-1 text-center'>+ tax For {numberOfDays} Day{numberOfDays === 1 ? '' : 's'}</p>
+          {!nonZeroInventory.has(roomRates.room_id) ?
+            <div className='bg-red-700 px-4 py-2 rounded-lg'>
+              <h3 className=' text-white text-center text-lg font-semibold'>Not available!</h3>
+              <p className=' text-white text-xs py-1'>Will be available soon!</p>
+            </div>
+            : <div>
+              <h3 className='text-3xl font-bold  text-center'>₹ {roomRates.total_final_rate}</h3>
+              <p className='text-xs py-1 text-center'>+ tax For {numberOfDays} Day{numberOfDays === 1 ? '' : 's'}</p>
+            </div>
+          }
         </div>
 
-        {searchBookingInventory === true ?
+
+        {nonZeroInventory.has(roomRates.room_id) &&
+          <>
+            {searchBookingInventory === true ?
+              <ButtonLoader
+                // style={{ fontSize: '14px' }}
+                classes="px-5 py-3 mb-2 text-base md:text-sm md:mb-0 md:px-3 md:py-2 rounded-md  bg-green-700 hover:bg-green-900 text-white font-bold"
+                text="Book Now"
+              /> :
+              <button
+                // style={{ fontSize: "14px" }}
+                className='px-5 py-3 mb-2 text-base md:text-sm md:mb-0 md:px-3 md:py-2 rounded-md  bg-green-700 hover:bg-green-900 text-white font-bold'
+                onClick={() => {
+                  setSearchBookingInventory(true)
+                  getInventoryDetail("bookNow") // this method will check the inventory available for the selected room and if the inventory is available then the rest of the methods will be called inside it.
+                }}
+              >
+                Book Now
+              </button>}
+
+
+            {searchInventory === true ?
+              <ButtonLoader
+                style={{ fontSize: '11px' }}
+                classes=" mt-2 px-3 py-2 md:px-2 md:py-1 rounded-md  bg-cyan-700 hover:bg-cyan-900 text-white"
+                text="Learn More"
+              /> :
+              <button
+                onClick={() => {
+                  setSearchInventory(true)
+                  getInventoryDetail("LearnMore")
+                }}
+                style={{ fontSize: "11px" }}
+                className=' mt-2 px-3 py-2 md:px-2 md:py-1 rounded-md  bg-cyan-700 hover:bg-cyan-900 text-white'
+              >
+                Learn More
+              </button>
+            }
+          </>
+
+
+        }
+
+
+
+
+
+        {/* {searchBookingInventory === true ?
           <ButtonLoader
             // style={{ fontSize: '14px' }}
             classes="px-5 py-3 mb-2 text-base md:text-sm md:mb-0 md:px-3 md:py-2 rounded-md  bg-green-700 hover:bg-green-900 text-white font-bold"
@@ -210,7 +348,7 @@ function RoomCard({ color, filteredRoomData, roomImage, setDisplay, roomRates, c
           >
             Learn More
           </button>
-        }
+        } */}
       </div>
     </div>
   )

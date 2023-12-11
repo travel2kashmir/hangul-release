@@ -76,6 +76,7 @@ function Home({ allHotelDetails, hotelDetailLoader, setMenu, setShowBookingEngin
                                                     enquiry={enquiry}
                                                     setSearched={(e) => setSearched(e)}
                                                     searched={searched}
+                                                    setShowModalBooking={(e) => setShowModalBooking(e)}
 
                                                 />
                                             </div>

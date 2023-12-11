@@ -442,8 +442,8 @@ function Gallery() {
         id="main-content"
         className={`${color?.greybackground} px-4 pt-24 pb-6 relative overflow-y-auto lg:ml-64`}
       >
-        {/* bread crumb */}
 
+        {/* bread crumb */}
         <BreadCrumb
           color={color}
           crumbList={navigationList(currentLogged, currentProperty)}

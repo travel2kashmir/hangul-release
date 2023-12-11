@@ -4,15 +4,20 @@ import axios from 'axios';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux';
+// reducer functions are being imported from the redux
+import { clearRoomsSelected, setAddMoreRoom, clearReservationIdentity, clearInventoryDetail, clearGuestDetails, updateBookingInfo } from '../../redux/hangulSlice'
 
-function ReceiptView({ allHotelDetails, setShowModal, setDisplay }) {
+
+function ReceiptView({ allHotelDetails, setShowModal, setDisplay, setSearched }) {
 
     let bookingInfo = useSelector(state => state.bookingInfo)
     let bookingId = bookingInfo.booking_id
     let propertyId = bookingInfo.property_id
 
     const [bookingDetails, setBookingDetail] = useState([])
+
+    const dispatch = useDispatch() //creating object of dispatch 
 
     const pdfRef = useRef();
 
@@ -66,6 +71,35 @@ function ReceiptView({ allHotelDetails, setShowModal, setDisplay }) {
             console.log(err)
         });
     }
+
+    // Function to delete room_rates and room_data from local storage
+    function deleteRoomDetails() {
+        // Remove the room_rates key from local storage
+        localStorage.removeItem('room_rates');
+        localStorage.removeItem('temp_room_rate');
+
+        // Remove the room_data key from local storage
+        localStorage.removeItem('room_data');
+
+        // Remove the room reservation_ids key from local storage
+        localStorage.removeItem('reservation_ids');
+
+    }
+
+    function closeButtonAction() {
+        setShowModal(0)
+        setDisplay(0)
+        setSearched(false)
+        dispatch(setAddMoreRoom(false))
+        dispatch(clearRoomsSelected())
+        dispatch(clearGuestDetails())
+        dispatch(clearReservationIdentity())
+        dispatch(clearInventoryDetail())
+        dispatch(updateBookingInfo({ booking_id: null, property_id: null }))
+        deleteRoomDetails()
+    }
+
+
 
     return (
         <section >
@@ -161,7 +195,7 @@ function ReceiptView({ allHotelDetails, setShowModal, setDisplay }) {
                         <div className='flex justify-between items-end border-b'>
                             <h2 className='font-semibold pt-2'>Booking Date </h2>
                             <p className='px-2'>{bookingDetails[0]?.booking_date_from} to {bookingDetails[0]?.booking_date_to}</p>
-                        </div>       
+                        </div>
 
                         <div className='flex justify-between items-end border-b'>
                             <h2 className='font-semibold pt-2 '>Base Price:</h2>
@@ -180,7 +214,7 @@ function ReceiptView({ allHotelDetails, setShowModal, setDisplay }) {
                                 <h2 className='font-semibold pt-2'>Coupon Discount:</h2>
                                 <p className='px-2'>₹{bookingDetails?.[0]?.booking_invoice?.[0]?.coupon_discount}</p>
                             </div>}
-                        
+
 
                     </div>
                 </div>
@@ -189,7 +223,7 @@ function ReceiptView({ allHotelDetails, setShowModal, setDisplay }) {
 
             <div className='flex justify-center py-10'>
                 <button onClick={generatePDF} className='px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 hover:rounded-md'>Download PDF</button>
-                <button onClick={() => { setDisplay(0); setShowModal(0) }} className='px-3 py-2 mx-1 bg-red-600 hover:bg-red-700 text-white rounded-lg hover:rounded-md'>Back To Home</button>
+                <button onClick={closeButtonAction} className='px-3 py-2 mx-1 bg-red-600 hover:bg-red-700 text-white rounded-lg hover:rounded-md'>Back To Home</button>
             </div>
         </section>
     )

@@ -285,10 +285,10 @@ function Classic(args) {
                   >{language?.contactus}</a>
                   <a
                      href="#booknow" onClick={() => { setShowModalBookingForm(1) }}
-                     className="header-menu-item font-bold"
+                     className="text-sm  ml-6 py-3 font-bold text-sky-600"
                   >Book Now
                   </a>
-                  <div className="header-menu-copyright">Made with Tailwind CSS</div>
+                  {/* <div className="header-menu-copyright">Made with Tailwind CSS</div> */}
                </ul>
 
             </div>
@@ -350,7 +350,7 @@ function Classic(args) {
                               <hr />
                               <li className="text-base text-gray-900 font-normal rounded-lg flex items-center p-2">
                                  <span className="ml-3 flex-1 whitespace-nowrap">
-                                    <a href="#contactus" ><button className='font-bold' onClick={() => { setShowModalBookingForm(1) }}>Book Now </button></a>
+                                    <a href="#booknow" ><button className='font-bold text-sky-600' onClick={() => { setShowModalBookingForm(1) }}>Book Now </button></a>
                                  </span>
                               </li>
 

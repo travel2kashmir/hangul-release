@@ -25,8 +25,8 @@ function RoomCalenderView({ allHotelDetails, color, roomsLoader, setRoomsLoader,
         getRatesForTheSelectedDate()
     }, [])
 
+    // this function gives rates of the rooms for the selected dates
     function getRatesForTheSelectedDate() {
-        // this function gives rates of the rooms for the selected dates
         let url = `/api/rates/${allHotelDetails?.property_id}/${checkinDate}/${checkoutDate}`
         axios.get(url).then((response) => {
             setDataAsPerDate(response.data)
@@ -64,7 +64,7 @@ function RoomCalenderView({ allHotelDetails, color, roomsLoader, setRoomsLoader,
 
     // Sort the roomsArray in ascending order based on total_final_rate
     const sortedFinalRate = roomsArray.slice().sort((room1, room2) => room1.total_final_rate - room2.total_final_rate);
-    console.log("this is the sorted final rate", sortedFinalRate)
+    // console.log("this is the sorted final rate", sortedFinalRate)
 
     // only those rooms whose room_id is not in roomsSelected state
     const roomsToDisplay = sortedFinalRate.filter((room) => {

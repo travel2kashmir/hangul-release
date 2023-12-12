@@ -19,6 +19,9 @@ function RoomCard({ color, filteredRoomData, roomImage, setDisplay, roomRates, c
   const [searchInventory, setSearchInventory] = useState(false)
   const [searchBookingInventory, setSearchBookingInventory] = useState(false)
 
+  // loader
+  const [inventoryCheckDone, setInventoryCheckDone] = useState(false)
+
   const startDate = new Date(checkinDate); // Booking start date
   const endDate = new Date(checkoutDate); // Booking end date
 
@@ -58,8 +61,9 @@ function RoomCard({ color, filteredRoomData, roomImage, setDisplay, roomRates, c
     // Store the updated data back in local storage
     localStorage.setItem('room_rates', JSON.stringify(existingData));
 
-    setDisplay(2)
     dispatch(setRoomsSelected([room_rates?.room_id]))
+    setDisplay(2)
+
   }
 
   // get inventory details for the rooms between the checkin and checkout date
@@ -163,12 +167,12 @@ function RoomCard({ color, filteredRoomData, roomImage, setDisplay, roomRates, c
     let url = `/api/inv_data/${property_id}/${checkinDate}/${checkoutDate}`
     axios.get(url).then((response) => {
       setInvData(response.data)
-      // setRoomsLoader(false)
+      setInventoryCheckDone(true)
     }).catch((err) => {
       console.log(JSON.stringify(err))
     })
   }
-  // console.log('inv data ', invData)
+  console.log('inv data ', invData)
 
   // let invData = [
   //   {
@@ -229,8 +233,8 @@ function RoomCard({ color, filteredRoomData, roomImage, setDisplay, roomRates, c
   // Iterate through invData to remove room_ids with available_inventory equal to 0 from nonZeroInventory
   invData.forEach(item => item.available_inventory === 0 && nonZeroInventory.delete(item.room_id));
 
-  // console.log('non zero inventory ', [...nonZeroInventory]);
-  // console.log('zero inventory ', [...zeroInventory]);
+  console.log('non zero inventory ', [...nonZeroInventory]);
+  console.log('zero inventory ', [...zeroInventory]);
 
   return (
     <div className={` w-100 h-1/4 text-black border border-gray-500 ${color?.cardColor} rounded-2xl p-4 mx-2 my-4 lg:m-4 flex flex-wrap justify-center items-center md:flex-row flex-col`}>
@@ -253,18 +257,24 @@ function RoomCard({ color, filteredRoomData, roomImage, setDisplay, roomRates, c
 
       {/* additional information */}
       <div className='flex flex-col items-center justify-center w-fit lg:w-1/6 md:w-1/6'>
-        <div className='py-4 md:py-2'>
-          {!nonZeroInventory.has(roomRates.room_id) ?
-            <div className='bg-red-700 px-4 py-2 rounded-lg'>
-              <h3 className=' text-white text-center text-lg font-semibold'>Not available!</h3>
-              <p className=' text-white text-xs py-1'>Will be available soon!</p>
-            </div>
-            : <div>
-              <h3 className='text-3xl font-bold  text-center'>₹ {roomRates.total_final_rate}</h3>
-              <p className='text-xs py-1 text-center'>+ tax For {numberOfDays} Day{numberOfDays === 1 ? '' : 's'}</p>
-            </div>
-          }
-        </div>
+
+        {inventoryCheckDone === false
+          ? <div className='h-28 w-36 bg-gray-400 animate-pulse opacity-10 border border-none rounded inline-block'></div>
+          :
+          <div className='py-4 md:py-2'>
+            {!nonZeroInventory.has(roomRates.room_id) ?
+              <div className='bg-red-700 px-4 py-2 rounded-lg'>
+                <h3 className=' text-white text-center text-lg font-semibold'>Not available!</h3>
+                <p className=' text-white text-xs py-1'>Will be available soon!</p>
+              </div>
+              : <div>
+                <h3 className='text-3xl font-bold  text-center'>₹ {roomRates.total_final_rate}</h3>
+                <p className='text-xs py-1 text-center'>+ tax For {numberOfDays} Day{numberOfDays === 1 ? '' : 's'}</p>
+              </div>
+            }
+          </div>
+        }
+
 
 
         {nonZeroInventory.has(roomRates.room_id) &&

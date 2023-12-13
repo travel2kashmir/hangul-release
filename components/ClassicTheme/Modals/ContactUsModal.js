@@ -1,20 +1,16 @@
 import React, { useState } from 'react';
 import Contactus from '../../utils/Contactus';
-import Color from '../../colors/Color';
-import { english } from '../../Languages/Languages';
+// import Color from '../../colors/Color';
+// import { english } from '../../Languages/Languages';
 
-function ContactUsModal({ setShowModalContactUs,property_id }) {
-
-    const [contact, setContact] = useState({})
-    const [error, setError] = useState({})
-    
+function ContactUsModal({ setShowModalContactUs, property_id, color, lang }) {
 
     return (
         <div className="overflow-x-hidden overflow-y-auto fixed top-0 left-0 right-0 backdrop-blur-3xl h-screen bg-black/30 md:inset-0 z-50 flex justify-center items-center sm:h-full">
             <div className="relative w-full max-w-2xl px-4 h-auto md:h-auto ">
                 <div className='bg-white rounded-lg shadow relative'>
                     <div className="flex items-start justify-between p-5 border-b rounded-t">
-                       
+
                         <button
                             type="button"
                             onClick={(e) => setShowModalContactUs(e)
@@ -36,7 +32,7 @@ function ContactUsModal({ setShowModalContactUs,property_id }) {
                         </button>
                     </div>
 
-                    <Contactus color={Color?.light} language={english} property_id={property_id} />
+                    <Contactus color={color} language={lang} property_id={property_id} />
 
                 </div>
             </div>

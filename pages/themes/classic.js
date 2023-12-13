@@ -28,9 +28,11 @@ import Banner from '../../components/ClassicTheme/Banner';
 import Modal from '../../components/ClassicTheme/Modals/Modal';
 import BookingModal from '../../components/ClassicTheme/Modals/BookingModal';
 import BookingForm from '../../components/ClassicTheme/CustomizedUtils/BookingForm';
+// import BookingForm from '../../components/utils/BookingForm';
 import BookingEngine from '../../components/BookingEngine';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ContactUsModal from '../../components/ClassicTheme/Modals/ContactUsModal';
 
 
 var currentUser;
@@ -82,6 +84,8 @@ function Classic(args) {
    const [averageRating, setAverageRating] = useState()
    const [privacyPolicy, setPrivacyPolicy] = useState()
    const [termsConditions, setTermsConditions] = useState()
+   const [showContactUs, setShowContactUs] = useState(0);
+
 
 
    // booking enging integration 
@@ -138,7 +142,7 @@ function Classic(args) {
    function getIPData(msg, url) {
       const info = {
          req: {
-            method: 'GET', url: `${location.pathname.toLowerCase()}${url.toLowerCase()}`, headers: { "content-type": "application/json" }, "remoteAddress": ip,
+            method: 'GET', url: `${location.pathname.toLowerCase()}${url?.toLowerCase()}`, headers: { "content-type": "application/json" }, "remoteAddress": ip,
             "pathName": location.pathname, "port": location.port
          }
       }
@@ -279,15 +283,15 @@ function Classic(args) {
                      className="text-sm text-slate-500 ml-6 py-3"
                   >{language?.packages}</a> : <></>}
                   <a
-                     href="#contactus" onClick={() => { getIPData("Anchor tag Contact us from header", "/contactus") }}
+                     href="#" onClick={() => { setShowContactUs(1) }}
                      // className="header-menu-item"
                      className="text-sm text-slate-500 ml-6 py-3"
                   >{language?.contactus}</a>
-                  <a
+                  {/* <a
                      href="#booknow" onClick={() => { setShowModalBookingForm(1) }}
                      className="text-sm  ml-6 py-3 font-bold text-sky-600"
                   >Book Now
-                  </a>
+                  </a> */}
                   {/* <div className="header-menu-copyright">Made with Tailwind CSS</div> */}
                </ul>
 
@@ -344,15 +348,16 @@ function Classic(args) {
                               <li className="text-base text-gray-900 font-normal rounded-lg flex items-center p-2">
                                  <span className="ml-3 flex-1 whitespace-nowrap">
                                     <a onClick={() => { getIPData("Anchor tag Contact us") }}
-                                       href="#contactus"><button onClick={() => { getIPData("Anchor tag Contact us from header", "/contactus") }}>{language?.contactus} </button></a>
+                                       // href="#"><button onClick={() => { getIPData("Anchor tag Contact us from header", "/contactus") }}>{language?.contactus} </button></a>
+                                       href="#"><button onClick={() => { setShowContactUs(1) }}>{language?.contactus} </button></a>
                                  </span>
                               </li>
-                              <hr />
+                              {/* <hr />
                               <li className="text-base text-gray-900 font-normal rounded-lg flex items-center p-2">
                                  <span className="ml-3 flex-1 whitespace-nowrap">
                                     <a href="#booknow" ><button className='font-bold text-sky-600' onClick={() => { setShowModalBookingForm(1) }}>Book Now </button></a>
                                  </span>
-                              </li>
+                              </li> */}
 
                            </ul>
                         </div>
@@ -1389,8 +1394,17 @@ function Classic(args) {
                      </div>
                   </div> */}
 
-                  {/* <BookingForm color={Color?.light} /> */}
-                  <Contactus color={Color?.light} language={language} property_id={args?.allHotelDetails?.property_id} />
+                  <BookingForm
+                     setRoomsLoader={(e) => setRoomsLoader(e)}
+                     setShowBookingEngine={(e) => setShowBookingEngine(e)}
+                     setEnquiry={(e) => setEnquiry(e)}
+                     enquiry={enquiry}
+                     setSearched={(e) => setSearched(e)}
+                     searched={searched}
+                     setShowModalBookingForm={(e) => setShowModalBookingForm(e)}
+
+                  />
+                  {/* <Contactus color={Color?.light} language={language} property_id={args?.allHotelDetails?.property_id} /> */}
                </div>
 
             </div>
@@ -1499,6 +1513,16 @@ function Classic(args) {
             </div>
          </footer>
 
+
+         <div className={showContactUs === 1 ? "block" : "hidden"}>
+            <ContactUsModal
+               setShowModalContactUs={(e) => setShowContactUs(e)}
+               property_id={args?.allHotelDetails?.property_id}
+               color={Color?.light}
+               lang={language}
+            />
+         </div>
+
          <div className={showModalTC === 1 ? "block" : "hidden"}>
             <Modal
                title={`Terms & Conditions`}
@@ -1524,7 +1548,7 @@ function Classic(args) {
          </div>
 
          {/* ---------------booking form --------------- */}
-         {showModalBookingForm === 1 ?
+         {/* {showModalBookingForm === 1 ?
             <Modal
                title={'BOOK YOUR STAY'}
                description={
@@ -1542,7 +1566,7 @@ function Classic(args) {
                setShowModal={(e) => setShowModalBookingForm(e)}
             />
             : <></>
-         }
+         } */}
 
          {/* this div will only show up when the showBookingEngine is equal to 1 else there will be no such div, and the functions inside this div will only work when showBookingEngine is equal to 1 */}
          {showBookingEngine === 1 ?

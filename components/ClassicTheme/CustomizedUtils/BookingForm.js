@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import DateInput from './DateInput'
-import DropDown from './DropDown'
+import DateInput from '../../utils/DateInput'
+import DropDown from '../../utils/DropDown'
 
 
 function BookingForm({ setShowModalBookingForm, setShowBookingEngine, enquiry, setEnquiry, setRoomsLoader, setSearched, searched }) {
@@ -35,11 +35,15 @@ function BookingForm({ setShowModalBookingForm, setShowBookingEngine, enquiry, s
 
 
     return (
-        <div className='mx-auto py-6 '>
-            <div>
-                {/* <div className=" md:px-4 mx-auto w-full"> */}
-                <div className=" md:px-0 mx-auto w-full">
-                    <div className=''>
+        <div className='mx-auto border shadow-lg rounded-lg'>
+            <div className='p-8'>
+                <h3
+                    className={`text-4xl flex leading-none pl-6 lg:py-0 pt-6 my-4 font-bold`}
+                >
+                    Booking Form
+                </h3>
+                <div className=" md:px-4 mx-auto w-full">
+                    <div className='flex flex-wrap'>
                         {/* checkInDate */}
                         <DateInput
                             // color={color}
@@ -85,32 +89,26 @@ function BookingForm({ setShowModalBookingForm, setShowBookingEngine, enquiry, s
                             defaultValue={enquiry?.number_of_adults}
                             options={Array.from({ length: 50 }, (_, index) => index + 1).map((i) => ({ "label": i, "value": i }))} />
 
-                        <div className='flex justify-between'>
-                            <div className='w-5/12'>
-                                <DropDown
-                                    label={"Guests < 6 (years)"}
-                                    visible={1}
-                                    // color={color}
-                                    req={true}
-                                    onChangeAction={(e) => setEnquiry({ ...enquiry, guests_below_six: e.target.value })}
-                                    defaultValue={enquiry?.guests_below_six}
-                                    options={Array.from({ length: 50 }, (_, index) => index + 1).map((i) => ({ "label": i, "value": i }))} />
-                            </div>
-                            <div className='w-5/12'>
-                                <DropDown
-                                    label={"Guests < 12 (years)"}
-                                    visible={1}
-                                    // color={color}
-                                    req={true}
-                                    onChangeAction={(e) => setEnquiry({ ...enquiry, guests_below_twelve: e.target.value })}
-                                    defaultValue={enquiry?.guests_below_twelve}
-                                    options={Array.from({ length: 50 }, (_, index) => index + 1).map((i) => ({ "label": i, "value": i }))} />
-                            </div>
-                        </div>
+                        <DropDown
+                            label={"Guests < 6 (years)"}
+                            visible={1}
+                            // color={color}
+                            req={true}
+                            onChangeAction={(e) => setEnquiry({ ...enquiry, guests_below_six: e.target.value })}
+                            defaultValue={enquiry?.guests_below_six}
+                            options={Array.from({ length: 50 }, (_, index) => index + 1).map((i) => ({ "label": i, "value": i }))} />
+                        <DropDown
+                            label={"Guests < 12 (years)"}
+                            visible={1}
+                            // color={color}
+                            req={true}
+                            onChangeAction={(e) => setEnquiry({ ...enquiry, guests_below_twelve: e.target.value })}
+                            defaultValue={enquiry?.guests_below_twelve}
+                            options={Array.from({ length: 50 }, (_, index) => index + 1).map((i) => ({ "label": i, "value": i }))} />
                     </div>
                     <div className='flex justify-center items-center md:pt-10 lg:pt-0'>
                         <button
-                            className='bg-custom-yellow h-12 w-full text-white'
+                            className='bg-cyan-700 hover:bg-cyan-900 mt-5 border rounded-3xl border-none h-12 w-full text-white'
                             onClick={() => {
                                 if (enquiry.checkin === "" && enquiry.checkout === "") {
                                     setNotSelectedErr((prevValue) => ({ ...prevValue, "forCheckin": true, "forCheckout": true }))

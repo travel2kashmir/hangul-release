@@ -352,12 +352,12 @@ function Classic(args) {
                                        href="#"><button onClick={() => { setShowContactUs(1) }}>{language?.contactus} </button></a>
                                  </span>
                               </li>
-                              {/* <hr />
+                              <hr />
                               <li className="text-base text-gray-900 font-normal rounded-lg flex items-center p-2">
                                  <span className="ml-3 flex-1 whitespace-nowrap">
                                     <a href="#booknow" ><button className='font-bold text-sky-600' onClick={() => { setShowModalBookingForm(1) }}>Book Now </button></a>
                                  </span>
-                              </li> */}
+                              </li>
 
                            </ul>
                         </div>
@@ -1231,7 +1231,7 @@ function Classic(args) {
 
                {/* Booking form  */}
                {/* <div className={`tour-sidebar ${Color?.light?.whitebackground}`}> */}
-               <div className={`relative top-8 z-20 mb-10 w-full lg:mb-0 lg:sticky lg:ml-8  lg:w-5/12 ${Color?.light?.whitebackground}`}>
+               <div className={`hidden lg:block relative top-8 z-20 mb-10 w-full lg:mb-0 lg:sticky lg:ml-8  lg:w-5/12 ${Color?.light?.whitebackground}`}>
                   {/* <div className="tour-receipt">
                      <div className="tour-receipt-head">
                         <div className="tour-amount">
@@ -1547,10 +1547,9 @@ function Classic(args) {
 
          </div>
 
-         {/* ---------------booking form --------------- */}
-         {/* {showModalBookingForm === 1 ?
+         {/* ---------------booking form modal for sm and md screen --------------- */}
+         {showModalBookingForm === 1 ?
             <Modal
-               title={'BOOK YOUR STAY'}
                description={
                   <BookingForm
                      setRoomsLoader={(e) => setRoomsLoader(e)}
@@ -1566,7 +1565,7 @@ function Classic(args) {
                setShowModal={(e) => setShowModalBookingForm(e)}
             />
             : <></>
-         } */}
+         }
 
          {/* this div will only show up when the showBookingEngine is equal to 1 else there will be no such div, and the functions inside this div will only work when showBookingEngine is equal to 1 */}
          {showBookingEngine === 1 ?

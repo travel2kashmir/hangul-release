@@ -13,7 +13,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useDispatch, useSelector } from 'react-redux';
 import { setRoomsSelected, setAddMoreRoom, clearRoomsSelected, clearInventoryDetail, setReserveRoom, clearReservationIdentity, clearGuestDetails, setReservationIdentity } from '../redux/hangulSlice';
 
-function RoomSummary({ color, setDisplay, setShowModal, setSearched, checkinDate, checkoutDate }) {
+function RoomSummary({ color, setDisplay, setShowModal, setRoomsLoader, setSearched, checkinDate, checkoutDate }) {
 
   const [searchBookingInventory, setSearchBookingInventory] = useState(false)
 

@@ -23,13 +23,11 @@ const logger = require("../../services/logger");
 import Router from "next/router";
 import { InitialActions, ColorToggler } from "../../components/initalActions";
 import BreadCrumb from "../../components/utils/BreadCrumb";
-import { fetchHotelDetails, navigationList } from "../../components/logic/property/Gallery";
+import { fetchHotelDetails, navigationList, onChangePhoto, uploadImage, validationGallery, validationGalleryEdit, handlecheckbox, allDelete, deleteMultiple, searchImage } from "../../components/logic/property/Gallery";
 
 var language;
 var currentProperty;
 var currentLogged;
-let checked;
-let check = [];
 let colorToggle;
 
 function Gallery() {
@@ -55,6 +53,10 @@ function Gallery() {
   const [mode, setMode] = useState();
   const [indexImage, setIndexImage] = useState();
   const [actionEnlargeImage, setActionEnlargeImage] = useState({});
+
+  // checkbox state
+  const [check, setCheck] = useState([]);
+
   // function to search image
   const [searchedImages, setSearchedImages] = useState([{}]);
   const [showSearchedImages, setShowSearchedImages] = useState(0);
@@ -73,166 +75,6 @@ function Gallery() {
       fetchHotelDetails(currentProperty, setGallery, setImages, setEnlargedImage, setVisible);
     }
   }, [])
-
-
-  const onChangePhoto = (e, imageFile) => {
-    setImage({ ...image, imageFile: e.target.files[0] });
-  };
-
-  /* Function to upload image*/
-  const uploadImage = () => {
-    setSpin(1);
-    const imageDetails = image.imageFile;
-    const formData = new FormData();
-    formData.append("file", imageDetails);
-    formData.append("upload_preset", "Travel2Kashmir");
-    formData.append("enctype", "multipart/form-data");
-    axios
-      .post("https://api.cloudinary.com/v1_1/dvczoayyw/image/upload", formData)
-      .then((response) => {
-        setImage({ ...image, image_link: response?.data?.secure_url });
-        setSpin(0);
-      })
-      .catch((error) => {
-        setSpin(0);
-        toast.error("Image upload error! ", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-        console.error("Image upload error!", error);
-      });
-  };
-
-  /* Function to add images*/
-  const submitAddImage = () => {
-    if (flag === 1) {
-      if (actionImage.length !== 0) {
-        setSpinner(1);
-        const imagedata = [
-          {
-            property_id: currentProperty?.property_id,
-            image_link: image.image_link,
-            image_title: actionImage.image_title,
-            image_description: actionImage.image_description,
-            image_category: "outside",
-          },
-        ];
-        const finalImage = { images: imagedata };
-        axios
-          .post(`/api/gallery`, finalImage)
-          .then((response) => {
-            setSpinner(0);
-            toast.success("Image Added Successfully!", {
-              position: "top-center",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-            });
-
-            fetchHotelDetails(currentProperty, setGallery, setImages, setEnlargedImage, setVisible);
-            setImage({});
-            setActionImage({});
-            Router.push("./gallery");
-            if (addImage === 1) {
-              setAddImage(0);
-              document.getElementById("addgallery").reset();
-            }
-            if (addURLImage === 1) {
-              setAddURLImage(0);
-              document.getElementById("addurlgallery").reset();
-            }
-          })
-          .catch((error) => {
-            if (addImage === 1) {
-              document.getElementById("addgallery").reset();
-            }
-            if (addURLImage === 1) {
-              document.getElementById("addurlgallery").reset();
-            }
-            setSpinner(0);
-            toast.error(" Gallery Error", {
-              position: "top-center",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-            });
-          });
-      }
-    }
-  };
-
-  /* Function to edit images*/
-  const updateImageDetails = () => {
-    if (flag === 1) {
-      if (objChecker.isEqual(actionImage, updateImage)) {
-        toast.warn("No change in Image Details detected. ", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-        setAllHotelDetails([]);
-      } else {
-        setSpinner(1);
-        const final_data = {
-          image_id: actionImage?.image_id,
-          image_title: actionImage.image_title,
-          image_description: actionImage.image_description,
-        };
-        const url = "/api/images";
-        axios
-          .put(url, final_data, {
-            header: { "content-type": "application/json" },
-          })
-          .then((response) => {
-            setSpinner(0);
-            setEditImage(0);
-            toast.success("Gallery Updated Successfully!", {
-              position: "top-center",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-            });
-            document.getElementById("editImage").reset();
-            fetchHotelDetails(currentProperty, setGallery, setImages, setEnlargedImage, setVisible);
-            setAllHotelDetails([]);
-            setEnlargeImage(0);
-            setActionImage({});
-            setError({});
-            Router.push("./gallery");
-          })
-          .catch((error) => {
-            setSpinner(0);
-            toast.error("Gallery Update Error! ", {
-              position: "top-center",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-            });
-          });
-      }
-    }
-  };
 
   /* Function to delete images*/
   const submitDelete = () => {
@@ -269,105 +111,9 @@ function Gallery() {
       });
   };
 
-  // Add Validation Gallery
-  const validationGallery = () => {
-    setError({});
-    var result = validateGallery(actionImage, image.image_link);
-    if (result === true) {
-      submitAddImage();
-    } else {
-      setError(result);
-    }
-  };
-
-  // Edit Validation Gallery
-  const validationGalleryEdit = () => {
-    setError({});
-    var result = validateEditGallery(actionImage);
-    console.log("Result" + JSON.stringify(result));
-    if (result === true) {
-      updateImageDetails();
-    } else {
-      setError(result);
-    }
-  };
-
-  const handlecheckbox = (e) => {
-    console.log(images.length);
-    const { name, checked } = e.target;
-
-    let tempCon = images.map((item) =>
-      item.image_id === name ? { ...item, isChecked: checked } : item
-    );
-    setImages(tempCon);
-    check = tempCon
-      .filter((i) => i.isChecked === true)
-      .map((j) => {
-        return j.image_id;
-      });
-  };
-
-  // Select multiple delete images
-  const allDelete = () => {
-    setdeleteImage(1);
-  };
-
-  /* Function Multiple Delete*/
-  function deleteMultiple() {
-    const data = check?.map((item) => {
-      return { image_id: item, property_id: currentProperty?.property_id };
-    });
-    setSpinner(1);
-    const imagedata = data;
-    const finalImages = { images: imagedata };
-    axios
-      .post(`/api/deleteall/images`, finalImages, {
-        headers: { "content-type": "application/json" },
-      })
-      .then((response) => {
-        setSpinner(0);
-        toast.success("API: Images delete success.", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-        fetchHotelDetails(currentProperty, setGallery, setImages, setEnlargedImage, setVisible);
-        Router.push("./gallery");
-        setdeleteImage(0);
-      })
-      .catch((error) => {
-        setSpinner(0);
-        toast.error("API:Images add error.", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      });
-  }
-
-
   const clearSearchField = () => {
     document.getElementById("imageSearchBox").reset();
   };
-
-  const searchImage = (data) => {
-    let matchedImages = images.filter(
-      (i) => i.image_title.toLowerCase().match(data.toLowerCase()) || i.image_description.toLowerCase().match(data.toLowerCase())
-    );
-
-    setSearchedImages(matchedImages);
-
-    setShowSearchedImages(1);
-  };
-
 
   // key detection left right to be usedd when implementing keyboard change of images
   // useEffect(() => {
@@ -442,8 +188,8 @@ function Gallery() {
         id="main-content"
         className={`${color?.greybackground} px-4 pt-24 pb-6 relative overflow-y-auto lg:ml-64`}
       >
-        {/* bread crumb */}
 
+        {/* bread crumb */}
         <BreadCrumb
           color={color}
           crumbList={navigationList(currentLogged, currentProperty)}
@@ -471,7 +217,7 @@ function Gallery() {
                     <input
                       type="text"
                       name="imageSearch"
-                      onChange={(e) => searchImage(e.target.value)}
+                      onChange={(e) => searchImage(e.target.value, images, setSearchedImages, setShowSearchedImages)}
                       className={`${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
                       placeholder={language?.searchforimages}
                     ></input>
@@ -522,7 +268,7 @@ function Gallery() {
                   </a>
 
                   <a
-                    onClick={allDelete}
+                    onClick={() => allDelete(setdeleteImage)}
                     className={
                       check?.length === 0 || undefined
                         ? `${color?.textgray} cursor-pointer p-1 ${color?.hover} rounded inline-flex
@@ -628,7 +374,7 @@ function Gallery() {
                   return (
                     <>
                       <div
-                        className="block text-blueGray-600  text-xs font-bold "
+                        className="block text-blueGray-600  text-xs font-bold border rounded-lg"
                         key={idx}
                       >
                         <div
@@ -646,9 +392,9 @@ function Gallery() {
                               name={item?.image_id}
                               checked={item.isChecked || false}
                               onChange={(e) => {
-                                handlecheckbox(e);
+                                handlecheckbox(e, images, setImages, setCheck);
                               }}
-                              className="bottom-0 right-0 cursor-pointer absolute bg-gray-500 opacity-30 m-1 border-gray-300 text-cyan-600  checked:opacity-100 focus:ring-3 focus:ring-cyan-200 h-4 w-4 rounded-full"
+                              className="bottom-0 right-0 cursor-pointer absolute bg-gray-900 opacity-30 m-1 border-gray-300 text-cyan-600  checked:opacity-100 focus:ring-3 focus:ring-cyan-200 h-4 w-4 rounded-full"
                               onClick={() => {
                                 setSelectedImage(!selectedImage);
                               }}
@@ -708,7 +454,7 @@ function Gallery() {
                               name={item?.image_id}
                               checked={item.isChecked || false}
                               onChange={(e) => {
-                                handlecheckbox(e);
+                                handlecheckbox(e, images, setImages, setCheck);
                               }}
                               className="bottom-0 right-0 cursor-pointer absolute bg-gray-30 opacity-30 m-1 border-gray-300 text-cyan-600  checked:opacity-100 focus:ring-3 focus:ring-cyan-200 h-4 w-4 rounded-full"
                               onClick={() => {
@@ -1011,7 +757,8 @@ function Gallery() {
                   >
                     <Button
                       Primary={language?.Update}
-                      onClick={validationGalleryEdit}
+                      // onClick={validationGalleryEdit}
+                      onClick={() => validationGalleryEdit(flag, actionImage, updateImage, setAllHotelDetails, setSpinner, setEditImage, currentProperty, setGallery, setImages, setEnlargedImage, setVisible, setEnlargeImage, setActionImage, setError, Router)}
                     />
                   </div>
                   <div
@@ -1078,10 +825,9 @@ function Gallery() {
                             name="myImage"
                             accept="image/png, image/gif, image/jpeg, image/jpg"
                             onChange={(e) => {
-                              onChangePhoto(e, "imageFile");
+                              onChangePhoto(e, "imageFile", image, setImage);
                             }}
-                            className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg 
-                                                focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
+                            className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg  focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
                             defaultValue=""
                           />
                         </div>
@@ -1092,7 +838,7 @@ function Gallery() {
                           {spin === 0 ? (
                             <Button
                               Primary={language?.Upload}
-                              onClick={uploadImage}
+                              onClick={() => uploadImage(setSpin, image, setImage)}
                             />
                           ) : (
                             <Button Primary={language?.SpinnerUpload} />
@@ -1179,7 +925,7 @@ function Gallery() {
                     <Button
                       Primary={language?.Add}
                       onClick={() => {
-                        validationGallery();
+                        validationGallery(setError, flag, actionImage, setActionImage, setSpinner, currentProperty, image, setImage, setGallery, setImages, setEnlargedImage, setVisible, Router, addImage, addURLImage, setAddImage, setAddURLImage);
                       }}
                     />
                   </div>
@@ -1326,7 +1072,7 @@ function Gallery() {
                     <Button
                       Primary={language?.Add}
                       onClick={() => {
-                        validationGallery();
+                        validationGallery(setError, flag, actionImage, setActionImage, setSpinner, currentProperty, image, setImage, setGallery, setImages, setEnlargedImage, setVisible, Router, addImage, addURLImage, setAddImage, setAddURLImage);
                       }}
                     />
                   </div>
@@ -1395,7 +1141,7 @@ function Gallery() {
                     <>
                       <Button
                         Primary={language?.Delete}
-                        onClick={() => deleteMultiple()}
+                        onClick={() => deleteMultiple(check, currentProperty, setSpinner, setGallery, setImages, setEnlargedImage, setVisible, Router, setdeleteImage)}
                       />
                       <Button
                         Primary={language?.Cancel}

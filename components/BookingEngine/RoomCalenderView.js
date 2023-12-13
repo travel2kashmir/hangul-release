@@ -20,15 +20,13 @@ function RoomCalenderView({ allHotelDetails, color, roomsLoader, setRoomsLoader,
     const roomsSelected = useSelector(state => state.roomsSelected)
 
     const [dataAsPerDate, setDataAsPerDate] = useState([]);
-    const [invData, setInvData] = useState([]);
 
     useEffect(() => {
         getRatesForTheSelectedDate()
-        getInventoryDetail()
     }, [])
 
+    // this function gives rates of the rooms for the selected dates
     function getRatesForTheSelectedDate() {
-        // this function gives rates of the rooms for the selected dates
         let url = `/api/rates/${allHotelDetails?.property_id}/${checkinDate}/${checkoutDate}`
         axios.get(url).then((response) => {
             setDataAsPerDate(response.data)
@@ -38,33 +36,12 @@ function RoomCalenderView({ allHotelDetails, color, roomsLoader, setRoomsLoader,
         })
     }
 
-    // console.log(dataAsPerDate)
-
-    function getInventoryDetail() {
-        let url = `/api/inv_data/${allHotelDetails?.property_id}/${checkinDate}/${checkoutDate}`
-        axios.get(url).then((response) => {
-            setInvData(response.data)
-            // setRoomsLoader(false)
-        }).catch((err) => {
-            console.log(JSON.stringify(err))
-        })
-    }
-    console.log(invData)
-
-    // Filter out items with zero available inventory
-    const roomIdsWithNonZeroInventory = [...new Set(invData.filter(item => item.available_inventory !== 0).map(item => item.room_id))]
-    // console.log(roomIdsWithNonZeroInventory);
-
-    // Filter data based on roomIdsWithNonZeroInventory
-    const filteredData = dataAsPerDate.filter(item => roomIdsWithNonZeroInventory.includes(item.room_id));
-    // console.log(filteredData);
-
     const calculateTotalFinalRate = () => {
         // Create an object to group room rates by room_id and calculate the total final rate for each room
         const roomData = {};
 
         // taking out the data from the filteredData and storing them in roomData object.
-        filteredData.forEach((rate) => {
+        dataAsPerDate.forEach((rate) => {
             const { room_id, property_id, final_rate, tax_amount, otherfees_amount } = rate;
             if (!roomData[room_id]) {
                 roomData[room_id] = {
@@ -87,7 +64,7 @@ function RoomCalenderView({ allHotelDetails, color, roomsLoader, setRoomsLoader,
 
     // Sort the roomsArray in ascending order based on total_final_rate
     const sortedFinalRate = roomsArray.slice().sort((room1, room2) => room1.total_final_rate - room2.total_final_rate);
-    // console.log("this is the sorted final rate", sortedData)
+    // console.log("this is the sorted final rate", sortedFinalRate)
 
     // only those rooms whose room_id is not in roomsSelected state
     const roomsToDisplay = sortedFinalRate.filter((room) => {
@@ -143,6 +120,8 @@ function RoomCalenderView({ allHotelDetails, color, roomsLoader, setRoomsLoader,
     // }
 
     // Function to delete room_rates and room_data from local storage
+
+
     function deleteRoomDetails() {
         // Remove the room_rates key from local storage
         localStorage.removeItem('room_rates');
@@ -239,25 +218,28 @@ function RoomCalenderView({ allHotelDetails, color, roomsLoader, setRoomsLoader,
                                     setDisplay={(e) => setDisplay(e)}
                                     checkinDate={checkinDate}
                                     checkoutDate={checkoutDate}
+                                    property_id={allHotelDetails?.property_id}
                                 />
                             );
                         })
                     }
                     </> :
                     <>{
-                        roomsLoader === true ? <><RoomLoader size={`w-full h-44  rounded-2xl p-4 mt-10 m-2 `} /> <RoomLoader size={`w-full h-44  rounded-2xl p-4 m-2 `} /> <RoomLoader size={`w-full h-44  rounded-2xl p-4 m-2 `} /></> : <>
-                            {sortedFinalRate.map((room, index) => {
-                                return <RoomCard
-                                    key={index}
-                                    color={color}
-                                    roomImage={`https://images.unsplash.com/photo-1598928506311-c55ded91a20c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80`}
-                                    filteredRoomData={rooms?.filter((item) => item.room_id == room.room_id)[0]}
-                                    roomRates={room}
-                                    setDisplay={(e) => setDisplay(e)}
-                                    checkinDate={checkinDate}
-                                    checkoutDate={checkoutDate}
-                                />
-                            })}</>
+                        roomsLoader === true ? <><RoomLoader size={`w-full h-44  rounded-2xl p-4 mt-10 m-2 `} /> <RoomLoader size={`w-full h-44  rounded-2xl p-4 m-2 `} /> <RoomLoader size={`w-full h-44  rounded-2xl p-4 m-2 `} /></>
+                            : <>
+                                {sortedFinalRate.map((room, index) => {
+                                    return <RoomCard
+                                        key={index}
+                                        color={color}
+                                        roomImage={`https://images.unsplash.com/photo-1598928506311-c55ded91a20c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80`}
+                                        filteredRoomData={rooms?.filter((item) => item.room_id == room.room_id)[0]}
+                                        roomRates={room}
+                                        setDisplay={(e) => setDisplay(e)}
+                                        checkinDate={checkinDate}
+                                        checkoutDate={checkoutDate}
+                                        property_id={allHotelDetails?.property_id}
+                                    />
+                                })}</>
                     }</>}
             </div>
         </div>

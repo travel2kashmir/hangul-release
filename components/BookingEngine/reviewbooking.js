@@ -17,7 +17,7 @@ import ButtonLoader from './ButtonLoader';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-function Reviewbooking({ color, property_id, setDisplay, rooms, setShowModal, setSearched, checkinDate, checkoutDate }) {
+function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, setShowModal, setSearched, checkinDate, checkoutDate }) {
 
     let guestTemplate = {
         "guest_name": "",
@@ -535,7 +535,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setShowModal, se
             <div id="main-content" className={`h-fit text-white flex flex-wrap justify-around gap-2 mx-4 py-10 `}>
 
                 {/* left side div  */}
-                <div id="guest-detail-review" className={`${color.boxColor} border border-white text-black h-fit w-full md:w-6/12  rounded-2xl `}>
+                <div id="guest-detail-review" className={`${color?.boxColor} border border-white text-black h-fit w-full md:w-6/12  rounded-2xl `}>
 
                     {/* rooms summary section */}
                     <div className=' border-b-2 border-gray justify-start p-2 md:p-4'>
@@ -546,8 +546,8 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setShowModal, se
                             <button
                                 className='my-2 ml-auto px-4 py-1 bg-cyan-700 hover:bg-cyan-900 rounded-md text-white'
                                 onClick={() => {
+                                    dispatch(setAddMoreRoom(true));
                                     setDisplay(0);
-                                    dispatch(setAddMoreRoom(true))
                                 }}
 
                             >Add More Rooms</button>

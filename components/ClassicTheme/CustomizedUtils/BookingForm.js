@@ -3,7 +3,7 @@ import DateInput from '../../utils/DateInput'
 import DropDown from '../../utils/DropDown'
 
 
-function BookingForm({ setShowModalBookingForm, setShowBookingEngine, enquiry, setEnquiry, setRoomsLoader, setSearched, searched }) {
+function BookingForm({ themeColor, setShowModalBookingForm, setShowBookingEngine, enquiry, setEnquiry, setRoomsLoader, setSearched, searched }) {
 
     const [maxDate, setMaxDate] = useState('');
     const [err, setErr] = useState(false);
@@ -38,7 +38,7 @@ function BookingForm({ setShowModalBookingForm, setShowBookingEngine, enquiry, s
         <div className='mx-auto border shadow-lg rounded-lg'>
             <div className='p-8'>
                 <h3
-                    className={`text-4xl flex leading-none pl-6 lg:py-0 pt-6 my-4 font-bold`}
+                    className={`${themeColor?.titleTextColor} text-4xl flex leading-none pl-6 lg:py-0 pt-6 my-4 font-bold `}
                 >
                     Booking Form
                 </h3>
@@ -46,7 +46,7 @@ function BookingForm({ setShowModalBookingForm, setShowBookingEngine, enquiry, s
                     <div className='flex flex-wrap'>
                         {/* checkInDate */}
                         <DateInput
-                            // color={color}
+                            color={themeColor}
                             label={'Checkin Date'}
                             req={true}
                             initialValue={new Date()}
@@ -59,7 +59,7 @@ function BookingForm({ setShowModalBookingForm, setShowBookingEngine, enquiry, s
 
                         {/* checkout Date */}
                         <DateInput
-                            // color={color}
+                            color={themeColor}
                             label={'Checkout Date'}
                             req={true}
                             initialValue={new Date() + 10}
@@ -73,7 +73,7 @@ function BookingForm({ setShowModalBookingForm, setShowBookingEngine, enquiry, s
                         <DropDown
                             label={"Number of Guests"}
                             visible={1}
-                            // color={color}
+                            color={themeColor}
                             req={true}
                             onChangeAction={(e) => setEnquiry({ ...enquiry, number_of_guests: e.target.value })}
                             defaultValue={enquiry?.number_of_guests}
@@ -83,7 +83,7 @@ function BookingForm({ setShowModalBookingForm, setShowBookingEngine, enquiry, s
                         <DropDown
                             label={"Number of Adults"}
                             visible={1}
-                            // color={color}
+                            color={themeColor}
                             req={true}
                             onChangeAction={(e) => setEnquiry({ ...enquiry, number_of_adults: e.target.value })}
                             defaultValue={enquiry?.number_of_adults}
@@ -92,7 +92,7 @@ function BookingForm({ setShowModalBookingForm, setShowBookingEngine, enquiry, s
                         <DropDown
                             label={"Guests < 6 (years)"}
                             visible={1}
-                            // color={color}
+                            color={themeColor}
                             req={true}
                             onChangeAction={(e) => setEnquiry({ ...enquiry, guests_below_six: e.target.value })}
                             defaultValue={enquiry?.guests_below_six}
@@ -100,7 +100,7 @@ function BookingForm({ setShowModalBookingForm, setShowBookingEngine, enquiry, s
                         <DropDown
                             label={"Guests < 12 (years)"}
                             visible={1}
-                            // color={color}
+                            color={themeColor}
                             req={true}
                             onChangeAction={(e) => setEnquiry({ ...enquiry, guests_below_twelve: e.target.value })}
                             defaultValue={enquiry?.guests_below_twelve}

@@ -1,4 +1,5 @@
 export default {
+  outofservice:"Hors service",
   datefrom:"dater de",
   dateto:"date à",
   identifiers: "identifiants",

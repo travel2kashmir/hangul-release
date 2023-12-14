@@ -83,8 +83,6 @@ function Unavailability() {
             .catch((error) => {
                 logger.error("url to fetch property details, failed")
             });
-
-
     }
 
     function searchFunction() {
@@ -184,7 +182,7 @@ function Unavailability() {
             },
             {
                 icon: "rightArrowIcon",
-                text: "Unavailability",
+                text: language?.outofservice,
                 link: ""
             }
         ])
@@ -224,11 +222,11 @@ function Unavailability() {
                 />
 
                 {/* Header */}
-                <div className={(visible === 0 && colorToggle == false ? 'block' : 'hidden')}><LoaderTable /></div>
-                <div className={(visible === 0 && colorToggle == true ? 'block' : 'hidden')}><LoaderDarkTable /></div>
+                <div className={(visible === 0 && mode == false ? 'block' : 'hidden')}><LoaderTable /></div>
+                <div className={(visible === 0 && mode == true ? 'block' : 'hidden')}><LoaderDarkTable /></div>
                 <div className={visible === 1 ? 'block' : 'hidden'}>
                     <div className="mx-4">
-                        <h1 className={`text-xl sm:text-2xl font-semibold ${color?.text}`}>{language?.unavailability}</h1>
+                        <h1 className={`text-xl sm:text-2xl font-semibold ${color?.text}`}>{language?.outofservice}</h1>
                         <div className="sm:flex">
                             <div className=" sm:flex items-center sm:divide-x sm:divide-gray-100 mb-3 sm:mb-0">
                                 {/* search form */}
@@ -275,47 +273,53 @@ function Unavailability() {
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div className="flex flex-col mt-8 lg:-mr-20 sm:mr-0 w-full ">
-                    <div className="overflow-x-auto">
-                        <div className="align-middle inline-block min-w-full">
-                            <div className="shadow overflow-hidden">
-                                <table className="table data table-fixed min-w-full divide-y divide-gray-200" id="myTable">
-                                    <thead className={` ${color?.tableheader} `}>
-                                        <tr>
-                                            <th scope="col"
-                                                className={`p-4 text-left text-xs font-semibold ${color?.textgray} uppercase`}>{"Room Name"}</th>
-                                            <th scope="col"
-                                                className={`p-4 text-left text-xs font-semibold ${color?.textgray} uppercase`}>{"Start Date"}</th>
-                                            <th scope="col"
-                                                className={`p-4 text-left text-xs font-semibold ${color?.textgray} uppercase`}>{"End Date"}</th>
-                                            <th scope="col"
-                                                className={`p-4 text-left text-xs font-semibold ${color?.textgray} uppercase`}>{"Inventory Unavailable"}</th>
-                                            <th scope="col"
-                                                className={`p-4 text-left text-xs font-semibold ${color?.textgray} uppercase`}>{"Unavailablity Reason"}</th>
-                                            <th scope="col"
-                                                className={`p-4 text-left text-xs font-semibold ${color?.textgray} uppercase`}>{"Action"}
-                                            </th>
-                                        </tr>
-                                    </thead>
+                    <div className="flex flex-col mt-8 lg:-mr-20 sm:mr-0 w-full ">
+                        <div className="overflow-x-auto">
+                            <div className="align-middle inline-block min-w-full">
+                                <div className="shadow overflow-hidden">
+                                    <table className="table data table-fixed min-w-full divide-y divide-gray-200" id="myTable">
+                                        <thead className={` ${color?.tableheader} `}>
+                                            <tr>
+                                                <th scope="col"
+                                                    className={`p-4 text-left text-xs font-semibold ${color?.textgray} uppercase`}>{"Room Name"}</th>
+                                                <th scope="col"
+                                                    className={`p-4 text-left text-xs font-semibold ${color?.textgray} uppercase`}>{"Out Of Service Rooms"}</th>
+                                                <th scope="col"
+                                                    className={`p-4 text-left text-xs font-semibold ${color?.textgray} uppercase`}>{"Start Date"}</th>
+                                                <th scope="col"
+                                                    className={`p-4 text-left text-xs font-semibold ${color?.textgray} uppercase`}>{"End Date"}</th>
+                                                <th scope="col"
+                                                    className={`p-4 text-left text-xs font-semibold ${color?.textgray} uppercase`}>{"Inventory Out Of Service"}</th>
+                                                <th scope="col"
+                                                    className={`p-4 text-left text-xs font-semibold ${color?.textgray} uppercase`}>{"Out Of Service Reason"}</th>
+
+                                                <th scope="col"
+                                                    className={`p-4 text-left text-xs font-semibold ${color?.textgray} uppercase`}>{"Action"}
+                                                </th>
+                                            </tr>
+                                        </thead>
 
 
-                                    <tbody className={` ${color?.whitebackground} divide-y divide-gray-200 `} id="TableList" >
-                                        {displayData.map((inv, index) => (
-                                            <>
-                                                {
-                                                    edit.value === 1 && edit.idx === index ?
-                                                        //After Edit Clicked
-                                                        <>
-                                                            <tr className={`${color?.hover}`}>
-                                                                {/* first col when editing starts */}
-                                                                <td className={`p-4 whitespace-nowrap capitalize text-base font-normal ${color?.text}`}>
-                                                                    {inv.room_name}
-                                                                </td>
+                                        <tbody className={` ${color?.whitebackground} divide-y divide-gray-200 `} id="TableList" >
+                                            {displayData.map((inv, index) => (
+                                                <>
+                                                    {
+                                                        edit.value === 1 && edit.idx === index ?
+                                                            //After Edit Clicked
+                                                            <>
+                                                                <tr className={`${color?.hover}`}>
+                                                                    {/* first col when editing starts */}
+                                                                    <td className={`p-4 whitespace-nowrap capitalize text-base font-normal ${color?.text}`}>
+                                                                        {inv.room_name}
+                                                                    </td>
 
-                                                                <td className={`p-4 whitespace-nowrap capitalize text-base font-normal ${color?.text}`}>
-                                                                    {/* <input type="text"
+                                                                    <td className={`p-4 whitespace-nowrap capitalize text-base font-normal ${color?.text}`}>
+                                                                        {inv.room_name}
+                                                                    </td>
+
+                                                                    <td className={`p-4 whitespace-nowrap capitalize text-base font-normal ${color?.text}`}>
+                                                                        {/* <input type="text"
                                                                         onChange={(e) => {
                                                                             setEditInventory({
                                                                                 ...editInventory,
@@ -326,24 +330,24 @@ function Unavailability() {
                                                                         defaultValue={inv.start_date}>
                                                                     </input> */}
 
-                                                                    <ReactDatePicker
-                                                                        selected={new Date(editInventory.date_from || inv.date_from)}
-                                                                        minDate={new Date()}
-                                                                        onChange={(date) => {
-                                                                            const formattedDate = date.toISOString().substring(0, 10);
-                                                                            setEditInventory({
-                                                                                ...editInventory,
-                                                                                'date_from': formattedDate
-                                                                            })
-                                                                        }}
-                                                                        className={`shadow-sm  ${color?.whitebackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-32 p-2.5`}
-                                                                    />
+                                                                        <ReactDatePicker
+                                                                            selected={new Date(editInventory.date_from || inv.date_from)}
+                                                                            minDate={new Date()}
+                                                                            onChange={(date) => {
+                                                                                const formattedDate = date.toISOString().substring(0, 10);
+                                                                                setEditInventory({
+                                                                                    ...editInventory,
+                                                                                    'date_from': formattedDate
+                                                                                })
+                                                                            }}
+                                                                            className={`shadow-sm  ${color?.whitebackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-32 p-2.5`}
+                                                                        />
 
 
-                                                                </td>
+                                                                    </td>
 
-                                                                <td className={`p-4 whitespace-nowrap capitalize text-base font-normal ${color?.text}`}>
-                                                                    {/* <input type="text"
+                                                                    <td className={`p-4 whitespace-nowrap capitalize text-base font-normal ${color?.text}`}>
+                                                                        {/* <input type="text"
                                                                         onChange={(e) => {
                                                                             setEditInventory({
                                                                                 ...editInventory,
@@ -353,153 +357,158 @@ function Unavailability() {
                                                                         className={`shadow-sm  ${color?.whitebackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-32 p-2.5`}
                                                                         defaultValue={inv.end_date}>
                                                                     </input> */}
-                                                                    <ReactDatePicker
-                                                                        selected={new Date(editInventory.date_to || inv.date_to)}
-                                                                        onChange={(date) => {
-                                                                            const formattedDate = date.toISOString().substring(0, 10);
-                                                                            setEditInventory({
-                                                                                ...editInventory,
-                                                                                'date_to': formattedDate
-                                                                            });
-                                                                        }}
-                                                                        minDate={new Date(editInventory.start_date || inv.start_date)}
-                                                                        className={`shadow-sm  ${color?.whitebackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-32 p-2.5`}
-                                                                    />
-                                                                </td>
-                                                                <td className={`p-4 whitespace-nowrap capitalize text-base font-normal ${color?.text}`}>
-                                                                    <input type="text"
-                                                                        onChange={(e) => {
-                                                                            setEditInventory({
-                                                                                ...editInventory,
-                                                                                'unavailability_count': e.target.value
-                                                                            })
-                                                                        }} className={`shadow-sm  ${color?.whitebackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-32 p-2.5`}
-                                                                        defaultValue={inv.unavailability_count}>
-                                                                    </input>
-                                                                </td>
+                                                                        <ReactDatePicker
+                                                                            selected={new Date(editInventory.date_to || inv.date_to)}
+                                                                            onChange={(date) => {
+                                                                                const formattedDate = date.toISOString().substring(0, 10);
+                                                                                setEditInventory({
+                                                                                    ...editInventory,
+                                                                                    'date_to': formattedDate
+                                                                                });
+                                                                            }}
+                                                                            minDate={new Date(editInventory.start_date || inv.start_date)}
+                                                                            className={`shadow-sm  ${color?.whitebackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-32 p-2.5`}
+                                                                        />
+                                                                    </td>
+                                                                    <td className={`p-4 whitespace-nowrap capitalize text-base font-normal ${color?.text}`}>
+                                                                        <input type="text"
+                                                                            onChange={(e) => {
+                                                                                setEditInventory({
+                                                                                    ...editInventory,
+                                                                                    'unavailability_count': e.target.value
+                                                                                })
+                                                                            }} className={`shadow-sm  ${color?.whitebackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-32 p-2.5`}
+                                                                            defaultValue={inv.unavailability_count}>
+                                                                        </input>
+                                                                    </td>
 
-                                                                <td className={`p-4 whitespace-nowrap capitalize text-base font-normal ${color?.text}`}>
-                                                                    <input type="text"
-                                                                        onChange={(e) => {
-                                                                            setEditInventory({
-                                                                                ...editInventory,
-                                                                                'reason': e.target.value
-                                                                            })
-                                                                        }} className={`shadow-sm  ${color?.whitebackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-32 p-2.5`}
-                                                                        defaultValue={inv.reason}>
-                                                                    </input>
-                                                                </td>
-                                                                <td className="py-4 whitespace-nowrap capitalize">
-                                                                    {saveLoader === true ?
-                                                                        <ButtonLoader
-                                                                            classes="bg-gradient-to-r bg-green-600 hover:bg-green-700 text-white sm:inline-flex font-semibold rounded-lg text-sm px-5 py-2 text-center items-center ease-linear transition-all duration-150"
-                                                                            text="Save"
-                                                                        /> :
-                                                                        <>
-                                                                            <button
-                                                                                disabled={Object.keys(editInventory).length === 0}
-                                                                                className="bg-gradient-to-r bg-green-600 hover:bg-green-700 text-white sm:inline-flex font-semibold rounded-lg text-sm px-5 py-2 text-center items-center ease-linear transition-all duration-150"
-                                                                                onClick={() => {
-                                                                                    setSaveLoader(true)
-                                                                                    updateUnavailability({ "unavailablity": [{ ...editInventory, "room_id": inv.room_id, "unavailability_id": inv.unavailability_id }] })
-                                                                                }}
-                                                                            >{'Save'}
-                                                                            </button>
-                                                                        </>
-                                                                    }
-
-                                                                    <button
-                                                                        className="ml-5 bg-gradient-to-r bg-red-600 hover:bg-red-700 text-white sm:inline-flex font-semibold rounded-lg text-sm px-5 py-2 text-center items-center ease-linear transition-all duration-150"
-                                                                        onClick={() => {
-                                                                            setEdit({
-                                                                                'value': 0,
-                                                                                'idx': undefined
-                                                                            })
-                                                                        }}
-                                                                    >{'Cancel'} </button>
-                                                                </td>
-                                                            </tr>
-                                                        </>
-
-                                                        : <>
-                                                            {/* before editiing */}
-                                                            <tr key={index} >
-                                                                <td className={`p-4 whitespace-nowrap capitalize  text-base font-normal ${color?.text}`}>
-                                                                    {inv.room_name}
-                                                                </td>
-                                                                <td className={`p-4 whitespace-nowrap capitalize  text-base font-normal ${color?.text}`}>
-                                                                    {inv.date_from}
-                                                                </td>
-                                                                <td className={`p-4 whitespace-nowrap capitalize  text-base font-normal ${color?.text}`}>
-                                                                    {inv.date_to}
-                                                                </td>
-                                                                <td className={`p-4 whitespace-nowrap capitalize  text-base font-normal ${color?.text}`}>
-                                                                    {inv.unavailability_count}
-                                                                </td>
-                                                                <td className={`p-4 whitespace-nowrap capitalize  text-base font-normal ${color?.text}`}>
-                                                                    {inv.reason}
-                                                                </td>
-
-                                                                {deleteInventory.value === 1 && deleteInventory.idx === index ?
+                                                                    <td className={`p-4 whitespace-nowrap capitalize text-base font-normal ${color?.text}`}>
+                                                                        <input type="text"
+                                                                            onChange={(e) => {
+                                                                                setEditInventory({
+                                                                                    ...editInventory,
+                                                                                    'reason': e.target.value
+                                                                                })
+                                                                            }} className={`shadow-sm  ${color?.whitebackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-32 p-2.5`}
+                                                                            defaultValue={inv.reason}>
+                                                                        </input>
+                                                                    </td>
                                                                     <td className="py-4 whitespace-nowrap capitalize">
+                                                                        {saveLoader === true ?
+                                                                            <ButtonLoader
+                                                                                classes="bg-gradient-to-r bg-green-600 hover:bg-green-700 text-white sm:inline-flex font-semibold rounded-lg text-sm px-5 py-2 text-center items-center ease-linear transition-all duration-150"
+                                                                                text="Save"
+                                                                            /> :
+                                                                            <>
+                                                                                <button
+                                                                                    disabled={Object.keys(editInventory).length === 0}
+                                                                                    className="bg-gradient-to-r bg-green-600 hover:bg-green-700 text-white sm:inline-flex font-semibold rounded-lg text-sm px-5 py-2 text-center items-center ease-linear transition-all duration-150"
+                                                                                    onClick={() => {
+                                                                                        setSaveLoader(true)
+                                                                                        updateUnavailability({ "unavailablity": [{ ...editInventory, "room_id": inv.room_id, "unavailability_id": inv.unavailability_id }] })
+                                                                                    }}
+                                                                                >{'Save'}
+                                                                                </button>
+                                                                            </>
+                                                                        }
+
                                                                         <button
-                                                                            className="bg-gradient-to-r bg-green-600 hover:bg-green-700 text-white sm:inline-flex font-semibold rounded-lg text-sm px-5 py-2 text-center items-center ease-linear transition-all duration-150"
+                                                                            className="ml-5 bg-gradient-to-r bg-red-600 hover:bg-red-700 text-white sm:inline-flex font-semibold rounded-lg text-sm px-5 py-2 text-center items-center ease-linear transition-all duration-150"
                                                                             onClick={() => {
-                                                                                setDeleteInventory({
+                                                                                setEdit({
                                                                                     'value': 0,
                                                                                     'idx': undefined
                                                                                 })
                                                                             }}
                                                                         >{'Cancel'} </button>
-                                                                        {deleteLoader === true ?
-                                                                            <ButtonLoader
-                                                                                classes="ml-5 bg-gradient-to-r bg-red-600 hover:bg-red-700 text-white sm:inline-flex font-semibold rounded-lg text-sm px-5 py-2 text-center items-center ease-linear transition-all duration-150"
-                                                                                text="Yes, I Confirm"
-                                                                            />
-                                                                            : <button
+                                                                    </td>
+                                                                </tr>
+                                                            </>
+
+                                                            : <>
+                                                                {/* before editiing */}
+                                                                <tr key={index} >
+                                                                    <td className={`p-4 whitespace-nowrap capitalize  text-base font-normal ${color?.text}`}>
+                                                                        {inv.room_name}
+                                                                    </td>
+
+                                                                    <td className={`p-4 whitespace-nowrap capitalize  text-base font-normal ${color?.text}`}>
+                                                                        {inv.room_name}
+                                                                    </td>
+                                                                    <td className={`p-4 whitespace-nowrap capitalize  text-base font-normal ${color?.text}`}>
+                                                                        {inv.date_from}
+                                                                    </td>
+                                                                    <td className={`p-4 whitespace-nowrap capitalize  text-base font-normal ${color?.text}`}>
+                                                                        {inv.date_to}
+                                                                    </td>
+                                                                    <td className={`p-4 whitespace-nowrap capitalize  text-base font-normal ${color?.text}`}>
+                                                                        {inv.unavailability_count}
+                                                                    </td>
+                                                                    <td className={`p-4 whitespace-nowrap capitalize  text-base font-normal ${color?.text}`}>
+                                                                        {inv.reason}
+                                                                    </td>
+
+                                                                    {deleteInventory.value === 1 && deleteInventory.idx === index ?
+                                                                        <td className="py-4 whitespace-nowrap capitalize">
+                                                                            <button
+                                                                                className="bg-gradient-to-r bg-green-600 hover:bg-green-700 text-white sm:inline-flex font-semibold rounded-lg text-sm px-5 py-2 text-center items-center ease-linear transition-all duration-150"
+                                                                                onClick={() => {
+                                                                                    setDeleteInventory({
+                                                                                        'value': 0,
+                                                                                        'idx': undefined
+                                                                                    })
+                                                                                }}
+                                                                            >{'Cancel'} </button>
+                                                                            {deleteLoader === true ?
+                                                                                <ButtonLoader
+                                                                                    classes="ml-5 bg-gradient-to-r bg-red-600 hover:bg-red-700 text-white sm:inline-flex font-semibold rounded-lg text-sm px-5 py-2 text-center items-center ease-linear transition-all duration-150"
+                                                                                    text="Yes, I Confirm"
+                                                                                />
+                                                                                : <button
+                                                                                    className="ml-5 bg-gradient-to-r bg-red-600 hover:bg-red-700 text-white sm:inline-flex font-semibold rounded-lg text-sm px-5 py-2 text-center items-center ease-linear transition-all duration-150"
+                                                                                    onClick={() => {
+                                                                                        setDeleteLoader(true)
+                                                                                        deleteUnavailabilityFromDB(inv.unavailability_id)
+
+                                                                                    }}
+                                                                                >{'Yes, I Confirm'} </button>
+                                                                            }
+
+                                                                        </td>
+                                                                        : <td className="py-4 whitespace-nowrap capitalize">
+                                                                            <button
+                                                                                className="bg-gradient-to-r bg-cyan-600 hover:bg-cyan-700 text-white sm:inline-flex font-semibold rounded-lg text-sm px-5 py-2 text-center items-center ease-linear transition-all duration-150"
+                                                                                onClick={() => {
+                                                                                    setEdit({
+                                                                                        'value': 1,
+                                                                                        'idx': index
+                                                                                    })
+                                                                                }}
+                                                                            >{'Edit'} </button>
+                                                                            <button
                                                                                 className="ml-5 bg-gradient-to-r bg-red-600 hover:bg-red-700 text-white sm:inline-flex font-semibold rounded-lg text-sm px-5 py-2 text-center items-center ease-linear transition-all duration-150"
                                                                                 onClick={() => {
-                                                                                    setDeleteLoader(true)
-                                                                                    deleteUnavailabilityFromDB(inv.unavailability_id)
-
+                                                                                    setDeleteInventory({
+                                                                                        'value': 1,
+                                                                                        'idx': index
+                                                                                    })
                                                                                 }}
-                                                                            >{'Yes, I Confirm'} </button>
-                                                                        }
-
-                                                                    </td>
-                                                                    : <td className="py-4 whitespace-nowrap capitalize">
-                                                                        <button
-                                                                            className="bg-gradient-to-r bg-cyan-600 hover:bg-cyan-700 text-white sm:inline-flex font-semibold rounded-lg text-sm px-5 py-2 text-center items-center ease-linear transition-all duration-150"
-                                                                            onClick={() => {
-                                                                                setEdit({
-                                                                                    'value': 1,
-                                                                                    'idx': index
-                                                                                })
-                                                                            }}
-                                                                        >{'Edit'} </button>
-                                                                        <button
-                                                                            className="ml-5 bg-gradient-to-r bg-red-600 hover:bg-red-700 text-white sm:inline-flex font-semibold rounded-lg text-sm px-5 py-2 text-center items-center ease-linear transition-all duration-150"
-                                                                            onClick={() => {
-                                                                                setDeleteInventory({
-                                                                                    'value': 1,
-                                                                                    'idx': index
-                                                                                })
-                                                                            }}
-                                                                        >{'Delete'} </button>
-                                                                    </td>}
-
-                                                            </tr>
-                                                        </>
-                                                }
-                                            </>
-                                        )
-                                        )}
-                                    </tbody>
-                                </table>
+                                                                            >{'Delete'} </button>
+                                                                        </td>}
+                                                                </tr>
+                                                            </>
+                                                    }
+                                                </>
+                                            )
+                                            )}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
 
                 {/* Pagination */}
                 <div className={`${color?.whitebackground} sticky sm:flex items-center w-full sm:justify-between bottom-0 right-0 border-t border-gray-200 p-4`}>
@@ -543,17 +552,17 @@ function Unavailability() {
 
                     </div>
                 </div>
-
-                {/* Modal Add */}
-                <div className={view === 1 ? "block" : "hidden"}>
+            </div>
+            {/* Modal Add */}
+            {view === 1 ?
+                <>
                     {/* <div className="overflow-x-hidden overflow-y-auto fixed top-4 left-0 right-0 backdrop-blur-xl bg-black/30 md:inset-0 z-50 flex justify-center items-center h-modal sm:h-full"> */}
                     <div className="overflow-x-hidden overflow-y-auto fixed top-4 left-0 right-0 backdrop-blur-xl bg-black/30 md:inset-0 z-50 flex justify-center items-center  sm:h-full">
                         {/* <div className="relative w-full max-w-2xl px-4 h-full md:h-auto"> */}
                         <div className="relative w-full px-4 md:w-3/5 h-full md:h-auto ">
                             <div className={`${color?.whitebackground} rounded-lg shadow relative`}>
                                 <div className="flex items-start justify-between p-5 border-b rounded-t">
-                                    {/* <h3 className={`${color?.text} text-xl font-semibold`}>{language?.add} {language?.new} {language?.contact}</h3> */}
-                                    <h3 className={`${color?.text} text-xl font-semibold`}>{`${language?.add} ${language?.new} ${language?.unavailability}`}</h3>
+                                    <h3 className={`${color?.text} text-xl font-semibold capitalize`}>{`${language?.add} ${language?.new} ${language?.outofservice}`}</h3>
                                     <button
                                         type="button"
                                         onClick={() => {
@@ -587,30 +596,33 @@ function Unavailability() {
                                     color={color}
                                     language={language}
                                     setInventories={(e) => { setInventories(e) }}
+                                    fetchHotelDetails={fetchHotelDetails}
                                 />
 
                             </div>
 
                         </div>
                     </div>
-                </div>
+                </>
+                : <></>}
 
 
 
-                {/* Toast Container */}
-                <ToastContainer
-                    position="top-center"
-                    autoClose={5000}
-                    hideProgressBar={false}
-                    newestOnTop={false}
-                    closeOnClick
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable
-                    pauseOnHover
-                />
 
-            </div>
+            {/* Toast Container */}
+            <ToastContainer
+                position="top-center"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
+
+
 
         </>
 

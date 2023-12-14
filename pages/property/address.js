@@ -18,6 +18,7 @@ import { InitialActions, ColorToggler } from "../../components/initalActions";
 import { fetchHotelDetails, submitAddressEdit, navigationList } from "../../components/logic/property/Address";
 import BreadCrumb from "../../components/utils/BreadCrumb";
 
+
 var i = 0;
 var currentLogged;
 var language;

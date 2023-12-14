@@ -58,17 +58,7 @@ export default function BasicDetails() {
     }
   }, [])
 
-
-
-  // const onChange = async (event) => {
-  //   const file = event.target.files[0];
-  //   const image = await resizeFile(file);
-  //   console.log(image);
-  // };
-
-
-
-  return (
+return (
     <>
       <Title name={`Engage |  ${language?.basicdetails}`} />
 
@@ -140,7 +130,7 @@ export default function BasicDetails() {
 
                   </label>
                   {imageLogo ? <img src={imageLogo} width="164px" height="40px" alt={basicDetails?.property_name} /> :
-                   <div className={`hotelLogo border-2 
+                   <div className={`hotelLogo  border border-2 
                   p-2 w-fit rounded-lg ${color?.text}`}>{basicDetails?.property_name}</div>}
 
                 </div>

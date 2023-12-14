@@ -33,6 +33,8 @@ import BookingEngine from '../../components/BookingEngine';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ContactUsModal from '../../components/ClassicTheme/Modals/ContactUsModal';
+import { IoClose } from "react-icons/io5";
+import color from '../../components/ClassicTheme/Data/Colors'
 
 
 var currentUser;
@@ -49,6 +51,7 @@ var defaultRate = {
 }
 
 function Classic(args) {
+
    SwiperCore.use([Navigation, Pagination, Autoplay]);
    const [showModalPrivacy, setShowModalPrivacy] = useState(0)
    const [showModalTC, setShowModalTC] = useState(0)
@@ -85,6 +88,7 @@ function Classic(args) {
    const [privacyPolicy, setPrivacyPolicy] = useState()
    const [termsConditions, setTermsConditions] = useState()
    const [showContactUs, setShowContactUs] = useState(0);
+   const [themeColor, setThemeColor] = useState(color.black);
 
 
 
@@ -116,6 +120,7 @@ function Classic(args) {
          }
       }
       firstfun();
+      getThemeColor();
       const current = new Date();
       let month = current.getMonth() + 1;
       fetchHotelDetails();
@@ -223,10 +228,14 @@ function Classic(args) {
 
    }
 
+   function getThemeColor() {
+      setThemeColor(args?.initialColor)
+   }
+
    return (
       <>
          {/* <div className="header w-full"> */}
-         <div className="h-14 flex md:h-20 border-b w-full">
+         <div className={`${themeColor?.headerBgColor} h-14 flex md:h-20 border-b w-full`}>
             {/* <div className="container"> */}
             <div className="w-full px-5 md:px-0 md:w-11/12 flex m-auto items-center justify-between">
 
@@ -239,13 +248,15 @@ function Classic(args) {
 
                {/* <div className="menu-toggle"> */}
                <div className="cursor-pointer lg:hidden">
-                  <button onClick={() => setSmSidebar(!smSidebar)} > <span className="material-icons-outlined"> menu </span></button>
+                  <button onClick={() => { setSmSidebar(!smSidebar) }}>
+                     {smSidebar === true ? <i className=' fixed top-3 md:top-6 right-5 md:right-8 z-30 '><IoClose size={20} color={`${themeColor?.menuColor}`} /></i> : <span className={`material-icons-outlined ${themeColor?.menuColor}`}> menu </span>}
+                  </button>
                </div>
 
                {/* <ul className="header-menu"> */}
-               <ul className="hidden lg:flex">
+               <ul className={`hidden lg:flex ${themeColor?.navtextColor}`}>
                   <select onChange={(e) => (changeLanguage(e.target.value))}
-                     className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-md focus:ring-cyan-600 focus:border-cyan-600 block w-32 py-1 px-2">
+                     className={`shadow-sm  ${themeColor?.headerBgColor} border border-gray-300 sm:text-sm rounded-md focus:ring-cyan-600 focus:border-cyan-600 block w-32 py-1 px-2`}>
                      <option value="en">English</option>
                      <option value="fr">French</option>
                      <option value="ar">Arabic</option>
@@ -253,39 +264,39 @@ function Classic(args) {
 
                   <a href="#home" onClick={() => { getIPData("Anchor tag Home from header", "/home") }}
                      // className="header-menu-item"
-                     className="text-sm text-slate-500 ml-6 py-3"
+                     className="text-sm  ml-6 py-3"
                   >{language?.home}
                   </a>
                   <a onClick={() => { getIPData("Anchor tag About from header", "/about") }}
                      href="#about"
                      // className="header-menu-item"
-                     className="text-sm text-slate-500 ml-6 py-3"
+                     className="text-sm  ml-6 py-3"
                   >{language?.about}</a>
                   <a onClick={() => { getIPData("Anchor tag Gallery from header", "/gallery") }}
                      href="#gallery"
                      // className="header-menu-item"
-                     className="text-sm text-slate-500 ml-6 py-3"
+                     className="text-sm  ml-6 py-3"
                   >{language?.gallery}</a>
 
                   <a
                      href="#rooms" onClick={() => { getIPData("Anchor tag Rooms from header", "/rooms") }}
                      // className="header-menu-item"
-                     className="text-sm text-slate-500 ml-6 py-3"
+                     className="text-sm  ml-6 py-3"
                   >{language?.rooms}</a>
                   <a
                      href="#amenities" onClick={() => { getIPData("Anchor tag Amenities from header", "/amenities") }}
                      // className="header-menu-item"
-                     className="text-sm text-slate-500 ml-6 py-3"
+                     className="text-sm  ml-6 py-3"
                   >{language?.amenities}</a>
                   {args?.allPackages?.packages !== undefined ? <a
                      href="#packages" onClick={() => { getIPData("Anchor tag Packages from header", "/packages") }}
                      // className="header-menu-item"
-                     className="text-sm text-slate-500 ml-6 py-3"
+                     className="text-sm  ml-6 py-3"
                   >{language?.packages}</a> : <></>}
                   <a
                      href="#" onClick={() => { setShowContactUs(1) }}
                      // className="header-menu-item"
-                     className="text-sm text-slate-500 ml-6 py-3"
+                     className="text-sm  ml-6 py-3"
                   >{language?.contactus}</a>
                   {/* <a
                      href="#booknow" onClick={() => { setShowModalBookingForm(1) }}
@@ -298,27 +309,27 @@ function Classic(args) {
             </div>
 
             <div className={smSidebar === true ? "block" : "hidden"}>
-               <aside id="sidebar" className="fixed  lg:hidden z-20  top-14 right-0 h-min flex  flex-shrink-0 flex-col w-full transition-width duration-75" aria-label="Sidebar">
-                  <div className="relative  flex-1 flex flex-col min-h-0 border-r border-gray-200 bg-white pt-0">
+               <aside id="sidebar" className="fixed lg:hidden z-20  top-14 right-0 h-min flex  flex-shrink-0 flex-col w-full transition-width duration-75" aria-label="Sidebar">
+                  <div className={`relative  flex-1 flex flex-col min-h-0 border-r border-gray-200 bg-white  ${themeColor?.headerBgColor} pt-0`}>
                      <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
-                        <div className="flex-1 px-3 bg-white divide-y space-y-1">
-                           <ul className="space-y-2 pb-2">
+                        <div className={`"flex-1 px-3 bg-white ${themeColor?.headerBgColor} divide-y space-y-1`}>
+                           <ul className={`space-y-2 pb-2 ${themeColor?.navtextColor}`}>
 
-                              <li className="text-base text-gray-900 font-normal rounded-lg flex items-center p-2">
+                              <li className="text-base  font-normal rounded-lg flex items-center p-2">
                                  <span className="ml-3 flex-1 whitespace-nowrap">
                                     <a
                                        href="#home"
                                     > <button onClick={() => { setSmSidebar(!smSidebar); getIPData("Anchor tag Home from header", "/home") }}>{language?.home}</button></a></span>
                               </li>
                               <hr />
-                              <li className="text-base text-gray-900 font-normal rounded-lg flex items-center p-2">
+                              <li className="text-base  font-normal rounded-lg flex items-center p-2">
                                  <span className="ml-3 flex-1 whitespace-nowrap">
                                     <a
                                        href="#about"> <button onClick={() => { setSmSidebar(!smSidebar); getIPData("Anchor tag About from header", "/about") }}>{language?.about}</button>
                                     </a> </span>
                               </li>
                               <hr />
-                              <li className="text-base text-gray-900 font-normal rounded-lg flex items-center p-2">
+                              <li className="text-base font-normal rounded-lg flex items-center p-2">
                                  <span className="ml-3 flex-1 whitespace-nowrap">
                                     <a
                                        href="#gallery" >
@@ -326,26 +337,26 @@ function Classic(args) {
                                  </span>
                               </li>
                               <hr />
-                              <li className="text-base text-gray-900 font-normal rounded-lg flex items-center p-2">
+                              <li className="text-base  font-normal rounded-lg flex items-center p-2">
                                  <span className="ml-3 flex-1 whitespace-nowrap">
                                     <a href="#rooms"><button onClick={() => { setSmSidebar(!smSidebar); getIPData("Anchor tag Rooms from header", "/rooms") }}>{language?.rooms}</button></a>
                                  </span>
                               </li>
                               <hr />
-                              <li className="text-base text-gray-900 font-normal rounded-lg flex items-center p-2">
+                              <li className="text-base  font-normal rounded-lg flex items-center p-2">
                                  <span className="ml-3 flex-1 whitespace-nowrap">
                                     <a href="#amenities" ><button onClick={() => { setSmSidebar(!smSidebar); getIPData("Anchor tag Amenities from header", "/amenities") }}>{language?.amenities}</button></a>
                                  </span>
                               </li>
-                              <hr />
-                              {args?.allPackages?.packages !== undefined ? <li className="text-base text-gray-900 font-normal rounded-lg flex items-center p-2">
+                              {args?.allPackages?.packages !== undefined ? <hr /> : <></>}
+                              {args?.allPackages?.packages !== undefined ? <li className="text-base  font-normal rounded-lg flex items-center p-2">
                                  <span className="ml-3 flex-1 whitespace-nowrap">
                                     <a
                                        href="#packages"><button onClick={() => { setSmSidebar(!smSidebar); getIPData("Anchor tag Packages from header", "/packages") }}>{language?.packages}</button></a>
                                  </span>
                               </li> : <></>}
                               <hr />
-                              <li className="text-base text-gray-900 font-normal rounded-lg flex items-center p-2">
+                              <li className="text-base  font-normal rounded-lg flex items-center p-2">
                                  <span className="ml-3 flex-1 whitespace-nowrap">
                                     <a onClick={() => { getIPData("Anchor tag Contact us") }}
                                        // href="#"><button onClick={() => { getIPData("Anchor tag Contact us from header", "/contactus") }}>{language?.contactus} </button></a>
@@ -353,7 +364,7 @@ function Classic(args) {
                                  </span>
                               </li>
                               <hr />
-                              <li className="text-base text-gray-900 font-normal rounded-lg flex items-center p-2">
+                              <li className="text-base  rounded-lg flex items-center p-2">
                                  <span className="ml-3 flex-1 whitespace-nowrap">
                                     <a href="#booknow" ><button className='font-bold text-sky-600' onClick={() => { setShowModalBookingForm(1) }}>Book Now </button></a>
                                  </span>
@@ -368,20 +379,21 @@ function Classic(args) {
          </div>
 
          {/* <div className="tour container"> */}
-         <div className="px-5 md:mx-10 lg:mx-16">
+         <div className={`${themeColor?.bodyBgColor} px-5 md:px-10 lg:px-16`}>
 
             {/* <div className="tour-head"> */}
-            <div className="my-6 lg:my-12 flex">
+            <div className="py-6 lg:py-12 flex">
 
                {/* <div id="home" className="tour-head-left"> */}
                <div id="home">
 
                   {/* <div className="tour-title"> */}
-                  <div className="font-semibold text-slate-600 text-xl md:text-3xl">
+                  <div className={`font-semibold  ${themeColor?.titleTextColor} text-xl md:text-3xl`}>
 
                      <div className={visible === 0 ? 'block w-32 mb-2' : 'hidden'}><Headloader /></div>
                      <div className={visible === 1 ? 'block' : 'hidden'}>
-                        {args?.allHotelDetails?.description_title}</div>
+                        {args?.allHotelDetails?.description_title}
+                     </div>
                   </div>
                   <div className={visible === 0 ? 'block w-64' : 'hidden'}><SubHeading /></div>
                   <div className={visible === 1 ? 'block' : 'hidden'}>
@@ -391,12 +403,12 @@ function Classic(args) {
 
                         {/* <div className="tour-overview-item"> */}
                         <div className="relative pr-6 md:text-base">
-                           {args?.allHotelDetails?.property_category} {language?.in} <span className='text-slate-600 font-semibold'>{args?.allHotelDetails?.address?.[i]?.address_city}</span>
+                           {args?.allHotelDetails?.property_category} {language?.in} <span className={`${themeColor?.titleTextColor}  font-semibold`}>{args?.allHotelDetails?.address?.[i]?.address_city}</span>
                         </div>
 
                         {/* <div className="tour-overview-item "> */}
                         <div className="relative pr-6 md:text-base">
-                           <span className='text-slate-600 font-semibold'>{args?.allHotelDetails?.star_rating} {language?.star}</span> {language?.accomodation}</div>
+                           <span className={`${themeColor?.titleTextColor} font-semibold`}>{args?.allHotelDetails?.star_rating} {language?.star}</span> {language?.accomodation}</div>
 
                         {/* <div className="tour-overview-item"> */}
                         <div className="relative pr-6 md:text-base">
@@ -452,10 +464,10 @@ function Classic(args) {
                      </div>
 
                      {/* <div className="tour-content-block"> */}
-                     <div className="mt-10 border-b ">
+                     <div className="mt-10 pb-5 border-b ">
 
                         {/* <div className="tour-description"> */}
-                        <div className="text-sm text-slate-500 lg:text-base ">
+                        <div className={`text-sm ${themeColor?.descriptionTextColor} lg:text-base`}>
                            {args?.allHotelDetails?.description_body}
                         </div>
                      </div>
@@ -466,7 +478,7 @@ function Classic(args) {
                   <div id="gallery" className="mt-10 border-b pb-10">
 
                      {/* <div className="tour-content-title">{language?.gallery}</div> */}
-                     <div className="mb-6 text-slate-600 text-lg font-semibold lg:text-2xl">{language?.gallery}</div>
+                     <div className={`mb-6 ${themeColor?.titleTextColor} text-lg font-semibold lg:text-2xl`}>{language?.gallery}</div>
 
                      <div className="relative overflow-hidden">
                         <div className={visible === 0 ? 'block  mb-2' : 'hidden'}><GallerySlider /></div>
@@ -519,12 +531,11 @@ function Classic(args) {
                   <div id="about" className="mt-10 border-b pb-10">
 
                      {/* <div className="tour-content-title mb-8"> */}
-                     <div className="text-lg lg:text-2xl font-semibold text-slate-600 mb-8">
+                     <div className={`text-lg lg:text-2xl font-semibold ${themeColor?.titleTextColor} mb-8`}>
                         {language?.about}
                      </div>
 
                      <div className="tour-itinerary">
-                        {/* <div className=""> */}
                         <div className="accordion">
 
                            {/* Rooms */}
@@ -533,46 +544,56 @@ function Classic(args) {
                                  <button className='mb-6' >
                                     <div className='accordion-trigger'>
                                        <div className={visible === 0 ? 'block  w-32 mb-6' : 'hidden'}><SubHeading /></div>
-                                       <div className={visible === 1 ? 'block' : 'hidden'}>
+                                       <div className={visible === 1 ? `block ${themeColor?.titleTextColor}` : 'hidden'}>
                                           {language?.roomstochoose} ({args?.allRooms?.rooms?.length})
                                        </div>
-                                    </div></button></div>
+                                    </div>
+                                 </button>
+                              </div>
+
                               <div className={singleRoom === true ? 'block -mt-4 mb-4 ml-4 hover:cursor-pointer' : 'hidden'}>
                                  {args?.allRooms?.rooms?.map((resource, idx) => {
                                     return (
                                        <div className='group' key={idx}>
+
                                           <div onClick={() => {
                                              setOpen({ ...open, view: !open.view, id: idx }); getSingleSection(open?.view, resource?.room_name, "rooms")
                                           }}>
                                              <div className='flex capitalize mt-4 py-1'>
-                                                <div className="my-1.5 mr-1.5 -ml-2 border-gray-200 border-0 rounded-full  font-bold text-gray-600  bg-gray-200 flex items-center justify-center" style={{ height: "22px", width: "22px", fontSize: "14px" }}>{idx + 1}</div>
-                                                <button className='text-gray-600 font-semibold'
-                                                >{resource?.room_name} </button>
-                                                <button className='justify-end mr-1 ml-auto'
-                                                >
+                                                <div className="my-1.5 mr-1.5 -ml-2 border-gray-200 border-0 rounded-full  font-bold text-gray-600  bg-gray-200 flex items-center justify-center" style={{ height: "22px", width: "22px", fontSize: "14px" }}>
+                                                   {idx + 1}
+                                                </div>
+                                                <button className={`${themeColor?.titleTextColor} font-semibold`}>
+                                                   {resource?.room_name}
+                                                </button>
+                                                <button className='justify-end mr-1 ml-auto'>
                                                    {open?.view === true && open?.id === idx ?
                                                       <span className=' font-semibold text-gray-400  '>
                                                          - </span>
                                                       :
                                                       <span className=' font-semibold text-gray-400  hidden group-hover:block'>
-                                                         + </span>}</button>
-                                             </div>  </div>
+                                                         + </span>}
+                                                </button>
+                                             </div>
+                                          </div>
+
                                           <div className={open?.view === true && open?.id === idx ? 'block' : 'hidden'}>
                                              {/* Room Description */}
                                              <div className="tour-content-block">
-                                                <div className="tour-description">
+                                                <div className={`text-sm md:text-base ${themeColor?.descriptionTextColor}`}>
                                                    {resource?.room_description}
                                                 </div>
                                              </div>
+
                                              {/* Room Facilities */}
                                              <div className='tour-content-block1'>
                                                 <div className='py-10'>
-                                                   <div className="accordion-trigger">{language?.room} {language?.facilities}</div>
+                                                   <div className={` font-semibold ${themeColor?.titleTextColor}`}>{language?.room} {language?.facilities}</div>
 
                                                    <div className="grid grid-flow-row-dense lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 mt-2 gap-3">
                                                       {resource?.room_facilities?.map((item, index) => {
                                                          return (
-                                                            <span className='text-gray-700' key={index}>
+                                                            <span className={`${themeColor?.facilitiesTextColor}`} key={index}>
                                                                {/* &#10004 is code for tick mark  */}
                                                                <span>&#10004;
                                                                   {item?.service_name.replaceAll("_", " ")} </span></span>)
@@ -580,50 +601,56 @@ function Classic(args) {
                                                    </div>
                                                 </div>
                                              </div>
+
                                              {/* Room Gallery */}
-                                             <div className='tour-content-block1'>
-                                                <div className='pb-8'>
-                                                   <div className="accordion-trigger mb-4">{language?.room} {language?.gallery}</div>
-                                                   <Carousel cols={2} rows={1} gap={10} autoPlay={1000} loop={true}
-                                                      responsiveLayout={[
-                                                         {
-                                                            breakpoint: 480,
-                                                            cols: 1,
-                                                            rows: 1,
-                                                            gap: 10,
-                                                            loop: true,
-                                                            autoplay: 1000
-                                                         },
-                                                         {
-                                                            breakpoint: 810,
-                                                            cols: 2,
-                                                            rows: 1,
-                                                            gap: 10,
-                                                            loop: true,
-                                                            autoplay: 1000
-                                                         },
-                                                         {
-                                                            breakpoint: 1020,
-                                                            cols: 2,
-                                                            rows: 1,
-                                                            gap: 10,
-                                                            loop: true,
-                                                            autoplay: 1000
-                                                         },
-                                                      ]}
-                                                   >
-                                                      {resource?.room_images?.map((room_resource, index) => {
-                                                         return (
-                                                            <Carousel.Item key={index} >
-                                                               <img width="100%"
-                                                                  onClick={() => activateImagesSlider(index, resource?.room_images)}
-                                                                  style={{ height: "160px", marginBottom: "10px" }}
-                                                                  src={room_resource?.image_link}
-                                                                  alt={"Room Image"} />
-                                                               <span className='text-gray-700' >{room_resource?.image_title}</span>
-                                                            </Carousel.Item>
-                                                         )
-                                                      })}</Carousel></div></div>
+                                             {Object.keys(resource).includes("room_images")
+                                                ?
+                                                <div className='tour-content-block1'>
+                                                   <div className='pb-8'>
+                                                      <div className={`${themeColor?.titleTextColor} font-semibold pb-10`}>{language?.room} {language?.gallery}</div>
+                                                      <Carousel cols={2} rows={1} gap={10} autoPlay={1000} loop={true}
+                                                         responsiveLayout={[
+                                                            {
+                                                               breakpoint: 480,
+                                                               cols: 1,
+                                                               rows: 1,
+                                                               gap: 10,
+                                                               loop: true,
+                                                               autoplay: 1000
+                                                            },
+                                                            {
+                                                               breakpoint: 810,
+                                                               cols: 2,
+                                                               rows: 1,
+                                                               gap: 10,
+                                                               loop: true,
+                                                               autoplay: 1000
+                                                            },
+                                                            {
+                                                               breakpoint: 1020,
+                                                               cols: 2,
+                                                               rows: 1,
+                                                               gap: 10,
+                                                               loop: true,
+                                                               autoplay: 1000
+                                                            },
+                                                         ]}
+                                                      >
+                                                         {resource?.room_images?.map((room_resource, index) => {
+                                                            return (
+                                                               <Carousel.Item key={index} >
+                                                                  <img width="100%"
+                                                                     onClick={() => activateImagesSlider(index, resource?.room_images)}
+                                                                     style={{ height: "160px", marginBottom: "10px" }}
+                                                                     src={room_resource?.image_link}
+                                                                     alt={"Room Image"} />
+                                                                  <span className='text-gray-700' >{room_resource?.image_title}</span>
+                                                               </Carousel.Item>
+                                                            )
+                                                         })}</Carousel></div>
+                                                </div>
+                                                : <></>}
+
 
                                              {/* Book Now Button */}
                                              {/* <div className='flex pb-8'>
@@ -656,10 +683,11 @@ function Classic(args) {
                                  <button className="mb-6">
                                     <div className='accordion-trigger'>
                                        <div className={visible === 0 ? 'block w-32 mb-6' : 'hidden'}><SubHeading /></div>
-                                       <div className={visible === 1 ? 'block' : 'hidden'}>
+                                       <div className={visible === 1 ? `block ${themeColor?.titleTextColor}` : 'hidden'}>
                                           {language?.property} {language?.amenities} </div>
                                     </div>
-                                 </button></div>
+                                 </button>
+                              </div>
                               <div className={amenity === true ? 'tour-content-block1 ' : 'hidden'}>
                                  <div className="grid ml-2 mb-8 grid-flow-row-dense lg:grid-cols-5 md:grid-cols-4 grid-cols-2  md:gap-3 gap-1 lg:gap-3">
 
@@ -670,135 +698,135 @@ function Classic(args) {
                                                 switch (item?.service_id) {
                                                    case 'ser001': return (<div>
                                                       {/*AC*/}
-                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-600 " title={item?.local_service_name}>
+                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
                                                          {icon?.Icons?.[i]?.ac}
                                                       </span>
                                                    </div>)
                                                    case 'ser002': return (<div>
                                                       {/*All Inclusive Available*/}
-                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-600 " title={item?.local_service_name}>
+                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
                                                          {icon?.Icons?.[i]?.inclusive}
                                                       </span>
                                                    </div>)
                                                    case 'ser003': return (<div>
                                                       {/*Child Friendly*/}
-                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-600 " title={item?.local_service_name}>
+                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
                                                          {icon?.Icons?.[i]?.childfriendly}
                                                       </span>
                                                    </div>)
                                                    case 'ser004': return (<div>
                                                       {/*Golf Course*/}
-                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-600 " title={item?.local_service_name}>
+                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
                                                          {icon?.Icons?.[i]?.golf}
                                                       </span>
                                                    </div>)
                                                    case 'ser005': return (<div>
                                                       {/*Airport Shuttle*/}
-                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-600 " title={item?.local_service_name}>
+                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
                                                          {icon?.Icons?.[i]?.airport}
                                                       </span>
                                                    </div>)
                                                    case 'ser006': return (<div>
                                                       {/*Bar Lounge*/}
-                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-600 " title={item?.local_service_name}>
+                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
                                                          {icon?.Icons?.[i]?.bar}
                                                       </span>
                                                    </div>)
                                                    case 'ser007': return (<div>
                                                       {/*Beach*/}
-                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-600 " title={item?.local_service_name}>
+                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
                                                          {icon?.Icons?.[i]?.beach}
                                                       </span>
                                                    </div>)
                                                    case 'ser008': return (<div>
                                                       {/*Business Center*/}
-                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-600 " title={item?.local_service_name}>
+                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
                                                          {icon?.Icons?.[i]?.bussinesscenter}
                                                       </span>
                                                    </div>)
                                                    case 'ser009': return (<div>
                                                       {/*Fitness Center*/}
-                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-600 " title={item?.local_service_name}>
+                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
                                                          {icon?.Icons?.[i]?.fitnesscenter}
                                                       </span>
                                                    </div>)
                                                    case 'ser0010': return (<div>
                                                       {/*Free Breakfast*/}
-                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-600 " title={item?.local_service_name}>
+                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
                                                          {icon?.Icons?.[i]?.breakfast}
                                                       </span>
                                                    </div>)
                                                    case 'ser0011': return (<div>
                                                       {/*Hot Tub*/}
-                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-600 " title={item?.local_service_name}>
+                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
                                                          {icon?.Icons?.[i]?.hottub}
                                                       </span>
                                                    </div>)
                                                    case 'ser0012': return (<div>
                                                       {/*Laundary Service*/}
-                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-600 " title={item?.local_service_name}>
+                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
                                                          {icon?.Icons?.[i]?.laundary}
                                                       </span>
                                                    </div>)
 
                                                    case 'ser0013': return (<div>
                                                       {/*Restaurant*/}
-                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-600 " title={item?.local_service_name}>
+                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
                                                          {icon?.Icons?.[i]?.restaurant}
                                                       </span>
                                                    </div>)
                                                    case 'ser0014': return (<div>
                                                       {/*Room Service*/}
-                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-600 " title={item?.local_service_name}>
+                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
                                                          {icon?.Icons?.[i]?.roomservice}
                                                       </span>
                                                    </div>)
                                                    case 'ser0015': return (<div>
                                                       {/*Spa*/}
-                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-600 " title={item?.local_service_name}>
+                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
                                                          {icon?.Icons?.[i]?.spa}
                                                       </span>
                                                    </div>)
                                                    case 'ser0016': return (<div>
                                                       {/*Kitchen*/}
-                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-600 " title={item?.local_service_name}>
+                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
                                                          {icon?.Icons?.[i]?.kitchen}
                                                       </span>
                                                    </div>)
                                                    case 'ser0017': return (<div>
                                                       {/*Parking*/}
-                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-600 " title={item?.local_service_name}>
+                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
                                                          {icon?.Icons?.[i]?.parking}
                                                       </span>
                                                    </div>)
 
                                                    case 'ser0018': return (<div>
                                                       {/*Pets Allowed*/}
-                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-600 " title={item?.local_service_name}>
+                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
                                                          {icon?.Icons?.[i]?.pets}
                                                       </span>
                                                    </div>)
                                                    case 'ser0019': return (<div>
                                                       {/*Smoke Free*/}
-                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-600 " title={item?.local_service_name}>
+                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
                                                          {icon?.Icons?.[i]?.smokefree}
                                                       </span>
                                                    </div>)
                                                    case 'ser0020': return (<div>
                                                       {/*Swimming Pool*/}
-                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-600 " title={item?.local_service_name}>
+                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
                                                          {icon?.Icons?.[i]?.pool}
                                                       </span>
                                                    </div>)
                                                    case 'ser0021': return (<div>
                                                       {/*Wheel Chair*/}
-                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-600 " title={item?.local_service_name}>
+                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
                                                          {icon?.Icons?.[i]?.wheelchair}
                                                       </span>
                                                    </div>)
                                                    case 'ser0022': return (<div>
                                                       {/*Wifi Type*/}
-                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-600 " title={item?.local_service_name}>
+                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
                                                          {icon?.Icons?.[i]?.wifi}
                                                       </span>
                                                    </div>)
@@ -1151,17 +1179,16 @@ function Classic(args) {
                   <div className="mt-10 border-b pb-10">
 
                      {/* <div className="tour-content-title">{language?.customer} {language?.reviews}</div> */}
-                     <div className="mb-6 text-slate-600 text-lg md:text-2xl font-semibold">{language?.customer} {language?.reviews}</div>
+                     <div className={`mb-6 ${themeColor?.titleTextColor} text-lg md:text-2xl font-semibold`}>{language?.customer} {language?.reviews}</div>
 
                      {/* <div className="tour-reviews"> */}
                      <div className="flex flex-col lg:flex-row">
 
                         {/* <div className="tour-reviews-feedback"> */}
-                        <div className="bg-white border rounded-t-lg w-full  lg:w-3/5 lg:mr-8  lg:rounded-lg ">
+                        <div className={`${themeColor?.bodyBgColor} border rounded-t-lg w-full  lg:w-3/5 lg:mr-8  lg:rounded-lg `}>
                            <Marquee duration={10000} height="370px" axis="Y" reverse={true}>
                               {args?.allHotelDetails?.Reviews?.map((item, idx) => {
                                  return (
-
                                     <div className="flex overflow-hidden items-center relative bg-transparent h-96 w-full" key={idx} >
                                        {/* <div className="tour-reviews-feedback-item" key={idx}>  */}
 
@@ -1231,7 +1258,7 @@ function Classic(args) {
 
                {/* Booking form  */}
                {/* <div className={`tour-sidebar ${Color?.light?.whitebackground}`}> */}
-               <div className={`hidden lg:block relative top-8 z-20 mb-10 w-full lg:mb-0 lg:sticky lg:ml-8  lg:w-5/12 ${Color?.light?.whitebackground}`}>
+               <div className={`hidden lg:block relative top-8 z-20 mb-10 w-full lg:mb-0 lg:sticky lg:ml-8  lg:w-5/12 rounded-lg ${themeColor?.bookingFormColor}`}>
                   {/* <div className="tour-receipt">
                      <div className="tour-receipt-head">
                         <div className="tour-amount">
@@ -1395,6 +1422,7 @@ function Classic(args) {
                   </div> */}
 
                   <BookingForm
+                     themeColor={themeColor}
                      setRoomsLoader={(e) => setRoomsLoader(e)}
                      setShowBookingEngine={(e) => setShowBookingEngine(e)}
                      setEnquiry={(e) => setEnquiry(e)}

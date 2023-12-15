@@ -48,7 +48,7 @@ function InventoryModal({ error, setError, setView, setInventories, view, color,
 
 
         // Initialize an array to store the transformed data
-        const transformedData = [];
+        // const transformedData = [];
 
         // Iterate through the original data
         // response?.data.forEach(item => {
@@ -58,7 +58,17 @@ function InventoryModal({ error, setError, setView, setInventories, view, color,
         //   // Add each object to the transformedData array
         //   transformedData.push(...roomReferences);
         // });
-        setRoomRefrences(response.data.map((i) => i.room_refrences).flat());
+        // setRoomRefrences(response.data.map((i) => i.room_refrences).flat());
+        // setVisible(1);
+      })
+      .catch((error) => {
+        logger.error("url to fetch property details, failed")
+      });
+    axios.get(`/api/all_room_refrences/${currentProperty?.property_id}`)
+      .then((response) => {
+
+        // setRoomRefrences(response.data.map((i) => i.room_refrences).flat());
+        setRoomRefrences(response.data);
         setVisible(1);
       })
       .catch((error) => {
@@ -223,7 +233,7 @@ function InventoryModal({ error, setError, setView, setInventories, view, color,
                           onRemove={(selectedList, removedItem) => { modifyOutOfService(selectedList, removedItem) }}
                           onSelect={(selectedList, selectedItem) => { modifyOutOfService(selectedList, selectedItem) }}
                           // selectedValues={}
-                          displayValue={"room_refrence"}
+                          displayValue={"room_references"}
                           style={{
                             chips: {
                               background: '#0891b2',

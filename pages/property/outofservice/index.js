@@ -19,6 +19,7 @@ import LoaderTable from "../../../components/loadertable";
 const logger = require("../../../services/logger");
 import { InitialActions, ColorToggler } from "../../../components/initalActions";
 import BreadCrumb from "../../../components/utils/BreadCrumb";
+import Multiselect from 'multiselect-react-dropdown';
 
 var currentLogged;
 let colorToggle;
@@ -49,6 +50,12 @@ function Unavailability() {
     // state for pagination
     const [itemsPerPage, setItemsPerPage] = useState(5);
     const [page, setPage] = useState(1);
+    const [roomRef, setRoomRef] = useState([]);
+
+    const [roomReferences, setRoomRefrences] = useState([])
+  const [roomSubTypes, setRoomSubTypes] = useState([])
+  const [roomCodes, setRoomCodes] = useState([{ "refrence_id": undefined }])
+
 
     // runs at load time
     useEffect(() => {
@@ -72,17 +79,60 @@ function Unavailability() {
         const url = `/api/unavailability/${currentProperty.property_id}`;
         axios.get(url)
             .then((response) => {
-
+                setVisible(1);
                 if (response.data.room_unavailability.length > 0) {
                     setInventories(response.data.room_unavailability)
+
                 } else {
                     setInventories([])
                 }
-                setVisible(1);
+
             })
             .catch((error) => {
                 logger.error("url to fetch property details, failed")
             });
+
+        const urlRef = `/api/out_of_service_rooms_refs/${currentProperty.property_id}`;
+        axios.get(urlRef)
+            .then((response) => {
+                // setVisible(1);
+
+                const result = {};
+
+                response.data.forEach(item => {
+                    const { room_id, unavailability_id, refrence_id } = item;
+
+                    const key = `${room_id}-${unavailability_id}`;
+
+                    if (result[key]) {
+                        result[key].push(refrence_id);
+                    } else {
+                        result[key] = [refrence_id];
+                    }
+                });
+
+                // Convert result to an array of objects
+                const finalResult = Object.keys(result).map(key => {
+                    const [room_id, unavailability_id] = key.split("-");
+                    return { room_id, unavailability_id, refrence_ids: result[key] };
+                });
+
+                console.log(finalResult);
+                setRoomRef(finalResult)
+            })
+            .catch((error) => {
+                logger.error("url to fetch property details, failed")
+            });
+
+            // to fetch all room_refrecnes
+            axios.get(`/api/all_room_refrences/${currentProperty?.property_id}`)
+      .then((response) => {
+        setRoomRefrences(response.data);
+        setVisible(1);
+      })
+      .catch((error) => {
+        logger.error("url to fetch property details, failed")
+      });
     }
 
     function searchFunction() {
@@ -187,7 +237,11 @@ function Unavailability() {
             }
         ])
     }
-
+    function findAllRefs(inv)  {
+        let data = roomReferences.filter(i => i.room_id === inv.room_id)
+        setRoomSubTypes(data)
+      }
+    
 
     return (
         <>
@@ -314,8 +368,29 @@ function Unavailability() {
                                                                         {inv.room_name}
                                                                     </td>
 
-                                                                    <td className={`p-4 whitespace-nowrap capitalize text-base font-normal ${color?.text}`}>
-                                                                        {inv.room_name}
+                                                                    <td className={`p-4 whitespace-nowrap text-base font-normal ${color?.text}`}>
+                                                                        <Multiselect
+                                                                            className={`shadow-sm ${color?.greybackground} ${color?.text} mb-3 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full`}
+                                                                            isObject={true}
+                                                                            options={roomSubTypes}
+                                                                            onRemove={(selectedList, removedItem) => { alert(selectedList, removedItem) }}
+                                                                            onSelect={(selectedList, selectedItem) => { alert(selectedList, selectedItem) }}
+                                                                            // onRemove={(selectedList, removedItem) => { modifyOutOfService(selectedList, removedItem) }}
+                                                                            // onSelect={(selectedList, selectedItem) => { modifyOutOfService(selectedList, selectedItem) }}
+                                                                            selectedValues={roomRef.filter(i => i.unavailability_id === inv.unavailability_id)[0].refrence_ids.map((element, id) =>({"room_references":element}))}
+                                                                            displayValue={"room_references"}
+                                                                            style={{
+                                                                                chips: {
+                                                                                    background: '#0891b2',
+                                                                                    'font-size': '0.875 rem'
+                                                                                },
+                                                                                searchBox: {
+                                                                                    border: 'none',
+                                                                                    'border-bottom': 'none',
+                                                                                    'border-radius': '0px'
+                                                                                }
+                                                                            }}
+                                                                        />
                                                                     </td>
 
                                                                     <td className={`p-4 whitespace-nowrap capitalize text-base font-normal ${color?.text}`}>
@@ -432,8 +507,8 @@ function Unavailability() {
                                                                         {inv.room_name}
                                                                     </td>
 
-                                                                    <td className={`p-4 whitespace-nowrap capitalize  text-base font-normal ${color?.text}`}>
-                                                                        {inv.room_name}
+                                                                    <td className={`p-4 whitespace-nowrap  text-base font-normal ${color?.text}`}>
+                                                                        {roomRef.filter(i => i.unavailability_id === inv.unavailability_id)[0].refrence_ids.map((element, id) => <span key={id} className="text-white bg-cyan-600 border rounded-full py-1 px-2 mx-1 ">{element}</span>)}
                                                                     </td>
                                                                     <td className={`p-4 whitespace-nowrap capitalize  text-base font-normal ${color?.text}`}>
                                                                         {inv.date_from}
@@ -483,6 +558,7 @@ function Unavailability() {
                                                                                         'value': 1,
                                                                                         'idx': index
                                                                                     })
+                                                                                    findAllRefs(inv);
                                                                                 }}
                                                                             >{'Edit'} </button>
                                                                             <button

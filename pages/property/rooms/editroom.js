@@ -183,11 +183,6 @@ function Room() {
         setRoomDetails(response.data);
         setVisible(1);
         setFinalView(response?.data?.views);
-
-        // setDiscount(response?.data?.discounts?.map(i => ({ ...i, "isChecked": false }))) //added checked as undefined 
-
-        // setRateModification(response?.data?.room_rate_modifications?.map(i => ({ ...i, "isChecked": false })))  //added checked as undefined 
-
         if (response.data.room_refrences !== undefined) {
           let item = response.data.room_refrences.map(item => item.room_identifier)
           setInitalIdentifiers(item.toString())
@@ -2366,7 +2361,7 @@ function Room() {
                         onChange={(e) => (setActionImage({ ...actionImage, image_description: e.target.value }, setFlag(1)))}
                         className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`}
                         defaultValue="" />
-                      <p className="text-sm text-sm text-red-700 font-light">
+                      <p className="text-sm text-red-700 font-light">
                         {error?.image_description}</p>
                     </div>
 
@@ -2599,4 +2594,3 @@ Room.getLayout = function PageLayout(page) {
     </>
   )
 }
-

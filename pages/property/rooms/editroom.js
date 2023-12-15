@@ -184,9 +184,9 @@ function Room() {
         setVisible(1);
         setFinalView(response?.data?.views);
 
-        setDiscount(response?.data?.discounts?.map(i => ({ ...i, "isChecked": false }))) //added checked as undefined 
+        // setDiscount(response?.data?.discounts?.map(i => ({ ...i, "isChecked": false }))) //added checked as undefined 
 
-        setRateModification(response?.data?.room_rate_modifications?.map(i => ({ ...i, "isChecked": false })))  //added checked as undefined 
+        // setRateModification(response?.data?.room_rate_modifications?.map(i => ({ ...i, "isChecked": false })))  //added checked as undefined 
 
         if (response.data.room_refrences !== undefined) {
           let item = response.data.room_refrences.map(item => item.room_identifier)

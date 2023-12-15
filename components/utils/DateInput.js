@@ -23,7 +23,7 @@ function DateInput({ color, label, req, initialValue, onChangeAction, error, vis
             {tooltip === true ?
               <Tooltip message={title ? title : label} color={color}>
                 <span className='flex justify-center item-center bg-white h-4 w-4 border border-none rounded-full'>
-                  <Image src={info} alt="info" height={10} width={10} /></span>
+                  <Image className='bg-red-900' src={info} alt="info" height={10} width={10} /></span>
               </Tooltip>
               : <></>}
           </div>

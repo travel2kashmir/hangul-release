@@ -35,6 +35,10 @@ import "react-toastify/dist/ReactToastify.css";
 import ContactUsModal from '../../components/ClassicTheme/Modals/ContactUsModal';
 import { IoClose } from "react-icons/io5";
 import color from '../../components/ClassicTheme/Data/Colors'
+import BedIcon from '@mui/icons-material/Bed';
+import LandscapeIcon from '@mui/icons-material/Landscape';
+import GroupsIcon from '@mui/icons-material/Groups';
+import SquareFootIcon from '@mui/icons-material/SquareFoot';
 
 
 var currentUser;
@@ -109,6 +113,9 @@ function Classic(args) {
       "guests_below_six": 0,
       "guests_below_twelve": 0
    });
+
+   const filteredAdditionalService = args?.allHotelDetails?.additional_services?.filter(service => service.status);
+
 
 
    /** Router for Redirection **/
@@ -579,35 +586,20 @@ function Classic(args) {
 
                                           <div className={open?.view === true && open?.id === idx ? 'block' : 'hidden'}>
                                              {/* Room Description */}
-                                             <div className="tour-content-block">
+                                             {/* <div className="tour-content-block"> */}
+                                             <div className="border-b pb-10">
                                                 <div className={`text-sm md:text-base ${themeColor?.descriptionTextColor}`}>
                                                    {resource?.room_description}
-                                                </div>
-                                             </div>
-
-                                             {/* Room Facilities */}
-                                             <div className='tour-content-block1'>
-                                                <div className='py-10'>
-                                                   <div className={` font-semibold ${themeColor?.titleTextColor}`}>{language?.room} {language?.facilities}</div>
-
-                                                   <div className="grid grid-flow-row-dense lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 mt-2 gap-3">
-                                                      {resource?.room_facilities?.map((item, index) => {
-                                                         return (
-                                                            <span className={`${themeColor?.facilitiesTextColor}`} key={index}>
-                                                               {/* &#10004 is code for tick mark  */}
-                                                               <span>&#10004;
-                                                                  {item?.service_name.replaceAll("_", " ")} </span></span>)
-                                                      })}
-                                                   </div>
                                                 </div>
                                              </div>
 
                                              {/* Room Gallery */}
                                              {Object.keys(resource).includes("room_images")
                                                 ?
-                                                <div className='tour-content-block1'>
+                                                <div className='py-10 border-b'>
+                                                   {/* <div className='tour-content-block1'> */}
                                                    <div className='pb-8'>
-                                                      <div className={`${themeColor?.titleTextColor} font-semibold pb-10`}>{language?.room} {language?.gallery}</div>
+                                                      <div className={`${themeColor?.titleTextColor} text-center font-semibold pb-10`}>{language?.room} {language?.gallery}</div>
                                                       <Carousel cols={2} rows={1} gap={10} autoPlay={1000} loop={true}
                                                          responsiveLayout={[
                                                             {
@@ -650,6 +642,60 @@ function Classic(args) {
                                                          })}</Carousel></div>
                                                 </div>
                                                 : <></>}
+
+                                             {/* key highlights */}
+                                             <div className='py-10 border-b'>
+                                                <h2 className={`${themeColor?.titleTextColor} text-center  font-semibold`}>Key Highlights</h2>
+                                                <div className='grid grid-flow-row-dense grid-col-2 md:grid-cols-3 text-center pt-10 gap-3'>
+                                                   {filteredAdditionalService?.map((service) => {
+                                                      return <div key={service.add_service_id} className="mb-5">
+                                                         <p className={`${themeColor?.titleTextColor} font-semibold`}>{service.add_service_name}</p>
+                                                         <p className={`${themeColor?.descriptionTextColor} text-sm md:text-base`}>{service.add_service_comment}</p>
+                                                      </div>
+                                                   })}
+
+                                                </div>
+                                             </div>
+
+                                             {/* Room Details */}
+                                             <div className="py-10 border-b ">
+                                                <h2 className={` ${themeColor?.titleTextColor} font-semibold  text-center`}>Room Details</h2>
+                                                {/* <div className="lg:flex  lg:justify-around pt-5 lg:pt-10"> */}
+                                                <div className="grid grid-flow-row-dense lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 pt-5 lg:pt-5 gap-3">
+                                                   <p className={`${themeColor?.descriptionTextColor} text-sm md:text-base  pb-2`}><SquareFootIcon /> &nbsp; {resource.carpet_area} SQ.FT</p>
+                                                   <p className={`${themeColor?.descriptionTextColor} text-sm md:text-base  pb-2`}><GroupsIcon />  &nbsp; {resource.room_capacity} Adults</p>
+                                                   <p className={`${themeColor?.descriptionTextColor} text-sm md:text-base  pb-2`}>{resource?.views?.map((item, index) => {
+                                                      return (
+                                                         <span key={index} >{index === 0 ? <LandscapeIcon /> : ','} &nbsp; {item?.view}  </span>
+                                                      );
+                                                   })}</p>
+
+                                                   {Object.keys(resource).includes("beds") ?
+                                                      <p className={`${themeColor?.descriptionTextColor} text-sm md:text-base  pb-2`}><BedIcon /> &nbsp; {resource.beds.length} {resource.beds.length > 1 ? "Beds" : "Bed"} <span> ({resource?.beds?.map((item, index) => {
+                                                         return (
+                                                            <span key={index}>{index === 0 ? '' : ' , '} {item?.bed_width} * {item?.bed_length}</span>
+
+                                                         );
+                                                      })}) cm</span>
+                                                      </p> : <></>}
+
+                                                </div>
+                                             </div>
+
+                                             {/* Room Facilities */}
+                                             <div className='py-10'>
+                                                <div className={` font-semibold text-center ${themeColor?.titleTextColor}`}>{language?.room} {language?.facilities}</div>
+
+                                                <div className="grid grid-flow-row-dense lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 mt-5 gap-3">
+                                                   {resource?.room_facilities?.map((item, index) => {
+                                                      return (
+                                                         <span className={`${themeColor?.facilitiesTextColor}`} key={index}>
+                                                            {/* &#10004 is code for tick mark  */}
+                                                            <span>&#10004;
+                                                               {item?.service_name.replaceAll("_", " ")} </span></span>)
+                                                   })}
+                                                </div>
+                                             </div>
 
 
                                              {/* Book Now Button */}

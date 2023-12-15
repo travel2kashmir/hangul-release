@@ -11,7 +11,7 @@ import Router, { useRouter } from "next/router";
 const logger = require("../../services/logger");
 import { ToastContainer, toast } from "react-toastify";
 import Classic from "../themes/classic";
-import ClassicDark from '../themes/classic-dark'
+// import ClassicDark from '../themes/classic-dark'
 import NewTheme from "../../components/NewTheme"
 import Fusion from "../../components/ModernTheme"
 import ModernThemeColors from "../../components/ModernTheme/Data/Colors"

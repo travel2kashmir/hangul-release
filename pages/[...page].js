@@ -7,7 +7,7 @@ import fr from "../components/Languages/fr"
 import ar from "../components/Languages/ar"
 import { useRouter } from "next/router";
 import Classic from "./themes/classic";
-import ClassicDark from './themes/classic-dark'
+// import ClassicDark from './themes/classic-dark'
 import NewTheme from "../components/NewTheme"
 const logger = require("../services/logger");
 import Fusion from "../components/ModernTheme";

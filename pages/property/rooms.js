@@ -26,6 +26,7 @@ let colorToggle;
 function Rooms() {
   const [visible, setVisible] = useState(0)
   const [color, setColor] = useState({})
+  // const [colorToggle, setColorToggle] = useState({})
   const [mode, setMode] = useState()
   const [gen, setGen] = useState([])
   const [allrooms, setAllRooms] = useState([])
@@ -33,12 +34,14 @@ function Rooms() {
   const [deleteRoomId, setDeleteRoomId] = useState()
   const [spinner, setSpinner] = useState(0)
 
+
   useEffect(() => {
     const resp = InitialActions({ setColor, setMode })
     language = resp?.language;
     currentLogged = resp?.currentLogged;
     currentProperty = resp?.currentProperty;
     colorToggle = resp?.colorToggle
+    // setColorToggle(resp?.colorToggle)
 
     if (JSON.stringify(currentLogged) === 'null') {
       Router.push(window.location.origin)
@@ -193,8 +196,8 @@ function Rooms() {
         />
 
         {/* Rooms Table */}
-        <div className={(visible === 0 && colorToggle == false ? 'block' : 'hidden')}><LoaderTable /></div>
-        <div className={(visible === 0 && colorToggle == true ? 'block' : 'hidden')}><LoaderDarkTable /></div>
+        <div className={(visible === 0 && mode == false ? 'block' : 'hidden')}><LoaderTable /></div>
+        <div className={(visible === 0 && mode == true ? 'block' : 'hidden')}><LoaderDarkTable /></div>
         <div className={visible === 1 ? 'block' : 'hidden'}>
           {/* call to generic table  */}
           <GenericTable

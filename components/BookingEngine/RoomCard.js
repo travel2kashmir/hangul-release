@@ -56,7 +56,7 @@ function RoomCard({ color, filteredRoomData, roomImage, setDisplay, roomRates, c
       };
     }
 
-    console.log("this is existing data", existingData)
+    // console.log("this is existing data", existingData)
 
     // Store the updated data back in local storage
     localStorage.setItem('room_rates', JSON.stringify(existingData));
@@ -172,7 +172,7 @@ function RoomCard({ color, filteredRoomData, roomImage, setDisplay, roomRates, c
       console.log(JSON.stringify(err))
     })
   }
-  console.log('inv data ', invData)
+  // console.log('inv data ', invData)
 
   // let invData = [
   //   {
@@ -233,8 +233,8 @@ function RoomCard({ color, filteredRoomData, roomImage, setDisplay, roomRates, c
   // Iterate through invData to remove room_ids with available_inventory equal to 0 from nonZeroInventory
   invData.forEach(item => item.available_inventory === 0 && nonZeroInventory.delete(item.room_id));
 
-  console.log('non zero inventory ', [...nonZeroInventory]);
-  console.log('zero inventory ', [...zeroInventory]);
+  // console.log('non zero inventory ', [...nonZeroInventory]);
+  // console.log('zero inventory ', [...zeroInventory]);
 
   return (
     <div className={` w-100 h-1/4 text-black border border-gray-500 ${color?.cardColor} rounded-2xl p-4 mx-2 my-4 lg:m-4 flex flex-wrap justify-center items-center md:flex-row flex-col`}>
@@ -249,8 +249,8 @@ function RoomCard({ color, filteredRoomData, roomImage, setDisplay, roomRates, c
 
       {/* room name and description */}
       <div className='md:w-4/6 md:text-start w-fit md:px-5 lg:px-3'>
-        <h3 className='font-bold text-2xl my-5 md:my-1'>{filteredRoomData?.room_name}</h3>
-        <p className='text-base text-slate-500 font-semibold'>
+        <h3 className={`${color?.text?.title} font-bold text-2xl my-5 md:my-1`}>{filteredRoomData?.room_name}</h3>
+        <p className='text-base text-slate-500 font-normal'>
           {filteredRoomData?.room_description}
         </p>
       </div>
@@ -268,8 +268,8 @@ function RoomCard({ color, filteredRoomData, roomImage, setDisplay, roomRates, c
                 <p className=' text-white text-xs py-1'>Will be available soon!</p>
               </div>
               : <div>
-                <h3 className='text-3xl font-bold  text-center'>₹ {roomRates.total_final_rate}</h3>
-                <p className='text-xs py-1 text-center'>+ tax For {numberOfDays} Day{numberOfDays === 1 ? '' : 's'}</p>
+                <h3 className={` ${color?.text?.title} text-3xl font-bold text-center`}>₹ {roomRates.total_final_rate}</h3>
+                <p className={`${color?.text?.title} text-xs py-1 text-center`}>+ tax For {numberOfDays} Day{numberOfDays === 1 ? '' : 's'}</p>
               </div>
             }
           </div>

@@ -495,14 +495,15 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                             }}
                         ><BiArrowBack size={30} />
                         </i>
-                        <h1 className='text-xl my-auto font-bold ml-2 md:ml-5'>Review Booking</h1>
+                        <h1 className={` ${color?.text?.title} text-xl my-auto font-bold ml-2 md:ml-5`}>Review Booking</h1>
                     </div>
 
                     {/* timer for medium and large screen */}
-                    <div className='hidden md:block'>
+                    <div className='hidden md:block my-auto'>
                         <CountdownTimer
                             time={15}
                             onTimerComplete={closeButtonAction}
+                            color={color}
 
                         />
                     </div>
@@ -526,6 +527,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                     <CountdownTimer
                         time={15}
                         onTimerComplete={closeButtonAction}
+                        color={color}
 
                     />
                 </div>
@@ -535,12 +537,12 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
             <div id="main-content" className={`h-fit text-white flex flex-wrap justify-around gap-2 mx-4 py-10 `}>
 
                 {/* left side div  */}
-                <div id="guest-detail-review" className={`${color?.boxColor} border border-white text-black h-fit w-full md:w-6/12  rounded-2xl `}>
+                <div id="guest-detail-review" className={`${color?.boxColor} border border-slate-400 text-black h-fit w-full md:w-6/12  rounded-2xl `}>
 
                     {/* rooms summary section */}
-                    <div className=' border-b-2 border-gray justify-start p-2 md:p-4'>
+                    <div className=' border-b border-slate-400 justify-start p-2 md:p-4'>
                         <div className='flex  justify-between'>
-                            <h6 className={`text-xl my-auto flex pl-2 leading-none font-bold`}>
+                            <h6 className={`${color?.text?.title} text-xl my-auto flex pl-2 leading-none font-bold`}>
                                 Rooms Summary
                             </h6>
                             <button
@@ -555,7 +557,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                         </div>
 
                         <table className='px-4 w-full' cellPadding={15}>
-                            <thead>
+                            <thead className={`${color?.text?.title}`}>
                                 <th className='text-start'>Room Name</th>
                                 <th className='text-start'>Room Type</th>
                                 <th className='text-start'>Number Of Rooms</th>
@@ -563,10 +565,10 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                             </thead>
 
                             {selectedRoomsArray?.map((room, index) => {
-                                return <tr key={index}>
+                                return <tr className={`${color?.text?.description}`} key={index}>
                                     <td>{room?.room_name}</td>
                                     <td>{room?.room_type}</td>
-                                    <td className=' text-black '>
+                                    <td>
                                         {/* drop down to change room quantity  */}
                                         <select
                                             className=' pl-3 pr-10'
@@ -634,7 +636,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                     {/* guests summary section */}
                     <div className='flex justify-start mt-2 p-4'>
                         <h6
-                            className={` text-xl flex my-auto leading-none pl-2 font-bold`}
+                            className={`${color?.text?.title} text-xl flex my-auto leading-none pl-2 font-bold`}
                         >
                             Guest Details
                         </h6>
@@ -643,7 +645,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                     <div className="pt-1 pb-4">
                         <div className="md:px-4 mx-auto w-full">
                             {guest.map((i, loopIndex) => (
-                                <div className='border-2 border-white rounded-xl p-2 m-2' key={i.index}>
+                                <div className='border border-slate-400 rounded-xl p-2 m-2' key={i.index}>
                                     {loopIndex != 0 ? <div className='flex justify-end'><button onClick={() => removeGuest(i.index)}><RxCross2 /></button></div> : <></>}
                                     <div className="flex flex-wrap ">
 
@@ -716,9 +718,9 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
 
 
                             <input type="checkbox" name="add_gst" onClick={() => { setAddGst(!addGst); setGstDetails({}) }} />
-                            <span className='font-semibold text-base mx-2'>Add GST Details (optional)</span>
+                            <span className={`${color?.text?.title} font-semibold text-base mx-2`}>Add GST Details (optional)</span>
                             {addGst === true ?
-                                <div className="flex flex-wrap border-2 border-white rounded-xl p-2 m-2">
+                                <div className="flex flex-wrap border-2 border-slate-400 rounded-xl p-2 m-2">
                                     {/* GST Registration Number  */}
                                     <InputText
                                         label={'GST Registration Number'}
@@ -781,14 +783,14 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                 </div>
 
                 {/* right side div  */}
-                <div id="price-breakup" className={`border border-gray-300 ${color?.boxColor} p-4 mt-10 md:mt-0 text-black h-fit w-full text-start  md:w-5/12 lg:w-4/12  rounded-2xl `}>
-                    <div className='border-b border-gray rounded-lgg w-full h-1/2 my-2'>
-                        <h1 className="font-extrabold p-2 text-xl">Price Breakup</h1>
-                        <div className='flex justify-start items-start my-4  border-b-2'> <div className='p-2 w-4/5 font-semibold'>{totalSelectedQuantities} Room for {numberOfNights === 0 ? '1 Day' : numberOfNights === 1 ? '1 Night' : `${numberOfNights} Nights`}<br /> <div className='text-sm font-normal px-3'>base price</div></div> <div className='mx-2 my-auto flex justify-end w-full'>₹ {totalFinalRate}</div></div>
-                        <div className='flex justify-start items-start my-4  border-b-2'> <div className='p-2 w-4/5 font-semibold'>Taxes</div> <div className='mx-2 my-auto flex justify-end w-full'>₹ {totalTaxAmount}</div></div>
-                        <div className='flex justify-start items-start my-4  border-b-2'> <div className='p-2 w-4/5 font-semibold'>Other Fees</div> <div className='mx-2 my-auto flex justify-end w-full'>₹ {totalOtherFees}</div></div>
+                <div id="price-breakup" className={`border border-slate-400 ${color?.boxColor} p-4 mt-10 md:mt-0 text-black h-fit w-full text-start  md:w-5/12 lg:w-4/12  rounded-2xl `}>
+                    <div className=' w-full h-1/2 my-2'>
+                        <h1 className={`${color?.text?.title} font-extrabold p-2 text-xl`}>Price Breakup</h1>
+                        <div className={`${color?.text?.description} flex justify-start items-start my-4  border-b border-slate-400`}> <div className='p-2 w-4/5 font-semibold'>{totalSelectedQuantities} Room for {numberOfNights === 0 ? '1 Day' : numberOfNights === 1 ? '1 Night' : `${numberOfNights} Nights`}<br /> <div className='text-sm font-normal px-3'>base price</div></div> <div className='mx-2 my-auto flex justify-end w-full'>₹ {totalFinalRate}</div></div>
+                        <div className={`${color?.text?.description} flex justify-start items-start my-4  border-b border-slate-400`}> <div className='p-2 w-4/5 font-semibold'>Taxes</div> <div className='mx-2 my-auto flex justify-end w-full'>₹ {totalTaxAmount}</div></div>
+                        <div className={`${color?.text?.description} flex justify-start items-start my-4  border-b border-slate-400`}> <div className='p-2 w-4/5 font-semibold'>Other Fees</div> <div className='mx-2 my-auto flex justify-end w-full'>₹ {totalOtherFees}</div></div>
                         {/* <div className='flex  items-start my-4  border-b-2'> <div className='p-2 w-4/5 font-semibold'>Coupon Discounts</div> <div className='mx-2 my-auto flex justify-end w-full'>₹ {couponDiscount}.00</div></div> */}
-                        <div className='flex justify-start items-start my-4'> <div className='p-2 w-4/5 font-bold'>Total Amount To Be Paid</div> <div className='mx-2 flex justify-end w-full text-2xl font-bold'>₹ {(totalFinalRate + totalTaxAmount + totalOtherFees) - couponDiscount}</div></div>
+                        <div className={`${color?.text?.title} flex justify-start items-start my-4`}> <div className='p-2 w-4/5 font-bold'>Total Amount To Be Paid</div> <div className='mx-2 flex justify-end w-full text-2xl font-bold'>₹ {(totalFinalRate + totalTaxAmount + totalOtherFees) - couponDiscount}</div></div>
                     </div>
 
                     {/* coupon code section */}

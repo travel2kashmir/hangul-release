@@ -239,6 +239,9 @@ function Classic(args) {
       setThemeColor(args?.initialColor)
    }
 
+
+   // console.log(args?.initialColor)
+
    return (
       <>
          {/* <div className="header w-full"> */}
@@ -1647,7 +1650,15 @@ function Classic(args) {
                {allHotelDetails && <BookingModal
                   bookingComponent={
                      <BookingEngine
-                        // color={color}
+                        color={{
+                           "bgColor": themeColor?.bodyBgColor,
+                           // "cardColor": themeColor?.bodyBgColor,
+                           text: {
+                              title: themeColor?.text?.title,
+                              description: themeColor?.text?.description,
+                           }
+                           // "boxColor": themeColor?.bodyBgColor,
+                        }}
                         roomsLoader={roomsLoader}
                         setRoomsLoader={(e) => setRoomsLoader(e)}
                         display={display}

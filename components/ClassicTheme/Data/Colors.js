@@ -10,6 +10,12 @@ const white = {
     "inputTextColor": "text-slate-600",
     "dropdownTextColor": "text-gray-900",
 
+    // injecting colors to booking engine below
+    "text": {
+        "title": "text-slate-600",
+        "description": "text-gray-700",
+    }
+
 
 }
 
@@ -24,6 +30,12 @@ const black = {
     "bookingFormColor": "bg-gray-800",
     "inputTextColor": "text-slate-300",
     "dropdownTextColor": "text-white",
+
+    // injecting colors to booking engine below
+    "text": {
+        "title": "text-white",
+        "description": "text-gray-400",
+    }
 
 
 }

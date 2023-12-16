@@ -7,13 +7,15 @@ import fr from "../components/Languages/fr"
 import ar from "../components/Languages/ar"
 import { useRouter } from "next/router";
 import Classic from "./themes/classic";
-import ClassicDark from './themes/classic-dark'
+// import ClassicDark from './themes/classic-dark'
 import NewTheme from "../components/NewTheme"
 const logger = require("../services/logger");
 import Fusion from "../components/ModernTheme";
 import ModernThemeColors from "../components/ModernTheme/Data/Colors"
+import ClassicThemeColors from "../components/ClassicTheme/Data/Colors"
 import Cosmic from "../components/LodgeTheme";
 import CountrySide from "../components/CountrysideTheme"
+
 var language;
 function Page({ data, room_data, package_data }) {
   const [allHotelDetails, setAllHotelDetails] = useState([]);
@@ -106,13 +108,20 @@ function Page({ data, room_data, package_data }) {
         <div className="sticky">
           <Classic language={language} allHotelDetails={allHotelDetails}
             allRooms={allRooms} allPackages={allPackages} services={services}
-            phone={phone} email={email} /></div> : <div className="sticky"></div>}
+            phone={phone} email={email} initialColor={ClassicThemeColors.white} /></div> : <div className="sticky"></div>}
+
       {/* Classic Dark */}
       {theme === "Classic-Dark" ?
         <div className="sticky">
+          <Classic language={language} allHotelDetails={allHotelDetails}
+            allRooms={allRooms} allPackages={allPackages} services={services}
+            phone={phone} email={email} initialColor={ClassicThemeColors.black} /></div> : <div className="sticky"></div>}
+      {/* Classic Dark */}
+      {/* {theme === "Classic-Dark" ?
+        <div className="sticky">
           <ClassicDark language={language} allHotelDetails={allHotelDetails}
             allRooms={allRooms} allPackages={allPackages} services={services}
-            phone={phone} email={email} /></div> : <div className="sticky"></div>}
+            phone={phone} email={email} /></div> : <div className="sticky"></div>} */}
       {/* newTheme */}
       {theme === "Neo" ?
         <div className="sticky">

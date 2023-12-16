@@ -1,4 +1,5 @@
 export default {
+  outofservice:"خارج الخدمة",
   datefrom:"التاريخ من",
   dateto:"تاريخ ل",
   unavailability:"عدم التوفر",

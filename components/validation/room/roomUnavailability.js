@@ -1,4 +1,6 @@
-const validateUnavailability = (data) =>{
+const validateUnavailability = (data,roomCodes) =>{
+    console.log(data)
+    console.log(roomCodes)
     var error={};
      var flag=[]
      var final_flag=true;
@@ -37,6 +39,13 @@ const validateUnavailability = (data) =>{
      {
          flag.push(false)
          error.unavailability_count ="The room count Should be positive number."
+     }
+
+     if(data?.unavailability_count!= roomCodes.length)
+     {
+         flag.push(false)
+         error.unavailability_count ="The room count Should be number of codes in room type codes";
+         error.room_refrences ="The room count Should be number of codes in room type codes";
      }
     
      final_flag = flag.every(value => value !== false);

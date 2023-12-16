@@ -123,6 +123,10 @@ function Hotel({ language, HotelDetails, allRooms, allPackages, services, phone,
                                     "bgColor": "bg-custom-brown",
                                     "cardColor": "bg-white",
                                     "boxColor": "bg-custom-lightbrown",
+                                    "text": {
+                                        "title": "text-black",
+                                        "description": "dark-green"
+                                    }
                                 }}
                                 roomsLoader={roomsLoader}
                                 setRoomsLoader={(e) => setRoomsLoader(e)}

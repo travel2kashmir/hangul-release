@@ -198,10 +198,10 @@ function RoomSummary({ color, setDisplay, setShowModal, setRoomsLoader, setSearc
     <section className={`${color?.bgColor}`}>
 
       {/* app bar */}
-      <div className={`flex justify-between pt-5 mx-5 `}>
+      <div className={`flex justify-between w-full py-5 px-3 md:px-5 border-b`}>
         <div className='flex cursor-pointer' onClick={() => { setDisplay(0) }}>
-          <i className='my-auto pl-1'><BiArrowBack size={30} /></i>
-          {/* <span className='my-auto pl-1 font-medium'>Back</span> */}
+          <i className='my-auto'><BiArrowBack size={30} /></i>
+          <h2 className={`${color?.text?.title} text-xl my-auto font-bold ml-2 md:ml-5`}>Room Summary</h2>
         </div>
 
         <div className='my-auto text-base flex gap-5 md:gap-10'>
@@ -213,7 +213,7 @@ function RoomSummary({ color, setDisplay, setShowModal, setRoomsLoader, setSearc
               } else {
                 setDisplay(2)
               }
-            }}> <AiOutlineShoppingCart color='black' size={20} />
+            }}> <AiOutlineShoppingCart color='#707f7e' size={20} />
           </i>
 
           {/* back icon */}
@@ -243,18 +243,18 @@ function RoomSummary({ color, setDisplay, setShowModal, setRoomsLoader, setSearc
         <div className='md:w-7/12'>
           {/* brief property overview div */}
           <div className=' mt-8 md:mt-5 mb-12'>
-            <h1 className='text-4xl  text-black'>{selectedRoom?.room_name}</h1>
+            <h1 className={`text-4xl ${color?.text?.title}`}>{selectedRoom?.room_name}</h1>
             <div className='mt-6'>
-              <ul className='flex justify-center lg:justify-start gap-10'>
-                <li className='text-slate-500 pb-2'><SquareFootIcon /> &nbsp; {selectedRoom.carpet_area} SQ.FT</li>
-                <li className='text-slate-500 pb-2'><GroupsIcon />  &nbsp; {selectedRoom.room_capacity} Adults</li>
-                <li className='text-slate-500 pb-2'>{selectedRoom?.views?.map((item, index) => {
+              <ul className={` ${color?.text?.description} flex justify-center lg:justify-start gap-10`}>
+                <li className='pb-2'><SquareFootIcon /> &nbsp; {selectedRoom.carpet_area} SQ.FT</li>
+                <li className='pb-2'><GroupsIcon />  &nbsp; {selectedRoom.room_capacity} Adults</li>
+                <li className='pb-2'>{selectedRoom?.views?.map((item, index) => {
                   return (
                     <span key={index} >{index === 0 ? <LandscapeIcon /> : ','} &nbsp; {item?.view}  </span>
                   );
                 })}</li>
                 {Object.keys(selectedRoom).includes("beds") ?
-                  <li className='text-slate-500 pb-2'><BedIcon /> &nbsp; {selectedRoom.beds.length} {selectedRoom.beds.length > 1 ? "Beds" : "Bed"} <span> ({selectedRoom?.beds?.map((item, index) => {
+                  <li className='pb-2'><BedIcon /> &nbsp; {selectedRoom.beds.length} {selectedRoom.beds.length > 1 ? "Beds" : "Bed"} <span> ({selectedRoom?.beds?.map((item, index) => {
                     return (
                       <span key={index}>{index === 0 ? '' : ' , '} {item?.bed_width} * {item?.bed_length}</span>
 
@@ -278,20 +278,22 @@ function RoomSummary({ color, setDisplay, setShowModal, setRoomsLoader, setSearc
 
           {/* room description */}
           <div>
-            <p className='pt-10 pb-5 px-3 text-slate-800 leading-7 tracking-wide lg:text-left'>{selectedRoom.room_description}</p>
+            {/* <p className={`pt-10 pb-5 px-3 text-slate-800 leading-7 tracking-wide lg:text-left`}>{selectedRoom.room_description}</p> */}
+            <p className={`pt-10 pb-5 px-3 ${color?.text?.description} leading-7 tracking-wide lg:text-left`}>{selectedRoom.room_description}</p>
           </div>
 
           {/* room amenities div for large screen*/}
-          <div className='md:hidden lg:block '>
-            <div className='mb-10'>
-              <div className='mt-10 mb-2'>
-                <h4 className='text-3xl text-black font-light'>Room Amenities</h4>
-              </div>
-              {Object.keys(selectedRoom).includes("room_facilities") ?
+          {Object.keys(selectedRoom).includes("room_facilities") ?
+            <div className='md:hidden lg:block '>
+              <div className='mb-10'>
+                <div className='mt-10 mb-2'>
+                  <h4 className={`text-3xl ${color?.text?.title} font-light`}>Room Amenities</h4>
+                </div>
                 <div className="grid grid-flow-row-dense px-5 pt-6 lg:grid-cols-3 md:grid-cols-2 grid-cols-2 gap-3">
                   {selectedRoom?.room_facilities?.map((item, index) => {
                     return (
-                      <span className='text-gray-700' key={index}>
+                      <span className={`${color?.text?.description}`} key={index}>
+                        {/* <span className='text-gray-700' key={index}> */}
                         {/* &#10004 is code for tick mark  */}
                         <span>&#10004;
                           {item?.service_name.replaceAll("_", " ")}
@@ -300,9 +302,9 @@ function RoomSummary({ color, setDisplay, setShowModal, setRoomsLoader, setSearc
                     );
                   })}
                 </div>
-                : <></>}
+              </div>
             </div>
-          </div>
+            : <></>}
 
         </div>
 
@@ -315,7 +317,7 @@ function RoomSummary({ color, setDisplay, setShowModal, setRoomsLoader, setSearc
 
       {/* room amenities div for medium screen*/}
       <div className='hidden md:block lg:hidden'>
-        <div className='pb-10'>
+        <div className='px-5 pb-10'>
           <div className='mt-10 mb-2'>
             <h4 className='text-3xl text-black font-light'>Room Amenities</h4>
           </div>
@@ -324,8 +326,9 @@ function RoomSummary({ color, setDisplay, setShowModal, setRoomsLoader, setSearc
               {selectedRoom?.room_facilities?.map((item, index) => {
                 return (
                   <span className='text-gray-700' key={index}>
+
                     {/* &#10004 is code for tick mark  */}
-                    <span>&#10004;
+                    <span className={`${color?.text?.description}`}>&#10004;
                       {item?.service_name.replaceAll("_", " ")}
                     </span>
                   </span>

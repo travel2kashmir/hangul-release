@@ -174,37 +174,37 @@ function RoomCalenderView({ allHotelDetails, color, roomsLoader, setRoomsLoader,
 
 
     return (
-        <div id="main-content" className={` px-4 ${color?.bgColor}`}>
-            <div className={` shadow rounded-lg lg:px-12 lg:py-3 `}>
+        <div id="main-content" className={`${color?.bgColor} h-screen`}>
+            {/* app bar */}
+            <div className='flex justify-between px-4 md:px-10 py-5 border-b'>
+                <h6 className={`${color?.text?.title}  text-xl my-auto flex leading-none font-bold`}>
+                    Rooms For Booking
+                </h6>
+                <div className='my-auto'>
+                    <div className='flex gap-10'>
+                        {/* cart option */}
+                        <i className='cursor-pointer'
+                            onClick={() => {
+                                if (roomsSelected.length === 0) {
+                                    toast.error("APP: Cart is Empty.");
+                                } else {
+                                    setDisplay(2)
+                                }
+                            }}
+                        > <AiOutlineShoppingCart color='#707f7e' size={20} />
+                        </i>
 
-                {/* app bar */}
-                <div className='flex justify-between py-6'>
-                    <h6 className={`text-xl my-auto flex leading-none font-bold`}>
-                        Rooms For Booking
-                    </h6>
-                    <div className='my-auto'>
-                        <div className='flex gap-10'>
-                            {/* cart option */}
-                            <i className='cursor-pointer'
-                                onClick={() => {
-                                    if (roomsSelected.length === 0) {
-                                        toast.error("APP: Cart is Empty.");
-                                    } else {
-                                        setDisplay(2)
-                                    }
-                                }}
-                            > <AiOutlineShoppingCart color='black' size={20} />
-                            </i>
-
-                            {/* back option */}
-                            <i className='cursor-pointer'
-                                onClick={closeButtonAction}>
-                                <AiOutlineClose color='red' size={20} />
-                            </i>
-                        </div>
+                        {/* back option */}
+                        <i className='cursor-pointer'
+                            onClick={closeButtonAction}>
+                            <AiOutlineClose color='red' size={20} />
+                        </i>
                     </div>
                 </div>
+            </div>
 
+            {/* room cards */}
+            <div className='px-4 md:px-10'>
                 {addMoreRooms === true ?
                     <> {
                         roomsToDisplay.map((room, index) => {

@@ -11,10 +11,11 @@ import Router, { useRouter } from "next/router";
 const logger = require("../../services/logger");
 import { ToastContainer, toast } from "react-toastify";
 import Classic from "../themes/classic";
-import ClassicDark from '../themes/classic-dark'
+// import ClassicDark from '../themes/classic-dark'
 import NewTheme from "../../components/NewTheme"
 import Fusion from "../../components/ModernTheme"
 import ModernThemeColors from "../../components/ModernTheme/Data/Colors"
+import ClassicThemeColors from "../../components/ClassicTheme/Data/Colors"
 import Cosmic from "../../components/LodgeTheme"
 import CountrySide from "../../components/CountrysideTheme"
 import "react-toastify/dist/ReactToastify.css";
@@ -369,14 +370,20 @@ function Theme() {
           <div className="sticky">
             <Classic language={language} allHotelDetails={allHotelDetails}
               allRooms={allRooms} allPackages={allPackages} services={services}
-              phone={phone} email={email} /></div> : <div className="sticky"></div>}
+              phone={phone} email={email} initialColor={ClassicThemeColors.white} /></div> : <div className="sticky"></div>}
+
+        {themeName === "Classic-Dark" ?
+          <div className="sticky">
+            <Classic language={language} allHotelDetails={allHotelDetails}
+              allRooms={allRooms} allPackages={allPackages} services={services}
+              phone={phone} email={email} initialColor={ClassicThemeColors.black} /></div> : <div className="sticky"></div>}
 
         {/* Classic Dark */}
-        {themeName === "Classic-Dark" ?
+        {/* {themeName === "Classic-Dark" ?
           <div className="sticky">
             <ClassicDark language={language} allHotelDetails={allHotelDetails}
               allRooms={allRooms} allPackages={allPackages} services={services}
-              phone={phone} email={email} /></div> : <div className="sticky"></div>}
+              phone={phone} email={email} /></div> : <div className="sticky"></div>} */}
 
         {/* newTheme */}
         {themeName === "Neo" ?

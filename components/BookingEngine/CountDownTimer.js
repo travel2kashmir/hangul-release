@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
-const CountdownTimer = ({ time, onTimerComplete,Text="Time Left:",unit='minutes'}) => {
-    const [seconds, setSeconds] = useState(unit==='second'?time:time * 60);
+const CountdownTimer = ({ time, onTimerComplete, color, Text = "Time Left:", unit = 'minutes' }) => {
+    const [seconds, setSeconds] = useState(unit === 'second' ? time : time * 60);
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -26,7 +26,7 @@ const CountdownTimer = ({ time, onTimerComplete,Text="Time Left:",unit='minutes'
 
     return (
         <div>
-            <p> {Text} {minutesDisplay}:{secondsDisplay < 10 ? '0' : ''}{secondsDisplay}</p>
+            <p className={`${color?.text?.title}`}> {Text} {minutesDisplay}:{secondsDisplay < 10 ? '0' : ''}{secondsDisplay}</p>
         </div>
     );
 };

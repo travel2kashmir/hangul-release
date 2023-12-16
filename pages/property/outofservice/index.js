@@ -20,6 +20,7 @@ const logger = require("../../../services/logger");
 import { InitialActions, ColorToggler } from "../../../components/initalActions";
 import BreadCrumb from "../../../components/utils/BreadCrumb";
 import Multiselect from 'multiselect-react-dropdown';
+import validateUnavailability from "../../../components/validation/room/roomUnavailability";
 
 var currentLogged;
 let colorToggle;
@@ -53,9 +54,9 @@ function Unavailability() {
     const [roomRef, setRoomRef] = useState([]);
 
     const [roomReferences, setRoomRefrences] = useState([])
-  const [roomSubTypes, setRoomSubTypes] = useState([])
-  const [roomCodes, setRoomCodes] = useState([{ "refrence_id": undefined }])
-
+    const [roomSubTypes, setRoomSubTypes] = useState([])
+    const [roomCodes, setRoomCodes] = useState([{ "refrence_id": undefined }])
+    const [modifiedOutOfService, setModifiedOutOfService] = useState([])
 
     // runs at load time
     useEffect(() => {
@@ -116,23 +117,21 @@ function Unavailability() {
                     const [room_id, unavailability_id] = key.split("-");
                     return { room_id, unavailability_id, refrence_ids: result[key] };
                 });
-
-                console.log(finalResult);
                 setRoomRef(finalResult)
             })
             .catch((error) => {
                 logger.error("url to fetch property details, failed")
             });
 
-            // to fetch all room_refrecnes
-            axios.get(`/api/all_room_refrences/${currentProperty?.property_id}`)
-      .then((response) => {
-        setRoomRefrences(response.data);
-        setVisible(1);
-      })
-      .catch((error) => {
-        logger.error("url to fetch property details, failed")
-      });
+        // to fetch all room_refrecnes
+        axios.get(`/api/all_room_refrences/${currentProperty?.property_id}`)
+            .then((response) => {
+                setRoomRefrences(response.data);
+                setVisible(1);
+            })
+            .catch((error) => {
+                logger.error("url to fetch property details, failed")
+            });
     }
 
     function searchFunction() {
@@ -174,7 +173,6 @@ function Unavailability() {
                 header: { "content-type": "application/json" }
             }
         ).then((response) => {
-            console.log(response.data);
             fetchHotelDetails();
             setSaveLoader(false)
             // Reset the editInventory state after the update
@@ -183,10 +181,9 @@ function Unavailability() {
                 value: 0,
                 idx: undefined
             })
-            toast.success('Unavailability updated successfully')
+            toast.success('api:Unavailability updated successfully')
 
         }).catch((err) => {
-            console.log(err)
             setSaveLoader(false)
             // Reset the editInventory state after the update
             setEditInventory({});
@@ -211,7 +208,7 @@ function Unavailability() {
             })
 
         }).catch((err) => {
-            console.log(err)
+            toast.error(err)
             setDeleteLoader(false)
         })
     }
@@ -237,15 +234,64 @@ function Unavailability() {
             }
         ])
     }
-    function findAllRefs(inv)  {
+
+    // to be invoked whenever edit button is clicked
+    function findAllRefs(inv) {
         let data = roomReferences.filter(i => i.room_id === inv.room_id)
         setRoomSubTypes(data)
-      }
-    
+    }
+    //   edit out of servie 
 
+    function modifyOutOfService(selectedList, removedItem) {
+        let modifyList = selectedList.map((i) => ({ "room_references": i.room_references }))
+        setModifiedOutOfService(modifyList)
+    }
+    function updateRoomSubTypeLink(unavailability_id) {
+        let data = modifiedOutOfService.map((i) => ({ ...i, "unavailability_id": unavailability_id }))
+        let url = "/api/room_sub_type_link";
+        axios.put(url, {
+            "unavailablity": data
+        }, { header: { 'content-type': 'application/json' } }).then((response) => {
+            toast.success("API: Room Sub Type Edited Sucessfully!");
+            fetchHotelDetails();
+        }).catch((error) => {
+            toast.error("API: Update Failed !")
+        })
+    }
+
+    function updateEditedInv(inv) {
+        if (modifiedOutOfService.length != 0) {
+            let result = validateUnavailability({ ...inv, ...editInventory, "room_id": inv.room_id, "unavailability_id": inv.unavailability_id }, modifiedOutOfService);
+            if (result === true) {
+                updateUnavailability({ "unavailablity": [{ ...editInventory, "room_id": inv.room_id, "unavailability_id": inv.unavailability_id }] })
+                updateRoomSubTypeLink(inv.unavailability_id)
+                setSaveLoader(true)
+            }
+            else {
+                Object.entries(result).forEach(([key, message]) => {
+                    toast.error(`APP: ${key.replace("_", " ")}: ${message}`);
+                });
+
+                setSaveLoader(false);
+            }
+        }
+        else {
+            let result = validateUnavailability({ ...inv, ...editInventory, "room_id": inv.room_id, "unavailability_id": inv.unavailability_id }, roomRef.filter(i => i.unavailability_id === inv.unavailability_id).map(i => i.refrence_ids));
+            if (result === true) {
+                updateUnavailability({ "unavailablity": [{ ...editInventory, "room_id": inv.room_id, "unavailability_id": inv.unavailability_id }] })
+                setSaveLoader(true)
+            }
+            else {
+                Object.entries(result).forEach(([key, message]) => {
+                    toast.error(`APP: ${key.replace("_", " ")}: ${message}`);
+                });
+                setSaveLoader(false);
+            }
+        }
+    }
     return (
         <>
-            <Title name={`Engage |  ${language?.inventory}`} />
+            <Title name={`Engage |  ${language?.outofservice}`} />
 
             <Header
                 color={color}
@@ -373,11 +419,11 @@ function Unavailability() {
                                                                             className={`shadow-sm ${color?.greybackground} ${color?.text} mb-3 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full`}
                                                                             isObject={true}
                                                                             options={roomSubTypes}
-                                                                            onRemove={(selectedList, removedItem) => { alert(selectedList, removedItem) }}
-                                                                            onSelect={(selectedList, selectedItem) => { alert(selectedList, selectedItem) }}
-                                                                            // onRemove={(selectedList, removedItem) => { modifyOutOfService(selectedList, removedItem) }}
-                                                                            // onSelect={(selectedList, selectedItem) => { modifyOutOfService(selectedList, selectedItem) }}
-                                                                            selectedValues={roomRef.filter(i => i.unavailability_id === inv.unavailability_id)[0].refrence_ids.map((element, id) =>({"room_references":element}))}
+                                                                            // onRemove={(selectedList, removedItem) => { alert(selectedList, removedItem) }}
+                                                                            // onSelect={(selectedList, selectedItem) => { alert(selectedList, selectedItem) }}
+                                                                            onRemove={(selectedList, removedItem) => { modifyOutOfService(selectedList, removedItem) }}
+                                                                            onSelect={(selectedList, selectedItem) => { modifyOutOfService(selectedList, selectedItem) }}
+                                                                            selectedValues={roomRef.filter(i => i.unavailability_id === inv.unavailability_id)[0].refrence_ids.map((element, id) => ({ "room_references": element }))}
                                                                             displayValue={"room_references"}
                                                                             style={{
                                                                                 chips: {
@@ -394,17 +440,6 @@ function Unavailability() {
                                                                     </td>
 
                                                                     <td className={`p-4 whitespace-nowrap capitalize text-base font-normal ${color?.text}`}>
-                                                                        {/* <input type="text"
-                                                                        onChange={(e) => {
-                                                                            setEditInventory({
-                                                                                ...editInventory,
-                                                                                'start_date': e.target.value
-                                                                            })
-                                                                        }}
-                                                                        className={`shadow-sm  ${color?.whitebackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-32 p-2.5`}
-                                                                        defaultValue={inv.start_date}>
-                                                                    </input> */}
-
                                                                         <ReactDatePicker
                                                                             selected={new Date(editInventory.date_from || inv.date_from)}
                                                                             minDate={new Date()}
@@ -417,21 +452,10 @@ function Unavailability() {
                                                                             }}
                                                                             className={`shadow-sm  ${color?.whitebackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-32 p-2.5`}
                                                                         />
-
-
                                                                     </td>
 
                                                                     <td className={`p-4 whitespace-nowrap capitalize text-base font-normal ${color?.text}`}>
-                                                                        {/* <input type="text"
-                                                                        onChange={(e) => {
-                                                                            setEditInventory({
-                                                                                ...editInventory,
-                                                                                'end_date': e.target.value
-                                                                            })
-                                                                        }}
-                                                                        className={`shadow-sm  ${color?.whitebackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-32 p-2.5`}
-                                                                        defaultValue={inv.end_date}>
-                                                                    </input> */}
+
                                                                         <ReactDatePicker
                                                                             selected={new Date(editInventory.date_to || inv.date_to)}
                                                                             onChange={(date) => {
@@ -476,12 +500,9 @@ function Unavailability() {
                                                                             /> :
                                                                             <>
                                                                                 <button
-                                                                                    disabled={Object.keys(editInventory).length === 0}
+                                                                                    disabled={Object.keys(editInventory).length === 0 && Object.keys(modifiedOutOfService).length === 0}
                                                                                     className="bg-gradient-to-r bg-green-600 hover:bg-green-700 text-white sm:inline-flex font-semibold rounded-lg text-sm px-5 py-2 text-center items-center ease-linear transition-all duration-150"
-                                                                                    onClick={() => {
-                                                                                        setSaveLoader(true)
-                                                                                        updateUnavailability({ "unavailablity": [{ ...editInventory, "room_id": inv.room_id, "unavailability_id": inv.unavailability_id }] })
-                                                                                    }}
+                                                                                    onClick={() => { updateEditedInv(inv);}}
                                                                                 >{'Save'}
                                                                                 </button>
                                                                             </>
@@ -508,7 +529,7 @@ function Unavailability() {
                                                                     </td>
 
                                                                     <td className={`p-4 whitespace-nowrap  text-base font-normal ${color?.text}`}>
-                                                                        {roomRef.filter(i => i.unavailability_id === inv.unavailability_id)[0].refrence_ids.map((element, id) => <span key={id} className="text-white bg-cyan-600 border rounded-full py-1 px-2 mx-1 ">{element}</span>)}
+                                                                        {roomRef.filter(i => i.unavailability_id === inv.unavailability_id)[0].refrence_ids.map((element, id) => <span key={id} className="text-white bg-cyan-600 border-none rounded-full py-1 px-2 mx-1 ">{element}</span>)}
                                                                     </td>
                                                                     <td className={`p-4 whitespace-nowrap capitalize  text-base font-normal ${color?.text}`}>
                                                                         {inv.date_from}

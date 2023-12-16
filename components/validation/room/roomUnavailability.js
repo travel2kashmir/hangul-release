@@ -1,4 +1,6 @@
 const validateUnavailability = (data,roomCodes) =>{
+    console.log(data)
+    console.log(roomCodes)
     var error={};
      var flag=[]
      var final_flag=true;

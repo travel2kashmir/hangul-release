@@ -11,7 +11,7 @@ var currentLogged;
 const logger = require("../../services/logger");
 import Multiselect from 'multiselect-react-dropdown';
 
-function InventoryModal({ error, setError, setView, setInventories, view, color, language,fetchHotelDetails }) {
+function InventoryModal({ error, setError, setView, setInventories, view, color, language, fetchHotelDetails }) {
   const [inventory, setInventory] = useState([])
   const [visible, setVisible] = useState(0);
   const [allRooms, setAllRooms] = useState([])
@@ -33,42 +33,19 @@ function InventoryModal({ error, setError, setView, setInventories, view, color,
 
   //fetch all rooms 
   const fetchRooms = async (args) => {
+    // all rooms of a property 
     const url = `/api/rooms/${currentProperty?.property_id}`;
     axios.get(url)
       .then((response) => {
-
-        // var result = response?.data.filter(el => {
-        //   return !args?.find(element => {
-        //     return el.room_id === element.room_id;
-        //   });
-        // });
-
-        // setAllRooms(result);
         setAllRooms(response?.data);
-
-
-        // Initialize an array to store the transformed data
-        // const transformedData = [];
-
-        // Iterate through the original data
-        // response?.data.forEach(item => {
-
-        //   const roomReferences = item.room_references
-
-        //   // Add each object to the transformedData array
-        //   transformedData.push(...roomReferences);
-        // });
-        // setRoomRefrences(response.data.map((i) => i.room_refrences).flat());
-        // setVisible(1);
       })
       .catch((error) => {
         logger.error("url to fetch property details, failed")
       });
+      // all room refrences 
     axios.get(`/api/all_room_refrences/${currentProperty?.property_id}`)
       .then((response) => {
-
-        // setRoomRefrences(response.data.map((i) => i.room_refrences).flat());
-        setRoomRefrences(response.data);
+       setRoomRefrences(response.data);
         setVisible(1);
       })
       .catch((error) => {

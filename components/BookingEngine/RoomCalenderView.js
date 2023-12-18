@@ -174,7 +174,7 @@ function RoomCalenderView({ allHotelDetails, color, roomsLoader, setRoomsLoader,
 
 
     return (
-        <div id="main-content" className={`${color?.bgColor} h-screen`}>
+        <div id="main-content" className={`${color?.bgColor} min-h-screen`}>
             {/* app bar */}
             <div className='flex justify-between px-4 md:px-10 py-5 border-b'>
                 <h6 className={`${color?.text?.title}  text-xl my-auto flex leading-none font-bold`}>
@@ -204,7 +204,7 @@ function RoomCalenderView({ allHotelDetails, color, roomsLoader, setRoomsLoader,
             </div>
 
             {/* room cards */}
-            <div className='px-4 md:px-10'>
+            <div className='px-4 md:px-10 pb-5'>
                 {addMoreRooms === true ?
                     <> {
                         roomsToDisplay.map((room, index) => {

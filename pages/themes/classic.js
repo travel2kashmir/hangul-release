@@ -73,6 +73,7 @@ function Classic(args) {
    const [allPackages, setAllPackages] = useState({});
    const [rate, setRate] = useState(defaultRate);
    const [amenity, setAmenity] = useState(false);
+   const [keyAmenity, setKeyAmenity] = useState(false);
    const [checkinDate, setCheckinDate] = useState();
    const [checkoutDate, setCheckoutDate] = useState();
    const [packages, setPackages] = useState(false);
@@ -646,19 +647,6 @@ function Classic(args) {
                                                 </div>
                                                 : <></>}
 
-                                             {/* key highlights */}
-                                             <div className='py-10 border-b'>
-                                                <h2 className={`${themeColor?.titleTextColor} text-center  font-semibold`}>Key Highlights</h2>
-                                                <div className='grid grid-flow-row-dense grid-col-2 md:grid-cols-3 text-center pt-10 gap-3'>
-                                                   {filteredAdditionalService?.map((service) => {
-                                                      return <div key={service.add_service_id} className="mb-5">
-                                                         <p className={`${themeColor?.titleTextColor} font-semibold`}>{service.add_service_name}</p>
-                                                         <p className={`${themeColor?.descriptionTextColor} text-sm md:text-base`}>{service.add_service_comment}</p>
-                                                      </div>
-                                                   })}
-
-                                                </div>
-                                             </div>
 
                                              {/* Room Details */}
                                              <div className="py-10 border-b ">
@@ -737,8 +725,8 @@ function Classic(args) {
                                     </div>
                                  </button>
                               </div>
-                              <div className={amenity === true ? 'tour-content-block1 ' : 'hidden'}>
-                                 <div className="grid ml-2 mb-8 grid-flow-row-dense lg:grid-cols-5 md:grid-cols-4 grid-cols-2  md:gap-3 gap-1 lg:gap-3">
+                              <div className={amenity === true ? 'block' : 'hidden'}>
+                                 <div className="grid ml-2 mb-5 pb-8  grid-flow-row-dense lg:grid-cols-5 md:grid-cols-4 grid-cols-2  md:gap-3 gap-1 lg:gap-3">
 
                                     {args?.services?.map((item, idx) => {
                                        return (
@@ -886,6 +874,30 @@ function Classic(args) {
                                           </>
                                        )
                                     })}</div>
+                              </div>
+                           </div>
+
+                           {/* key highlights of property*/}
+                           <div id='key-amenities' className={keyAmenity === false ? 'accordion-start accordion-panel' : 'accordion-start accordion-panel active'}>
+                              <div onClick={() => { setKeyAmenity(!keyAmenity); getMsgSection(keyAmenity, "Key-Amenities") }} className='accordion-trigger'>
+                                 <button className="mb-6">
+                                    <div className='accordion-trigger'>
+                                       <div className={visible === 0 ? 'block w-32 mb-6' : 'hidden'}><SubHeading /></div>
+                                       <div className={visible === 1 ? `block ${themeColor?.titleTextColor}` : 'hidden'}>
+                                          Key Amenities </div>
+                                    </div>
+                                 </button>
+                              </div>
+                              <div className={keyAmenity === true ? 'block' : 'hidden'}>
+                                 <div className='grid grid-flow-row-dense grid-col-2 md:grid-cols-3 text-center  gap-3'>
+                                    {filteredAdditionalService?.map((service) => {
+                                       return <div key={service.add_service_id} className="mb-5">
+                                          <p className={`${themeColor?.titleTextColor} font-semibold`}>{service.add_service_name}</p>
+                                          <p className={`${themeColor?.descriptionTextColor} text-sm md:text-base`}>{service.add_service_comment}</p>
+                                       </div>
+                                    })}
+
+                                 </div>
                               </div>
                            </div>
 
@@ -1651,6 +1663,7 @@ function Classic(args) {
                   bookingComponent={
                      <BookingEngine
                         color={{
+                           "theme": themeColor?.theme,
                            "bgColor": themeColor?.bodyBgColor,
                            // "cardColor": themeColor?.bodyBgColor,
                            text: {

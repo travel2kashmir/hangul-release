@@ -1,4 +1,5 @@
 const white = {
+    "theme": "light",
     "navtextColor": "text-slate-500",
     "headerBgColor": "bg-white",
     "bodyBgColor": "bg-slate-50",
@@ -20,6 +21,7 @@ const white = {
 }
 
 const black = {
+    "theme": "dark",
     "navtextColor": "text-white",
     "headerBgColor": "bg-gray-900",
     "bodyBgColor": "bg-gray-800",

@@ -659,7 +659,8 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                                             }
                                             }
                                             error={guestDetailerror[loopIndex]?.guest_name}
-                                            color={Color?.light}
+                                            color={color?.theme === "light" ? Color?.light : Color?.dark}
+                                            // color={Color?.light}
                                             req={true}
                                             title={'Guest Name'}
                                             tooltip={true}
@@ -676,7 +677,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                                             }
                                             }
                                             error={guestDetailerror[loopIndex]?.guest_email}
-                                            color={Color?.light}
+                                            color={color?.theme === "light" ? Color?.light : Color?.dark}
                                             req={loopIndex === 0}  // make it required only for the first guest
                                             title={'Guest email'}
                                             tooltip={true}
@@ -692,7 +693,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                                                 handleChangeInGuest(e, i.index, "guest_phone_number")
                                             }}
                                             error={guestDetailerror[loopIndex]?.guest_phone_number}
-                                            color={Color?.light}
+                                            color={color?.theme === "light" ? Color?.light : Color?.dark}
                                             req={loopIndex === 0}  // make it required only for the first guest
                                             title={'Guest Phone'}
                                             tooltip={true}
@@ -706,7 +707,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                                                 handleChangeInGuest(e, i.index, "guest_age")
                                             }}
                                             error={guestDetailerror[loopIndex]?.guest_age}
-                                            color={Color?.light}
+                                            color={color?.theme === "light" ? Color?.light : Color?.dark}
                                             req={true}
                                             title={'Guest Age'}
                                             tooltip={true}
@@ -730,7 +731,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                                             setGstDetails({ ...gstDetails, gst_registration_no: e.target.value })
                                         }
                                         error={gstDetailerror?.gst_registration_no}
-                                        color={Color?.light}
+                                        color={color?.theme === "light" ? Color?.light : Color?.dark}
                                         req={true}
                                         title={'registration number'}
                                         tooltip={true}
@@ -745,7 +746,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                                             setGstDetails({ ...gstDetails, gst_company_name: e.target.value })
                                         }
                                         error={gstDetailerror?.gst_company_name}
-                                        color={Color?.light}
+                                        color={color?.theme === "light" ? Color?.light : Color?.dark}
                                         req={true}
                                         title={'name of company'}
                                         tooltip={true}
@@ -759,7 +760,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                                             setGstDetails({ ...gstDetails, gst_company_address: e.target.value })
                                         }
                                         error={gstDetailerror?.gst_company_address}
-                                        color={Color?.light}
+                                        color={color?.theme === "light" ? Color?.light : Color?.dark}
                                         req={true}
                                         title={'Address of company'}
                                         tooltip={true}

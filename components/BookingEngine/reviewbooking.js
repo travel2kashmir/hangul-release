@@ -481,7 +481,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
             <div>
                 {/* <div className='flex justify-between w-full py-5 px-3 md:px-5 border-b-2  bg-slate-100'> */}
                 {/* <div className='flex justify-between w-full py-5 px-3 md:px-5 bg-slate-100'> */}
-                <div className='flex justify-between w-full py-5 px-3 md:px-5 border-b'>
+                <div className={`flex justify-between w-full py-5 px-3 md:px-5 border-b  ${color?.border}`}>
                     <div className='flex'>
                         <i className='my-auto'
                             onClick={() => {

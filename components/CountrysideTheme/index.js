@@ -25,6 +25,7 @@ function Hotel({ language, HotelDetails, allRooms, allPackages, services, phone,
         'index': undefined,
     });
     const [menu, setMenu] = useState(0)// menu state for sm and medium screen
+
     const [showBookingEngine, setShowBookingEngine] = useState(0);  // state to display the booking engine
     const [display, setDisplay] = useState(0);  // state to display the different views in the booking modal
     const [roomsLoader, setRoomsLoader] = useState(false);   // loader for booking engine rooms

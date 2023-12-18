@@ -7,32 +7,14 @@ import Modal from '../NewTheme/modal';
 import BookingModal from './BookingModal'
 
 
-function BookingForm({ setShowModalBooking, color, rooms, allHotelDetails, searched, setSearched }) {
-
-    const [showBookingEngine, setShowBookingEngine] = useState(0);
+function BookingForm({ setShowBookingEngine, setShowModalBooking, color, searched, setSearched, enquiry, setEnquiry, setRoomsLoader }) {
 
     const [maxDate, setMaxDate] = useState('');
-
-    const [roomsLoader, setRoomsLoader] = useState(false);
-
     const [err, setErr] = useState(false);
     const [notSelectedErr, setNotSelectedErr] = useState({
         "forCheckin": false,
         "forCheckout": false
     });
-
-    // display for different modal views based on display values
-    const [display, setDisplay] = useState(0);
-
-    const [enquiry, setEnquiry] = useState({
-        "checkin": "",
-        "checkout": "",
-        "number_of_rooms": 1,
-        "number_of_guests": 1,
-        "number_of_adults": 1,
-        "child_below_six": 0,
-        "child_above_six": 0
-    })
 
     useEffect(() => {
         const dtToday = new Date();
@@ -158,37 +140,6 @@ function BookingForm({ setShowModalBooking, color, rooms, allHotelDetails, searc
 
 
             </div>
-
-            {/* this div will only show up when the showBookingEngine is equal to 1 else there will be no such div, and the functions inside this div will only work when showBookingEngine is equal to 1 */}
-            {showBookingEngine === 1 ?
-                <div className="block z-50">
-                    {allHotelDetails && <BookingModal
-                        title="Booking Engine"
-                        bookingComponent={
-                            <BookingEngine
-                                roomsLoader={roomsLoader}
-                                setRoomsLoader={(e) => setRoomsLoader(e)}
-                                display={display}
-                                setDisplay={(e) => setDisplay(e)}
-                                rooms={rooms}
-                                allHotelDetails={allHotelDetails}
-                                setShowModal={(e) => setShowBookingEngine(e)}
-                                setSearched={(e) => setSearched(false)}
-                                checkinDate={enquiry.checkin}
-                                checkoutDate={enquiry.checkout}
-                                color={{
-                                    "bgColor": "bg-slate-200",
-                                    "boxColor": "bg-slate-50",
-                                    "cardColor": "bg-slate-50"
-                                }}
-                            />}
-                        setShowModal={(e) => setShowBookingEngine(e)}
-                        setDisplay={(e) => setDisplay(e)}
-                        setSearched={(e) => setSearched(false)}
-                    />}
-                </div> : undefined}
-
-
         </div>
     )
 }

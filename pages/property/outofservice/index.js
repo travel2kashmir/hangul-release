@@ -502,7 +502,7 @@ function Unavailability() {
                                                                                 <button
                                                                                     disabled={Object.keys(editInventory).length === 0 && Object.keys(modifiedOutOfService).length === 0}
                                                                                     className="bg-gradient-to-r bg-green-600 hover:bg-green-700 text-white sm:inline-flex font-semibold rounded-lg text-sm px-5 py-2 text-center items-center ease-linear transition-all duration-150"
-                                                                                    onClick={() => { updateEditedInv(inv);}}
+                                                                                    onClick={() => { updateEditedInv(inv); }}
                                                                                 >{'Save'}
                                                                                 </button>
                                                                             </>

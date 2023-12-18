@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {english,french,arabic} from "./Languages/Languages"
+import { english, french, arabic } from "./Languages/Languages"
 import SidebarMenu from "./utils/SidebarMenu";
 var language;
 
@@ -32,7 +32,7 @@ const Sidebar = (args) => {
       transition-width duration-75"
       aria-label="Sidebar"
     >
-      <SidebarMenu  color={args?.color} Primary={args?.Primary} language={language} Type={args?.Type}/>
+      <SidebarMenu color={args?.color} Primary={args?.Primary} language={language} Type={args?.Type} />
     </div>
   );
 };

@@ -181,7 +181,7 @@ function Unavailability() {
                 value: 0,
                 idx: undefined
             })
-            toast.success('api:Unavailability updated successfully')
+            toast.success('API:Unavailability updated successfully')
 
         }).catch((err) => {
             setSaveLoader(false)
@@ -191,7 +191,7 @@ function Unavailability() {
                 value: 0,
                 idx: undefined
             })
-            toast.error('Not Able to update the inventory at the moment.')
+            toast.error('API: Not Able to update the inventory at the moment.')
 
         })
     }
@@ -201,7 +201,7 @@ function Unavailability() {
         axios.delete(url).then((response) => {
             fetchHotelDetails()
             setDeleteLoader(false)
-            toast.success('Unavailablity has been deleted')
+            toast.success('API: Unavailablity has been deleted')
             setDeleteInventory({
                 'value': 0,
                 'idx': undefined
@@ -276,7 +276,7 @@ function Unavailability() {
             }
         }
         else {
-            let result = validateUnavailability({ ...inv, ...editInventory, "room_id": inv.room_id, "unavailability_id": inv.unavailability_id }, roomRef.filter(i => i.unavailability_id === inv.unavailability_id).map(i => i.refrence_ids));
+            let result = validateUnavailability({ ...inv, ...editInventory, "room_id": inv.room_id, "unavailability_id": inv.unavailability_id }, roomRef.filter(i => i.unavailability_id === inv.unavailability_id).map(i => i.refrence_ids).flat());
             if (result === true) {
                 updateUnavailability({ "unavailablity": [{ ...editInventory, "room_id": inv.room_id, "unavailability_id": inv.unavailability_id }] })
                 setSaveLoader(true)

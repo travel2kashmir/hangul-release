@@ -12,6 +12,7 @@ import RoomDiscounts from './rooms/roomDiscounts';
 import RoomRateModification from './rooms/roomRateModification';
 import Multiselect from 'multiselect-react-dropdown';
 import axios from 'axios';
+import DropDown from '../utils/DropDown';
 let i = 0;
 let lang;
 
@@ -106,7 +107,7 @@ const RoomPriceCalendar = ({ color, language, currentProperty }) => {
         setEvents(remainingRooms)
         setAllRoomRates(selectedList)
     }
-    //tp add rooms
+    //to add rooms
     function addRoom(selectedList, selectedItem) {
         let addingRooms = globalRoomData?.filter(item => item.room_id === selectedItem.room_id)
         setEvents([...events, ...addingRooms])
@@ -125,18 +126,19 @@ const RoomPriceCalendar = ({ color, language, currentProperty }) => {
     };
 
     function setNewValue(e) {
-        let intermediateDataOfRateEdited = {
-            "title": e.target.value,
-            "date": selectedDate.date,
-            "room_id": selectedRoom.room_id,
-            "room_name": selectedRoom.room_name,
-            "id": selectedRoom.id,
-            "color": roomColors[selectedRoom.room_id]
+        // let intermediateDataOfRateEdited = {
+        //     "title": e.target.value,
+        //     "date": selectedDate.date,
+        //     "room_id": selectedRoom.room_id,
+        //     "room_name": selectedRoom.room_name,
+        //     "id": selectedRoom.id,
+        //     "color": roomColors[selectedRoom.room_id]
 
-        };
-        let unchangedvalue = events?.filter(i => (i.id != selectedRoom.id))
-        let final = [...unchangedvalue, intermediateDataOfRateEdited]
-        setEvents(final)
+        // };
+        // let unchangedvalue = events?.filter(i => (i.id != selectedRoom.id))
+        // let final = [...unchangedvalue, intermediateDataOfRateEdited]
+        // setEvents(final)
+
     }
 
     return (
@@ -194,7 +196,7 @@ const RoomPriceCalendar = ({ color, language, currentProperty }) => {
 
 
 
-            {/* Tailwind CSS Modal */}
+            {/* Tailwind CSS Modal to show option available for ediing */}
             {modalVisible === true ?
                 <div className="overflow-x-hidden overflow-y-auto fixed top-4 left-0 right-0 backdrop-blur-xl bg-black/30 md:inset-0 z-50 flex justify-center items-center h-modal sm:h-full">
                     <div className="relative w-full max-w-2xl px-4 h-full md:h-auto">
@@ -209,6 +211,7 @@ const RoomPriceCalendar = ({ color, language, currentProperty }) => {
                                     type="button"
                                     onClick={() => {
                                         document.getElementById('rate').reset();
+                                        setEditUI('');
                                         setModalVisible(false);
                                     }}
                                     className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
@@ -230,60 +233,67 @@ const RoomPriceCalendar = ({ color, language, currentProperty }) => {
                             </div>
 
                             <form id='rate'>
-                                <InputText
-                                    label={`${selectedRoom?.room_name} Rate`}
-                                    visible={1}
-                                    defaultValue={title}
-                                    onChangeAction={(e) => setNewValue(e)}
-                                    color={color}
-                                    req={true}
-                                    title={`enter new rate of room for ${selectedDate}`}
-                                    tooltip={true}
-                                />
-                            </form>
+                                <div className=" md:px-4 mx-auto w-full">
+                                    <div className="flex flex-wrap">
 
-                            <select
-                                className={`shadow-sm ${color?.greybackground} capitalize border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-11/12 mx-4 p-2.5 mb-4`}
-                                onChange={(e) => setEditUI(e.target.value)}>
-                                <option selected>Change rate options</option>
-                                <option value="discount">I want to give discount</option>
-                                <option value="modification">I want to do rate modification</option>
-                            </select>
+                                        <InputText
+                                            label={`${selectedRoom?.room_name} Rate`}
+                                            disabled={true}
+                                            visible={1}
+                                            defaultValue={title}
+                                            // onChangeAction={(e) => setNewValue(e)}
+                                            color={color}
+                                            req={true}
+                                            title={`enter new rate of room for ${selectedDate}`}
+                                            tooltip={true}
+                                        />
 
-                            {/* <div className="items-center p-4 border-t border-gray-200 rounded-b">
-                                <Button Primary={language?.Update} onClick={() => { updateRate() }} />
-                            </div> */}
+                                        <DropDown label={'Change rate options'}
+                                            visible={1}
+                                            defaultValue={'Select Option'}
+                                            onChangeAction={(e) => setEditUI(e.target.value)}
+                                            color={color}
+                                            req={true}
+                                            options={[{ "value": "discount", "label": "I want to give discount" },
+                                            { "value": "modification", "label": "I want to do rate modification" }]}
+                                            tooltip={false} />
+                                            </div>
+                                            </div>
+                                    </form>
 
-                            <div className={`items-center px-4 py-2 ${editUI === 'none' ? "" : "border-b"} border-gray-200 `}>
-                                <Button Primary={language?.Update} onClick={() => { updateRate() }} />
-
-                            </div>
 
 
-                            {/* discount ui */}
-                            {editUI === 'discount' ?
-                                <div>
-                                    <RoomDiscounts room_id={selectedRoom?.room_id} />
+
+                                    <div className={`items-center px-4 py-2 ${editUI === 'none' ? "" : "border-b"} border-gray-200 `}>
+                                        <Button Primary={language?.Update} onClick={() => { updateRate() }} />
+
+                                    </div>
+
+
+                                    {/* discount ui */}
+                                    {editUI === 'discount' ?
+                                        <div>
+                                            <RoomDiscounts room_id={selectedRoom?.room_id} dateSelected={selectedDate.date} />
+                                        </div>
+                                        : undefined}
+                                    {/* modification ui */}
+                                    {editUI === 'modification' ?
+                                        <div>
+                                            <RoomRateModification room_id={selectedRoom?.room_id} />
+                                        </div> : undefined}
+
+
+
+
+
                                 </div>
-                                : undefined}
-                            {/* modification ui */}
-                            {editUI === 'modification' ?
-                                <div>
-                                    <RoomRateModification room_id={selectedRoom?.room_id} />
-                                </div> : undefined}
-
-
-
-
-
                         </div>
-                    </div>
-                </div> : undefined
+                    </div> : undefined
             }
 
-        </div>
+                </div>
     );
 };
 
-export default RoomPriceCalendar;
+            export default RoomPriceCalendar;
 

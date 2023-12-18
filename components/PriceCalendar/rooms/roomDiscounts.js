@@ -27,16 +27,16 @@ var i = 0;
 let colorToggle;
 
 
-function RoomDiscounts({ room_id }) {
+function RoomDiscounts({ room_id,dateSelected }) {
     const [color, setColor] = useState({})
     const [mode, setMode] = useState()
     const [property_name, setProperty_name] = useState('')
     const [visible, setVisible] = useState(0)
     const [error, setError] = useState([{}])
     let discountTemplate = {
-        "room_id": "",
-        "date_from": "",
-        "date_to": "",
+        "room_id": room_id,
+        "date_from": dateSelected,
+        "date_to": dateSelected,
         "discount_type": "",
         "discount_on": "",
         "discount": ""
@@ -74,7 +74,7 @@ function RoomDiscounts({ room_id }) {
 
     const addDiscount = () => {
         let result = roomDiscountValidation(discount)
-        alert("result is" + JSON.stringify(result))
+       
         if (result === true) {
             let url = '/api/room_discount';
             axios.post(url, discount, { header: { "content-type": "application/json" } })
@@ -114,23 +114,7 @@ function RoomDiscounts({ room_id }) {
         <>
 
             <div id="main-content">
-
-
-
-                {/* page title */}
-                {/* <div className='flex items-center justify-between'>
-                    <h3 className={`${color?.text} text-xl flex leading-none pl-6 lg:pt-2 pt-6 pb-2  font-bold`}>
-                        {language?.room} Discount
-                    </h3>
-
-                    <Button
-                        Primary={language?.Add}
-                        onClick={() => addDiscountTemplate()}
-                    />
-
-                </div> */}
-
-                <div className={`${color?.whitebackground} border-b rounded-lg`}>
+                    <div className={`${color?.whitebackground} border-b rounded-lg`}>
                     <h3 className={`${color?.text} text-xl flex leading-none pl-6  pb-2 pt-6  font-bold`}>
                         Discount
                     </h3>
@@ -172,7 +156,7 @@ function RoomDiscounts({ room_id }) {
 
                                         <div className="flex flex-wrap">
                                             {/* Date from */}
-                                            <DateInput
+                                            {/* <DateInput
                                                 color={color}
                                                 label={`From Date`}
                                                 visible={1}
@@ -184,10 +168,10 @@ function RoomDiscounts({ room_id }) {
                                                 }
                                                 req={true}
                                                 error={error[index]?.date_from}
-                                            />
+                                            /> */}
 
                                             {/* Date To */}
-                                            <DateInput
+                                            {/* <DateInput
                                                 color={color}
                                                 label={`Date To`}
                                                 visible={1}
@@ -197,7 +181,7 @@ function RoomDiscounts({ room_id }) {
                                                 }
                                                 req={true}
                                                 error={error[index]?.date_to}
-                                            />
+                                            /> */}
 
                                             {/* discount type */}
                                             <DropDown

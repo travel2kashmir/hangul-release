@@ -16,7 +16,7 @@ function MenuSM({ setShowContactUs, lang, setMenu }) {
                         <li className={listStyle}><a href='#photos'>{lang?.photos}</a></li>
                         <li className={listStyle}><a href='#services'>{lang?.services}</a></li>
                         <li className={listStyle}><a href='#reviews'>{lang?.reviews}</a></li>
-                        <li onClick={() => { setShowContactUs(1), setMenu(0) }} className={listStyle}>{lang?.contactUs}</li>
+                        <li onClick={() => { setShowContactUs(1), setMenu(false) }} className={listStyle}>{lang?.contactUs}</li>
                     </ul>
                 </div>
             </div>

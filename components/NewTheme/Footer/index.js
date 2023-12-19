@@ -8,6 +8,12 @@ function Footer({ setShowModalPrivacy, setShowModalTC, allHotelDetails, hotelDet
     return (
         <footer id="footer" className="bg-zinc-900 ">
             <div className='container px-5 py-10'>
+
+                {/* div for companies logo , dummy image as for now */}
+                {/* <div className='flex justify-center mb-10'>
+                    <img src='https://www.hollywoodreporter.com/wp-content/uploads/2012/12/img_logo_blue.jpg' height={150} width={80}></img>
+                </div> */}
+
                 <div className="md:flex md:justify-evenly lg:justify-evenly">
                     <div className="pb-10">
                         <ul className='text-gray-400'>

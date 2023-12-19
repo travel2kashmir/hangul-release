@@ -129,6 +129,7 @@ function Hotel({ language, HotelDetails, allRooms, allPackages, services, phone,
             />
 
             <Services
+                allHotelDetails={allHotelDetails}
                 services={services}
                 hotelDetailLoader={hotelDetailLoader}
                 lang={lang}

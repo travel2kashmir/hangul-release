@@ -7,13 +7,18 @@ function Header({ allHotelDetails, menu, setMenu, hotelDetailLoader, lang, setLa
     return (
         <header className="relative px-7 md:px-10 py-12 md:py-16 font-bold">
             <div className="flex justify-between">
-                <h1 className="text-lg text-white md:text-lg hotelLogo">
-                    {hotelDetailLoader === 0 ? <Loader size={`h-10 w-32`} /> :
-                        <>{allHotelDetails?.property_name}</>}
 
-                </h1>
+                <div className='flex'>
+                    {/* img tag for companies logo , dummy image as for now  */}
+                    {/* <img src='https://www.hollywoodreporter.com/wp-content/uploads/2012/12/img_logo_blue.jpg' height={100} width={50}></img> */}
+                    <h1 className="text-lg my-auto pl-3 text-white md:text-lg hotelLogo">
+                        {hotelDetailLoader === 0 ? <Loader size={`h-10 w-32`} /> :
+                            <>{allHotelDetails?.property_name}</>}
+
+                    </h1>
+                </div>
                 <div className='flex gap-5 md:gap-10'>
-                    <span className='hidden md:hidden lg:block'>
+                    <div className='hidden md:hidden lg:block'>
                         <ul className='lg:flex lg:gap-10 xl:gap-16 lg:text-white'>
                             <a href="#about"><li className='hover:text-slate-300 hover:underline'>{lang?.about}</li></a>
                             <a href="#rooms"><li className='hover:text-slate-300 hover:underline'>{lang?.rooms}</li></a>
@@ -22,7 +27,7 @@ function Header({ allHotelDetails, menu, setMenu, hotelDetailLoader, lang, setLa
                             <a href="#reviews"><li className='hover:text-slate-300 hover:underline'>{lang?.reviews}</li></a>
                             <a onClick={() => setShowContactUs(1)}><li className='hover:text-slate-300 hover:underline'>{lang?.contactUs}</li></a>
                         </ul>
-                    </span>
+                    </div>
 
                     <div className="relative w-20 lg:max-w-sm">
                         <select onChange={(e) => {
@@ -44,7 +49,9 @@ function Header({ allHotelDetails, menu, setMenu, hotelDetailLoader, lang, setLa
                             <option className='text-gray-500 lg:text-xs' value={'french'}>Français</option>
                         </select>
                     </div>
-                    <i onClick={() => setMenu(true)} className={`text-white ${menu === true ? 'hidden' : 'block'}  lg:hidden `}><MenuIcon className='relative -top-1  md:text-3xl md:top-2 cursor-pointer' sx={{ fontSize: 20 }} /></i>
+                    <i onClick={() => setMenu(true)} className={`text-white ${menu === true ? 'hidden' : 'block'}  lg:hidden `}>
+                        <MenuIcon className='relative -top-1  md:text-3xl md:top-2 cursor-pointer' sx={{ fontSize: 20 }} />
+                    </i>
                 </div>
             </div>
         </header>

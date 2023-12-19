@@ -21,6 +21,7 @@ const logger = require("../../services/logger");
 import Image from 'next/image';
 import { InitialActions, ColorToggler } from "../../components/initalActions";
 import BreadCrumb from "../../components/utils/BreadCrumb";
+import { fetchReviews, navigationList } from "../../components/logic/property/Reviews";
 
 let colorToggle;
 var currentLogged;
@@ -55,7 +56,7 @@ function Reviews() {
     var url = `/api/${del}`;
 
     axios.delete(`${url}`).then((response) => {
-      fetchReviews();
+      fetchReviews(currentProperty, setReviews, setVisible);
       toast.success("API: Review Deleted Sucessfully.", {
         position: "top-center",
         autoClose: 5000,
@@ -92,24 +93,9 @@ function Reviews() {
       Router.push(window.location.origin)
     }
     else {
-      fetchReviews();
+      fetchReviews(currentProperty, setReviews, setVisible);
     }
   }, [])
-
-  const fetchReviews = async () => {
-    const url = `/api/${currentProperty.address_province.replace(
-      /\s+/g,
-      "-"
-    )}/${currentProperty.address_city}/${currentProperty.property_category
-      }s/${currentProperty.property_id}`;
-    axios.get(url)
-      .then((response) => {
-        setReviews(response.data);
-        logger.info("url  to fetch property details hitted successfully")
-        setVisible(1);
-      })
-      .catch((error) => { logger.error("url to fetch property details, failed") });
-  }
 
   //functions to add review
   const reviewTemplate = {
@@ -155,7 +141,7 @@ function Reviews() {
           headers: { 'content-type': 'application/json' }
         }).then(response => {
           console.log(response)
-          fetchReviews();
+          fetchReviews(currentProperty, setReviews, setVisible);
           toast.success("API: Review Saved Sucessfully.", {
             position: "top-center",
             autoClose: 5000,
@@ -231,7 +217,7 @@ function Reviews() {
           headers: { 'content-type': 'application/json' }
         }).then(response => {
           console.log(response)
-          fetchReviews();
+          fetchReviews(currentProperty, setReviews, setVisible);
           toast.success("API: Review Edited Sucessfully.", {
             position: "top-center",
             autoClose: 5000,
@@ -269,27 +255,6 @@ function Reviews() {
     }
   }
 
-  function navigationList(currentLogged, currentProperty) {
-    return ([
-      {
-        icon: "homeIcon",
-        text: "Home",
-        link: currentLogged?.id.match(/admin.[0-9]*/)
-          ? "../admin/adminlanding"
-          : "./landing"
-      },
-      {
-        icon: "rightArrowIcon",
-        text: [currentProperty?.property_name],
-        link: "./propertysummary"
-      },
-      {
-        icon: "rightArrowIcon",
-        text: "Reviews",
-        link: ""
-      }
-    ])
-  }
 
   return (
     <>
@@ -331,7 +296,7 @@ function Reviews() {
           <div className="p-4">
             <div className=" md:px-4 mx-auto w-full ">
               <div className="flex items-center justify-between mb-2">
-                <div className="border border-2 shadow lg:mx-64 md:mx-10 ">
+                <div className=" border-2 shadow lg:mx-64 md:mx-10 ">
                   <Image src={reviewImage} height={250} width={600} alt='review image' />
                 </div>
 
@@ -617,7 +582,7 @@ function Reviews() {
                   )}
 
                 <div className="items-center p-2 border-t border-gray-200 rounded-b">
-                  <Button Primary={language?.Add} onClick={(e) => handleSubmit(e)} />
+                  <Button Primary={language?.Add} onClick={(e) => handleSubmit(e, index)} />
                 </div>
               </div>
             </div>

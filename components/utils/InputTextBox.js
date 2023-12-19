@@ -35,6 +35,7 @@ function InputTextBox({ label, visible, defaultValue, onChangeAction, error, col
 
         </div>
         <div data-testid="vis1" className={visible === 1 ? "block" : "hidden"}>
+
           <textarea data-testid="input"
             rows="5"
             columns="50"
@@ -49,7 +50,7 @@ function InputTextBox({ label, visible, defaultValue, onChangeAction, error, col
             defaultValue={defaultValue}
             required
           />
-          <p data-testid='Error' title={error} className="text-sm text-sm text-red-700 font-light">
+          <p data-testid='Error' title={error} className="text-sm  text-red-700 font-light">
             {error}</p>
         </div>
       </div>

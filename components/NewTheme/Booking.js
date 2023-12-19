@@ -37,7 +37,7 @@ function BookingForm({ setShowBookingEngine, setShowModalBooking, color, searche
     }, [enquiry.checkin, enquiry.checkout]);
 
     return (
-        <div className='mx-auto rounded-2xl  bg-slate-200'>
+        <div className='mx-auto lg:w-11/12 rounded-2xl lg:hover:shadow-gray-500 lg:hover:shadow-md bg-slate-200'>
             <div className={`pt-3 pb-1`} >
                 <div className=" md:px-4 mx-auto w-full">
                     <div className='flex md:flex-wrap flex-wrap lg:flex-nowrap'>

@@ -16,6 +16,7 @@ import BookingModal from './BookingModal';
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import MenuSM from './MenuSM';
 
 
 function Hotel({ language, HotelDetails, allRooms, allPackages, services, phone, email }) {
@@ -142,7 +143,7 @@ function Hotel({ language, HotelDetails, allRooms, allPackages, services, phone,
             />
 
             {/* booking form for lg screen */}
-            <div id="booking_engine" className={`hidden lg:flex  lg:sticky lg:bottom-0 ${searched === false ? 'z-0' : 'z-50'}`}>
+            <div id="booking_engine" className={`hidden lg:flex lg:sticky lg:bottom-0 ${searched === false ? 'z-0' : 'z-50'}`}>
                 <BookingForm
                     setShowModalBooking={(e) => setShowModalBooking(e)}
                     setShowBookingEngine={(e) => setShowBookingEngine(e)}
@@ -261,35 +262,13 @@ function Hotel({ language, HotelDetails, allRooms, allPackages, services, phone,
                 />
                 : <></>}
 
-
-
-
-
             {/*-------------------- menu bar for small and medium screen----------- */}
-
             {menu === true ?
-                <React.Fragment>
-                    <div className='absolute inset-0 w-full h-72 md:h-80 bg-white opacity-75 rounded-bl-3xl rounded-br-3xl  md:rounded-br-full z-50'>
-                        <i onClick={() => setMenu(false)} className='flex justify-end pt-5 pr-5 cursor-pointer hover:text-slate-500'><CloseIcon /></i>
-                        <div className='text-center text-black pt-10 md:pt-12'>
-                            <ul className='inline-block font-bold'>
-                                {[{ "label": lang?.about, "id": "#about" },
-                                { "label": lang?.rooms, "id": "#rooms" },
-                                { "label": lang?.photos, "id": "#photos" },
-                                { "label": lang?.services, "id": "#services" },
-                                { "label": lang?.reviews, "id": "#reviews" },
-                                { "label": lang?.contactUs, "id": "#footer" }
-                                ].map((item, index) => {
-                                    return (
-                                        <a href={`${item?.id}`} key={index} onClick={() => setMenu(false)}><li className='pb-1 md:pb-2 hover:text-slate-500'>{item?.label}</li></a>
-                                    )
-                                })}
-
-
-                            </ul>
-                        </div>
-                    </div>
-                </React.Fragment>
+                <MenuSM
+                    lang={lang}
+                    setMenu={setMenu}
+                    setShowContactUs={(e) => setShowContactUs(e)}
+                />
                 : <></>
             }
         </main>

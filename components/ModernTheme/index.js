@@ -160,13 +160,10 @@ function Hotel({ language, HotelDetails,
                 pauseOnHover
             />
 
-
-
-
-
             {/*-------------------- menu bar for small and medium screen----------- */}
-
-            {menu === true ? <MenuSM /> : <></>}
+            {menu === true ?
+                <MenuSM />
+                : <></>}
 
 
         </>

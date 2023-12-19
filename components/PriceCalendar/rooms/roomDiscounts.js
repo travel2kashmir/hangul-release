@@ -27,7 +27,7 @@ var i = 0;
 let colorToggle;
 
 
-function RoomDiscounts({ room_id,dateSelected }) {
+function RoomDiscounts({ room_id,dateSelected,setModalVisible,initialData }) {
     const [color, setColor] = useState({})
     const [mode, setMode] = useState()
     const [property_name, setProperty_name] = useState('')
@@ -91,7 +91,8 @@ function RoomDiscounts({ room_id,dateSelected }) {
                     });
 
                     document.getElementById('discountForm').reset();
-
+                    initialData();
+                    setTimeout(()=>setModalVisible(false),1000) 
                 }).catch((err) => {
                     toast.error("API: Failed to save discount", {
                         position: "top-center",

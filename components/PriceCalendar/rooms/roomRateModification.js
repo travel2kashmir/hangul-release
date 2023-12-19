@@ -28,7 +28,7 @@ var i = 0;
 let colorToggle;
 
 
-function RoomRateModification({ room_id }) {
+function RoomRateModification({ room_id, dateSelected, base_rate,setModalVisible,initialData }) {
     const [color, setColor] = useState({})
     const [mode, setMode] = useState()
     const [property_name, setProperty_name] = useState('')
@@ -48,10 +48,10 @@ function RoomRateModification({ room_id }) {
     }, [])
 
     let modificationTemplate = {
-        "room_id": '',
-        "date_from": "",
-        "date_to": "",
-        "orginal_rate": "",
+        "room_id": room_id,
+        "date_from": dateSelected,
+        "date_to": dateSelected,
+        "orginal_rate": base_rate,
         "modified_rate": ""
     }
     const [modification, setModification] = useState([modificationTemplate]?.map((i, id) => { return { ...i, index: id } }))
@@ -90,8 +90,9 @@ function RoomRateModification({ room_id }) {
                         draggable: true,
                         progress: undefined,
                     });
-                    //   Router.push("./basicdetails");
                     document.getElementById('modificationForm').reset();
+                    initialData();
+                    setTimeout(()=>setModalVisible(false),1000) 
 
                 }).catch((err) => {
                     toast.error("API: Failed to save modification", {
@@ -117,19 +118,6 @@ function RoomRateModification({ room_id }) {
                 className={`${color?.greybackground} border-b rounded-lg`}>
 
 
-                {/* <div className='flex items-center justify-between'>
-                    <h3 className={`${color?.text} text-xl flex leading-none pl-6 lg:pt-2 pt-6 pb-2  font-bold`}>
-                        {language?.room} Rate Modification
-                    </h3>
-
-                    <Button
-                        Primary={language?.Add}
-                        onClick={() => addDiscountTemplate()}
-                    />
-
-                </div> */}
-
-                {/* <div className={`${color?.whitebackground} shadow rounded-lg px-12 sm:p-6 xl:p-8  2xl:col-span-2`}> */}
                 <div className={`${color?.whitebackground} shadow rounded-lg  2xl:col-span-2`}>
                     <h3 className={`${color?.text} text-xl flex leading-none pl-6 lg:pt-2 pt-6  pb-2 font-bold`}>
                         Rate Modification
@@ -167,45 +155,16 @@ function RoomRateModification({ room_id }) {
 
 
                                 <div className="flex flex-wrap">
-                                    {/* Date from */}
-                                    <DateInput
-                                        color={color}
-                                        label={`From Date`}
-                                        visible={1}
-                                        onChangeAction={(e) => {
-                                            onModificationChange(e, index, "date_from");
-                                            let v = { "target": { "value": room_id } };
-                                            onModificationChange(v, index, "room_id");
-
-                                        }
-                                        }
-                                        req={true}
-                                        error={error[index]?.date_from}
-                                    />
-
-                                    {/* Date To */}
-                                    <DateInput
-                                        color={color}
-                                        label={`Date To`}
-                                        visible={1}
-                                        onChangeAction={(e) => {
-                                            onModificationChange(e, index, "date_to");
-                                        }
-                                        }
-                                        req={true}
-                                        error={error[index]?.date_to}
-                                    />
-
                                     {/*Orginal Rate*/}
                                     <InputText
                                         label={`Orginal Rate`}
                                         visible={1}
-                                        onChangeAction={(e) =>
-                                            onModificationChange(e, index, "orginal_rate")
-                                        }
+                                        defaultValue={base_rate}
+                                        onChangeAction={(e) =>undefined }
                                         color={color}
                                         req={true}
                                         error={error[index]?.orginal_rate}
+                                        disabled={true}
                                     />
                                     {/*Modified Rate*/}
                                     <InputText
@@ -227,16 +186,10 @@ function RoomRateModification({ room_id }) {
 
                     }
                     <div className=' flex justify-end mr-6 py-2'>
-                        <button
-                            className='bg-gradient-to-r text-white bg-cyan-700 sm:inline-flex focus:ring-4 focus:ring-cyan-200 font-semibold rounded-lg text-sm px-5 py-2 text-center items-center mb-1 ease-linear transition-all duration-150'
-                            onClick={() => addModification()}
-                        >
-                            Submit
-                        </button>
-                        {/* <Button
+                       <Button
                             Primary={language?.Submit}
                             onClick={() => addModification()}
-                        /> */}
+                        />
                     </div>
                 </div>
 

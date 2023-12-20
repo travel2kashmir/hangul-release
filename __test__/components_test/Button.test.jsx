@@ -1,4 +1,5 @@
 import { render, screen, fireEvent, waitFor} from '@testing-library/react';
+import { act } from 'react-dom/test-utils';
 import '@testing-library/jest-dom';
 import Button from '../../components/Button'
 
@@ -32,19 +33,41 @@ test('renders disabled button', () => {
 
 // Test case 4: Trigger onClick event
 
-test('triggers onClick event', async () => {
-    const onClickMock = jest.fn();
-    render(<Button testid="clickable-button" Primary={{ label: 'Click me', onClick: onClickMock }} />);
-    const button = screen.getByTestId('clickable-button');
-  
-    fireEvent.click(button);
-    console.log('After click');
-  
-    // Wait for the asynchronous code to complete
-    await waitFor(() => {
-      console.log('Inside waitFor');
-      expect(onClickMock).toHaveBeenCalled();
-    });
+test('should call onClick when the button is clicked', () => {
+  // Arrange
+  const mockOnClick = jest.fn();
+  const testId = 'test-button';
+  const labelText = 'Click me';
+
+  // Act
+  render(<Button testid={testId} onClick={mockOnClick} Primary={{ label: labelText }} />);
+  const button = screen.getByTestId(testId);
+  fireEvent.click(button);
+
+  // Assert
+  expect(mockOnClick).toHaveBeenCalled();
+});
+
+  // Test case 5: Render button with only icon (no label)
+  test('renders button with only icon and default props', () => {
+    const testId = 'test-button';
+    render(<Button testid={testId} Primary={{ icon: '⭐️' }} />);
+    const button = screen.getByTestId(testId);
+    expect(button).toBeInTheDocument();
+    expect(button).toHaveTextContent('⭐️');
+    expect(button).not.toBeDisabled();
   });
+
+  // test 6  doesnt render component if label and icon are empty
+  test('returns null when both label and icon are empty', () => {
+    // Render the Button component with empty label and icon
+    render(<Button testid="empty-button" Primary={{}} />);
   
+    // Try to query the button by test ID
+    const button = screen.queryByTestId('empty-button');
+  
+    // Assert that the button is not present in the DOM
+    expect(button).not.toBeInTheDocument();
+  });
+
 })

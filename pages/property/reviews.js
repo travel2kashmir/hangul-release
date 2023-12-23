@@ -21,7 +21,7 @@ const logger = require("../../services/logger");
 import Image from 'next/image';
 import { InitialActions, ColorToggler } from "../../components/initalActions";
 import BreadCrumb from "../../components/utils/BreadCrumb";
-import { fetchReviews, navigationList } from "../../components/logic/property/Reviews";
+import { fetchReviews, navigationList, handleSubmit } from "../../components/logic/property/Reviews";
 
 let colorToggle;
 var currentLogged;
@@ -116,66 +116,66 @@ function Reviews() {
     setReview([...review, reviewTemplate]?.map((i, id) => { return { ...i, index: id } }))
   }
 
-  function handleSubmit(e, index) {
-    e.preventDefault()
-    setSpinner(1);
-    const reviewdata = review?.map((i => {
-      return {
-        property_id: currentProperty?.property_id,
-        review_link: i.review_link,
-        review_title: i.review_title,
-        review_author: i.review_author,
-        review_rating: i.review_rating,
-        review_type: i.review_type,
-        service_date: i.service_date,
-        review_date: i.review_date,
-        review_content: i.review_content
-      }
-    }))
-    const validationResponse = validateReview(reviewdata);
-    if (validationResponse === true) {
-      const finalData = { reviews: reviewdata }
-      console.log(JSON.stringify(finalData), 'finaldata')
-      axios.post(`/api/review`, finalData,
-        {
-          headers: { 'content-type': 'application/json' }
-        }).then(response => {
-          console.log(response)
-          fetchReviews(currentProperty, setReviews, setVisible);
-          toast.success("API: Review Saved Sucessfully.", {
-            position: "top-center",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
-          setError({})
-          setView(0);
-          setSpinner(0);
-          document.getElementById('addform').reset();
-        })
-        .catch(error => {
-          setSpinner(0);
-          console.log(JSON.stringify(error))
-          toast.error("API: Review Add Error!", {
-            position: "top-center",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
+  // function handleSubmit(e, index) {
+  //   e.preventDefault()
+  //   setSpinner(1);
+  //   const reviewdata = review?.map((i => {
+  //     return {
+  //       property_id: currentProperty?.property_id,
+  //       review_link: i.review_link,
+  //       review_title: i.review_title,
+  //       review_author: i.review_author,
+  //       review_rating: i.review_rating,
+  //       review_type: i.review_type,
+  //       service_date: i.service_date,
+  //       review_date: i.review_date,
+  //       review_content: i.review_content
+  //     }
+  //   }))
+  //   const validationResponse = validateReview(reviewdata);
+  //   if (validationResponse === true) {
+  //     const finalData = { reviews: reviewdata }
+  //     console.log(JSON.stringify(finalData), 'finaldata')
+  //     axios.post(`/api/review`, finalData,
+  //       {
+  //         headers: { 'content-type': 'application/json' }
+  //       }).then(response => {
+  //         console.log(response)
+  //         fetchReviews(currentProperty, setReviews, setVisible);
+  //         toast.success("API: Review Saved Sucessfully.", {
+  //           position: "top-center",
+  //           autoClose: 5000,
+  //           hideProgressBar: false,
+  //           closeOnClick: true,
+  //           pauseOnHover: true,
+  //           draggable: true,
+  //           progress: undefined,
+  //         });
+  //         setError({})
+  //         setView(0);
+  //         setSpinner(0);
+  //         document.getElementById('addform').reset();
+  //       })
+  //       .catch(error => {
+  //         setSpinner(0);
+  //         console.log(JSON.stringify(error))
+  //         toast.error("API: Review Add Error!", {
+  //           position: "top-center",
+  //           autoClose: 5000,
+  //           hideProgressBar: false,
+  //           closeOnClick: true,
+  //           pauseOnHover: true,
+  //           draggable: true,
+  //           progress: undefined,
+  //         });
 
-        });
-    }
-    else {
-      setError(validationResponse);
-      setSpinner(0);
-    }
-  }
+  //       });
+  //   }
+  //   else {
+  //     setError(validationResponse);
+  //     setSpinner(0);
+  //   }
+  // }
 
   const onChange = (e, index, i) => {
     console.log(index, 'index')
@@ -299,7 +299,6 @@ function Reviews() {
                 <div className=" border-2 shadow lg:mx-64 md:mx-10 ">
                   <Image src={reviewImage} height={250} width={600} alt='review image' />
                 </div>
-
               </div>
             </div>
           </div>
@@ -315,10 +314,10 @@ function Reviews() {
                     <div className="flex items-center justify-between mb-2">
                       <div>
                         <span className={`${color?.text} text-xl sm:text-xl leading-none font-bold `}>{item?.review_author}
-                          {/*Edit icon */}<button
+                          {/*Edit icon */}
+                          <button
                             onClick={() => { setActive(item); setOrg(item); setEdit(1); }}
-                            className={`text-gray-500   ml-4 mr-2 hover:text-gray-900 
-                                         cursor-pointer hover:bg-gray-100 rounded `}>
+                            className={`text-gray-500   ml-4 mr-2 hover:text-gray-900 cursor-pointer hover:bg-gray-100 rounded `}>
                             <svg className=" h-5  w-5 font-semibold "
                               fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                               <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path><path fillRule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clipRule="evenodd"></path></svg>
@@ -554,7 +553,7 @@ function Reviews() {
                         {/*Review content */}
                         <InputTextBox
                           label={` ${language?.reviewcontent}`}
-                          visible={visible}
+                          visible={1}
                           defaultValue={review[0]?.review_content}
                           wordLimit={1000}
                           onChangeAction={(e) => {
@@ -582,7 +581,7 @@ function Reviews() {
                   )}
 
                 <div className="items-center p-2 border-t border-gray-200 rounded-b">
-                  <Button Primary={language?.Add} onClick={(e) => handleSubmit(e, index)} />
+                  <Button Primary={language?.Add} onClick={(e) => handleSubmit(e, setSpinner, review, currentProperty, setReviews, setVisible, setView, setError)} />
                 </div>
               </div>
             </div>
@@ -783,6 +782,7 @@ function Reviews() {
                         req={true}
                         tooltip={true}
                       />
+
 
                     </div>
 

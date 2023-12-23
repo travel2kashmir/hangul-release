@@ -3,11 +3,15 @@ import info from '../../public/info.svg'
 import Image from 'next/image'
 import Tooltip from "./Tooltip";
 function InputTextBox({ label, visible, defaultValue, onChangeAction, error, color, req, title, tooltip, wordLimit = 500 }) {
+
   const [defVal, setDefVal] = useState(defaultValue?.length)
+
   useEffect(() => { setDefVal(defaultValue?.length) }, [defaultValue])
+
   function changeDefault(e) {
     setDefVal(e.target.value.length)
   }
+
   return (
 
     <div data-testid="main" className="w-full lg:w-6/12 px-4">

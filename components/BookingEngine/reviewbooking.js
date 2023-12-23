@@ -826,10 +826,6 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                         >
                             Pay Now
                         </button>
-
-
-
-
                     }
 
                 </div>

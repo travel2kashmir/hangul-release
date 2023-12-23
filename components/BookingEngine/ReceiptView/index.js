@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import axios from 'axios';
+import ReceiptViewLoader from './loader';
 // imports to download the page into pdf
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -16,6 +17,7 @@ function ReceiptView({ allHotelDetails, setShowModal, setDisplay, setSearched })
     let propertyId = bookingInfo.property_id
 
     const [bookingDetails, setBookingDetail] = useState([])
+    const [visible, setVisible] = useState(0);
 
     const dispatch = useDispatch() //creating object of dispatch 
 
@@ -67,6 +69,7 @@ function ReceiptView({ allHotelDetails, setShowModal, setDisplay, setSearched })
         const url = `/api/all_bookings/${propertyId}/${bookingId}`
         axios.get(url, { headers: { 'accept': 'application/json' } }).then((response) => {
             setBookingDetail(response?.data?.booking.map((i) => i));
+            setVisible(1);
         }).catch((err) => {
             console.log(err)
         });
@@ -102,7 +105,7 @@ function ReceiptView({ allHotelDetails, setShowModal, setDisplay, setSearched })
 
 
     return (
-        <section >
+        <>   {visible == 0 ? <ReceiptViewLoader /> : <section >
             <div ref={pdfRef} className='px-3 md:px-10'>
                 <div className=' py-5 flex justify-between border-b'>
                     <div className='flex'>
@@ -225,7 +228,8 @@ function ReceiptView({ allHotelDetails, setShowModal, setDisplay, setSearched })
                 <button onClick={generatePDF} className='px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 hover:rounded-md'>Download PDF</button>
                 <button onClick={closeButtonAction} className='px-3 py-2 mx-1 bg-red-600 hover:bg-red-700 text-white rounded-lg hover:rounded-md'>Back To Home</button>
             </div>
-        </section>
+        </section>}</>
+
     )
 }
 

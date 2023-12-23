@@ -64,7 +64,7 @@ function Reviews() {
       Router.push(window.location.origin)
     }
     else {
-      fetchReviews(currentProperty, setReviews, setVisible);
+     fetchReviews(currentProperty, setReviews, setVisible);
     }
   }, [])
 

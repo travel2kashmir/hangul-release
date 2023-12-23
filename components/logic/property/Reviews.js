@@ -3,8 +3,6 @@ import validateReview from "../../validation/review";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import objChecker from "lodash";
-
-
 export async function fetchReviews(currentProperty, setReviews, setVisible) {
     const url = `/api/${currentProperty?.address_province.replace(
         /\s+/g,

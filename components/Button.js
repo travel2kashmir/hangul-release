@@ -1,6 +1,5 @@
 const Button = ({ testid, onClick, Primary = {} }) => {
     const { color = '', icon = '', label = '',disabled=false } = Primary;
-    // if (!label) return null;
     if (!label && !icon) {
       return null; // Return null if both label and icon are not provided
     } 

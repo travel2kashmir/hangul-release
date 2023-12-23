@@ -358,8 +358,9 @@ function Address() {
                     className={flag !== 1 && spinner === 0 ? "block" : "hidden"}
                   >
                     <Button
-                      data-testid="update"
+                      testid="update"
                       Primary={language?.UpdateDisabled}
+                      disabled={true}
                     />
                   </div>
                   <div

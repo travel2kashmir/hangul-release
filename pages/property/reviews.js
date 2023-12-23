@@ -21,6 +21,7 @@ const logger = require("../../services/logger");
 import Image from 'next/image';
 import { InitialActions, ColorToggler } from "../../components/initalActions";
 import BreadCrumb from "../../components/utils/BreadCrumb";
+import { fetchReviews, navigationList, handleSubmit, delConfirm, handleEdit, onChange, resetReviewState } from "../../components/logic/property/Reviews";
 
 let colorToggle;
 var currentLogged;
@@ -51,35 +52,6 @@ function Reviews() {
     "year": date?.getUTCFullYear()
   }
 
-  const delConfirm = () => {
-    var url = `/api/${del}`;
-
-    axios.delete(`${url}`).then((response) => {
-      fetchReviews();
-      toast.success("API: Review Deleted Sucessfully.", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-      setModelDel(0)
-    }).catch((error) => {
-      toast.error("API: Review Delete Error!", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-    }
-    )
-  }
-
   // runs at load time
   useEffect(() => {
     const resp = InitialActions({ setColor, setMode })
@@ -92,27 +64,12 @@ function Reviews() {
       Router.push(window.location.origin)
     }
     else {
-      fetchReviews();
+     fetchReviews(currentProperty, setReviews, setVisible);
     }
   }, [])
 
-  const fetchReviews = async () => {
-    const url = `/api/${currentProperty.address_province.replace(
-      /\s+/g,
-      "-"
-    )}/${currentProperty.address_city}/${currentProperty.property_category
-      }s/${currentProperty.property_id}`;
-    axios.get(url)
-      .then((response) => {
-        setReviews(response.data);
-        logger.info("url  to fetch property details hitted successfully")
-        setVisible(1);
-      })
-      .catch((error) => { logger.error("url to fetch property details, failed") });
-  }
-
   //functions to add review
-  const reviewTemplate = {
+  const reviewTemplate = [{
     property_id: currentProperty?.property_id,
     review_link: '',
     review_title: '',
@@ -122,174 +79,23 @@ function Reviews() {
     service_date: '',
     review_date: '',
     review_content: ''
-  }
+  }]
+  const initialReviewState = reviewTemplate.map((i, id) => ({ ...i, index: id }));
 
-  const [review, setReview] = useState([reviewTemplate]?.map((i, id) => { return { ...i, index: id } }))
+  // const [review, setReview] = useState(reviewTemplate?.map((i, id) => { return { ...i, index: id } }))
+  const [review, setReview] = useState(initialReviewState);
 
-  const addReview = () => {
-    setReview([...review, reviewTemplate]?.map((i, id) => { return { ...i, index: id } }))
-  }
+  // const addReview = () => {
+  //   setReview([...review, reviewTemplate]?.map((i, id) => { return { ...i, index: id } }))
+  // }
 
-  function handleSubmit(e, index) {
-    e.preventDefault()
-    setSpinner(1);
-    const reviewdata = review?.map((i => {
-      return {
-        property_id: currentProperty?.property_id,
-        review_link: i.review_link,
-        review_title: i.review_title,
-        review_author: i.review_author,
-        review_rating: i.review_rating,
-        review_type: i.review_type,
-        service_date: i.service_date,
-        review_date: i.review_date,
-        review_content: i.review_content
-      }
-    }))
-    const validationResponse = validateReview(reviewdata);
-    if (validationResponse === true) {
-      const finalData = { reviews: reviewdata }
-      console.log(JSON.stringify(finalData), 'finaldata')
-      axios.post(`/api/review`, finalData,
-        {
-          headers: { 'content-type': 'application/json' }
-        }).then(response => {
-          console.log(response)
-          fetchReviews();
-          toast.success("API: Review Saved Sucessfully.", {
-            position: "top-center",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
-          setError({})
-          setView(0);
-          setSpinner(0);
-          document.getElementById('addform').reset();
-        })
-        .catch(error => {
-          setSpinner(0);
-          console.log(JSON.stringify(error))
-          toast.error("API: Review Add Error!", {
-            position: "top-center",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
 
-        });
-    }
-    else {
-      setError(validationResponse);
-      setSpinner(0);
-    }
-  }
-
-  const onChange = (e, index, i) => {
-    console.log(index, 'index')
-    setReview(review?.map((item, id) => {
-      if (item.index === index) {
-        item[i] = e.target.value
-      }
-      return item
-    }))
-  }
-
-  const removeReview = (index) => {
-    console.log("index is" + index)
-    const filteredReviews = review.filter((i, id) => i.index !== index)
-    console.log("data sent to state " + JSON.stringify(filteredReviews))
-    setReview(filteredReviews)
-  }
-
-  const handleEdit = () => {
-
-    if (objChecker.isEqual(active, org)) {
-
-      toast.warn('APP: No changes in review! ', {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-    }
-    else {
-      const edited = [active]
-      var res = validateReview(edited)
-
-      if (res === true) {
-        axios.put('/api/review', active, {
-          headers: { 'content-type': 'application/json' }
-        }).then(response => {
-          console.log(response)
-          fetchReviews();
-          toast.success("API: Review Edited Sucessfully.", {
-            position: "top-center",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
-
-          setActive({});
-          setEdit(0);
-          setError({})
-          document.getElementById('editform').reset()
-          Router.push('./reviews')
-
-        })
-          .catch(error => {
-
-            toast.error("API: Review Edit Error!", {
-              position: "top-center",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-            });
-
-          })
-      }
-      else {
-        setError(res)
-      }
-    }
-  }
-
-  function navigationList(currentLogged, currentProperty) {
-    return ([
-      {
-        icon: "homeIcon",
-        text: "Home",
-        link: currentLogged?.id.match(/admin.[0-9]*/)
-          ? "../admin/adminlanding"
-          : "./landing"
-      },
-      {
-        icon: "rightArrowIcon",
-        text: [currentProperty?.property_name],
-        link: "./propertysummary"
-      },
-      {
-        icon: "rightArrowIcon",
-        text: "Reviews",
-        link: ""
-      }
-    ])
-  }
+  // const removeReview = (index) => {
+  //   console.log("index is" + index)
+  //   const filteredReviews = review.filter((i, id) => i.index !== index)
+  //   console.log("data sent to state " + JSON.stringify(filteredReviews))
+  //   setReview(filteredReviews)
+  // }
 
   return (
     <>
@@ -331,10 +137,9 @@ function Reviews() {
           <div className="p-4">
             <div className=" md:px-4 mx-auto w-full ">
               <div className="flex items-center justify-between mb-2">
-                <div className="border border-2 shadow lg:mx-64 md:mx-10 ">
+                <div className=" border-2 shadow lg:mx-64 md:mx-10 ">
                   <Image src={reviewImage} height={250} width={600} alt='review image' />
                 </div>
-
               </div>
             </div>
           </div>
@@ -350,10 +155,10 @@ function Reviews() {
                     <div className="flex items-center justify-between mb-2">
                       <div>
                         <span className={`${color?.text} text-xl sm:text-xl leading-none font-bold `}>{item?.review_author}
-                          {/*Edit icon */}<button
+                          {/*Edit icon */}
+                          <button
                             onClick={() => { setActive(item); setOrg(item); setEdit(1); }}
-                            className={`text-gray-500   ml-4 mr-2 hover:text-gray-900 
-                                         cursor-pointer hover:bg-gray-100 rounded `}>
+                            className={`text-gray-500   ml-4 mr-2 hover:text-gray-900 cursor-pointer hover:bg-gray-100 rounded `}>
                             <svg className=" h-5  w-5 font-semibold "
                               fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                               <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path><path fillRule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clipRule="evenodd"></path></svg>
@@ -410,7 +215,7 @@ function Reviews() {
                 <h3 className="text-base font-normal text-gray-500 mt-5 mb-6">
                   {language?.areyousureyouwanttodelete}
                 </h3>
-                <Button Primary={language?.Delete} onClick={() => delConfirm()} />
+                <Button Primary={language?.Delete} onClick={() => delConfirm(del, currentProperty, setReviews, setVisible, setModelDel)} />
                 <Button Primary={language?.Cancel} onClick={() => setModelDel(0)} />
               </div>
             </div>
@@ -429,7 +234,10 @@ function Reviews() {
                     {language?.addreview}
                   </h3>
                   <button type="button"
-                    onClick={() => { setActive({}); setView(0); setError({}); document.getElementById('addform').reset(); }}
+                    onClick={() => {
+                      setActive({}); setView(0); setError({}); document.getElementById('addform').reset();
+                      resetReviewState(setReview, initialReviewState);
+                    }}
                     className="text-gray-400 bg-transparent
                                  hover:bg-gray-200 
                                  hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
@@ -453,8 +261,10 @@ function Reviews() {
                           <input
                             type="text"
                             className={`${color.greybackground} shadow-sm  border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
-                            onChange={e => onChange(e, review?.index, 'review_link')}
-                            placeholder="link of review" />
+                            onChange={e => onChange(e, review?.index, 'review_link', setReview, review)}
+                            placeholder="link of review"
+
+                          />
                           <p className=" peer-invalid:visible text-red-700 font-light">
                             {error?.review_link}
                           </p>
@@ -473,7 +283,7 @@ function Reviews() {
                           <input
                             type="text"
                             className={`${color.greybackground} shadow-sm  border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
-                            onChange={e => onChange(e, review?.index, 'review_title')}
+                            onChange={e => onChange(e, review?.index, 'review_title', setReview, review)}
                             placeholder="Review title"
                           />
                           <p className="peer-invalid:visible text-red-700 font-light">
@@ -492,7 +302,7 @@ function Reviews() {
                           <input
                             type="text"
                             className={`${color.greybackground} shadow-sm  border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
-                            onChange={e => onChange(e, review?.index, 'review_author')}
+                            onChange={e => onChange(e, review?.index, 'review_author', setReview, review)}
                             placeholder="Review Author"
                           />
                           <p className=" peer-invalid:visible text-red-700 font-light">
@@ -509,7 +319,7 @@ function Reviews() {
                             {language?.reviewrating} <span style={{ color: "#ff0000" }}>*</span>
                           </label>
                           <select
-                            onChange={e => onChange(e, review?.index, 'review_rating')}
+                            onChange={e => onChange(e, review?.index, 'review_rating', setReview, review)}
                             className={`${color.greybackground} shadow-sm  border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
                           >
                             <option selected disabled>Select Rating </option>
@@ -534,7 +344,7 @@ function Reviews() {
                             {language?.reviewercategory}  <span style={{ color: "#ff0000" }}>*</span>
                           </label>
                           <select
-                            onChange={e => onChange(e, review?.index, 'review_type')}
+                            onChange={e => onChange(e, review?.index, 'review_type', setReview, review)}
                             className={`${color.greybackground} shadow-sm  border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}>
                             <option selected disabled>Select Reviewer Category</option>
                             <option value="user" >User</option>
@@ -557,7 +367,7 @@ function Reviews() {
                             type="date"
                             max={`${currentDate.year}-${currentDate.month}-${currentDate.day}`}
                             className={`${color.greybackground} shadow-sm  border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
-                            onChange={e => onChange(e, review?.index, 'service_date')}
+                            onChange={e => onChange(e, review?.index, 'service_date', setReview, review)}
                           />
                           <p className=" peer-invalid:visible text-red-700 font-light">
                             {error?.service_date}
@@ -577,7 +387,7 @@ function Reviews() {
                             max={`${currentDate.year}-${currentDate.month}-${currentDate.day}`}
 
                             className={`${color.greybackground} shadow-sm  border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
-                            onChange={e => onChange(e, review?.index, 'review_date')}
+                            onChange={e => onChange(e, review?.index, 'review_date', setReview, review)}
                           />
                           <p className="peer-invalid:visible text-red-700 font-light">
                             {error?.review_date}
@@ -589,13 +399,13 @@ function Reviews() {
                         {/*Review content */}
                         <InputTextBox
                           label={` ${language?.reviewcontent}`}
-                          visible={visible}
+                          visible={1}
                           defaultValue={review[0]?.review_content}
                           wordLimit={1000}
                           onChangeAction={(e) => {
                             if (e.target.value.length >= 0 && e.target.value.length < 1000) {
                               setError({})
-                              onChange(e, review?.index, 'review_content')
+                              onChange(e, review?.index, 'review_content', setReview, review)
                             }
                             else {
                               setError({ review_content: 'word limit reached' })
@@ -617,7 +427,7 @@ function Reviews() {
                   )}
 
                 <div className="items-center p-2 border-t border-gray-200 rounded-b">
-                  <Button Primary={language?.Add} onClick={(e) => handleSubmit(e)} />
+                  <Button Primary={language?.Add} onClick={(e) => handleSubmit(e, setSpinner, review, currentProperty, setReviews, setVisible, setView, setError, setReview, initialReviewState)} />
                 </div>
               </div>
             </div>
@@ -819,6 +629,7 @@ function Reviews() {
                         tooltip={true}
                       />
 
+
                     </div>
 
                   </div>
@@ -832,7 +643,7 @@ function Reviews() {
                   <Button
                     testid="test_button_spinner"
                     Primary={language?.SpinnerUpdate}
-                  /> : <Button Primary={language?.Update} onClick={(e) => handleEdit(e)} />}
+                  /> : <Button Primary={language?.Update} onClick={() => handleEdit(active, org, currentProperty, setReviews, setVisible, setActive, setEdit, setError, Router)} />}
               </div>
             </div>
           </div>

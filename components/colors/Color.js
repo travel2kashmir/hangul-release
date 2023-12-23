@@ -1,4 +1,3 @@
-
 const  dark= {
     "name": "dark",
     "icon": "text-gray-600",

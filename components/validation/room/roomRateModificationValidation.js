@@ -7,6 +7,7 @@ const roomRateModificationValidation = (all_data) => {
     var flag = []
     var final_flag = true;
     all_data.map((data, index) => {
+        alert(JSON.stringify(data))
         // is data present checking start 
         if (data?.date_from === "" || data?.date_from === undefined) {
             flag.push(false)
@@ -32,7 +33,7 @@ const roomRateModificationValidation = (all_data) => {
             error[index].date_to = "APP: The date-from must be less than date-to."
         }
 
-        if (data?.orginal_rate <= data?.modified_rate) {
+        if (data?.orginal_rate >= data?.modified_rate) {
             flag.push(false)
             error[index].orginal_rate = "APP: The orginal rate should be less than modified rate"
             error[index].modified_rate = "APP: The modified rate should be greater than orginal rate."

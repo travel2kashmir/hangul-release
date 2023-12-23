@@ -2,8 +2,10 @@ import React from 'react';
 import icon from '../../GlobalData'
 import Loader from '../Loaders/Loader';
 
-function Services({ services, hotelDetailLoader ,lang}) {
+function Services({ allHotelDetails, services, hotelDetailLoader, lang }) {
     let i = 0;
+    const filteredAdditionalService = allHotelDetails?.additional_services?.filter(service => service.status);
+
 
     return (
         <section id='services' className="px-5 py-10">
@@ -12,7 +14,7 @@ function Services({ services, hotelDetailLoader ,lang}) {
                 {hotelDetailLoader === 0 ?
                     <Loader size={`w-full h-56 md:h-64 rounded-lg mt-10`} /> :
                     <div className="py-10 grid grid-flow-row-dense  lg:grid-cols-5 md:grid-cols-4 md:col-span-9  grid-cols-2  md:gap-3 gap-1 lg:gap-3">
-                       
+
                         {
                             services?.map((item, idx) => {
                                 return (
@@ -188,6 +190,19 @@ function Services({ services, hotelDetailLoader ,lang}) {
                 }
 
             </div>
+            <div className='pt-10 pb-14'>
+                <h2 className="text-center font-semibold text-2xl md:text-4xl">{lang?.keyHighlights}</h2>
+                <div className='grid grid-flow-row-dense grid-col-2 md:grid-cols-3 text-center pt-10 pb-0 md:py-10'>
+                    {filteredAdditionalService?.map((service) => {
+                        return <div key={service.add_service_id} className="mb-5">
+                            <p className="font-semibold text-lg md:text-xl">{service.add_service_name}</p>
+                            <p className='text-sm'>{service.add_service_comment}</p>
+                        </div>
+                    })}
+                </div>
+            </div>
+
+
         </section>
     )
 }

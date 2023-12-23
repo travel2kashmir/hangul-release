@@ -20,6 +20,7 @@ import french from "../../components/Languages/fr";
 import arabic from "../../components/Languages/ar";
 const logger = require("../../services/logger");
 import { InitialActions, ColorToggler } from "../../components/initalActions";
+import { fetchAdditionalServices, fetchHotelDetails, navigationList, validationAdditionalServices } from '../../components/logic/property/AdditionalServices'
 
 var language;
 var currentProperty;
@@ -55,68 +56,11 @@ function AdditionalServices() {
             Router.push(window.location.origin)
         }
         else {
-            fetchAdditionalServices();
-            fetchHotelDetails();
+            fetchAdditionalServices(currentProperty, setAdditionalServices, setGene, setVisible);
+            fetchHotelDetails(currentProperty, setServices, setGen, setVisible);
 
         }
     }, [])
-
-
-    const fetchAdditionalServices = async () => {
-        var geneData = [];
-        const url = `/api/additional_services/${currentProperty.property_id}`
-        axios.get(url)
-            .then((response) => {
-                setAdditionalServices(response.data);
-                logger.info("url  to fetch additional services hitted successfully")
-
-                {
-                    response.data?.map((item) => {
-                        var temp = {
-                            name: item.add_service_name,
-                            type: item.add_service_comment,
-                            status: item.status,
-                            id: item.add_service_id
-                        }
-                        geneData.push(temp)
-                    })
-                    setGene(geneData);
-                    setVisible(1);
-                }
-
-            })
-            .catch((error) => { logger.error("url to fetch additional services, failed") });
-    }
-
-    /* Function call to fetch Current Property Details when page loads */
-    const fetchHotelDetails = async () => {
-        var genData = [];
-        const url = `/api/${currentProperty.address_province.replace(
-            /\s+/g,
-            "-"
-        )}/${currentProperty.address_city}/${currentProperty.property_category
-            }s/${currentProperty.property_id}`;
-        axios.get(url)
-            .then((response) => {
-                setServices(response.data);
-                logger.info("url  to fetch property details hitted successfully")
-                {
-                    response.data?.services?.map((item) => {
-                        var temp = {
-                            name: item.local_service_name,
-                            description: item.service_comment,
-                            type: item.service_value,
-                            status: item.status,
-                            id: item.service_id
-                        }
-                        genData.push(temp)
-                    })
-                    setGen(genData);
-                }
-                setVisible(1)
-            })
-            .catch((error) => { logger.error("url to fetch property details, failed") });
-    }
 
     /* Function to edit additional services */
     const editAdditionalServices = (props, noChange) => {
@@ -154,7 +98,7 @@ function AdditionalServices() {
                             draggable: true,
                             progress: undefined,
                         });
-                        fetchAdditionalServices();
+                        fetchAdditionalServices(currentProperty, setAdditionalServices, setGene, setVisible);
                         Router.push("./additionalservices");
                         setModified([])
                     })
@@ -206,7 +150,7 @@ function AdditionalServices() {
                 draggable: true,
                 progress: undefined,
             });
-            fetchAdditionalServices();
+            fetchAdditionalServices(currentProperty, setAdditionalServices, setGene, setVisible);
             Router.push('./additionalservices')
         })
             .catch((error) => {
@@ -220,93 +164,6 @@ function AdditionalServices() {
                     progress: undefined,
                 });
             })
-    }
-
-    /* Function to add additional services */
-    const newAdditionalService = () => {
-        setSpinner(1);
-        if (modified.length !== 0) {
-            const final_data = {
-                "additional_service": [{
-                    "property_id": currentProperty.property_id,
-                    "add_service_name": modified.add_service_name,
-                    "add_service_comment": modified.add_service_comment,
-                    "status": true
-                }]
-            }
-            const url = '/api/additional_services'
-            axios.post(url, final_data, { header: { "content-type": "application/json" } }).then
-                ((response) => {
-                    setSpinner(0);
-                    document.getElementById('asform').reset();
-                    toast.success("Service Added Successfully!", {
-                        position: "top-center",
-                        autoClose: 5000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                    });
-
-                    fetchAdditionalServices();
-                    Router.push("./additionalservices");
-                    setModified([])
-                    setFlag([])
-                    setView(0)
-                })
-                .catch((error) => {
-                    setSpinner(0);
-                    toast.error("Additional Services Add Error! ", {
-                        position: "top-center",
-                        autoClose: 5000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                    });
-                    setFlag([]);
-
-                })
-        }
-
-    }
-
-    // Add Validation Gallery
-    const validationAdditionalServices = () => {
-        setError({});
-        var result = validateAdditionalServices(modified);
-        console.log("Result" + JSON.stringify(result))
-        if (result === true) {
-            newAdditionalService()
-
-        }
-        else {
-            setError(result)
-        }
-    }
-
-    function navigationList(currentLogged, currentProperty) {
-        return ([
-            {
-                icon: "homeIcon",
-                text: "Home",
-                link: currentLogged?.id.match(/admin.[0-9]*/)
-                    ? "../admin/adminlanding"
-                    : "./landing"
-            },
-            {
-                icon: "rightArrowIcon",
-                text: [currentProperty?.property_name],
-                link: "./propertysummary"
-            },
-            {
-                icon: "rightArrowIcon",
-                text: "Additional Services",
-                link: ""
-            }
-        ])
     }
 
     return (
@@ -382,7 +239,7 @@ function AdditionalServices() {
                                                     onChange={(e) => { setModified({ ...modified, add_service_comment: e.target.value }, setFlag(1)) }}
                                                     id="last-name" className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg 
                             focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`} required />
-                                                <p className="text-sm text-sm text-red-700 font-light">
+                                                <p className="text-sm  text-red-700 font-light">
                                                     {error?.add_service_comment}</p>
                                             </div>
                                         </div>
@@ -392,7 +249,7 @@ function AdditionalServices() {
                                         <div className={flag !== 1 && spinner === 0 ? 'block' : 'hidden'}>
                                             <Button Primary={language?.AddDisabled} /></div>
                                         <div className={spinner === 0 && flag === 1 ? 'block' : 'hidden'}>
-                                            <Button Primary={language?.Add} onClick={() => { validationAdditionalServices() }} />
+                                            <Button Primary={language?.Add} onClick={() => { validationAdditionalServices(setError, setSpinner, modified, setModified, setFlag, setView, currentProperty, setAdditionalServices, setGene, setVisible, Router) }} />
                                         </div>
                                         <div className={spinner === 1 && flag === 1 ? 'block' : 'hidden'}>
                                             <Button Primary={language?.SpinnerAdd} />

@@ -3,11 +3,15 @@ import info from '../../public/info.svg'
 import Image from 'next/image'
 import Tooltip from "./Tooltip";
 function InputTextBox({ label, visible, defaultValue, onChangeAction, error, color, req, title, tooltip, wordLimit = 500 }) {
+
   const [defVal, setDefVal] = useState(defaultValue?.length)
+
   useEffect(() => { setDefVal(defaultValue?.length) }, [defaultValue])
+
   function changeDefault(e) {
     setDefVal(e.target.value.length)
   }
+
   return (
 
     <div data-testid="main" className="w-full lg:w-6/12 px-4">
@@ -35,6 +39,7 @@ function InputTextBox({ label, visible, defaultValue, onChangeAction, error, col
 
         </div>
         <div data-testid="vis1" className={visible === 1 ? "block" : "hidden"}>
+
           <textarea data-testid="input"
             rows="5"
             columns="50"
@@ -49,7 +54,7 @@ function InputTextBox({ label, visible, defaultValue, onChangeAction, error, col
             defaultValue={defaultValue}
             required
           />
-          <p data-testid='Error' title={error} className="text-sm text-sm text-red-700 font-light">
+          <p data-testid='Error' title={error} className="text-sm  text-red-700 font-light">
             {error}</p>
         </div>
       </div>

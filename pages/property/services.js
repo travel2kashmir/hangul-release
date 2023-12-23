@@ -14,6 +14,8 @@ import Headloader from "../../components/loaders/headloader";
 import Addservices from '../../components/admin/AddServices';
 const logger = require("../../services/logger");
 import { InitialActions, ColorToggler } from "../../components/initalActions";
+import { navigationList, fetchHotelDetails } from '../../components/logic/property/Services';
+
 var language;
 var currentProperty;
 var propertyName;
@@ -39,7 +41,6 @@ function Services() {
   const [gene, setGene] = useState([])
   const [finalServices, setFinalServices] = useState([])
 
-
   // runs at load time
   useEffect(() => {
     const resp = InitialActions({ setColor, setMode })
@@ -52,42 +53,9 @@ function Services() {
       Router.push(window.location.origin)
     }
     else {
-      fetchHotelDetails();
+      fetchHotelDetails(currentProperty, setServices, setVisible, setGen);
     }
   }, [])
-
-  /* Function call to fetch Current Property Details when page loads */
-  const fetchHotelDetails = async () => {
-    var genData = [];
-    const url = `/api/${currentProperty.address_province.replace(
-      /\s+/g,
-      "-"
-    )}/${currentProperty.address_city}/${currentProperty.property_category
-      }s/${currentProperty?.property_id}`;
-    axios.get(url)
-      .then((response) => {
-        setServices(response.data);
-        logger.info("url  to fetch property details hitted successfully")
-        setVisible(1)
-        {
-          response.data?.services?.map((item) => {
-            var temp = {
-              name: item.local_service_name,
-              description: item.service_comment,
-              type: item.service_value,
-              status: item.status,
-              id: item.service_id
-            }
-            genData.push(temp)
-          })
-          setGen(genData);
-        }
-
-
-      })
-
-      .catch((error) => { logger.error("url to fetch property details, failed") });
-  }
 
   /* Function to edit services*/
   const updateServices = (props, noChange) => {
@@ -121,7 +89,7 @@ function Services() {
             draggable: true,
             progress: undefined,
           });
-          fetchHotelDetails();
+          fetchHotelDetails(currentProperty, setServices, setVisible, setGen);
           Router.push("./services");
 
         })
@@ -139,27 +107,6 @@ function Services() {
     }
   }
 
-  function navigationList(currentLogged, currentProperty) {
-    return ([
-      {
-        icon: "homeIcon",
-        text: "Home",
-        link: currentLogged?.id.match(/admin.[0-9]*/)
-          ? "../admin/adminlanding"
-          : "./landing"
-      },
-      {
-        icon: "rightArrowIcon",
-        text: [currentProperty?.property_name],
-        link: "./propertysummary"
-      },
-      {
-        icon: "rightArrowIcon",
-        text: "Services",
-        link: ""
-      }
-    ])
-  }
 
   return (
     <>

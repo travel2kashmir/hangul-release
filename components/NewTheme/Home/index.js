@@ -2,15 +2,9 @@ import React, { useEffect, useState } from 'react'
 import StarIcon from '@mui/icons-material/Star';
 import Header from './Header';
 import Loader from '../Loaders/Loader'
-import Modal from '../modal';
-import BookingForm from '../Booking';
-import Contactus from '../../utils/Contactus';
-import Color from '../../colors/Color';
 
+function Home({ allHotelDetails, menu, setMenu, hotelDetailLoader, lang, setLang, setShowContactUs, setShowModalBooking }) {
 
-function Home({ allHotelDetails, menu, setMenu, hotelDetailLoader, lang, setLang, rooms, searched, setSearched, color, setShowContactUs }) {
-
-    const [showModalBooking, setShowModalBooking] = useState(0);
     const [mainPic, setMainPic] = useState('/imghome.webp')
 
     useEffect(() => {
@@ -64,35 +58,6 @@ function Home({ allHotelDetails, menu, setMenu, hotelDetailLoader, lang, setLang
                         {/* Contact Us */}
                     </button>
                 </div>
-
-                {/* booking form for sm and md screen */}
-                {showModalBooking === 1 ?
-                    <div className={`block h-2 lg:hidden`}>
-                        <Modal
-                            title='Booking Form'
-                            description={
-                                <div className={`${searched === false ? 'z-0' : 'z-50 '}`}>
-                                    <BookingForm
-                                        color={Color?.light}
-                                        allHotelDetails={allHotelDetails}
-                                        rooms={rooms}
-                                        searched={searched}
-                                        setSearched={(e) => setSearched(e)}
-                                        setShowModalBooking={(e) => setShowModalBooking(e)}
-                                    />
-                                </div>
-
-                            }
-                            setShowModal={(e) => setShowModalBooking(e)}
-                        />
-
-                        {/* <Modal
-                        description={<Contactus color={Color?.light} language={lang} />}
-                        setShowModal={(e) => setShowModalBooking(e)}
-                    /> */}
-                    </div> : undefined}
-
-
             </div>
 
             {/* style component of jsx */}

@@ -198,7 +198,7 @@ function RoomSummary({ color, setDisplay, setShowModal, setRoomsLoader, setSearc
     <section className={`${color?.bgColor}`}>
 
       {/* app bar */}
-      <div className={`flex justify-between w-full py-5 px-3 md:px-5 border-b`}>
+      <div className={`flex justify-between w-full py-5 px-3 md:px-5 border-b ${color?.border}`}>
         <div className='flex cursor-pointer' onClick={() => { setDisplay(0) }}>
           <i className='my-auto'><BiArrowBack size={30} /></i>
           <h2 className={`${color?.text?.title} text-xl my-auto font-bold ml-2 md:ml-5`}>Room Summary</h2>

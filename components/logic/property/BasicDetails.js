@@ -3,8 +3,11 @@ import objChecker from "lodash";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import validatebasicDetails from "../../validation/basicdetails";
+
 const current = new Date();
+
 let month = current.getMonth() + 1;
+
 export const descriptionDate = `${current.getDate()}/${month < +10 ? `0${month}` : `${month + 1}`}/${current.getFullYear()}`;
 
 export function fetchAllPropertyTypes(setAllPropertyTypes) {
@@ -150,7 +153,7 @@ export function uploadImage(image, setUploadImageSpin, setImageLogo) {
     console.log(formData)
     axios.post("https://api.cloudinary.com/v1_1/dvczoayyw/image/upload", formData)
         .then((response) => {
-        setImageLogo(response?.data?.secure_url);
+            setImageLogo(response?.data?.secure_url);
         })
         .catch((error) => {
             toast.error("Image upload error. ", {

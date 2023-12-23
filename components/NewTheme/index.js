@@ -11,9 +11,12 @@ import { english, arabic, french } from '../Languages/NewTheme';
 import BookingForm from './Booking';
 import Color from '../colors/Color';
 import Contactus from '../utils/Contactus';
+import BookingEngine from '../BookingEngine';
+import BookingModal from './BookingModal';
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import MenuSM from './MenuSM';
 
 
 function Hotel({ language, HotelDetails, allRooms, allPackages, services, phone, email }) {
@@ -35,10 +38,22 @@ function Hotel({ language, HotelDetails, allRooms, allPackages, services, phone,
     const [privacyPolicy, setPrivacyPolicy] = useState()
     const [termsConditions, setTermsConditions] = useState()
 
+
+
+    const [showBookingEngine, setShowBookingEngine] = useState(0);
+    const [roomsLoader, setRoomsLoader] = useState(false);
+    const [display, setDisplay] = useState(0);
+    const [enquiry, setEnquiry] = useState({
+        "checkin": "",
+        "checkout": "",
+        "number_of_rooms": 1,
+        "number_of_guests": 1,
+        "number_of_adults": 1,
+        "child_below_six": 0,
+        "child_above_six": 0
+    })
+
     const [searched, setSearched] = useState(false)
-
-
-
 
     useEffect(() => {
         getLanguage();
@@ -74,8 +89,6 @@ function Hotel({ language, HotelDetails, allRooms, allPackages, services, phone,
         setRoomDetailLoader(1);
     }
 
-
-
     return (
         <main>
 
@@ -88,11 +101,7 @@ function Hotel({ language, HotelDetails, allRooms, allPackages, services, phone,
                     setLang={setLang}
                     hotelDetailLoader={hotelDetailLoader}
                     setShowContactUs={(e) => setShowContactUs(e)}
-
-                    color={Color?.light}
-                    rooms={rooms}
-                    searched={searched}
-                    setSearched={(e) => setSearched(e)}
+                    setShowModalBooking={(e) => setShowModalBooking(e)}
                 />
             </div>
 
@@ -120,6 +129,7 @@ function Hotel({ language, HotelDetails, allRooms, allPackages, services, phone,
             />
 
             <Services
+                allHotelDetails={allHotelDetails}
                 services={services}
                 hotelDetailLoader={hotelDetailLoader}
                 lang={lang}
@@ -133,15 +143,85 @@ function Hotel({ language, HotelDetails, allRooms, allPackages, services, phone,
                 hotelDetailLoader={hotelDetailLoader}
             />
 
-            <div id="booking_engine" className={`hidden lg:flex  lg:sticky lg:bottom-0 ${searched === false ? 'z-0' : 'z-50'}`}>
+            {/* booking form for lg screen */}
+            <div id="booking_engine" className={`hidden lg:flex lg:sticky lg:bottom-0 ${searched === false ? 'z-0' : 'z-50'}`}>
                 <BookingForm
+                    setShowModalBooking={(e) => setShowModalBooking(e)}
+                    setShowBookingEngine={(e) => setShowBookingEngine(e)}
                     color={Color?.light}
-                    rooms={rooms}
-                    allHotelDetails={allHotelDetails}
                     searched={searched}
                     setSearched={(e) => setSearched(e)}
+                    enquiry={enquiry}
+                    setEnquiry={(e) => setEnquiry(e)}
+                    setRoomsLoader={(e) => setRoomsLoader(e)}
                 />
             </div>
+
+            <Footer
+                setShowModalPrivacy={setShowModalPrivacy}
+                setShowModalTC={setShowModalTC}
+                allHotelDetails={allHotelDetails}
+                hotelDetailLoader={hotelDetailLoader}
+                lang={lang}
+            />
+
+
+            {/* booking form for sm and md screen */}
+            {showModalBooking === 1 ?
+                <div className={`block h-2 lg:hidden`}>
+                    <Modal
+                        title='Booking Form'
+                        description={
+                            <div className={`${searched === false ? 'z-0' : 'z-50 '}`}>
+                                <BookingForm
+                                    setShowModalBooking={(e) => setShowModalBooking(e)}
+                                    setShowBookingEngine={(e) => setShowBookingEngine(e)}
+                                    color={Color?.light}
+                                    searched={searched}
+                                    setSearched={(e) => setSearched(e)}
+                                    enquiry={enquiry}
+                                    setEnquiry={(e) => setEnquiry(e)}
+                                    setRoomsLoader={(e) => setRoomsLoader(e)}
+                                />
+                            </div>
+                        }
+                        setShowModal={(e) => setShowModalBooking(e)}
+                    />
+                </div> : undefined}
+
+
+            {/* this div will only show up when the showBookingEngine is equal to 1 else there will be no such div, and the functions inside this div will only work when showBookingEngine is equal to 1 */}
+            {showBookingEngine === 1 ?
+                <div className="block z-50">
+                    {allHotelDetails && <BookingModal
+                        title="Booking Engine"
+                        bookingComponent={
+                            <BookingEngine
+                                roomsLoader={roomsLoader}
+                                setRoomsLoader={(e) => setRoomsLoader(e)}
+                                display={display}
+                                setDisplay={(e) => setDisplay(e)}
+                                rooms={rooms}
+                                allHotelDetails={allHotelDetails}
+                                setShowModal={(e) => setShowBookingEngine(e)}
+                                setSearched={(e) => setSearched(false)}
+                                checkinDate={enquiry.checkin}
+                                checkoutDate={enquiry.checkout}
+                                color={{
+                                    "theme": "light",
+                                    "bgColor": "bg-slate-200",
+                                    "boxColor": "bg-slate-50",
+                                    "cardColor": "bg-slate-50",
+                                    "border": "border-slate-400",
+                                    "text": {
+                                        "title": "text-black",
+                                        "description": "text-gray-700",
+                                    }
+                                }}
+                            />}
+                    />}
+                </div> : undefined}
+
 
             {/* Toast Container */}
             <ToastContainer
@@ -156,64 +236,40 @@ function Hotel({ language, HotelDetails, allRooms, allPackages, services, phone,
                 pauseOnHover
             />
 
-            <Footer
-                setShowModalPrivacy={setShowModalPrivacy}
-                setShowModalTC={setShowModalTC}
-                allHotelDetails={allHotelDetails}
-                hotelDetailLoader={hotelDetailLoader}
-                lang={lang}
-            />
 
             {/* ------------------- modal view for footer-------------------------- */}
 
-            <div className={showModalTC === 1 ? "block" : "hidden"}>
+            {showModalTC === 1 ?
                 <Modal
                     title={`Terms & Conditions`}
                     description={termsConditions}
                     setShowModal={(e) => setShowModalTC(e)}
                 />
-            </div>
+                : <></>}
 
-            <div className={showModalPrivacy === 1 ? "block" : "hidden"}>
+
+            {showModalPrivacy === 1 ?
                 <Modal
                     title={`Privacy Policy`}
                     description={privacyPolicy}
                     setShowModal={(e) => setShowModalPrivacy(e)}
                 />
-            </div>
+                : <></>}
 
-            <div className={showContactUs === 1 ? "block" : "hidden"}>
+            {showContactUs === 1 ?
                 <Modal
                     description={<Contactus color={Color?.light} language={lang} property_id={HotelDetails?.property_id} />}
                     setShowModal={(e) => setShowContactUs(e)}
                 />
-            </div>
+                : <></>}
 
             {/*-------------------- menu bar for small and medium screen----------- */}
-
             {menu === true ?
-                <React.Fragment>
-                    <div className='absolute inset-0 w-full h-72 md:h-80 bg-white opacity-75 rounded-bl-3xl rounded-br-3xl  md:rounded-br-full z-50'>
-                        <i onClick={() => setMenu(false)} className='flex justify-end pt-5 pr-5 cursor-pointer hover:text-slate-500'><CloseIcon /></i>
-                        <div className='text-center text-black pt-10 md:pt-12'>
-                            <ul className='inline-block font-bold'>
-                                {[{ "label": lang?.about, "id": "#about" },
-                                { "label": lang?.rooms, "id": "#rooms" },
-                                { "label": lang?.photos, "id": "#photos" },
-                                { "label": lang?.services, "id": "#services" },
-                                { "label": lang?.reviews, "id": "#reviews" },
-                                { "label": lang?.contactUs, "id": "#footer" }
-                                ].map((item, index) => {
-                                    return (
-                                        <a href={`${item?.id}`} key={index} onClick={() => setMenu(false)}><li className='pb-1 md:pb-2 hover:text-slate-500'>{item?.label}</li></a>
-                                    )
-                                })}
-
-
-                            </ul>
-                        </div>
-                    </div>
-                </React.Fragment>
+                <MenuSM
+                    lang={lang}
+                    setMenu={setMenu}
+                    setShowContactUs={(e) => setShowContactUs(e)}
+                />
                 : <></>
             }
         </main>

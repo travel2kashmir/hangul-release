@@ -12,6 +12,8 @@ import RoomDiscounts from './rooms/roomDiscounts';
 import RoomRateModification from './rooms/roomRateModification';
 import Multiselect from 'multiselect-react-dropdown';
 import axios from 'axios';
+import DropDown from '../utils/DropDown';
+import { toast } from 'react-toastify';
 let i = 0;
 let lang;
 
@@ -27,75 +29,76 @@ const RoomPriceCalendar = ({ color, language, currentProperty }) => {
     const [roomColors, setRoomColors] = useState([])
     const [globalRoomData, setGlobalRoomData] = useState([])
     const [selectedColors, setSelectedColors] = useState([]);
-    useEffect(() => {
-        currentProperty && (function initialData() {
-            // creates an array of object and from that array duplicates are removed using set
-            axios.get(`/api/room_prices/${currentProperty.property_id}`).then((response) => {
-                console.log(response.data.map((i) => ({ ...i, "title": i.base_rate })))
-                let roomPrice = response.data.map((i) => ({ ...i, "title": i.base_rate }))
+    function initialData() {
+        // creates an array of object and from that array duplicates are removed using set
+        axios.get(`/api/room_prices/${currentProperty.property_id}`).then((response) => {
+            // console.log(response.data.map((i) => ({ ...i, "title": i.base_rate })))
+            let roomPrice = response.data.map((i) => ({ ...i, "title": i.base_rate }))
 
 
-                let uniqueListOfRooms = Array.from(new Set(roomPrice?.map(item => ({ "room_id": item.room_id, "room_name": item.room_name })).map(JSON.stringify)), JSON.parse);
-                setRooms(uniqueListOfRooms);
-                setAllRoomRates(uniqueListOfRooms)
-                let room_ids = roomPrice?.map((rate) => {
-                    return rate?.room_id
-                });
-                const uniqueRoomIdArray = [...new Set(room_ids)];
-                //set is data type in js like array but has unique element
-                //aasign unique color for unique rooms
-                let colorList = [
-                    '#007d9a',
-                    '#0b96ba',
-                    '#00789e',
-                    '#128cb7',
-                    '#0082a9',
-                    '#0a85b5',
-                    '#006f8a',
-                    '#0c94b6',
-                    '#00758e',
-                    '#0d99c2',
-                ];
+            let uniqueListOfRooms = Array.from(new Set(roomPrice?.map(item => ({ "room_id": item.room_id, "room_name": item.room_name })).map(JSON.stringify)), JSON.parse);
+            setRooms(uniqueListOfRooms);
+            setAllRoomRates(uniqueListOfRooms)
+            let room_ids = roomPrice?.map((rate) => {
+                return rate?.room_id
+            });
+            const uniqueRoomIdArray = [...new Set(room_ids)];
+            //set is data type in js like array but has unique element
+            //aasign unique color for unique rooms
+            let colorList = [
+                '#007d9a',
+                '#0b96ba',
+                '#00789e',
+                '#128cb7',
+                '#0082a9',
+                '#0a85b5',
+                '#006f8a',
+                '#0c94b6',
+                '#00758e',
+                '#0d99c2',
+            ];
 
-                let keycolors = uniqueRoomIdArray.map((item) => {
-                    if (selectedColors.length === colorList.length) {
-                        // All colorList have been used, reset selectedColorList
-                        setSelectedColors([]);
-                    }
+            let keycolors = uniqueRoomIdArray.map((item) => {
+                if (selectedColors.length === colorList.length) {
+                    // All colorList have been used, reset selectedColorList
+                    setSelectedColors([]);
+                }
 
 
-                    let randomColor = '';
-                    do {
-                        return (
-                            {
-                                [item]: colorList[Math.floor(Math.random() * colorList.length)]
-                                //randomly giving colors to rooms 
-
-                            }
-                        )
-                    } while (selectedColors.includes(randomColor));
-                    setSelectedColors(prevColors => [...prevColors, randomColor]);
-                })
-
-                //    convert color array to object
-                const mergedColors = Object.assign({}, ...keycolors);
-                setRoomColors(mergedColors)
-                //object with color information
-                let final = roomPrice?.map((rate, id) => {
-                    let color = mergedColors[rate.room_id]
+                let randomColor = '';
+                do {
                     return (
-                        { ...rate, "color": color, "id": id }
+                        {
+                            [item]: colorList[Math.floor(Math.random() * colorList.length)]
+                            //randomly giving colors to rooms 
+
+                        }
                     )
-                })
-                console.log(JSON.stringify(final))
-                setEvents(final)
-                setGlobalRoomData(final)
-                lang = localStorage.getItem('Language') != undefined ? localStorage.getItem('Language') : 'en'
-            }).catch((error) => {
-                console.log(error)
+                } while (selectedColors.includes(randomColor));
+                setSelectedColors(prevColors => [...prevColors, randomColor]);
             })
 
-        })()
+            //    convert color array to object
+            const mergedColors = Object.assign({}, ...keycolors);
+            setRoomColors(mergedColors)
+            //object with color information
+            let final = roomPrice?.map((rate, id) => {
+                let color = mergedColors[rate.room_id]
+                return (
+                    { ...rate, "color": color, "id": id }
+                )
+            })
+            // console.log(JSON.stringify(final))
+            setEvents(final)
+            setGlobalRoomData(final)
+            lang = localStorage.getItem('Language') != undefined ? localStorage.getItem('Language') : 'en'
+        }).catch((error) => {
+            toast.error(`API: ${error}`)
+        })
+
+    }
+    useEffect(() => {
+        currentProperty && initialData()
     }, [currentProperty])
 
 
@@ -106,7 +109,7 @@ const RoomPriceCalendar = ({ color, language, currentProperty }) => {
         setEvents(remainingRooms)
         setAllRoomRates(selectedList)
     }
-    //tp add rooms
+    //to add rooms
     function addRoom(selectedList, selectedItem) {
         let addingRooms = globalRoomData?.filter(item => item.room_id === selectedItem.room_id)
         setEvents([...events, ...addingRooms])
@@ -114,30 +117,15 @@ const RoomPriceCalendar = ({ color, language, currentProperty }) => {
 
     const handleDateClick = (event) => { // bind with an arrow function
         setSelectedRoom({ ...event?.extendedProps, "id": event.id })
-        setSelectedDate({ "date": event.start, "visibleDate": `${event.start.getDate()}-${event.start.getMonth() + 1}-${event.start.getFullYear()}` });
+        setSelectedDate({ "date": `${event.start.getFullYear()}-${event.start.getMonth() + 1}-${event.start.getDate()}`, "visibleDate": `${event.start.getDate()}-${event.start.getMonth() + 1}-${event.start.getFullYear()}` });
         setModalVisible(true);
         setTitle(event?.title);
-        console.log(JSON.stringify(event));
+        // console.log(JSON.stringify(event));
     }
 
     const updateRate = () => {
         setModalVisible(false);
     };
-
-    function setNewValue(e) {
-        let intermediateDataOfRateEdited = {
-            "title": e.target.value,
-            "date": selectedDate.date,
-            "room_id": selectedRoom.room_id,
-            "room_name": selectedRoom.room_name,
-            "id": selectedRoom.id,
-            "color": roomColors[selectedRoom.room_id]
-
-        };
-        let unchangedvalue = events?.filter(i => (i.id != selectedRoom.id))
-        let final = [...unchangedvalue, intermediateDataOfRateEdited]
-        setEvents(final)
-    }
 
     return (
         <div className='h-full'>
@@ -159,12 +147,12 @@ const RoomPriceCalendar = ({ color, language, currentProperty }) => {
                     style={{
                         chips: {
                             background: '#0891b2',
-                            'font-size': '0.875 rem'
+                            'fontSize': '0.875 rem'
                         },
                         searchBox: {
                             border: 'none',
-                            'border-bottom': 'none',
-                            'border-radius': '0px'
+                            'borderBottom': 'none',
+                            'borderRadius': '0px'
                         }
                     }}
 
@@ -194,7 +182,7 @@ const RoomPriceCalendar = ({ color, language, currentProperty }) => {
 
 
 
-            {/* Tailwind CSS Modal */}
+            {/* Tailwind CSS Modal to show option available for ediing */}
             {modalVisible === true ?
                 <div className="overflow-x-hidden overflow-y-auto fixed top-4 left-0 right-0 backdrop-blur-xl bg-black/30 md:inset-0 z-50 flex justify-center items-center h-modal sm:h-full">
                     <div className="relative w-full max-w-2xl px-4 h-full md:h-auto">
@@ -209,6 +197,7 @@ const RoomPriceCalendar = ({ color, language, currentProperty }) => {
                                     type="button"
                                     onClick={() => {
                                         document.getElementById('rate').reset();
+                                        setEditUI('');
                                         setModalVisible(false);
                                     }}
                                     className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
@@ -230,30 +219,32 @@ const RoomPriceCalendar = ({ color, language, currentProperty }) => {
                             </div>
 
                             <form id='rate'>
-                                <InputText
-                                    label={`${selectedRoom?.room_name} Rate`}
-                                    visible={1}
-                                    defaultValue={title}
-                                    onChangeAction={(e) => setNewValue(e)}
-                                    color={color}
-                                    req={true}
-                                    title={`enter new rate of room for ${selectedDate}`}
-                                    tooltip={true}
-                                />
+                                <div className=" md:px-4 mx-auto w-full">
+                                    <div className="flex flex-wrap">
+
+                                        <InputText
+                                            label={`${selectedRoom?.room_name} Rate`}
+                                            disabled={true}
+                                            visible={1}
+                                            defaultValue={title}
+                                            color={color}
+                                            req={true}
+                                            title={`enter new rate of room for ${JSON.stringify(selectedDate)}`}
+                                            tooltip={true}
+                                        />
+
+                                        <DropDown label={'Change rate options'}
+                                            visible={1}
+                                            defaultValue={'Select Option'}
+                                            onChangeAction={(e) => setEditUI(e.target.value)}
+                                            color={color}
+                                            req={true}
+                                            options={[{ "value": "discount", "label": "I want to give discount" },
+                                            { "value": "modification", "label": "I want to do rate modification" }]}
+                                            tooltip={false} />
+                                    </div>
+                                </div>
                             </form>
-
-                            <select
-                                className={`shadow-sm ${color?.greybackground} capitalize border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-11/12 mx-4 p-2.5 mb-4`}
-                                onChange={(e) => setEditUI(e.target.value)}>
-                                <option selected>Change rate options</option>
-                                <option value="discount">I want to give discount</option>
-                                <option value="modification">I want to do rate modification</option>
-                            </select>
-
-                            {/* <div className="items-center p-4 border-t border-gray-200 rounded-b">
-                                <Button Primary={language?.Update} onClick={() => { updateRate() }} />
-                            </div> */}
-
                             <div className={`items-center px-4 py-2 ${editUI === 'none' ? "" : "border-b"} border-gray-200 `}>
                                 <Button Primary={language?.Update} onClick={() => { updateRate() }} />
 
@@ -263,13 +254,20 @@ const RoomPriceCalendar = ({ color, language, currentProperty }) => {
                             {/* discount ui */}
                             {editUI === 'discount' ?
                                 <div>
-                                    <RoomDiscounts room_id={selectedRoom?.room_id} />
+                                    <RoomDiscounts room_id={selectedRoom?.room_id} 
+                                    dateSelected={selectedDate.date}
+                                    setModalVisible={setModalVisible}
+                                    initialData={initialData}/>
                                 </div>
                                 : undefined}
                             {/* modification ui */}
                             {editUI === 'modification' ?
                                 <div>
-                                    <RoomRateModification room_id={selectedRoom?.room_id} />
+                                    <RoomRateModification room_id={selectedRoom?.room_id} 
+                                    dateSelected={selectedDate.date} 
+                                    base_rate={selectedRoom?.base_rate} 
+                                    setModalVisible={setModalVisible}
+                                    initialData={initialData}/>
                                 </div> : undefined}
 
 

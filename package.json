@@ -128,8 +128,8 @@
   "devDependencies": {
     "@event-calendar/core": "^0.17.0",
     "@event-calendar/time-grid": "^0.17.0",
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^13.4.0",
+    "@testing-library/jest-dom": "^6.1.5",
+    "@testing-library/react": "^14.1.2",
     "@testing-library/user-event": "14.4.3",
     "autoprefixer": "^10.4.4",
     "babel-jest": "27.0.6",

@@ -13,8 +13,3 @@ Object.defineProperty(window, 'matchMedia', {
     removeListener: jest.fn(),
   })),
 });
-
-// Mock the useRouter function
-// jest.mock('next/router', () => ({
-//   useRouter: jest.fn(),
-// }));

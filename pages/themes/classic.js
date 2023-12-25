@@ -1256,26 +1256,28 @@ function Classic(args) {
                                        <div className="tour-reviews-feedback-content">
 
                                           {/* <div className="tour-reviews-feedback-content-inner"> */}
-                                          <div className="">
+                                          <div className="p-10">
 
                                              {/* <div className="tour-reviews-feedback-title"> */}
                                              <div className="text-sm lg:text-base font-semibold">
 
                                                 <div className={visible === 0 ? 'block w-24 mb-2' : 'hidden'}><LineLoader /></div>
-                                                <div className={visible === 1 ? 'block' : 'hidden'}>
+                                                <div className={visible === 1 ? `block ${themeColor?.titleTextColor}` : 'hidden'}>
                                                    {item?.review_author}</div>
                                              </div>
 
                                              {/* <div className="tour-reviews-feedback-text"> */}
                                              <div className="text-xs lg:text-sm ">
                                                 <div className={visible === 0 ? 'block h-2 w-64 mb-6' : 'hidden'}><LineLoader /></div>
-                                                <div className={visible === 1 ? 'block' : 'hidden'}>
-                                                   {item?.review_title}</div>
+                                                <div className={visible === 1 ? `block ${themeColor?.descriptionTextColor}` : 'hidden'}>
+                                                   {item?.review_content}</div>
+                                                {/* {item?.review_title}</div> */}
                                              </div>
                                           </div>
                                        </div>
+                                       {/* review rating div */}
                                        {/* <div className="tour-reviews-feedback-rating capitalize">{item?.review_rating}</div> */}
-                                       <div className="h-10 w-10 rounded-full text-center font-semibold text-sm capitalize">{item?.review_rating}</div>
+                                       <div className={`${themeColor?.titleTextColor} h-10 w-10 rounded-full text-center font-semibold text-sm capitalize`}>{'⭐'.repeat(item?.review_rating || 0)}</div>
                                     </div>
 
                                  )
@@ -1285,7 +1287,7 @@ function Classic(args) {
                         </div>
 
                         {/* <div className="tour-reviews-overall"> */}
-                        <div className="tour-review-overall relative flex w-full items-center justify-center overflow-hidden rounded-b-lg border border-t-0 border-solid border-gray-300 bg-white p-10 text-center text-gray-400 lg:w-2/5 lg:rounded-lg lg:border-t lg:bg-transparent">
+                        <div className={`tour-review-overall ${themeColor?.bodyBgColor} relative flex w-full items-center justify-center overflow-hidden rounded-b-lg border border-t-0 border-solid border-gray-300  p-10 text-center text-gray-400 lg:w-2/5 lg:rounded-lg lg:border-t lg:bg-transparent"`}>
                            <div>
 
                               {/* <div className="tour-reviews-overall-title"> */}
@@ -1500,7 +1502,7 @@ function Classic(args) {
          </div>
 
          {/* Footer */}
-         <footer footer className="bg-gray-900 lg:mt:8 py-6" >
+         <footer className="bg-gray-900 lg:mt:8 py-6" >
             <div className="md:flex md:justify-between mx-6">
                <div className="mb-6 md:mb-0 px-12 md:px-8">
 

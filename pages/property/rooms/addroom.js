@@ -27,6 +27,8 @@ import { InitialActions, ColorToggler } from '../../../components/initalActions'
 import Router from 'next/router'
 import { addInventoryDetail } from '../../../components/redux/hangulSlice';
 import BreadCrumb from '../../../components/utils/BreadCrumb';
+import { fetchRoomtypes, fetchServices, validationRoomDescription, validationBedData, submitServices, navigationList } from '../../../components/logic/property/Rooms/AddRoom';
+
 const logger = require("../../../services/logger");
 var currentLogged;
 let colorToggle;
@@ -71,8 +73,8 @@ function Addroom() {
       Router.push(window.location.origin)
     }
     else {
-      fetchRoomtypes();
-      fetchServices();
+      fetchRoomtypes(setRoomtypes, setVisible);
+      fetchServices(setServices);
     }
   }, [])
 
@@ -117,17 +119,18 @@ function Addroom() {
   }
 
 
-  // Room Types
-  const fetchRoomtypes = async () => {
-    const url = `/api/room-types`
-    axios.get(url)
-      .then((response) => {
-        setRoomtypes(response.data);
-        logger.info("url  to fetch roomtypes hitted successfully")
-        setVisible(1)
-      })
-      .catch((error) => { logger.error("url to fetch roomtypes, failed") });
-  }
+  // // Room Types
+  // const fetchRoomtypes = async () => {
+  //   const url = `/api/room-types`
+  //   axios.get(url)
+  //     .then((response) => {
+  //       setRoomtypes(response.data);
+  //       logger.info("url  to fetch roomtypes hitted successfully")
+  //       setVisible(1)
+  //     })
+  //     .catch((error) => { logger.error("url to fetch roomtypes, failed") });
+  // }
+
   // Image Template
   const imageTemplate = {
     property_id: currentProperty?.property_id,
@@ -198,19 +201,21 @@ function Addroom() {
       });
 
   }
+
   // Room Services
-  const fetchServices = async () => {
-    const url = `/api/all_room_services`
-    axios.get(url)
-      .then((response) => {
-        setServices(response.data);
-        logger.info("url  to fetch roomtypes hitted successfully")
-      })
-      .catch((error) => { logger.error("url to fetch roomtypes, failed") });
-  }
+  // const fetchServices = async () => {
+  //   const url = `/api/all_room_services`
+  //   axios.get(url)
+  //     .then((response) => {
+  //       setServices(response.data);
+  //       logger.info("url  to fetch roomtypes hitted successfully")
+  //     })
+  //     .catch((error) => { logger.error("url to fetch roomtypes, failed") });
+  // }
 
   /*For Room Description*/
   const [allRoomDes, setAllRoomDes] = useState([]);
+
   //add new inventory 
   const submitInventory = (room_id) => {
     const current = new Date();
@@ -255,62 +260,60 @@ function Addroom() {
       })
   }
 
-
-  /**  Submit Function for Room Description **/
-  function submitRoomDescription() {
-    setError({});
-    if (allRoomDes.length !== 0) {
-      setSpinner(1)
-      const finalData = { ...allRoomDes, status: true, property_id: currentProperty?.property_id }
-      axios.post('/api/room', JSON.stringify(finalData), { headers: { 'content-type': 'application/json' } })
-        .then(response => {
-          setSpinner(0);
-          toast.success("API: Room created successfully", {
-            position: "top-center",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
-          setRoomId(response.data.room_id)
-          if (allRoomDes?.room_type_id === 'rt001' || allRoomDes?.room_type_id === 'rt002' || allRoomDes?.room_type_id === 'rt003'
-            || allRoomDes?.room_type_id === 'rt004' || allRoomDes?.room_type_id === 'rt005') { submitBed(response.data.room_id) }
-          submitView(response.data.room_id)
-          submitInventory(response.data.room_id)
-          manageIdentifiers(response.data.room_id, allRoomDes?.room_type_id)
-          setAllRoomDes([]);
-          setDisp(2);
-          setError({});
-        })
-        .catch(error => {
-          setSpinner(0);
-          toast.error("API: Room Description Error! ", {
-            position: "top-center",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
-        }
-        )
-    }
-    else {
-      toast.error("App: Please fill the room details ", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-    }
-  }
-
+  /*  Submit Function for Room Description */
+  // function submitRoomDescription() {
+  //   setError({});
+  //   if (allRoomDes.length !== 0) {
+  //     setSpinner(1)
+  //     const finalData = { ...allRoomDes, status: true, property_id: currentProperty?.property_id }
+  //     axios.post('/api/room', JSON.stringify(finalData), { headers: { 'content-type': 'application/json' } })
+  //       .then(response => {
+  //         setSpinner(0);
+  //         toast.success("API: Room created successfully", {
+  //           position: "top-center",
+  //           autoClose: 5000,
+  //           hideProgressBar: false,
+  //           closeOnClick: true,
+  //           pauseOnHover: true,
+  //           draggable: true,
+  //           progress: undefined,
+  //         });
+  //         setRoomId(response.data.room_id)
+  //         if (allRoomDes?.room_type_id === 'rt001' || allRoomDes?.room_type_id === 'rt002' || allRoomDes?.room_type_id === 'rt003'
+  //           || allRoomDes?.room_type_id === 'rt004' || allRoomDes?.room_type_id === 'rt005') { submitBed(response.data.room_id) }
+  //         submitView(response.data.room_id)
+  //         submitInventory(response.data.room_id)
+  //         manageIdentifiers(response.data.room_id, allRoomDes?.room_type_id)
+  //         setAllRoomDes([]);
+  //         setDisp(2);
+  //         setError({});
+  //       })
+  //       .catch(error => {
+  //         setSpinner(0);
+  //         toast.error("API: Room Description Error! ", {
+  //           position: "top-center",
+  //           autoClose: 5000,
+  //           hideProgressBar: false,
+  //           closeOnClick: true,
+  //           pauseOnHover: true,
+  //           draggable: true,
+  //           progress: undefined,
+  //         });
+  //       }
+  //       )
+  //   }
+  //   else {
+  //     toast.error("App: Please fill the room details ", {
+  //       position: "top-center",
+  //       autoClose: 5000,
+  //       hideProgressBar: false,
+  //       closeOnClick: true,
+  //       pauseOnHover: true,
+  //       draggable: true,
+  //       progress: undefined,
+  //     });
+  //   }
+  // }
 
   /** For Bed**/
   const BedTemplate = {
@@ -425,8 +428,6 @@ function Addroom() {
       })
   }
 
-
-
   /** Function to submit room images **/
   const submitRoomImages = () => {
     const imagedata = imageData?.map((i => {
@@ -479,52 +480,52 @@ function Addroom() {
   }
 
   /*Function to add room service*/
-  const submitServices = () => {
-    setSpinner(1);
-    services.map(
-      (i) => (i.room_id = roomId, i.status = i.service_value)
-    )
-    services.map(
-      (i) => {
-        if (JSON.stringify(i.service_value) !== "true") {
-          return (
+  // const submitServices = () => {
+  //   setSpinner(1);
+  //   services.map(
+  //     (i) => (i.room_id = roomId, i.status = i.service_value)
+  //   )
+  //   services.map(
+  //     (i) => {
+  //       if (JSON.stringify(i.service_value) !== "true") {
+  //         return (
 
-            i.service_value = false,
-            i.status = false
-          )
-        }
-      }
-    )
-    var total = { "room_services": services }
-    const url = '/api/room_facilities'
-    axios.post(url, total, { header: { "content-type": "application/json" } }).then
-      ((response) => {
-        setSpinner(0);
-        toast.success("API: Room services add success.", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-        setDisp(3);
-      })
-      .catch((error) => {
-        setSpinner(0);
-        toast.error("API: Room Services add error. ", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      })
+  //           i.service_value = false,
+  //           i.status = false
+  //         )
+  //       }
+  //     }
+  //   )
+  //   var total = { "room_services": services }
+  //   const url = '/api/room_facilities'
+  //   axios.post(url, total, { header: { "content-type": "application/json" } }).then
+  //     ((response) => {
+  //       setSpinner(0);
+  //       toast.success("API: Room services add success.", {
+  //         position: "top-center",
+  //         autoClose: 5000,
+  //         hideProgressBar: false,
+  //         closeOnClick: true,
+  //         pauseOnHover: true,
+  //         draggable: true,
+  //         progress: undefined,
+  //       });
+  //       setDisp(3);
+  //     })
+  //     .catch((error) => {
+  //       setSpinner(0);
+  //       toast.error("API: Room Services add error. ", {
+  //         position: "top-center",
+  //         autoClose: 5000,
+  //         hideProgressBar: false,
+  //         closeOnClick: true,
+  //         pauseOnHover: true,
+  //         draggable: true,
+  //         progress: undefined,
+  //       });
+  //     })
 
-  }
+  // }
 
   /* Function for Room Rates*/
   const submitRoomRates = () => {
@@ -596,35 +597,37 @@ function Addroom() {
   }
 
   // Validate Room Description
-  const validationRoomDescription = () => {
-    var result = validateRoom(allRoomDes, finalView, roomIdentifiers?.split(","))
-    if (result === true) {
-      if (allRoomDes?.room_type_id === 'rt001' || allRoomDes?.room_type_id === 'rt002' || allRoomDes?.room_type_id === 'rt003' || allRoomDes?.room_type_id === 'rt004'
-        || allRoomDes?.room_type_id === 'rt005') {
-        setDisp(1);
-        setError({});
-      }
-      else {
-        submitRoomDescription();
-      }
-    }
-    else {
-      setError(result)
-    }
-  }
+  // const validationRoomDescription = () => {
+  //   var result = validateRoom(allRoomDes, finalView, roomIdentifiers?.split(","))
+  //   if (result === true) {
+  //     if (allRoomDes?.room_type_id === 'rt001' || allRoomDes?.room_type_id === 'rt002' || allRoomDes?.room_type_id === 'rt003' || allRoomDes?.room_type_id === 'rt004'
+  //       || allRoomDes?.room_type_id === 'rt005') {
+  //       setDisp(1);
+  //       setError({});
+  //     }
+  //     else {
+  //       submitRoomDescription();
+  //     }
+  //   }
+  //   else {
+  //     setError(result)
+  //   }
+  // }
 
   // Validate Beds Data
-  const validationBedData = () => {
-    var result = validateBedData(BedData)
-    if (result === true) {
-      submitRoomDescription();
-    }
-    else {
-      setError(result)
-    }
-  }
+  // const validationBedData = () => {
+  //   var result = validateBedData(BedData)
+  //   if (result === true) {
+  //     submitRoomDescription(setError, allRoomDes, setSpinner, currentProperty, setRoomId, submitBed, submitView, submitInventory, manageIdentifiers, setAllRoomDes, setDisp);
+  //   }
+  //   else {
+  //     setError(result)
+  //   }
+  // }
 
   // Validate Rates
+
+
   const validationRates = () => {
     var result = validateRoomRates(allRoomRates)
     if (result === true) {
@@ -635,32 +638,7 @@ function Addroom() {
     }
   }
 
-  function navigationList(currentLogged, currentProperty) {
-    return ([
-      {
-        icon: "homeIcon",
-        text: "Home",
-        link: currentLogged?.id.match(/admin.[0-9]*/)
-          ? "../../admin/adminlanding"
-          : "../landing"
-      },
-      {
-        icon: "rightArrowIcon",
-        text: [currentProperty?.property_name],
-        link: "../propertysummary"
-      },
-      {
-        icon: "rightArrowIcon",
-        text: "Rooms",
-        link: "../rooms"
-      },
-      {
-        icon: "rightArrowIcon",
-        text: "Add Room",
-        link: ""
-      }
-    ])
-  }
+
 
 
   return (
@@ -1095,14 +1073,14 @@ function Addroom() {
                   || allRoomDes?.room_type_id === 'rt005' ?
 
                   <Button Primary={language?.Next} onClick={(e) => {
-                    validationRoomDescription()
+                    validationRoomDescription(allRoomDes, finalView, roomIdentifiers, setDisp, setError, setSpinner, currentProperty, setRoomId, submitBed, submitView, submitInventory, manageIdentifiers, setAllRoomDes)
                   }} /> :
                   <>
 
                     <div className={spinner === 0 ? 'block' : 'hidden'}>
                       {allRoomDes?.length !== 0 ?
                         <Button Primary={language?.Submit} onClick={(e) => {
-                          validationRoomDescription()
+                          validationRoomDescription(allRoomDes, finalView, roomIdentifiers, setDisp, setError, setSpinner, currentProperty, setRoomId, submitBed, submitView, submitInventory, manageIdentifiers, setAllRoomDes)
                         }} /> :
                         <Button Primary={language?.SubmitDisabled} />}
                     </div>
@@ -1212,7 +1190,7 @@ function Addroom() {
                         <div className={spinner === 0 ? 'block' : 'hidden'}>
                           {flag === 1 ?
                             <Button Primary={language?.Submit} onClick={() => {
-                              validationBedData()
+                              validationBedData(BedData, setError, allRoomDes, setSpinner, currentProperty, setRoomId, submitBed, submitView, submitInventory, manageIdentifiers, setAllRoomDes, setDisp)
                             }} /> :
                             <Button Primary={language?.SubmitDisabled} />}
                         </div>
@@ -1332,7 +1310,7 @@ function Addroom() {
               <div className="flex items-center mt-4 justify-end space-x-2 sm:space-x-3 ml-auto">
                 <Button Primary={language?.Skip} onClick={() => { setDisp(3) }} />
                 <div className={spinner === 0 ? 'block' : 'hidden'}>
-                  <Button Primary={language?.Submit} onClick={() => { submitServices() }} />
+                  <Button Primary={language?.Submit} onClick={() => { submitServices(setSpinner, services, roomId, setDisp) }} />
                 </div>
                 <div className={spinner === 1 ? 'block' : 'hidden'}>
                   <Button Primary={language?.Spinnersubmit} />
@@ -1375,7 +1353,8 @@ function Addroom() {
                 <div className="sm:flex">
                   <h6 className={`${color?.text} text-base  flex leading-none  pt-2 font-semibold `}>
                     {language?.room}  {language?.gallery}
-                  </h6> <div className="flex space-x-1 pl-0 sm:pl-2 mt-3 sm:mt-0">
+                  </h6>
+                  <div className="flex space-x-1 pl-0 sm:pl-2 mt-3 sm:mt-0">
                   </div>
                   <div className="flex items-center space-x-2 sm:space-x-3 ml-auto">
                     <Button Primary={language?.Add} onClick={addPhotos} />
@@ -1389,10 +1368,8 @@ function Addroom() {
                     {imageData?.map((imageData, index) => (
                       <>
                         <button
-                          className="float-right my-8 sm:inline-flex  text-gray-800  
-                           font-semibold border  focus:ring-4 focus:ring-cyan-200 font-semibold bg-gray-200
-                                  rounded-lg text-sm px-1 py-1 text-center 
-                                  items-center mb-1 ml-16 ease-linear transition-all duration-150"
+                          className="float-right my-8 sm:inline-flex  text-gray-800 border focus:ring-4 focus:ring-cyan-200 font-semibold bg-gray-200
+                                  rounded-lg text-sm px-1 py-1 text-center items-center mb-1 ml-16 ease-linear transition-all duration-150"
                           type="button"
                           onClick={() => removeImage(imageData?.index)}>
                           <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd">
@@ -1468,9 +1445,6 @@ function Addroom() {
                                 {error?.[index]?.image_description}</p>
 
                             </div>
-
-
-
                           </div>
                         </div></>
                     ))}

@@ -109,6 +109,13 @@ function Page({ data, room_data, package_data }) {
           <Classic language={language} allHotelDetails={allHotelDetails}
             allRooms={allRooms} allPackages={allPackages} services={services}
             phone={phone} email={email} initialColor={ClassicThemeColors.white} /></div> : <div className="sticky"></div>}
+      
+      {/* Classic Theme */}
+      {theme === "Classic Accessible" ?
+        <div className="sticky">
+          <Classic language={language} allHotelDetails={allHotelDetails}
+            allRooms={allRooms} allPackages={allPackages} services={services}
+            phone={phone} email={email} initialColor={ClassicThemeColors.accessibleColors} /></div> : <div className="sticky"></div>}
 
       {/* Classic Dark */}
       {theme === "Classic-Dark" ?

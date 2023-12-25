@@ -42,5 +42,24 @@ const black = {
 
 }
 
-
-export default { black, white }
+const accessibleColors = {
+    theme: "light",
+    navtextColor: "text-gray-700", // Adjusted for better contrast
+    headerBgColor: "bg-white",
+    bodyBgColor: "bg-gray-100", // Adjusted for better contrast
+    menuColor: "text-black",
+    titleTextColor: "text-gray-800", // Adjusted for better contrast
+    descriptionTextColor: "text-gray-700",
+    facilitiesTextColor: "text-gray-600", // Adjusted for better contrast
+    bookingFormColor: "bg-white",
+    inputTextColor: "text-gray-800", // Adjusted for better contrast
+    dropdownTextColor: "text-gray-900",
+  
+    // Injecting colors to booking engine below
+    text: {
+      title: "text-gray-800", // Adjusted for better contrast
+      description: "text-gray-700",
+    },
+  };
+  
+export default { black, white, accessibleColors }

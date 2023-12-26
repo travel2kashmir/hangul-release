@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import Link from "next/link";
 import dashboardImage from "../../public/dash-graph.PNG"
 import Title from '../../components/title';
 import Sidebar from "../../components/Sidebar";
@@ -11,120 +10,74 @@ import arabic from "../../components/Languages/ar"
 import Button from "../../components/Button";
 import Footer from '../../components/Footer';
 import colorFile from '../../components/colors/Color';
-import Router from 'next/router';
 import Headloader from '../../components/loaders/headloader';
 import Textboxloader from '../../components/loaders/textboxloader';
+import { InitialActions, ColorToggler } from "../../components/initalActions";
+import BreadCrumb from "../../components/utils/BreadCrumb";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 var language;
 var currentProperty;
 var currentLogged;
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-const logger = require("../../services/logger");
 let colorToggle;
 
 function Dashboard() {
   const [color, setColor] = useState({})
-  const [visible, setVisible] = useState(1);
-  const[mode,setMode] = useState()
-  /** Fetching language from the local storage **/
+  const [mode, setMode] = useState()
+
+  // runs at load time
   useEffect(() => {
-   
-    firstfun();
+    const resp = InitialActions({ setColor, setMode })
+    language = resp?.language;
+    currentLogged = resp?.currentLogged;
+    currentProperty = resp?.currentProperty;
+    colorToggle = resp?.colorToggle
   }, [])
 
-  const firstfun = () => {
-    if (typeof window !== 'undefined') {
-      var locale = localStorage.getItem("Language");
-      colorToggle = localStorage.getItem("colorToggle");
-      if (colorToggle === "" || colorToggle === undefined || colorToggle === null || colorToggle === "system") {
-        window.matchMedia("(prefers-color-scheme:dark)").matches === true ? setColor(colorFile?.dark) : setColor(colorFile?.light)
-        setMode(window.matchMedia("(prefers-color-scheme:dark)").matches === true ? true : false);
-      }
-      else if (colorToggle === "true" || colorToggle === "false") {
-        setColor(colorToggle === "true" ? colorFile?.dark : colorFile?.light);
-        setMode(colorToggle === "true" ? true : false)
-      }
+  function navigationList(currentLogged, currentProperty) {
+    return ([
       {
-        if (locale === "ar") {
-          language = arabic;
-        }
-        if (locale === "en") {
-          language = english;
-        }
-        if (locale === "fr") {
-          language = french;
-
-        }
+        icon: "homeIcon",
+        text: "Home",
+        link: currentLogged?.id.match(/admin.[0-9]*/)
+          ? "../admin/adminlanding"
+          : "./landing"
+      },
+      {
+        icon: "rightArrowIcon",
+        text: [currentProperty?.property_name],
+        link: "./propertysummary"
+      },
+      {
+        icon: "rightArrowIcon",
+        text: "Basic Details",
+        link: ""
       }
-      /** Current Property Details fetched from the local storage **/
-      currentProperty = JSON.parse(localStorage.getItem("property"));
-      currentLogged = JSON.parse(localStorage.getItem("Signin Details"));
-
-    }
+    ])
   }
 
-  const colorToggler = (newColor) => {
-    if (newColor === 'system') {
-      window.matchMedia("(prefers-color-scheme:dark)").matches === true ? setColor(colorFile?.dark)
-      : setColor(colorFile?.light)
-      localStorage.setItem("colorToggle", newColor)
-    }
-    else if (newColor === 'light') {
-      setColor(colorFile?.light)
-      localStorage.setItem("colorToggle", false)
-    }
-    else if (newColor === 'dark') {
-      setColor(colorFile?.dark)
-      localStorage.setItem("colorToggle", true)
-    }
-   firstfun();
-   Router.push('./dashboard')
-  }
 
   return (
     <>
       <Title name={`Engage |  ${language?.dashboard}`} />
-      <Header color={color} Primary={english.Side} Type={currentLogged?.user_type}  Sec={colorToggler} mode={mode} setMode={setMode}/>
+
+      <Header color={color} setColor={setColor} Primary={english.Side} Type={currentLogged?.user_type} Sec={ColorToggler} mode={mode} setMode={setMode} />
+
       <Sidebar color={color} Primary={english.Side} Type={currentLogged?.user_type} />
+
       <div id="main-content"
         className={`${color?.greybackground} px-4 pt-24 pb-2 relative overflow-y-auto lg:ml-64`}>
-        {/* bread crumb */}
-        <nav className="flex mb-5 ml-4" aria-label="Breadcrumb">
-          <ol className="inline-flex items-center space-x-1 md:space-x-2">
-            <li className="inline-flex items-center">
-              <div className={`${color?.text} text-base font-medium  inline-flex items-center`}>
-                <svg className="w-5 h-5 mr-2.5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
-                <Link href={currentLogged?.id.match(/admin.[0-9]*/) ? "../admin/adminlanding" : "./landing"}
-                  className={`${color?.text} text-base font-medium  inline-flex items-center`}><a>{language?.home}</a>
-                </Link></div>
-            </li>
-            <li>
-              <div className="flex items-center">
-                <div className={`${color?.text} text-base font-medium  inline-flex items-center`}>
-                  <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path></svg>
-                  <div className={visible === 0 ? 'block w-16' : 'hidden'}><Headloader /></div>
-                  <div className={visible === 1 ? 'block' : 'hidden'}>
-                    <span className="text-gray-700 text-sm  capitalise font-medium hover:{`${color?.text} ml-1 md:ml-2 capitalize">
-                      <Link href="./propertysummary" >
-                        <a>{currentProperty?.property_name}</a>
-                      </Link></span>
-                  </div></div>
 
-              </div>
-            </li>
-            <li>
-              <div className="flex items-center">
-                <div className={`${color?.textgray} text-base font-medium  inline-flex items-center`}>
-                  <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path></svg>
-                  <span className="text-gray-400 ml-1 md:ml-2 font-medium text-sm  " aria-current="page">{language?.dashboard}</span>
-                </div>
-              </div>
-            </li>
-          </ol>
-        </nav>
+        {/* bread crumb */}
+        <BreadCrumb
+          color={color}
+          crumbList={navigationList(currentLogged, currentProperty)}
+        />
+
         <main>
           <div className="pt-6 px-4">
-            <div className="w-full grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-4">
+            {/* <div className="w-full grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-4">
               <div className="bg-white shadow rounded-lg p-4 sm:p-6 xl:p-8  2xl:col-span-2">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex-shrink-0">
@@ -257,9 +210,48 @@ function Dashboard() {
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
+
+
+
+
+
+
+            {/* room details */}
             <div className="mt-4 w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-              <div className="bg-white shadow rounded-lg p-4 sm:p-6 xl:p-8 ">
+              <div className="bg-cyan-700 text-white shadow rounded-lg p-4 sm:p-6 xl:p-8 ">
+                <div className="flex justify-between my-auto">
+                  <div className='my-auto'>
+                    <h2>Available Rooms Today</h2>
+                  </div>
+                  <div >
+                    <span className='text-2xl sm:text-3xl leading-none font-bold text-white'>20</span>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-cyan-700 text-white shadow rounded-lg p-4 sm:p-6 xl:p-8 ">
+                <div className="flex justify-between my-auto">
+                  <div className='my-auto'>
+                    <h2>Sold Out Rooms Today</h2>
+                  </div>
+                  <div >
+                    <span className='text-2xl sm:text-3xl leading-none font-bold text-white'>10</span>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-cyan-700 text-white shadow rounded-lg p-4 sm:p-6 xl:p-8 ">
+                <div className="flex justify-between my-auto">
+                  <div className='my-auto'>
+                    <h2>Out Of Service Rooms Today</h2>
+                  </div>
+                  <div >
+                    <span className='text-2xl sm:text-3xl leading-none font-bold text-white'>5</span>
+                  </div>
+                </div>
+              </div>
+
+
+              {/* <div className="bg-white text-white shadow rounded-lg p-4 sm:p-6 xl:p-8 ">
                 <div className="flex items-center">
                   <div className="flex-shrink-0">
                     <span className="text-2xl sm:text-3xl leading-none font-bold text-gray-900">2,340</span>
@@ -272,6 +264,7 @@ function Dashboard() {
                     </svg>
                   </div>
                 </div>
+
               </div>
               <div className="bg-white shadow rounded-lg p-4 sm:p-6 xl:p-8 ">
                 <div className="flex items-center">
@@ -300,9 +293,33 @@ function Dashboard() {
                     </svg>
                   </div>
                 </div>
+              </div> */}
+            </div>
+
+            {/* other details */}
+            <div className='my-4'>
+              <div className='bg-white shadow rounded-lg mb-4 p-4 sm:p-6 h-full'>
+                <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+                  <div className='text-center'>
+                    <h2 className='text-2xl lg:text-3xl font-bold'>569</h2>
+                    <p className='md:pt-2 text-gray-600'>Total Customers</p>
+                  </div>
+                  <div className='text-center'>
+                    <h2 className='text-2xl lg:text-3xl font-bold'>2000</h2>
+                    <p className='md:pt-2 text-gray-600'>Total Rooms</p>
+                  </div>
+                  <div className='text-center'>
+                    <h2 className='text-2xl lg:text-3xl font-bold'>75k</h2>
+                    <p className='md:pt-2 text-gray-600'>Total Transaction</p>
+                  </div>
+                </div>
               </div>
             </div>
-            <div className="grid grid-cols-1 2xl:grid-cols-2 xl:gap-4 my-4">
+
+
+
+
+            {/* <div className="grid grid-cols-1 xl:grid-cols-2 xl:gap-4 my-4">
 
               <div className="bg-white shadow rounded-lg mb-4 p-4 sm:p-6 h-full">
                 <div className="flex items-center justify-between mb-4">
@@ -508,10 +525,15 @@ function Dashboard() {
                   </table>
                 </div>
               </div>
-            </div>
+            </div>  */}
+
+
           </div>
         </main>
+
       </div>
+
+
       <Footer color={color} Primary={english.Foot} />
     </>
   )

@@ -300,6 +300,9 @@ function Theme() {
                       <button onClick={() => { setThemeName("Classic"); setThemes(!themes); changeTheme("Classic") }} >Classic</button>
                     </li>
                     <li className={`block py-2 px-4 ${color?.sidebar} `}>
+                      <button onClick={() => { setThemeName("Classic Accessible"); setThemes(!themes); changeTheme("Classic Accessible") }} >Classic Accessible</button>
+                    </li>
+                    <li className={`block py-2 px-4 ${color?.sidebar} `}>
                       <button onClick={() => { setThemeName("Classic-Dark"); setThemes(!themes); changeTheme("Classic-Dark") }} >Classic-Dark</button>
                     </li>
                     <li className={`block py-2 px-4 ${color?.sidebar} `}>
@@ -371,6 +374,12 @@ function Theme() {
             <Classic language={language} allHotelDetails={allHotelDetails}
               allRooms={allRooms} allPackages={allPackages} services={services}
               phone={phone} email={email} initialColor={ClassicThemeColors.white} /></div> : <div className="sticky"></div>}
+        {/* classic theme Accessible */}
+        {themeName === "Classic Accessible" ?
+          <div className="sticky">
+            <Classic language={language} allHotelDetails={allHotelDetails}
+              allRooms={allRooms} allPackages={allPackages} services={services}
+              phone={phone} email={email} initialColor={ClassicThemeColors.accessibleColors} /></div> : <div className="sticky"></div>}
 
         {themeName === "Classic-Dark" ?
           <div className="sticky">

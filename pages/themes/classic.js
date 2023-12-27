@@ -1247,43 +1247,31 @@ function Classic(args) {
 
                         {/* <div className="tour-reviews-feedback"> */}
                         <div className={`${themeColor?.bodyBgColor} border rounded-t-lg w-full  lg:w-3/5 lg:mr-8  lg:rounded-lg `}>
-                           <Marquee duration={10000} height="370px" axis="Y" reverse={true}>
+                           <Marquee duration={50000} height="370px" axis="Y" reverse={true}>
                               {args?.allHotelDetails?.Reviews?.map((item, idx) => {
                                  return (
-                                    <div className="flex overflow-hidden items-center relative bg-transparent h-96 w-full" key={idx} >
-                                       {/* <div className="tour-reviews-feedback-item" key={idx}>  */}
 
-                                       <div className="tour-reviews-feedback-content">
-
-                                          {/* <div className="tour-reviews-feedback-content-inner"> */}
-                                          <div className="p-10">
-
-                                             {/* <div className="tour-reviews-feedback-title"> */}
-                                             <div className="text-sm lg:text-base font-semibold">
-
-                                                <div className={visible === 0 ? 'block w-24 mb-2' : 'hidden'}><LineLoader /></div>
-                                                <div className={visible === 1 ? `block ${themeColor?.titleTextColor}` : 'hidden'}>
-                                                   {item?.review_author}</div>
-                                             </div>
-
-                                             {/* <div className="tour-reviews-feedback-text"> */}
-                                             <div className="text-xs lg:text-sm ">
-                                                <div className={visible === 0 ? 'block h-2 w-64 mb-6' : 'hidden'}><LineLoader /></div>
-                                                <div className={visible === 1 ? `block ${themeColor?.descriptionTextColor}` : 'hidden'}>
-                                                   {item?.review_content}</div>
-                                                {/* {item?.review_title}</div> */}
+                                    <div className="flex justify-between items-center p-4 md:px-10 lg:p-4" key={idx} >
+                                       <div className='w-60 pr-3 md:w-full md:pr-5 lg:pr-1 lg:w-40 xl:w-60 2xl:w-60'>
+                                          <div className="text-sm lg:text-base font-semibold">
+                                             <div className={visible === 0 ? 'block w-24 mb-2' : 'hidden'}><LineLoader /></div>
+                                             <div className={visible === 1 ? `block ${themeColor?.titleTextColor}` : 'hidden'}>
+                                                {item?.review_author}</div>
+                                          </div>
+                                          <div className="text-xs lg:text-sm ">
+                                             <div className={visible === 0 ? 'block h-2 w-64 mb-6' : 'hidden'}><LineLoader /></div>
+                                             <div className={visible === 1 ? `block ${themeColor?.descriptionTextColor} whitespace-normal` : 'hidden'}>
+                                                <p > {item?.review_content}</p>
                                              </div>
                                           </div>
                                        </div>
-                                       {/* review rating div */}
-                                       {/* <div className="tour-reviews-feedback-rating capitalize">{item?.review_rating}</div> */}
-                                       <div className={`${themeColor?.titleTextColor} h-10 w-10 rounded-full text-center font-semibold text-sm capitalize`}>{'⭐'.repeat(item?.review_rating || 0)}</div>
+                                       <div className={`${themeColor?.titleTextColor} h-10 rounded-full text-center font-semibold text-sm capitalize`}>{'⭐'.repeat(item?.review_rating || 0)}</div>
                                     </div>
-
                                  )
                               })}
                               <hr className="border-gray-900 sm:mx-auto" />
                            </Marquee>
+
                         </div>
 
                         {/* <div className="tour-reviews-overall"> */}
@@ -1639,54 +1627,57 @@ function Classic(args) {
          </div>
 
          {/* ---------------booking form modal for sm and md screen --------------- */}
-         {showModalBookingForm === 1 ?
-            <Modal
-               description={
-                  <BookingForm
-                     setRoomsLoader={(e) => setRoomsLoader(e)}
-                     setShowBookingEngine={(e) => setShowBookingEngine(e)}
-                     setEnquiry={(e) => setEnquiry(e)}
-                     enquiry={enquiry}
-                     setSearched={(e) => setSearched(e)}
-                     searched={searched}
-                     setShowModalBookingForm={(e) => setShowModalBookingForm(e)}
+         {
+            showModalBookingForm === 1 ?
+               <Modal
+                  description={
+                     <BookingForm
+                        setRoomsLoader={(e) => setRoomsLoader(e)}
+                        setShowBookingEngine={(e) => setShowBookingEngine(e)}
+                        setEnquiry={(e) => setEnquiry(e)}
+                        enquiry={enquiry}
+                        setSearched={(e) => setSearched(e)}
+                        searched={searched}
+                        setShowModalBookingForm={(e) => setShowModalBookingForm(e)}
 
-                  />
-               }
-               setShowModal={(e) => setShowModalBookingForm(e)}
-            />
-            : <></>
+                     />
+                  }
+                  setShowModal={(e) => setShowModalBookingForm(e)}
+               />
+               : <></>
          }
 
          {/* this div will only show up when the showBookingEngine is equal to 1 else there will be no such div, and the functions inside this div will only work when showBookingEngine is equal to 1 */}
-         {showBookingEngine === 1 ?
-            <div className="block z-50">
-               {allHotelDetails && <BookingModal
-                  bookingComponent={
-                     <BookingEngine
-                        color={{
-                           "theme": themeColor?.theme,
-                           "bgColor": themeColor?.bodyBgColor,
-                           // "cardColor": themeColor?.bodyBgColor,
-                           text: {
-                              title: themeColor?.text?.title,
-                              description: themeColor?.text?.description,
-                           }
-                           // "boxColor": themeColor?.bodyBgColor,
-                        }}
-                        roomsLoader={roomsLoader}
-                        setRoomsLoader={(e) => setRoomsLoader(e)}
-                        display={display}
-                        setDisplay={(e) => setDisplay(e)}
-                        rooms={args?.allRooms?.rooms}
-                        allHotelDetails={args?.allHotelDetails}
-                        setShowModal={(e) => setShowBookingEngine(e)}
-                        setSearched={(e) => setSearched(false)}
-                        checkinDate={enquiry.checkin}
-                        checkoutDate={enquiry.checkout}
-                     />}
-               />}
-            </div> : undefined}
+         {
+            showBookingEngine === 1 ?
+               <div className="block z-50">
+                  {allHotelDetails && <BookingModal
+                     bookingComponent={
+                        <BookingEngine
+                           color={{
+                              "theme": themeColor?.theme,
+                              "bgColor": themeColor?.bodyBgColor,
+                              // "cardColor": themeColor?.bodyBgColor,
+                              text: {
+                                 title: themeColor?.text?.title,
+                                 description: themeColor?.text?.description,
+                              }
+                              // "boxColor": themeColor?.bodyBgColor,
+                           }}
+                           roomsLoader={roomsLoader}
+                           setRoomsLoader={(e) => setRoomsLoader(e)}
+                           display={display}
+                           setDisplay={(e) => setDisplay(e)}
+                           rooms={args?.allRooms?.rooms}
+                           allHotelDetails={args?.allHotelDetails}
+                           setShowModal={(e) => setShowBookingEngine(e)}
+                           setSearched={(e) => setSearched(false)}
+                           checkinDate={enquiry.checkin}
+                           checkoutDate={enquiry.checkout}
+                        />}
+                  />}
+               </div> : undefined
+         }
 
          {/* Toast Container */}
          <ToastContainer

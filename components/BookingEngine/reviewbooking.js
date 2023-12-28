@@ -232,19 +232,8 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
 
     }
 
-    // function updateReserveRoom(roomdata) {
-    //     let url = "/api/reserve_rooms";
-    //     axios.put(url, roomdata).then((response) => {
-    //         setDisabled(false)  // this state is used to manage the css of paynow button
-    //         console.log(response)
-    //     }).catch((err) => {
-    //         console.log(err)
-    //     })
-    // }
-
     function removeReservationFromDB(room_id, reservation_time, action) {
-        // let url = `/api/reserve_rooms/${room_id}/${reservation_time}`;
-        // axios.delete(url).then((response) => {
+       
         if (action === "close") {
             setCancelBookingLoader(false)
             setDisplay(0)
@@ -256,9 +245,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
             dispatch(clearInventoryDetail())
             deleteRoomDetails()
         }
-        // }).catch((err) => {
-        // console.log("Error in deleting reservation from DB", err)
-        // })
+      
     }
 
     function SubmitGuestDetails() {
@@ -548,7 +535,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                             <button
                                 className='my-2 ml-auto px-4 py-1 bg-cyan-700 hover:bg-cyan-900 rounded-md text-white'
                                 onClick={() => {
-                                    dispatch(setAddMoreRoom(true));
+                                    // dispatch(setAddMoreRoom(true));
                                     setDisplay(0);
                                 }}
                             >Add More Rooms</button>

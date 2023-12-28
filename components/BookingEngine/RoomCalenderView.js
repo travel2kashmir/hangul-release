@@ -16,7 +16,7 @@ function RoomCalenderView({ allHotelDetails, color, roomsLoader, setRoomsLoader,
     const reservationIdentity = useSelector(state => state.reservationIdentity)
     const dispatch = useDispatch() //creating object of dispatch 
 
-    const addMoreRooms = useSelector(state => state.addMoreRoom) //reads addMoreRoom from state into const
+    // const addMoreRooms = useSelector(state => state.addMoreRoom) //reads addMoreRoom from state into const
     const roomsSelected = useSelector(state => state.roomsSelected)
 
     const [dataAsPerDate, setDataAsPerDate] = useState([]);
@@ -35,42 +35,92 @@ function RoomCalenderView({ allHotelDetails, color, roomsLoader, setRoomsLoader,
             console.log(JSON.stringify(err))
         })
     }
-
     const calculateTotalFinalRate = () => {
-        // Create an object to group room rates by room_id and calculate the total final rate for each room
+        // Create an object to group room rates by room_id and rate plan
         const roomData = {};
 
-        // taking out the data from the filteredData and storing them in roomData object.
+        // Taking out the data from the filteredData and storing them in roomData object.
         dataAsPerDate.forEach((rate) => {
-            const { room_id, property_id, final_rate, tax_amount, otherfees_amount } = rate;
-            if (!roomData[room_id]) {
-                roomData[room_id] = {
+            const { room_id, property_id, final_rate, tax_amount, otherfees_amount, room_rate_plan_id, meal_name } = rate;
+
+            // Create a key combining room_id and room_rate_plan_id to distinguish rates for different plans
+            const key = `${room_id}_${room_rate_plan_id}`;
+
+            if (!roomData[key]) {
+                roomData[key] = {
                     room_id,
                     property_id,
+                    room_rate_plan_id,
+                    meal_name,
                     total_final_rate: final_rate,
                     total_tax_amount: tax_amount,
                     total_otherfees_amount: otherfees_amount
                 };
             } else {
-                roomData[room_id].total_final_rate += final_rate;
-                roomData[room_id].total_tax_amount += tax_amount;
-                roomData[room_id].total_otherfees_amount += otherfees_amount;
+                roomData[key].total_final_rate += final_rate;
+                roomData[key].total_tax_amount += tax_amount;
+                roomData[key].total_otherfees_amount += otherfees_amount;
             }
         });
-        return Object.values(roomData);
+
+        // Convert the object values to an array of separate rate types
+        const separateRatesArray = Object.values(roomData);
+        return separateRatesArray;
     };
+
 
     const roomsArray = calculateTotalFinalRate();
 
     // Sort the roomsArray in ascending order based on total_final_rate
     const sortedFinalRate = roomsArray.slice().sort((room1, room2) => room1.total_final_rate - room2.total_final_rate);
+    const uniqueRooms = [];
+    const roomSet = new Set();
+
+    sortedFinalRate.forEach(entry => {
+        const { room_id, property_id } = entry;
+        const key = `${room_id}_${property_id}`;
+
+        if (!roomSet.has(key)) {
+            roomSet.add(key);
+            uniqueRooms.push({ room_id, property_id });
+        }
+    });
+
+
     // console.log("this is the sorted final rate", sortedFinalRate)
 
     // only those rooms whose room_id is not in roomsSelected state
-    const roomsToDisplay = sortedFinalRate.filter((room) => {
-        // Check if the room_id is not in the roomsSelected array
-        return !roomsSelected.includes(room.room_id);
-    });
+    // const roomsToDisplay = sortedFinalRate.filter((room) => {
+    //     // Check if the room_id is not in the roomsSelected array
+    //     return !roomsSelected.includes(room.room_id);
+    // });
+
+    // const uniqueRoomsToDisplay = new Set(roomsToDisplay.map(entry => JSON.stringify({ room_id: entry.room_id, property_id: entry.property_id })))
+
+    // rates ka json with room_id as key 
+    const transformData = (initialData) => {
+        const result = Object.values(initialData.reduce((accumulator, currentItem) => {
+            const roomId = currentItem.room_id;
+            if (!accumulator[roomId]) {
+                accumulator[roomId] = { [roomId]: [] };
+            }
+            accumulator[roomId][roomId].push({
+                room_rate_plan_id: currentItem.room_rate_plan_id,
+                room_id: roomId,
+                meal_name: currentItem.meal_name,
+                total_final_rate: currentItem.total_final_rate,
+                total_tax_amount: currentItem.total_tax_amount,
+                total_otherfees_amount: currentItem.total_otherfees_amount,
+            });
+            return accumulator;
+        }, {}));
+        console.log(result)
+        return result;
+    };
+
+    // usage:
+    const transformedData = transformData(sortedFinalRate);//rates only
+
 
     // useEffect(() => {
     //     groupingByDate()
@@ -202,45 +252,28 @@ function RoomCalenderView({ allHotelDetails, color, roomsLoader, setRoomsLoader,
 
             {/* room cards */}
             <div className='px-4 md:px-10 pb-5'>
-                {addMoreRooms === true ?
-                    <> {
-                        roomsToDisplay.map((room, index) => {
-                            return (
-                                <RoomCard
-                                    key={index}
-                                    color={color}
-                                    roomImage={`https://images.unsplash.com/photo-1598928506311-c55ded91a20c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80`}
-                                    filteredRoomData={rooms?.find((item) => item.room_id === room.room_id)}
-                                    roomRates={room}
-                                    setDisplay={(e) => setDisplay(e)}
-                                    checkinDate={checkinDate}
-                                    checkoutDate={checkoutDate}
-                                    property_id={allHotelDetails?.property_id}
-                                />
-                            );
-                        })
-                    }
-                    </> :
-                    <>{
-                        roomsLoader === true ? <><RoomLoader size={`w-full h-44  rounded-2xl p-4 mt-10 m-2 `} /> <RoomLoader size={`w-full h-44  rounded-2xl p-4 m-2 `} /> <RoomLoader size={`w-full h-44  rounded-2xl p-4 m-2 `} /></>
-                            : <>
-                                {sortedFinalRate.map((room, index) => {
-                                    return <RoomCard
-                                        key={index}
-                                        color={color}
-                                        roomImage={`https://images.unsplash.com/photo-1598928506311-c55ded91a20c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80`}
-                                        filteredRoomData={rooms?.filter((item) => item.room_id == room.room_id)[0]}
-                                        roomRates={room}
-                                        setDisplay={(e) => setDisplay(e)}
-                                        checkinDate={checkinDate}
-                                        checkoutDate={checkoutDate}
-                                        property_id={allHotelDetails?.property_id}
-                                    />
-                                })}</>
-                    }</>}
+                {/* //add more rooms means already one room is selected */}
+                <>{roomsLoader === true ? <><RoomLoader size={`w-full h-44  rounded-2xl p-4 mt-10 m-2 `} /> <RoomLoader size={`w-full h-44  rounded-2xl p-4 m-2 `} /> <RoomLoader size={`w-full h-44  rounded-2xl p-4 m-2 `} /></>
+                    : <>
+                        {uniqueRooms.map((room, index) => {
+                            return <RoomCard
+                                key={index}
+                                color={color}
+                                roomImage={`https://images.unsplash.com/photo-1598928506311-c55ded91a20c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80`}
+                                filteredRoomData={rooms?.filter((item) => item.room_id == room.room_id)[0]} //only room data like physical aspects
+                                roomRates={room}
+                                setDisplay={(e) => setDisplay(e)}
+                                checkinDate={checkinDate}
+                                checkoutDate={checkoutDate}
+                                property_id={allHotelDetails?.property_id}
+                                rates={transformedData?.filter(item => Object.keys(item)[0] === room?.room_id)[0][room?.room_id]}
+                            />
+                        })}
+                    </>
+                }</>
+                </div>
             </div>
-        </div>
-    )
+            )
 }
 
-export default RoomCalenderView
+            export default RoomCalenderView

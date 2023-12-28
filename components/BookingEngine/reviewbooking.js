@@ -551,7 +551,6 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                                     dispatch(setAddMoreRoom(true));
                                     setDisplay(0);
                                 }}
-
                             >Add More Rooms</button>
 
                         </div>

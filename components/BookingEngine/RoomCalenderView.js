@@ -119,10 +119,8 @@ function RoomCalenderView({ allHotelDetails, color, roomsLoader, setRoomsLoader,
     //     return lowestRatesArray;
     // }
 
-    // Function to delete room_rates and room_data from local storage
+    function deleteRoomDetails() {        // Function to delete room_rates and room_data from local storage
 
-
-    function deleteRoomDetails() {
         // Remove the room_rates key from local storage
         localStorage.removeItem('room_rates');
         localStorage.removeItem('temp_room_rate');
@@ -171,7 +169,6 @@ function RoomCalenderView({ allHotelDetails, color, roomsLoader, setRoomsLoader,
             deleteRoomDetails()
         }
     }
-
 
     return (
         <div id="main-content" className={`${color?.bgColor} min-h-screen`}>

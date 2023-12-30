@@ -259,6 +259,8 @@ function Unavailability() {
         })
     }
 
+    // console.log(JSON.stringify(displayData))
+
     function updateEditedInv(inv) {
         if (modifiedOutOfService.length != 0) {
             let result = validateUnavailability({ ...inv, ...editInventory, "room_id": inv.room_id, "unavailability_id": inv.unavailability_id }, modifiedOutOfService);

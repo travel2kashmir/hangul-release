@@ -451,7 +451,7 @@ function Dashboard() {
 
 
 
-            <div className="grid grid-cols-1 xl:grid-cols-1 xl:gap-4 my-4">
+            {/* <div className="grid grid-cols-1 xl:grid-cols-1 xl:gap-4 my-4">
 
               <div className="bg-white shadow rounded-lg mb-4 p-4 sm:p-6 h-full">
                 <div className="flex items-center justify-between mb-4">
@@ -657,7 +657,7 @@ function Dashboard() {
                   </table>
                 </div>
               </div>
-            </div>
+            </div> */}
 
 
           </div>

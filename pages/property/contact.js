@@ -235,19 +235,6 @@ function Contact() {
         <div className={(visible === 0 && colorToggle == true ? 'block' : 'hidden')}><LoaderDarkTable /></div>
         <div className={visible === 1 ? 'block' : 'hidden'}>
 
-          {/* <GenericTable
-            inlineTable={true}
-            color={color}
-            language={language}
-            addButton={true}
-            addButtonAction={() => setView(1)}
-            tableName={language?.contact}
-            cols={["checkbox", "Contact Details", "Contact Type", "status", "Actions"]}
-            data={gen}
-            deleteAll={() => { alert("feature not functional"); }}
-          /> */}
-
-
           <Table
             gen={gen}
             setGen={setGen}

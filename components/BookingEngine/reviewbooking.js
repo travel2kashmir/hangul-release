@@ -474,7 +474,6 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                             onClick={() => {
                                 if (localStorage.getItem("temp_room_rate") === null) {
                                     setDisplay(0)
-
                                 } else {
                                     setDisplay(1)
 

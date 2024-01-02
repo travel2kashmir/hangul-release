@@ -531,8 +531,7 @@ function Room() {
 
   //  update inventory 
   function updateInventory() {
-    alert('update inventory invoked')
-    let url = `/api/inventory`
+  let url = `/api/inventory`
     let inventorydata = {
       "inventory": [{
 

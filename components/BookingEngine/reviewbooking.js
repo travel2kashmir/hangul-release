@@ -312,7 +312,8 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                 "room_id": item.room_id,
                 "room_name": item.room_name,
                 "room_type": item.room_type,
-                "room_count": selectedQuantitiesMap?.get(item?.room_id)
+                "room_count": selectedQuantitiesMap?.get(item?.room_id),
+                "meal_name": rate[item?.room_id].meal_name!==null?rate[item?.room_id].meal_name:"Room Only - RO"
             })
         })
 
@@ -351,23 +352,24 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                 ...roomBookingData, ...roomsForThisBooking, ...guestsForThisBooking, ...finalInvoiceForThisBooking
             }]
         }
-        axios.post(bookingURL, bookingData, {
-            header: { "content-type": "application/json" },
-        }).then((response) => {
-            let totalPrice = finalInvoiceForThisBooking?.booking_invoice[0].total_price;
-            let paymentRefrenceNumber = PaymentGateway(response.data.booking_id, totalPrice)
-            addRefrenceToInvoice(paymentRefrenceNumber, response.data.booking_id)
+        alert(JSON.stringify(bookingData))
+        // axios.post(bookingURL, bookingData, {
+        //     header: { "content-type": "application/json" },
+        // }).then((response) => {
+        //     let totalPrice = finalInvoiceForThisBooking?.booking_invoice[0].total_price;
+        //     let paymentRefrenceNumber = PaymentGateway(response.data.booking_id, totalPrice)
+        //     addRefrenceToInvoice(paymentRefrenceNumber, response.data.booking_id)
 
-            // Add booking_id and property_id to local storage
-            let propertyId = property_id; // Replace with the actual property_id
-            let bookingId = response.data.booking_id;
+        //     // Add booking_id and property_id to local storage
+        //     let propertyId = property_id; // Replace with the actual property_id
+        //     let bookingId = response.data.booking_id;
 
-            dispatch(updateBookingInfo({ booking_id: bookingId, property_id: propertyId }));
+        //     dispatch(updateBookingInfo({ booking_id: bookingId, property_id: propertyId }));
 
-        }).catch((error) => {
-            toast.error("API: Room Booking Failed,Try again Latter.");
-            setpayNowLoader(false)
-        })
+        // }).catch((error) => {
+        //     toast.error("API: Room Booking Failed,Try again Latter.");
+        //     setpayNowLoader(false)
+        // })
     }
     //function to add payemtn gateway logic
     function PaymentGateway(booking_id, total_price) {
@@ -545,6 +547,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                             <thead className={`${color?.text?.title}`}>
                                 <th className='text-start'>Room Name</th>
                                 <th className='text-start'>Room Type</th>
+                                <th className='text-start'>Meal Plan</th>
                                 <th className='text-start'>Number Of Rooms</th>
 
                             </thead>
@@ -553,6 +556,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                                 return <tr className={`${color?.text?.description}`} key={index}>
                                     <td>{room?.room_name}</td>
                                     <td>{room?.room_type}</td>
+                                    <td>{rate[room?.room_id].meal_name!==null?rate[room?.room_id].meal_name:"Room Only - RO"}</td>
                                     <td>
                                         {/* drop down to change room quantity  */}
                                         <select
@@ -561,14 +565,6 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                                             onChange={(e) => {
                                                 const newQuantity = parseInt(e.target.value);
                                                 updateSelectedQuantity(room?.room_id, newQuantity); // Update selected quantity in the Map
-                                                // let reservationData = reservationIdentity.filter((item) => item.room_id === room?.room_id)[0]
-                                                // updateReserveRoom({ "reserve_rooms": [{ "room_count": newQuantity, ...reservationData }] })
-                                                // setDisabled(true)
-
-                                                // Check if selected quantity is greater than inventory_available
-                                                // if (newQuantity > inventory_available) {
-                                                //     toast.error('Inventory unavailable', { position: toast.POSITION.TOP_CENTER });
-                                                // }
                                             }}
                                         >
                                             {/* Generate options for the dropdown based on inventory_available */}
@@ -578,12 +574,6 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                                                 </option>
                                             ))}
 
-                                            {/* Generate options based on inventory_available and maximum_number_of_occupants */}
-                                            {/* {Array.from({ length: Math.min(inventory_available, room?.maximum_number_of_occupants) }, (_, index) => index + 1).map((quantity) => (
-                                                <option key={quantity} value={quantity}>
-                                                    {quantity}
-                                                </option>
-                                            ))} */}
                                         </select>
                                     </td>
                                     <td className='text-red-800 '>

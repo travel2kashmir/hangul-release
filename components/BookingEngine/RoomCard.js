@@ -195,7 +195,6 @@ function RoomCard({ color, filteredRoomData, roomImage, setDisplay, checkinDate,
           <div className='h-28 w-36 bg-gray-400 animate-pulse opacity-10 rounded inline-block'></div>
         ) : (
           <div className='py-4 md:py-2'>
-            {JSON.stringify([...nonZeroInventory])}
             {![...nonZeroInventory].includes(roomRates.room_id) ? (
               <div className='bg-red-700 px-4 py-2 rounded-lg text-white'>
                 <h3 className='text-lg font-semibold'>

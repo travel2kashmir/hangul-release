@@ -30,7 +30,7 @@ function ViewBooking() {
     const [bookingDetail, setBookingDetail] = useState([])
     const [bookingDetailLoader, setBookingDetailLoader] = useState(true)
 
-   
+
     /** Use Effect to fetch details from the Local Storage **/
     useEffect(() => {
         const resp = InitialActions({ setColor, setMode })
@@ -210,7 +210,7 @@ function ViewBooking() {
                                                     return <div key={index} className={`${color.text}`}>
                                                         <div className='flex justify-between mb-3 border-b'>
                                                             <span className='text-sm font-medium'>Transaction Refrence No.: </span>
-                                                            <span className='font-normal text-sm'>{invoice?.transaction_refrence_no}</span>
+                                                            <span className='font-normal text-sm text-right'>{invoice?.transaction_refrence_no}</span>
                                                         </div>
                                                         <div className='flex justify-between mb-3 border-b'>
                                                             <span className='text-sm font-medium'>Invoice Time: </span>

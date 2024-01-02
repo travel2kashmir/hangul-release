@@ -17,6 +17,7 @@ import { InitialActions, ColorToggler } from '../../components/initalActions';
 import Button from '../../components/Button';
 import Router from "next/router";
 import BreadCrumb from '../../components/utils/BreadCrumb';
+import { fetchRooms, navigationList, addRoom, confirmedDelete } from '../../components/logic/property/Rooms/Rooms';
 
 var language;
 var currentProperty;
@@ -47,125 +48,11 @@ function Rooms() {
       Router.push(window.location.origin)
     }
     else {
-      fetchRooms();
+      fetchRooms(currentProperty, setAllRooms, setVisible, setGen, setDeleteRoomId, setDeleteMultiple);
     }
   }, [])
 
-  /**Function to save Current property to be viewed to Local Storage**/
-  const currentRoom = (id) => {
-    localStorage.setItem("RoomId", id);
-    Router.push("./rooms/editroom");
-  };
 
-  const fetchRooms = async () => {
-    try {
-      var genData = [];
-      const url = `/api/rooms/${currentProperty.property_id}`
-      const response = await axios.get(url, { headers: { 'accept': 'application/json' } });
-      setAllRooms(response.data)
-      setVisible(1)
-
-      response?.data?.map((item) => {
-        var temp = {
-          "checkbox": { operation: undefined },
-          "Room Name": item.room_name,
-          "Room Type": item.room_type_name.replaceAll("_", " "),
-          "status": JSON.stringify(item.status),
-          "id": item.room_id,
-          isChecked: false,
-          // isChecked:true,
-          Actions: [
-            {
-              type: "button",
-              label: "View",
-              operation: (item) => { currentRoom(item) }
-            },
-            {
-              type: "button",
-              label: "Delete",
-              operation: (item) => { deleteRooms(item) }
-            }
-          ],
-        }
-        genData.push(temp)
-      }
-      )
-      setGen(genData);
-
-    }
-    catch (error) {
-
-      if (error.response) {
-      }
-      else {
-      }
-    }
-  }
-
-  /* Delete Room Function*/
-  const deleteRooms = (props) => {
-    setDeleteRoomId(props);
-    setDeleteMultiple(1);
-  }
-
-  function confirmedDelete(props) {
-    setSpinner(1);
-    const url = `/api/${props}`
-    axios.delete(url).then((response) => {
-      toast.success(("Room Deleted Successfully!"), {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-      setSpinner(0);
-      setDeleteMultiple(0);
-      fetchRooms();
-      Router.push("./rooms");
-    })
-      .catch((error) => {
-        setSpinner(0);
-        toast.error(("Room Delete Error!"), {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      })
-  }
-
-  /* Add Room */
-  const addRoom = () => {
-    Router.push("./rooms/addroom")
-  }
-
-  function navigationList(currentLogged, currentProperty) {
-    return ([
-      {
-        icon: "homeIcon",
-        text: "Home",
-        link: currentLogged?.id.match(/admin.[0-9]*/)
-          ? "../admin/adminlanding"
-          : "./landing"
-      },
-      {
-        icon: "rightArrowIcon",
-        text: [currentProperty?.property_name],
-        link: "./propertysummary"
-      },
-      {
-        icon: "rightArrowIcon",
-        text: "Rooms",
-        link: ""
-      }
-    ])
-  }
 
   return (
     <>
@@ -247,7 +134,7 @@ function Rooms() {
 
                 {spinner === 0 ?
                   <>
-                    <Button Primary={language?.Delete} onClick={() => { confirmedDelete(deleteRoomId) }} />
+                    <Button Primary={language?.Delete} onClick={() => { confirmedDelete(deleteRoomId, setSpinner, setDeleteMultiple, currentProperty, setAllRooms, setVisible, setGen, setDeleteRoomId) }} />
                     <Button Primary={language?.Cancel} onClick={() => { setDeleteRoomId(undefined); setDeleteMultiple(0) }} />
                   </>
                   :

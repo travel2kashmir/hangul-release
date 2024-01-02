@@ -7,7 +7,7 @@ import ButtonLoader from './ButtonLoader';
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-function RoomCard({ color, filteredRoomData, roomImage, setDisplay, roomRates, checkinDate, checkoutDate, property_id }) {
+function RoomCard({ color, filteredRoomData, roomImage, setDisplay, checkinDate, checkoutDate, property_id, rates }) {
 
   const dispatch = useDispatch();
 
@@ -16,6 +16,7 @@ function RoomCard({ color, filteredRoomData, roomImage, setDisplay, roomRates, c
   const [invData, setInvData] = useState([]);
 
 
+  const [roomRates, setRoomRates] = useState(rates[0])
   const [searchInventory, setSearchInventory] = useState(false)
   const [searchBookingInventory, setSearchBookingInventory] = useState(false)
 
@@ -36,6 +37,7 @@ function RoomCard({ color, filteredRoomData, roomImage, setDisplay, roomRates, c
   }
 
   function redirectToReviewPage(room_data, room_rates) {
+
     localStorage.setItem('room_data', JSON.stringify(room_data))
 
     // Get the existing 'room_rate' from local storage
@@ -67,66 +69,32 @@ function RoomCard({ color, filteredRoomData, roomImage, setDisplay, roomRates, c
   }
 
   // get inventory details for the rooms between the checkin and checkout date
-  function getInventoryDetail(actionFrom) {
-    let roomID = roomRates?.room_id;
-    let url = `/api/inv_data/${roomID}/${checkinDate}/${checkoutDate}`;
-    axios.get(url).then((response) => {
-      // setting value to inventory detail using redux reducer function
-      dispatch(addInventoryDetail(response.data))
+  // function getInventoryDetail(actionFrom) {
+  //   let roomID = roomRates?.room_id;
+  //   let url = `/api/inv_data/${roomID}/${checkinDate}/${checkoutDate}`;
+  //   axios.get(url).then((response) => {
+  //     // setting value to inventory detail using redux reducer function
+  //     dispatch(addInventoryDetail(response.data))
 
-      setSearchInventory(false)
-      setSearchBookingInventory(false)
+  //     setSearchInventory(false)
+  //     setSearchBookingInventory(false)
 
-      console.log("inventory data loaded successfully")
+  //     console.log("inventory data loaded successfully")
 
-      if (actionFrom === "bookNow") {
-        // redirections to review page
-        toCheckInventoryAvailable()
-      } else {    //if action is learn more redirection to room details
-        redirectToRoom(filteredRoomData, roomRates)
-      }
-
-    }).catch((err) => {
-      console.log("error in loading inventory data", err)
-      setSearchInventory(false)
-      setSearchBookingInventory(false)
-
-      toast.error(`API: Inventory for the ${filteredRoomData?.room_name} is not registered`);
-    })
-  }
-
-  // function reserveRoom(roomdata) {
-  //   let url = "/api/reserve_rooms";
-  //   axios.post(url, roomdata).then((response) => {
-  //     dispatch(setReserveRoom(false))
+  //     if (actionFrom === "bookNow") {
+  //       // redirections to review page
+  //       toCheckInventoryAvailable()
+  //     } else {    //if action is learn more redirection to room details
+  //       redirectToRoom(filteredRoomData, roomRates)
+  //     }
 
   //   }).catch((err) => {
-  //     console.log(err)
+  //     console.log("error in loading inventory data", err)
+  //     setSearchInventory(false)
+  //     setSearchBookingInventory(false)
+
+  //     toast.error(`API: Inventory for the ${filteredRoomData?.room_name} is not registered`);
   //   })
-
-  // }
-
-  // generate data to be fed for booking
-  // function generateBookingObjects(start_date, end_date, otherData) {
-  //   const bookingObjects = [];
-  //   let currentDate = new Date(start_date); // Start with the start_date
-
-  //   while (currentDate <= new Date(end_date)) {
-  //     const bookingDate = new Date(currentDate);
-  //     const bookingDateString = bookingDate.toISOString().split('T')[0]; // Format the date as YYYY-MM-DD
-
-  //     const bookingObject = {
-  //       booking_date: bookingDateString,
-  //       ...otherData
-  //     };
-
-  //     bookingObjects.push(bookingObject);
-
-  //     // Move to the next day
-  //     currentDate.setDate(currentDate.getDate() + 1);
-  //   }
-
-  //   return bookingObjects;
   // }
 
 
@@ -147,9 +115,6 @@ function RoomCard({ color, filteredRoomData, roomImage, setDisplay, roomRates, c
       redirectToReviewPage(filteredRoomData, roomRates)
       dispatch(setReserveRoom(true))
       dispatch(setReservationIdentity([reservationIdentity]))
-      // reserveRoom({
-      //   "reserve_rooms": generateBookingObjects(checkinDate, checkoutDate, { "room_count": 1, ...reservationIdentity })
-      // }, roomRates?.room_id)
 
     } else {
       toast.error(`APP: Inventory for ${filteredRoomData?.room_name} not available for the selected days`);
@@ -172,54 +137,8 @@ function RoomCard({ color, filteredRoomData, roomImage, setDisplay, roomRates, c
       console.log(JSON.stringify(err))
     })
   }
-  // console.log('inv data ', invData)
-
-  // let invData = [
-  //   {
-  //     "room_id": "r0011",
-  //     "update_date": "2023-12-18",
-  //     "inventory_count": 25,
-  //     "inv_booked": 0,
-  //     "available_inventory": 25
-  //   },
-  //   {
-  //     "room_id": "r0011",
-  //     "update_date": "2023-12-19",
-  //     "inventory_count": 25,
-  //     "inv_booked": 0,
-  //     "available_inventory": 25
-  //   },
-  //   {
-  //     "room_id": "r004",
-  //     "update_date": "2023-12-18",
-  //     "inventory_count": 2,
-  //     "inv_booked": 0,
-  //     "available_inventory": 2
-  //   },
-  //   {
-  //     "room_id": "r004",
-  //     "update_date": "2023-12-19",
-  //     "inventory_count": 2,
-  //     "inv_booked": 0,
-  //     "available_inventory": 2
-  //   },
-  //   {
-  //     "room_id": "r005",
-  //     "update_date": "2023-12-18",
-  //     "inventory_count": 4,
-  //     "inv_booked": 0,
-  //     "available_inventory": 4
-  //   },
-  //   {
-  //     "room_id": "r005",
-  //     "update_date": "2023-12-19",
-  //     "inventory_count": 4,
-  //     "inv_booked": 0,
-  //     "available_inventory": 0
-  //   }
-  // ]
   // Initialize sets for non-zero and zero inventory
-
+  invData.map((i) => console.log(i))
   const { nonZeroInventory, zeroInventory } = invData.reduce(
     (acc, item) => {
       // Check if available_inventory is not equal to 0
@@ -233,134 +152,114 @@ function RoomCard({ color, filteredRoomData, roomImage, setDisplay, roomRates, c
   // Iterate through invData to remove room_ids with available_inventory equal to 0 from nonZeroInventory
   invData.forEach(item => item.available_inventory === 0 && nonZeroInventory.delete(item.room_id));
 
-  // console.log('non zero inventory ', [...nonZeroInventory]);
-  // console.log('zero inventory ', [...zeroInventory]);
+
 
   return (
-    <div className={` w-100 h-1/4 text-black border border-gray-500 ${color?.cardColor} rounded-2xl p-4 mx-2 my-4 lg:m-4 flex flex-wrap justify-center items-center md:flex-row flex-col`}>
+    <div className={`w-100 h-1/4 text-black ${color?.cardColor} rounded-xl p-4 mx-2 my-4 lg:m-4 flex flex-wrap justify-center items-center md:flex-row flex-col transition-transform transform hover:scale-105 shadow-lg`}>
 
       {/* room image */}
-      <div className=' md:w-1/6'>
+      <div className='md:w-1/6'>
         <img
           className='md:h-36 md:w-36 lg:h-44 lg:w-44 w-fit'
           src={roomImage}
-          alt="room-image" />
+          alt="room-image"
+        />
       </div>
 
       {/* room name and description */}
       <div className='md:w-4/6 md:text-start w-fit md:px-5 lg:px-3'>
-        <h3 className={`${color?.text?.title} font-bold text-2xl my-5 md:my-1`}>{filteredRoomData?.room_name}</h3>
+        <h3 className={`${color?.text?.title} font-bold text-2xl my-5 md:my-1`}>
+          {filteredRoomData?.room_name}
+        </h3>
         <p className='text-base text-slate-500 font-normal'>
           {filteredRoomData?.room_description}
         </p>
+        <hr className="my-4 w-full border-t border-gray-300" />
+        {rates.length > 1 &&
+          <><h3 className={`${color?.text?.title} font-bold text-xl my-5 md:my-1`}>
+            Available Options
+          </h3>
+            <p className='flex  items-center flex-wrap text-base text-slate-500 font-normal'>
+              {rates.map((i) => <button key={i.meal_name}
+                className={` ${roomRates.meal_name === i.meal_name ? 'bg-cyan-700' : 'bg-gray-400'} text-white text-sm my-1 mx-0.5 border-none p-1  rounded-md`}
+                onClick={() => setRoomRates(i)}>
+                {i.meal_name}
+              </button>)}
+            </p></>}
       </div>
 
       {/* additional information */}
       <div className='flex flex-col items-center justify-center w-fit lg:w-1/6 md:w-1/6'>
 
-        {inventoryCheckDone === false
-          ? <div className='h-28 w-36 bg-gray-400 animate-pulse opacity-10 border border-none rounded inline-block'></div>
-          :
+        {inventoryCheckDone === false ? (
+          <div className='h-28 w-36 bg-gray-400 animate-pulse opacity-10 rounded inline-block'></div>
+        ) : (
           <div className='py-4 md:py-2'>
-            {!nonZeroInventory.has(roomRates.room_id) ?
-              <div className='bg-red-700 px-4 py-2 rounded-lg'>
-                <h3 className=' text-white text-center text-lg font-semibold'>Not available!</h3>
-                <p className=' text-white text-xs py-1'>Will be available soon!</p>
+            {JSON.stringify([...nonZeroInventory])}
+            {![...nonZeroInventory].includes(roomRates.room_id) ? (
+              <div className='bg-red-700 px-4 py-2 rounded-lg text-white'>
+                <h3 className='text-lg font-semibold'>
+                  Not available!
+                </h3>
+                <p className='text-xs py-1'>Will be available soon!</p>
               </div>
-              : <div>
-                <h3 className={` ${color?.text?.title} text-3xl font-bold text-center`}>₹ {roomRates.total_final_rate}</h3>
-                <p className={`${color?.text?.title} text-xs py-1 text-center`}>+ tax For {numberOfDays} Day{numberOfDays === 1 ? '' : 's'}</p>
+            ) : (
+              <div>
+                <h3 className={` ${color?.text?.title} text-3xl font-bold text-center`}>
+                  ₹ {roomRates.total_final_rate || roomRates}
+                </h3>
+                <p className={`${color?.text?.title} text-xs py-1 text-center`}>
+                  + tax For {numberOfDays} Day{numberOfDays === 1 ? '' : 's'}
+                </p>
               </div>
-            }
+            )}
           </div>
-        }
+        )}
 
 
-
-        {nonZeroInventory.has(roomRates.room_id) &&
-          <>
-            {searchBookingInventory === true ?
-              <ButtonLoader
-                // style={{ fontSize: '14px' }}
-                classes="px-5 py-3 mb-2 text-base md:text-sm md:mb-0 md:px-3 md:py-2 rounded-md  bg-green-700 hover:bg-green-900 text-white font-bold"
-                text="Book Now"
-              /> :
-              <button
-                // style={{ fontSize: "14px" }}
-                className='px-5 py-3 mb-2 text-base md:text-sm md:mb-0 md:px-3 md:py-2 rounded-md  bg-green-700 hover:bg-green-900 text-white font-bold'
-                onClick={() => {
-                  setSearchBookingInventory(true)
-                  getInventoryDetail("bookNow") // this method will check the inventory available for the selected room and if the inventory is available then the rest of the methods will be called inside it.
-                }}
-              >
-                Book Now
-              </button>}
-
-
-            {searchInventory === true ?
-              <ButtonLoader
-                style={{ fontSize: '11px' }}
-                classes=" mt-2 px-3 py-2 md:px-2 md:py-1 rounded-md  bg-cyan-700 hover:bg-cyan-900 text-white"
-                text="Learn More"
-              /> :
-              <button
-                onClick={() => {
-                  setSearchInventory(true)
-                  getInventoryDetail("LearnMore")
-                }}
-                style={{ fontSize: "11px" }}
-                className=' mt-2 px-3 py-2 md:px-2 md:py-1 rounded-md  bg-cyan-700 hover:bg-cyan-900 text-white'
-              >
-                Learn More
-              </button>
-            }
-          </>
-
-
-        }
-
-
-
-
-
-        {/* {searchBookingInventory === true ?
-          <ButtonLoader
-            // style={{ fontSize: '14px' }}
-            classes="px-5 py-3 mb-2 text-base md:text-sm md:mb-0 md:px-3 md:py-2 rounded-md  bg-green-700 hover:bg-green-900 text-white font-bold"
-            text="Book Now"
-          /> :
-          <button
-            // style={{ fontSize: "14px" }}
-            className='px-5 py-3 mb-2 text-base md:text-sm md:mb-0 md:px-3 md:py-2 rounded-md  bg-green-700 hover:bg-green-900 text-white font-bold'
+        {[...nonZeroInventory].includes(roomRates.room_id) && (
+          <><button
+            className='px-5 py-3 mb-2 text-base md:text-sm md:mb-0 md:px-3 md:py-2 rounded-md bg-green-700 hover:bg-green-900 text-white font-bold'
             onClick={() => {
-              setSearchBookingInventory(true)
-              getInventoryDetail("bookNow") // this method will check the inventory available for the selected room and if the inventory is available then the rest of the methods will be called inside it.
+              dispatch(addInventoryDetail(invData.filter(i => i.room_id === filteredRoomData.room_id)))
+              // setSearchBookingInventory(true);
+              // getInventoryDetail("bookNow");
+              // toCheckInventoryAvailable()
+              let reservationIdentity = {
+                room_id: roomRates?.room_id,
+                reservation_time: formatDateToCustomFormat(new Date())
+              }
+              redirectToReviewPage(filteredRoomData, roomRates)
+              // dispatch(setReserveRoom(true))
+              // dispatch(setReservationIdentity([reservationIdentity]))
+
             }}
           >
             Book Now
-          </button>}
-
-
-        {searchInventory === true ?
-          <ButtonLoader
-            style={{ fontSize: '11px' }}
-            classes=" mt-2 px-3 py-2 md:px-2 md:py-1 rounded-md  bg-cyan-700 hover:bg-cyan-900 text-white"
-            text="Learn More"
-          /> :
-          <button
-            onClick={() => {
-              setSearchInventory(true)
-              getInventoryDetail("LearnMore")
-
-            }}
-            style={{ fontSize: "11px" }}
-            className=' mt-2 px-3 py-2 md:px-2 md:py-1 rounded-md  bg-cyan-700 hover:bg-cyan-900 text-white'
-          >
-            Learn More
           </button>
-        } */}
+            <button
+              style={{ fontSize: "11px" }}
+              className='mt-2 px-3 py-2 md:px-2 md:py-1 rounded-md bg-cyan-700 hover:bg-cyan-900 text-white'
+              onClick={() => {
+                setSearchInventory(true);
+                dispatch(addInventoryDetail(invData.filter(i => i.room_id === filteredRoomData.room_id)))
+                redirectToRoom(filteredRoomData, roomRates)
+
+              }}
+            >
+              Learn More
+            </button>
+
+          </>
+        )}
       </div>
+
+      {/* Separator */}
+      {/* <hr className="my-4 w-full border-t border-gray-300" /> */}
     </div>
+
+
+
   )
 }
 

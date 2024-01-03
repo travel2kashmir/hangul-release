@@ -6,19 +6,17 @@ import CountdownTimer from './CountDownTimer';
 function BookingSuccess({ setDisplay, setShowModal, setSearched, rooms, checkinDate, checkoutDate }) {
 
     let dispatch = useDispatch();
-
+    // fetchs the list of all guest from redux 
     const guestdetails = useSelector(state => state.guestDetails)
-    // console.log("guest details stored in redux state", guestdetails)
-
-    const roomsSelected = useSelector(state => new Set(state.roomsSelected))
-    // console.log("this is roomSelected set using redux", roomsSelected)
-
+    
+    // fetches room id of rooms booked 
+    const roomsSelectedInitial = useSelector(state => state.roomsSelected)
+    const roomsSelected=new Set(roomsSelectedInitial.map(i=>i.room_id))
+    
     // Create an array of rooms that match the room_ids in roomsSelected
     const selectedRoomsArray = rooms.filter((room) => roomsSelected.has(room.room_id));
     // console.log("Selected rooms:", selectedRoomsArray);
-
-
-    // Function to delete room_rates and room_data from local storage
+// Function to delete room_rates and room_data from local storage
     function deleteRoomDetails() {
         // Remove the room_rates key from local storage
         localStorage.removeItem('room_rates');
@@ -62,7 +60,7 @@ function BookingSuccess({ setDisplay, setShowModal, setSearched, rooms, checkinD
                             </div>
                             <div className='pt-2'>
                                 <p>{selectedRoomsArray?.map((room, index) => {
-                                    return <p key={index} className=' font-medium text-slate-400'>{room?.room_name}</p>
+                                    return <p key={index} className=' font-medium text-slate-400'>{room?.room_name} {roomsSelectedInitial.map((meal)=>(meal.room_id===room.room_id?<>({meal.meal_name})</>:undefined))}</p>
                                 })}</p>
                             </div>
                             <div className='flex pt-5'>

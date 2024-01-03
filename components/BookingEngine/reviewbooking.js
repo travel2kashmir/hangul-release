@@ -57,7 +57,9 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
     const oneDay = 24 * 60 * 60 * 1000; // Number of milliseconds in a day
     const numberOfNights = Math.round((endDate - startDate) / oneDay);
 
-    const roomsSelected = useSelector(state => new Set(state.roomsSelected))
+    const roomsSelectedInitial = useSelector(state => state.roomsSelected)
+    const roomsSelected=new Set(roomsSelectedInitial.map(i=>i.room_id))
+    
     // console.log("this is roomSelected set using redux", roomsSelected)
 
     const [selectedRoomsArray, setSelectedRoomsArray] = useState([])
@@ -352,24 +354,24 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                 ...roomBookingData, ...roomsForThisBooking, ...guestsForThisBooking, ...finalInvoiceForThisBooking
             }]
         }
-        alert(JSON.stringify(bookingData))
-        // axios.post(bookingURL, bookingData, {
-        //     header: { "content-type": "application/json" },
-        // }).then((response) => {
-        //     let totalPrice = finalInvoiceForThisBooking?.booking_invoice[0].total_price;
-        //     let paymentRefrenceNumber = PaymentGateway(response.data.booking_id, totalPrice)
-        //     addRefrenceToInvoice(paymentRefrenceNumber, response.data.booking_id)
+      
+        axios.post(bookingURL, bookingData, {
+            header: { "content-type": "application/json" },
+        }).then((response) => {
+            let totalPrice = finalInvoiceForThisBooking?.booking_invoice[0].total_price;
+            let paymentRefrenceNumber = PaymentGateway(response.data.booking_id, totalPrice)
+            addRefrenceToInvoice(paymentRefrenceNumber, response.data.booking_id)
 
-        //     // Add booking_id and property_id to local storage
-        //     let propertyId = property_id; // Replace with the actual property_id
-        //     let bookingId = response.data.booking_id;
+            // Add booking_id and property_id to local storage
+            let propertyId = property_id; // Replace with the actual property_id
+            let bookingId = response.data.booking_id;
 
-        //     dispatch(updateBookingInfo({ booking_id: bookingId, property_id: propertyId }));
+            dispatch(updateBookingInfo({ booking_id: bookingId, property_id: propertyId }));
 
-        // }).catch((error) => {
-        //     toast.error("API: Room Booking Failed,Try again Latter.");
-        //     setpayNowLoader(false)
-        // })
+        }).catch((error) => {
+            toast.error("API: Room Booking Failed,Try again Latter.");
+            setpayNowLoader(false)
+        })
     }
     //function to add payemtn gateway logic
     function PaymentGateway(booking_id, total_price) {
@@ -391,7 +393,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
         }).then((responseFromInvoiceLinkUrl) => {
             // handle the third post response
             console.log('payment sucessful')
-            changeBookingCount()
+            // changeBookingCount()
             setpayNowLoader(false)
             setDisplay(3)
         }).catch((err) => {
@@ -400,34 +402,34 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
     }
 
     //changes count of rooms available on that particular day
-    function changeBookingCount() {
-        const bookingDataArray = [];
-        // Function to get an array of dates between two dates
-        const datesBetween = getDates(checkinDate, checkoutDate);
-        // Iterate through each date between checkinDate and checkoutDate
-        datesBetween.forEach((date) => {
-            // For each selected room, create an object
-            selectedRoomsArray.forEach((item) => {
-                const room_id = item.room_id;
-                const booking_count = selectedQuantitiesMap.get(room_id);
+    // function changeBookingCount() {
+    //     const bookingDataArray = [];
+    //     // Function to get an array of dates between two dates
+    //     const datesBetween = getDates(checkinDate, checkoutDate);
+    //     // Iterate through each date between checkinDate and checkoutDate
+    //     datesBetween.forEach((date) => {
+    //         // For each selected room, create an object
+    //         selectedRoomsArray.forEach((item) => {
+    //             const room_id = item.room_id;
+    //             const booking_count = selectedQuantitiesMap.get(room_id);
 
-                // Add the object to the array
-                bookingDataArray.push({
-                    room_id,
-                    booking_count,
-                    date: date.toISOString().split('T')[0], // Format date as "YYYY-MM-DD"
-                });
-            });
-        });
+    //             // Add the object to the array
+    //             bookingDataArray.push({
+    //                 room_id,
+    //                 booking_count,
+    //                 date: date.toISOString().split('T')[0], // Format date as "YYYY-MM-DD"
+    //             });
+    //         });
+    //     });
 
-        // Now bookingDataArray contains the array of objects with room_id, booking_count, and date for each room and each day between checkinDate and checkoutDate
-        let url = '/api/room_booking_update'
-        axios.put(url, bookingDataArray, { header: { "content-type": "application/json" } })
-            .then((response) => {
-                setpayNowLoader(false)
-            })
-            .catch((error) => console.log(error))
-    }
+    //     // Now bookingDataArray contains the array of objects with room_id, booking_count, and date for each room and each day between checkinDate and checkoutDate
+    //     let url = '/api/room_booking_update'
+    //     axios.put(url, bookingDataArray, { header: { "content-type": "application/json" } })
+    //         .then((response) => {
+    //             setpayNowLoader(false)
+    //         })
+    //         .catch((error) => console.log(error))
+    // }
 
     // this function resets the values
     function closeButtonAction() {
@@ -451,25 +453,24 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
         }
     }
 
-    function getDates(startDate, endDate) {
-        const dateArray = [];
-        let currentDate = new Date(startDate);
+    // function getDates(startDate, endDate) {
+    //     const dateArray = [];
+    //     let currentDate = new Date(startDate);
 
-        while (currentDate <= new Date(endDate)) {
-            dateArray.push(new Date(currentDate));
-            currentDate.setDate(currentDate.getDate() + 1);
-        }
+    //     while (currentDate <= new Date(endDate)) {
+    //         dateArray.push(new Date(currentDate));
+    //         currentDate.setDate(currentDate.getDate() + 1);
+    //     }
 
-        return dateArray;
-    }
+    //     return dateArray;
+    // }
 
     return (
         <div className={`min-h-screen ${color?.bgColor}`}>
 
             {/* app bar  */}
             <div>
-                {/* <div className='flex justify-between w-full py-5 px-3 md:px-5 border-b-2  bg-slate-100'> */}
-                {/* <div className='flex justify-between w-full py-5 px-3 md:px-5 bg-slate-100'> */}
+          
                 <div className={`flex justify-between w-full py-5 px-3 md:px-5 border-b  ${color?.border}`}>
                     <div className='flex'>
                         <i className='my-auto'

@@ -17,8 +17,8 @@ function RoomCalenderView({ allHotelDetails, color, roomsLoader, setRoomsLoader,
     const dispatch = useDispatch() //creating object of dispatch 
 
     // const addMoreRooms = useSelector(state => state.addMoreRoom) //reads addMoreRoom from state into const
-    const roomsSelected = useSelector(state => state.roomsSelected)
-
+    const roomsSelectedInitial = useSelector(state => state.roomsSelected)
+    const roomsSelected=roomsSelectedInitial.map(i=>i.room_id)
     const [dataAsPerDate, setDataAsPerDate] = useState([]);
 
     useEffect(() => {

@@ -62,8 +62,8 @@ function RoomCard({ color, filteredRoomData, roomImage, setDisplay, checkinDate,
 
     // Store the updated data back in local storage
     localStorage.setItem('room_rates', JSON.stringify(existingData));
-
-    dispatch(setRoomsSelected([room_rates?.room_id]))
+    dispatch(setRoomsSelected([{ "room_id": room_rates?.room_id, "meal_name": room_rates?.meal_name || 'Room Only - RO' }]));
+  //  if meal name is null it puts room only by default 
     setDisplay(2)
 
   }

@@ -165,6 +165,7 @@ function ReceiptView({ allHotelDetails, setShowModal, setDisplay, setSearched })
                                 <tr>
                                     <th className='border-b-2 border-slate-300'>S.No</th>
                                     <th className='border-b-2 border-slate-300'>Room Name</th>
+                                    <th className='border-b-2 border-slate-300'>Meal Name</th>
                                     <th className='border-b-2 border-slate-300'>Room Count</th>
                                     <th className='border-b-2 border-slate-300'>Total Price</th>
                                 </tr>
@@ -175,6 +176,7 @@ function ReceiptView({ allHotelDetails, setShowModal, setDisplay, setSearched })
                                         <tr key={index}>
                                             <td className='border-b-2 border-slate-300 py-2'>{index + 1}</td>
                                             <td className='border-b-2 border-slate-300'>{room?.room_name} - {room?.room_type}</td>
+                                            <td className='border-b-2 border-slate-300'>{room?.meal_name}</td>
                                             <td className='border-b-2 border-slate-300'>{room?.room_count}</td>
                                             <td className='border-b-2 border-slate-300'></td>
                                         </tr>
@@ -182,7 +184,7 @@ function ReceiptView({ allHotelDetails, setShowModal, setDisplay, setSearched })
                                 })}
                                 {/* Total row */}
                                 <tr>
-                                    <td colSpan={3} className='border-b-2 text-center border-slate-300'></td>
+                                    <td colSpan={4} className='border-b-2 text-center border-slate-300'></td>
                                     <td className='py-2 border-b-2 border-slate-300 md:text-lg font-bold'> ₹{bookingDetails?.[0]?.booking_invoice?.[0]?.total_price}</td>
                                 </tr>
                             </tbody>

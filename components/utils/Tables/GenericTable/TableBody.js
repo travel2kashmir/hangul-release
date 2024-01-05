@@ -9,7 +9,7 @@ function TableBody({ cols = [], color = {}, handlecheckbox, ...args }) {
         setData(args.data);
     }, [args.data])
 
-    const btnColor = { "save": "bg-cyan-600 hover:bg-cyan-700", "delete": "bg-red-600 hover:bg-red-700", "view": "bg-cyan-600 hover:bg-cyan-700" }
+    const btnColor = { "save": "bg-cyan-600 hover:bg-cyan-700", "delete": "bg-red-600 hover:bg-red-700", "view": "bg-cyan-600 hover:bg-cyan-700","edit": "bg-cyan-600 hover:bg-cyan-700" }
     return (
         <>
 

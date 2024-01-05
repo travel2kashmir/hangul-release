@@ -45,6 +45,7 @@ var resView = [];
 var currency;
 import Router from 'next/router'
 import BreadCrumb from '../../../components/utils/BreadCrumb';
+import GenericTable from '../../../components/utils/Tables/GenericTable';
 const logger = require("../../../services/logger");
 var currentLogged;
 var i = 0;
@@ -173,6 +174,33 @@ function Room() {
     setShowSearchedImages(1);
   };
 
+  const filterRatesData = (data)=>{
+    let genData=[];
+    data?.map((item) => {
+      let temp = {
+        // "checkbox": { operation: undefined },
+        "Meal Name": item.meal_name,
+        "Price": item.price,
+        "id": item.room_rate_plan_id,
+
+        Actions: [
+          {
+            type: "button",
+            label: "Edit",
+            operation: () => { alert(`Edit hit ${JSON.stringify(item)}`) }
+          },
+          {
+            type: "button",
+            label: "Delete",
+            operation: () => { alert(`Delete hit ${JSON.stringify(item)}`) }
+          }
+
+        ],
+      }
+      genData.push(temp)
+    })
+    setRoomRates(genData)
+  }
 
   // Fetch Room Details
   const fetchDetails = async () => {
@@ -183,6 +211,7 @@ function Room() {
         setRoomDetails(response.data);
         setVisible(1);
         setFinalView(response?.data?.views);
+        filterRatesData(response?.data?.unconditional_rates);
         if (response.data.room_refrences !== undefined) {
           let item = response.data.room_refrences.map(item => item.room_identifier)
           setInitalIdentifiers(item.toString())
@@ -191,8 +220,6 @@ function Room() {
         if (response.data?.room_type == 'Single') {
           setBedDetails(response.data.beds?.[i])
         }
-
-        filterCurrency(response.data?.unconditional_rates?.[i]);
 
         if (response.data.room_facilities !== undefined) {
           setServices(response.data.room_facilities);
@@ -219,7 +246,7 @@ function Room() {
           }
         }
         logger.info("url  to fetch room hitted successfully");
-
+        filterCurrency(response.data?.unconditional_rates?.[i]);
       })
       .catch((error) => { logger.error("url to fetch room, failed"); });
   }
@@ -248,6 +275,7 @@ function Room() {
     const url = `/api/all_room_services`
     axios.get(url)
       .then((response) => {
+        alert(JSON.stringify(response.data))
         setServices(response.data);
         logger.info("url  to fetch roomtypes hitted successfully")
       })
@@ -531,7 +559,7 @@ function Room() {
 
   //  update inventory 
   function updateInventory() {
-  let url = `/api/inventory`
+    let url = `/api/inventory`
     let inventorydata = {
       "inventory": [{
 
@@ -969,7 +997,6 @@ function Room() {
     setSpinner(1);
     const imagedata = data;
     const finalImages = { images: imagedata };
-    alert(JSON.stringify(finalImages))
     axios
       .post(`/api/deleteall/images`, finalImages, {
         headers: { "content-type": "application/json" },
@@ -1702,7 +1729,7 @@ function Room() {
                         <tbody className={`${color.text} divide-y divide-gray-200`}>
                           {services?.map((item, idx) => (
                             <tr className={`${color?.hover}`} key={idx}>
-                              <td className="py-4 py-2 flex items-center whitespace-nowrap space-x-6 mr-12 lg:mr-0">
+                              <td className="py-4 flex items-center whitespace-nowrap space-x-6 mr-12 lg:mr-0">
                                 <span className={`${color.text} py-4 px-2 whitespace-nowrap text-base font-medium capitalize `}>
                                   {"  " +
                                     item?.service_name?.replace(/_+/g, " ")}
@@ -1968,162 +1995,25 @@ function Room() {
           </div>
 
           {/* Room Rates */}
+
           <div id='3' className={disp === 3 ? 'block py-1' : 'hidden'}>
             <div className={`${color?.whitebackground} shadow rounded-lg  sm:p-6 xl:p-8  2xl:col-span-2`}>
               {/* widget progress starts */}
               <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`]} selected={4} color={color} />{/* widget progress ends */}
 
-              {/* page label starts */}
-              <h6 className={`${color?.text} text-base  flex leading-none  pt-2 font-semibold`}>
-                {language?.room} {language?.rates}
-              </h6>
-              {/* page label ends */}
-              <div className="pt-6">
-                <div className=" md:px-2 mx-auto w-full">
+              <GenericTable
+                color={color}
+                language={language}
+                addButton={false}
+                tableName={`Room Rates`}
+                // cols={["checkbox", "Guest Name", "Booking From", "Booking To", "Transaction No.", "status", "Actions"]}
+                cols={["Meal Name", "Price", "Actions"]}
+                data={roomRates}
 
-                  {/* room rate form starts */}
-                  <div className="flex flex-wrap">
-                    {/* currency drop down */}
-                    <div className="w-full lg:w-6/12 px-4">
-                      <div className="relative w-full mb-3">
-                        <label
-                          className={`text-sm font-medium ${color?.text} block py-1 mb-2`}
-                          htmlFor="grid-password"
-                        >
-                          {language?.currency}
-                          <span style={{ color: "#ff0000" }}>*</span>
-                        </label>
-                        <div className={visible === 0 ? 'block py-1' : 'hidden'}><Lineloader /></div>
-                        <div className={visible === 1 ? 'block py-1' : 'hidden'}>
-                          <select className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`}
-                            onChange={
-                              (e) => (
-                                setAllRoomRates({ ...allRoomRates, currency: e.target.value }, setFlag(1))
-                              )
-                            }>
-                            <option selected disabled>{allRoomRates?.currency}</option>
-                            {lang?.CurrencyData?.map(i => {
-                              return (
-
-                                <option key={i.currency_code} value={i.currency_code}>{i?.currency_name}</option>)
-                            }
-                            )}
-                          </select>
-                          <p className="text-sm text-sm text-red-700 font-light">
-                            {error?.currency}</p>
-                        </div>
-                      </div>
-                    </div>
-                    {/* base rate amount  */}
-                    <div className="w-full lg:w-6/12 px-4">
-                      <div className="relative w-full mb-3">
-                        <label
-                          className={`text-sm font-medium ${color?.text} block py-1 mb-2`}
-                          htmlFor="grid-password"
-                        >
-                          {language?.baserate} {language?.amount}
-                          <span style={{ color: "#ff0000" }}>*</span>
-                        </label>
-                        <div className={visible === 0 ? 'block py-1' : 'hidden'}><Lineloader /></div>
-                        <div className={visible === 1 ? 'block py-1' : 'hidden'}>
-                          <input
-                            type="text"
-                            className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`}
-                            defaultValue={roomDetails?.unconditional_rates?.[0]?.baserate_amount}
-                            onChange={
-                              (e) => (
-                                setAllRoomRates({ ...allRoomRates, baserate_amount: e.target.value }, setFlag(1))
-                              )
-                            }
-                          />
-                          <p className="text-sm text-sm text-red-700 font-light">
-                            {error?.baserate_amount}</p>
-                        </div>
-                      </div>
-                    </div>
-                    {/* tax amount */}
-                    <div className="w-full lg:w-6/12 px-4">
-                      <div className="relative w-full mb-3">
-                        <label
-                          className={`text-sm font-medium ${color?.text} block py-1 mb-2`}
-                          htmlFor="grid-password"
-                        >
-                          {language?.taxrate} {language?.amount}
-                          <span style={{ color: "#ff0000" }}>*</span>
-                        </label>
-                        <div className={visible === 0 ? 'block py-1' : 'hidden'}><Lineloader /></div>
-                        <div className={visible === 1 ? 'block py-1' : 'hidden'}>
-                          <input
-                            type="text"
-                            className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`}
-                            defaultValue={roomDetails?.unconditional_rates?.[0]?.tax_amount}
-                            onChange={
-                              (e) => (
-                                setAllRoomRates({ ...allRoomRates, tax_amount: e.target.value, un_rate_id: allRoomDetails?.unconditional_rates?.[0]?.un_rate_id }, setFlag(1))
-                              )
-                            } />
-                          <p className="text-sm text-sm text-red-700 font-light">
-                            {error?.tax_amount}</p></div>
-                      </div>
-                    </div>
-                    {/* other charges amount */}
-                    <div className="w-full lg:w-6/12 px-4">
-                      <div className="relative w-full mb-3">
-                        <label
-                          className={`text-sm font-medium ${color?.text} block py-1 mb-2`}
-                          htmlFor="grid-password">
-                          {language?.other} {language?.charges} {language?.amount}
-                          <span style={{ color: "#ff0000" }}>*</span>
-                        </label>
-                        <div className={visible === 0 ? 'block py-1' : 'hidden'}><Lineloader /></div>
-                        <div className={visible === 1 ? 'block py-1' : 'hidden'}>
-                          <input
-                            type="text"
-                            className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`}
-                            defaultValue={roomDetails?.unconditional_rates?.[0]?.otherfees_amount}
-                            onChange={
-                              (e) => (
-                                setAllRoomRates({ ...allRoomRates, otherfees_amount: e.target.value }, setFlag(1))
-                              )
-                            } />
-                          <p className="text-sm text-sm text-red-700 font-light">
-                            {error?.otherfees_amount}</p></div>
-                      </div>
-                    </div>
-                    {/* blank */}
-                    <div className="w-full lg:w-6/12 px-4">
-                      <div className="relative w-full mb-3">
-                      </div>
-                    </div>
-                    {/* buttons start */}
-                    <div className="flex items-center justify-end space-x-2 sm:space-x-3 ml-auto">
-                      <Button Primary={language?.Previous} onClick={() => { setDisp(2) }} />
-                      <div className={(spinner === 0 && flag !== 1) ? 'block py-1' : 'hidden'}>
-                        <Button Primary={language?.UpdateDisabled} />
-                      </div>
-                      <div className={(spinner === 0 && flag === 1) ? 'block py-1' : 'hidden'}>
-                        <Button Primary={language?.Update} onClick={() => {
-                          validationRates();
-                        }} />
-                      </div>
+              // deleteAll={() => { alert("feature not functional"); }}
+              />
 
 
-                      <div className={spinner === 1 ? 'block py-1' : 'hidden'}>
-                        <Button Primary={language?.SpinnerUpdate} />
-                      </div>
-
-                      {/* <Button Primary={language?.Next} onClick={() => { setDisp(6) }} /> */}
-
-                    </div>
-                    {/* buttons end */}
-                  </div>
-                  {/* room rate form ends */}
-
-
-
-
-                </div>
-              </div>
             </div>
           </div>
 

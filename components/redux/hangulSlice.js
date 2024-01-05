@@ -13,9 +13,7 @@ const initialState = {
     },
 
 }
-
-
-
+// reducers 
 export const hangulSlice = createSlice({
     name: 'hangul',
     initialState,

@@ -29,26 +29,26 @@ import InputText from '../../../components/utils/InputText';
 import InputTextBox from '../../../components/utils/InputTextBox';
 import DropDown from '../../../components/utils/DropDown';
 import WidgetStatus from '../../../components/widgetStatus';
-import roomDiscountValidation from '../../../components/validation/room/roomDiscountValidation';
-import roomRateModificationValidation from '../../../components/validation/room/roomRateModificationValidation';
-import searchFunction from '../../../components/searchFunction';
+import Modal from '../../../components/ClassicTheme/Modals/Modal';
 import ImageDemo from "../../../components/utils/ImageDemo"
-var language;
-var currentProperty;
-var currentroom;
-var room;
-var viewsData;
-let check = [];
-let checkDiscount = [];
-let checkModification = [];
-var resView = [];
-var currency;
 import Router from 'next/router'
 import BreadCrumb from '../../../components/utils/BreadCrumb';
 import GenericTable from '../../../components/utils/Tables/GenericTable';
+import RoomEdit from '../../../components/rooms/RoomEdit';
+
+let language;
+let currentProperty;
+let currentroom;
+let room;
+let viewsData;
+let check = [];
+let checkDiscount = [];
+let checkModification = [];
+let resView = [];
+let currency;
 const logger = require("../../../services/logger");
-var currentLogged;
-var i = 0;
+let currentLogged;
+let i = 0;
 let colorToggle;
 
 
@@ -107,6 +107,8 @@ function Room() {
   const [id, setId] = useState(-1);
   const [initalIdentifiers, setInitalIdentifiers] = useState()
   const [roomIdentifiers, setRoomIdentifiers] = useState()
+  const [roomRateEditModal, setRoomRateEditModal] = useState(0)
+  const [editRate, setEditRate] = useState({})
 
   /** Use Effect to fetch details from the Local Storage **/
   useEffect(() => {
@@ -174,8 +176,9 @@ function Room() {
     setShowSearchedImages(1);
   };
 
-  const filterRatesData = (data)=>{
-    let genData=[];
+  //generate json to be injected in room rate table component
+  const filterRatesData = (data) => {
+    let genData = [];
     data?.map((item) => {
       let temp = {
         // "checkbox": { operation: undefined },
@@ -187,7 +190,7 @@ function Room() {
           {
             type: "button",
             label: "Edit",
-            operation: () => { alert(`Edit hit ${JSON.stringify(item)}`) }
+            operation: (e) => { setEditRate(item);setRoomRateEditModal(1) }
           },
           {
             type: "button",
@@ -1140,7 +1143,6 @@ function Room() {
     }
   }
 
-
   // Validate Image
   const validationImage = () => {
     var result = validateEditGallery(actionImage)
@@ -1218,375 +1220,377 @@ function Room() {
           </h6>
 
           {/* Room Description */}
-          <div id='0' className={disp === 0 ? 'block py-1' : 'hidden'}>
-
-            <div className={`${color?.whitebackground} shadow rounded-lg px-12 sm:p-6 xl:p-8  2xl:col-span-2`}>
-              {/* progress bar starts */}
-              <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`]} selected={1} color={color} />
-              {/* Progress bar ends */}
-              <h6 className={`${color?.text} text-xl flex leading-none pl-6 lg:pt-2 pt-6  pb-2 font-bold`}>
-                {language?.room} {language?.description}
-              </h6>
-              <div className="pt-6">
-                <div className=" md:px-2 mx-auto w-full">
-                  <div className="flex flex-wrap">
-                    {/* room type */}
-                    <DropDown
-                      label={`${language?.room} ${language?.type}`}
-                      visible={visible}
-                      defaultValue={roomDetails?.room_type}
-                      onChangeAction={(e) =>
-                        setAllRoomDetails(
-                          { ...allRoomDetails, room_type_id: e.target.value },
-                          setFlag(1)
-                        )
-                      }
-                      error={error?.propertycategory}
-                      color={color}
-                      req={true}
-                      options={roomtypes?.map(i => {
-                        return (
-
-                          { value: i.room_type_id, label: i?.room_type_name.replaceAll("_", " ") }
-
-                        )
-                      })
-                      }
-
-
-                    />
-
-                    {/* room name */}
-                    <InputText
-                      label={`${language?.room} ${language?.name}`}
-                      visible={visible}
-                      defaultValue={allRoomDetails?.room_name}
-                      onChangeAction={(e) => {
-                        setAllRoomDetails({
-                          ...allRoomDetails, room_name: e.target.value,
-                        });
-                        setFlag(1);
-                      }
-                      }
-                      error={error?.room_name}
-                      color={color}
-                      req={true}
-                      tooltip={true}
-                    />
-
-                    {/*Room Description */}
-                    <InputTextBox
-                      label={`${language?.room} ${language?.description}`}
-                      visible={visible}
-                      defaultValue={allRoomDetails?.room_description}
-                      wordLimit={1000}
-                      onChangeAction={(e) => {
-                        if (e.target.value.length >= 0 && e.target.value.length < 1000) {
-                          setError({})
-                          setAllRoomDetails({ ...allRoomDetails, room_description: e.target.value }, setFlag(1))
+          {disp === 0 ?
+            <div id='0' className='block py-1'>
+              <div className={`${color?.whitebackground} shadow rounded-lg px-12 sm:p-6 xl:p-8  2xl:col-span-2`}>
+                {/* progress bar starts */}
+                <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`]} selected={1} color={color} />
+                {/* Progress bar ends */}
+                <h6 className={`${color?.text} text-xl flex leading-none pl-6 lg:pt-2 pt-6  pb-2 font-bold`}>
+                  {language?.room} {language?.description}
+                </h6>
+                <div className="pt-6">
+                  <div className=" md:px-2 mx-auto w-full">
+                    <div className="flex flex-wrap">
+                      {/* room type */}
+                      <DropDown
+                        label={`${language?.room} ${language?.type}`}
+                        visible={visible}
+                        defaultValue={roomDetails?.room_type}
+                        onChangeAction={(e) =>
+                          setAllRoomDetails(
+                            { ...allRoomDetails, room_type_id: e.target.value },
+                            setFlag(1)
+                          )
                         }
-                        else {
-                          setError({ room_description: 'word limit reached' })
+                        error={error?.propertycategory}
+                        color={color}
+                        req={true}
+                        options={roomtypes?.map(i => {
+                          return (
+
+                            { value: i.room_type_id, label: i?.room_type_name.replaceAll("_", " ") }
+
+                          )
+                        })
                         }
 
-                      }
 
-                      }
-                      error={error?.room_description}
-                      color={color}
-                      req={true}
-                      tooltip={true}
-                    />
+                      />
 
-                    {/* room capacity */}
-                    <InputText
-                      label={`${language?.room} ${language?.capacity}`}
-                      visible={visible}
-                      defaultValue={allRoomDetails?.room_capacity}
-                      onChangeAction={
-                        (e) => (
-                          setAllRoomDetails({ ...allRoomDetails, room_capacity: e.target.value }, setFlag(1))
-                        )
-                      }
-                      error={error?.room_capacity}
-                      color={color}
-                      req={true}
-                    />
-
-                    {/* max number of occupants */}
-                    <InputText
-                      label={`${language?.maximum} ${language?.number} ${language?.of} ${language?.occupants}`}
-                      visible={visible}
-                      defaultValue={allRoomDetails?.maximum_number_of_occupants}
-                      onChangeAction={
-                        (e) => (
-                          setAllRoomDetails({ ...allRoomDetails, maximum_number_of_occupants: e.target.value }, setFlag(1))
-                        )
-                      }
-                      error={error?.maximum_number_of_occupants}
-                      color={color}
-                      req={true}
-                    />
-
-                    {/* minimum number of occupants */}
-                    <InputText
-                      label={`${language?.minimum} ${language?.number} ${language?.of} ${language?.occupants}`}
-                      visible={visible}
-                      defaultValue={allRoomDetails?.minimum_number_of_occupants}
-                      onChangeAction={
-                        (e) => {
-                          setAllRoomDetails({ ...allRoomDetails, minimum_number_of_occupants: e.target.value }, setFlag(1))
+                      {/* room name */}
+                      <InputText
+                        label={`${language?.room} ${language?.name}`}
+                        visible={visible}
+                        defaultValue={allRoomDetails?.room_name}
+                        onChangeAction={(e) => {
+                          setAllRoomDetails({
+                            ...allRoomDetails, room_name: e.target.value,
+                          });
+                          setFlag(1);
                         }
-                      }
-                      error={error?.minimum_number_of_occupants}
-                      color={color}
-                      req={true}
-                    />
+                        }
+                        error={error?.room_name}
+                        color={color}
+                        req={true}
+                        tooltip={true}
+                      />
 
-                    {/* Maximum age of occupants */}
-                    <InputText
-                      label={`${language?.maximum} ${language?.age} ${language?.of} ${language?.occupants}`}
-                      visible={visible}
-                      defaultValue={allRoomDetails?.minimum_age_of_occupants}
-                      onChangeAction={
-                        (e) => (
-                          setAllRoomDetails({ ...allRoomDetails, minimum_age_of_occupants: e.target.value }, setFlag(1))
-                        )
-                      }
-                      error={error?.maximum_number_of_occupants}
-                      color={color}
-                      req={true}
-                    />
+                      {/*Room Description */}
+                      <InputTextBox
+                        label={`${language?.room} ${language?.description}`}
+                        visible={visible}
+                        defaultValue={allRoomDetails?.room_description}
+                        wordLimit={1000}
+                        onChangeAction={(e) => {
+                          if (e.target.value.length >= 0 && e.target.value.length < 1000) {
+                            setError({})
+                            setAllRoomDetails({ ...allRoomDetails, room_description: e.target.value }, setFlag(1))
+                          }
+                          else {
+                            setError({ room_description: 'word limit reached' })
+                          }
 
-                    {/* views room */}
-                    <div className="w-full lg:w-6/12 px-4">
-                      <div className="relative w-full mb-3">
-                        <label className={`text-sm font-medium ${color?.text} block py-1 mb-2`}
-                          htmlFor="grid-password">
-                          {language?.viewsfromroom}
-                          <span style={{ color: "#ff0000" }}>*</span>
-                        </label>
-                        <div className={visible === 0 ? 'block py-1' : 'hidden'}><Lineloader /></div>
-                        <div className={visible === 1 ? 'block py-1' : 'hidden'}>
-                          <Multiselect
-                            className={` shadow-sm ${color?.greybackground} ${color?.text} mb-3 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full
-                       `}
-                            isObject={true}
-                            options={lang?.Views}
-                            onRemove={(event) => { views(event) }}
-                            onSelect={(event) => { views(event) }}
-                            selectedValues={finalView}
-                            displayValue="view"
-                            closeIcon='circle'
-                            style={{
-                              chips: {
-                                background: '#0891b2',
-                                'font-size': '0.875 rem'
-                              }
+                        }
 
-                            }}
+                        }
+                        error={error?.room_description}
+                        color={color}
+                        req={true}
+                        tooltip={true}
+                      />
 
-                          />
-                          <p className="text-sm text-sm text-red-700 font-light">
-                            {error?.view}</p>
+                      {/* room capacity */}
+                      <InputText
+                        label={`${language?.room} ${language?.capacity}`}
+                        visible={visible}
+                        defaultValue={allRoomDetails?.room_capacity}
+                        onChangeAction={
+                          (e) => (
+                            setAllRoomDetails({ ...allRoomDetails, room_capacity: e.target.value }, setFlag(1))
+                          )
+                        }
+                        error={error?.room_capacity}
+                        color={color}
+                        req={true}
+                      />
+
+                      {/* max number of occupants */}
+                      <InputText
+                        label={`${language?.maximum} ${language?.number} ${language?.of} ${language?.occupants}`}
+                        visible={visible}
+                        defaultValue={allRoomDetails?.maximum_number_of_occupants}
+                        onChangeAction={
+                          (e) => (
+                            setAllRoomDetails({ ...allRoomDetails, maximum_number_of_occupants: e.target.value }, setFlag(1))
+                          )
+                        }
+                        error={error?.maximum_number_of_occupants}
+                        color={color}
+                        req={true}
+                      />
+
+                      {/* minimum number of occupants */}
+                      <InputText
+                        label={`${language?.minimum} ${language?.number} ${language?.of} ${language?.occupants}`}
+                        visible={visible}
+                        defaultValue={allRoomDetails?.minimum_number_of_occupants}
+                        onChangeAction={
+                          (e) => {
+                            setAllRoomDetails({ ...allRoomDetails, minimum_number_of_occupants: e.target.value }, setFlag(1))
+                          }
+                        }
+                        error={error?.minimum_number_of_occupants}
+                        color={color}
+                        req={true}
+                      />
+
+                      {/* Maximum age of occupants */}
+                      <InputText
+                        label={`${language?.maximum} ${language?.age} ${language?.of} ${language?.occupants}`}
+                        visible={visible}
+                        defaultValue={allRoomDetails?.minimum_age_of_occupants}
+                        onChangeAction={
+                          (e) => (
+                            setAllRoomDetails({ ...allRoomDetails, minimum_age_of_occupants: e.target.value }, setFlag(1))
+                          )
+                        }
+                        error={error?.maximum_number_of_occupants}
+                        color={color}
+                        req={true}
+                      />
+
+                      {/* views room */}
+                      <div className="w-full lg:w-6/12 px-4">
+                        <div className="relative w-full mb-3">
+                          <label className={`text-sm font-medium ${color?.text} block py-1 mb-2`}
+                            htmlFor="grid-password">
+                            {language?.viewsfromroom}
+                            <span style={{ color: "#ff0000" }}>*</span>
+                          </label>
+                          <div className={visible === 0 ? 'block py-1' : 'hidden'}><Lineloader /></div>
+                          <div className={visible === 1 ? 'block py-1' : 'hidden'}>
+                            <Multiselect
+                              className={` shadow-sm ${color?.greybackground} ${color?.text} mb-3 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full
+                    `}
+                              isObject={true}
+                              options={lang?.Views}
+                              onRemove={(event) => { views(event) }}
+                              onSelect={(event) => { views(event) }}
+                              selectedValues={finalView}
+                              displayValue="view"
+                              closeIcon='circle'
+                              style={{
+                                chips: {
+                                  background: '#0891b2',
+                                  'font-size': '0.875 rem'
+                                }
+
+                              }}
+
+                            />
+                            <p className="text-sm text-sm text-red-700 font-light">
+                              {error?.view}</p>
+                          </div>
                         </div>
                       </div>
+                      {/* Room length */}
+                      <InputText
+                        label={`${language?.room} ${language?.length} (${language?.infeet})`}
+                        visible={visible}
+                        defaultValue={allRoomDetails?.room_length}
+                        onChangeAction={
+                          (e) => (
+                            setAllRoomDetails({ ...allRoomDetails, room_length: e.target.value }, setFlag(1))
+                          )
+                        }
+                        error={error?.room_length}
+                        color={color}
+                        req={true}
+                      />
+
+                      {/* Room Breadth */}
+
+                      <InputText
+                        label={`${language?.room} ${language?.breadth} (${language?.infeet})`}
+                        visible={visible}
+                        defaultValue={allRoomDetails?.room_width}
+                        onChangeAction={
+                          (e) => (
+                            setAllRoomDetails({ ...allRoomDetails, room_width: e.target.value }, setFlag(1))
+                          )
+                        }
+                        error={error?.room_width}
+                        color={color}
+                        req={true}
+                      />
+
+                      {/* Room Height */}
+                      <InputText
+                        label={`${language?.room} ${language?.height} (${language?.infeet})`}
+                        visible={visible}
+                        defaultValue={allRoomDetails?.room_height}
+                        onChangeAction={
+                          (e) => (
+                            setAllRoomDetails({ ...allRoomDetails, room_height: e.target.value }, setFlag(1))
+                          )
+                        }
+                        error={error?.room_height}
+                        color={color}
+                        req={true}
+                      />
+
+                      {/* Room Area Read only */}
+                      <InputText
+                        label={`${language?.room} ${language?.area}`}
+                        visible={visible}
+                        defaultValue={allRoomDetails?.carpet_area}
+                        onChangeAction={undefined}
+                        color={color}
+                        disabled={true}
+                      />
+
+                      {/* Room Volume Read only */}
+                      <InputText
+                        label={`${language?.room} ${language?.volume}`}
+                        visible={visible}
+                        defaultValue={allRoomDetails?.room_volume}
+                        onChangeAction={undefined}
+                        color={color}
+                        disabled={true}
+                      />
+
+                      {/* Room Style*/}
+                      <DropDown
+                        label={language?.roomstyle}
+                        visible={visible}
+                        defaultValue={allRoomDetails?.room_style?.replaceAll("_", " ")}
+                        onChangeAction={
+                          (e) => (
+                            setAllRoomDetails({ ...allRoomDetails, room_style: e.target.value }, setFlag(1))
+                          )
+                        }
+                        error={error?.room_style}
+                        color={color}
+                        req={true}
+                        options={[
+                          { value: "western", label: "Western" },
+                          { value: "japanese", label: "Japanese" },
+                          { value: "japanese_western", label: "Japanese Western" },
+                        ]}
+                      />
+
+                      {/* Is Room Shared */}
+                      <DropDown
+                        label={language?.isroomshared}
+                        visible={visible}
+                        defaultValue={allRoomDetails?.is_room_sharing === "shared" ? "Yes" : "No"}
+                        onChangeAction={
+                          (e) => (
+                            setAllRoomDetails({ ...allRoomDetails, is_room_sharing: e.target.value }, setFlag(1))
+                          )
+                        }
+                        error={error?.is_room_sharing}
+                        color={color}
+                        req={true}
+                        options={[
+                          { value: "yes", label: "Yes" },
+                          { value: "no", label: "No" },
+
+                        ]}
+                      />
+
+                      {/* Is Room Outdoor Or Indoor */}
+                      <DropDown
+                        label={language?.isroom}
+                        visible={visible}
+                        defaultValue={allRoomDetails?.is_room}
+                        onChangeAction={
+                          (e) => (
+                            setAllRoomDetails({ ...allRoomDetails, is_room: e.target.value }, setFlag(1))
+                          )
+                        }
+                        error={error?.is_room_sharing}
+                        color={color}
+                        req={true}
+                        options={[
+                          { value: "indoor", label: "Indoor" },
+                          { value: "outdoor", label: "Outdoor" },
+
+                        ]}
+                      />
+
+                      {/* room inventory start */}
+                      <InputText
+                        label={`${language?.room} ${language?.inventory}`}
+                        visible={visible}
+                        defaultValue={allRoomDetails?.inventory_count}
+                        onChangeAction={(e) => {
+                          setAllRoomDetails({ ...allRoomDetails, inventory_count: e.target.value }, setFlag(1))
+                          setIsInventoryEdited(true)
+                        }}
+                        color={color}
+                        disabled={false}
+                        req={true}
+                        title={"Total number of rooms available"}
+                        tooltip={true}
+                        error={error?.inventory_count}
+                      />
+                      {/* room inventory end */}
+
+
+                      {/* Room identifier field start */}
+
+                      <InputText
+                        label={`${language?.room} ${language?.identifiers}`}
+                        visible={visible}
+                        defaultValue={initalIdentifiers}
+                        onChangeAction={(e) => {
+                          setRoomIdentifiers(e.target.value);
+                          setFlag(1);
+                        }}
+                        color={color}
+                        disabled={false}
+                        req={true}
+                        title={"Enter comma seperated room no\'s of similar type of rooms"}
+                        tooltip={true}
+                        error={error?.room_identifier}
+                      />
+
                     </div>
-                    {/* Room length */}
-                    <InputText
-                      label={`${language?.room} ${language?.length} (${language?.infeet})`}
-                      visible={visible}
-                      defaultValue={allRoomDetails?.room_length}
-                      onChangeAction={
-                        (e) => (
-                          setAllRoomDetails({ ...allRoomDetails, room_length: e.target.value }, setFlag(1))
-                        )
-                      }
-                      error={error?.room_length}
-                      color={color}
-                      req={true}
-                    />
-
-                    {/* Room Breadth */}
-
-                    <InputText
-                      label={`${language?.room} ${language?.breadth} (${language?.infeet})`}
-                      visible={visible}
-                      defaultValue={allRoomDetails?.room_width}
-                      onChangeAction={
-                        (e) => (
-                          setAllRoomDetails({ ...allRoomDetails, room_width: e.target.value }, setFlag(1))
-                        )
-                      }
-                      error={error?.room_width}
-                      color={color}
-                      req={true}
-                    />
-
-                    {/* Room Height */}
-                    <InputText
-                      label={`${language?.room} ${language?.height} (${language?.infeet})`}
-                      visible={visible}
-                      defaultValue={allRoomDetails?.room_height}
-                      onChangeAction={
-                        (e) => (
-                          setAllRoomDetails({ ...allRoomDetails, room_height: e.target.value }, setFlag(1))
-                        )
-                      }
-                      error={error?.room_height}
-                      color={color}
-                      req={true}
-                    />
-
-                    {/* Room Area Read only */}
-                    <InputText
-                      label={`${language?.room} ${language?.area}`}
-                      visible={visible}
-                      defaultValue={allRoomDetails?.carpet_area}
-                      onChangeAction={undefined}
-                      color={color}
-                      disabled={true}
-                    />
-
-                    {/* Room Volume Read only */}
-                    <InputText
-                      label={`${language?.room} ${language?.volume}`}
-                      visible={visible}
-                      defaultValue={allRoomDetails?.room_volume}
-                      onChangeAction={undefined}
-                      color={color}
-                      disabled={true}
-                    />
-
-                    {/* Room Style*/}
-                    <DropDown
-                      label={language?.roomstyle}
-                      visible={visible}
-                      defaultValue={allRoomDetails?.room_style?.replaceAll("_", " ")}
-                      onChangeAction={
-                        (e) => (
-                          setAllRoomDetails({ ...allRoomDetails, room_style: e.target.value }, setFlag(1))
-                        )
-                      }
-                      error={error?.room_style}
-                      color={color}
-                      req={true}
-                      options={[
-                        { value: "western", label: "Western" },
-                        { value: "japanese", label: "Japanese" },
-                        { value: "japanese_western", label: "Japanese Western" },
-                      ]}
-                    />
-
-                    {/* Is Room Shared */}
-                    <DropDown
-                      label={language?.isroomshared}
-                      visible={visible}
-                      defaultValue={allRoomDetails?.is_room_sharing === "shared" ? "Yes" : "No"}
-                      onChangeAction={
-                        (e) => (
-                          setAllRoomDetails({ ...allRoomDetails, is_room_sharing: e.target.value }, setFlag(1))
-                        )
-                      }
-                      error={error?.is_room_sharing}
-                      color={color}
-                      req={true}
-                      options={[
-                        { value: "yes", label: "Yes" },
-                        { value: "no", label: "No" },
-
-                      ]}
-                    />
-
-                    {/* Is Room Outdoor Or Indoor */}
-                    <DropDown
-                      label={language?.isroom}
-                      visible={visible}
-                      defaultValue={allRoomDetails?.is_room}
-                      onChangeAction={
-                        (e) => (
-                          setAllRoomDetails({ ...allRoomDetails, is_room: e.target.value }, setFlag(1))
-                        )
-                      }
-                      error={error?.is_room_sharing}
-                      color={color}
-                      req={true}
-                      options={[
-                        { value: "indoor", label: "Indoor" },
-                        { value: "outdoor", label: "Outdoor" },
-
-                      ]}
-                    />
-
-                    {/* room inventory start */}
-                    <InputText
-                      label={`${language?.room} ${language?.inventory}`}
-                      visible={visible}
-                      defaultValue={allRoomDetails?.inventory_count}
-                      onChangeAction={(e) => {
-                        setAllRoomDetails({ ...allRoomDetails, inventory_count: e.target.value }, setFlag(1))
-                        setIsInventoryEdited(true)
-                      }}
-                      color={color}
-                      disabled={false}
-                      req={true}
-                      title={"Total number of rooms available"}
-                      tooltip={true}
-                      error={error?.inventory_count}
-                    />
-                    {/* room inventory end */}
-
-
-                    {/* Room identifier field start */}
-
-                    <InputText
-                      label={`${language?.room} ${language?.identifiers}`}
-                      visible={visible}
-                      defaultValue={initalIdentifiers}
-                      onChangeAction={(e) => {
-                        setRoomIdentifiers(e.target.value);
-                        setFlag(1);
-                      }}
-                      color={color}
-                      disabled={false}
-                      req={true}
-                      title={"Enter comma seperated room no\'s of similar type of rooms"}
-                      tooltip={true}
-                      error={error?.room_identifier}
-                    />
+                    <div className="flex items-center justify-end space-x-2 sm:space-x-3 ml-auto">
+                      <div className={(spinner === 0 && (flag !== 1 && roomView != 1)) ? 'block py-1' : 'hidden'}>
+                        <Button Primary={language?.UpdateDisabled} />
+                      </div>
+                      <div className={(spinner === 0 && (flag === 1 || roomView === 1)) ? 'block py-1' : 'hidden'}>
+                        <Button Primary={language?.Update} onClick={() => { validationRoomDescription() }} />
+                      </div>
+                      <div className={spinner === 1 ? 'block py-1' : 'hidden'}>
+                        <Button Primary={language?.SpinnerUpdate} />
+                      </div>
+                      <Button Primary={language?.Next} onClick={() => {
+                        {
+                          (roomDetails?.room_type === 'Studio_Room' || roomDetails?.room_type === 'Semi_Double' || roomDetails?.room_type === 'King'
+                            || roomDetails?.room_type === 'Queen' || roomDetails?.room_type === 'Double') ?
+                            setDisp(4)
+                            : roomDetails?.room_type === 'Single' ?
+                              setDisp(5) :
+                              setDisp(1)
+                        }
+                      }} />
+                    </div>
 
                   </div>
-                  <div className="flex items-center justify-end space-x-2 sm:space-x-3 ml-auto">
-                    <div className={(spinner === 0 && (flag !== 1 && roomView != 1)) ? 'block py-1' : 'hidden'}>
-                      <Button Primary={language?.UpdateDisabled} />
-                    </div>
-                    <div className={(spinner === 0 && (flag === 1 || roomView === 1)) ? 'block py-1' : 'hidden'}>
-                      <Button Primary={language?.Update} onClick={() => { validationRoomDescription() }} />
-                    </div>
-                    <div className={spinner === 1 ? 'block py-1' : 'hidden'}>
-                      <Button Primary={language?.SpinnerUpdate} />
-                    </div>
-                    <Button Primary={language?.Next} onClick={() => {
-                      {
-                        (roomDetails?.room_type === 'Studio_Room' || roomDetails?.room_type === 'Semi_Double' || roomDetails?.room_type === 'King'
-                          || roomDetails?.room_type === 'Queen' || roomDetails?.room_type === 'Double') ?
-                          setDisp(4)
-                          : roomDetails?.room_type === 'Single' ?
-                            setDisp(5) :
-                            setDisp(1)
-                      }
-                    }} />
-                  </div>
-
                 </div>
-              </div>
 
+              </div>
             </div>
-          </div>
+            : undefined}
 
 
           {/* Multiple Bed */}
-          <div id='4' className={disp === 4 ? 'block py-1' : 'hidden'}>
+          {disp === 4 ?
+          <div id='4' className='block py-1'>
             <div className={`${color?.whitebackground} shadow rounded-lg px-12 sm:p-6 xl:p-8  2xl:col-span-2`}>
               <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`]}
                 selected={1}
@@ -1612,10 +1616,11 @@ function Room() {
                 }} />
               </div>
             </div>
-          </div>
+          </div> : undefined}
 
           {/* Single Bed */}
-          <div id='5' className={disp === 5 ? 'block py-1' : 'hidden'}>
+          {disp === 5 ?
+          <div id='5' className='block py-1'>
             <div className={`${color?.whitebackground} shadow rounded-lg px-12 sm:p-6 xl:p-8  2xl:col-span-2`}>
               <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`]} selected={1} color={color} />
               <h6 className={`${color?.text} text-xl flex leading-none pl-6 lg:pt-2 pt-6  pb-2 font-bold`}>
@@ -1642,7 +1647,7 @@ function Room() {
                           )
                         }
                       />
-                      <p className="text-sm text-sm text-red-700 font-light">
+                      <p className="text-sm text-red-700 font-light">
                         {error?.bed_length}</p>
                     </div>
                   </div>
@@ -1694,10 +1699,11 @@ function Room() {
                 }} />
               </div>
             </div>
-          </div>
+          </div> : undefined}
 
           {/* Room Services */}
-          <div id='1' className={disp === 1 ? 'block py-1' : 'hidden'}>
+          {disp === 1 ?
+          <div id='1' className='block py-1'>
             <div className={`${color?.whitebackground} shadow rounded-lg mt-2 mx-1 px-12 sm:p-6 xl:p-8  2xl:col-span-2`}>
 
               <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`]} selected={2} color={color} />
@@ -1788,10 +1794,11 @@ function Room() {
                 <Button Primary={language?.Next} onClick={() => { setDisp(2) }} />
               </div>
             </div>
-          </div>
+          </div> : undefined}
 
           {/* Room Gallery */}
-          <div id='2' className={disp === 2 ? 'block py-1' : 'hidden'}>
+          {disp === 2 ?
+          <div id='2' className='block py-1'>
             <div className={`${color?.whitebackground} shadow rounded-lg sm:p-6 xl:p-8  2xl:col-span-2 my-3`}>
 
               <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`]} selected={3} color={color} />
@@ -1992,11 +1999,11 @@ function Room() {
                 <Button Primary={language?.Next} onClick={() => { setDisp(3) }} />
               </div>
             </div>
-          </div>
+          </div> : undefined}
 
           {/* Room Rates */}
-
-          <div id='3' className={disp === 3 ? 'block py-1' : 'hidden'}>
+          {disp === 3 ?
+          <div id='3' className='block py-1'>
             <div className={`${color?.whitebackground} shadow rounded-lg  sm:p-6 xl:p-8  2xl:col-span-2`}>
               {/* widget progress starts */}
               <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`]} selected={4} color={color} />{/* widget progress ends */}
@@ -2015,12 +2022,10 @@ function Room() {
 
 
             </div>
-          </div>
+          </div> : undefined}
 
 
         </div>
-
-
 
         {/* New image enlarge */}
         <div id="enlarge" className={enlargeImage === 1 ? "block py-1" : "hidden"}>
@@ -2457,6 +2462,16 @@ function Room() {
             </div>
           </div>
         </div>
+
+        {/* Modal edit rate plans */}
+        {roomRateEditModal === 1 ? 
+        <Modal title={'Edit Rate'} 
+        description={
+          <RoomEdit color={color} language={language} roomData={editRate} fetchDetails={fetchDetails} setRoomRateEditModal={setRoomRateEditModal}/>
+        }
+        setShowModal={setRoomRateEditModal}
+        showCloseButton={false} />
+        : undefined}
 
         {/* Toast Container */}
         <ToastContainer position="top-center"

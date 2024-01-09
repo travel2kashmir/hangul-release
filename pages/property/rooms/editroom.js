@@ -35,6 +35,8 @@ import Router from 'next/router'
 import BreadCrumb from '../../../components/utils/BreadCrumb';
 import GenericTable from '../../../components/utils/Tables/GenericTable';
 import RoomEdit from '../../../components/rooms/RoomEdit';
+import RoomDelete from '../../../components/rooms/RoomDelete';
+import RoomPlanAdd from '../../../components/rooms/RoomPlanAdd';
 
 let language;
 let currentProperty;
@@ -109,6 +111,9 @@ function Room() {
   const [roomIdentifiers, setRoomIdentifiers] = useState()
   const [roomRateEditModal, setRoomRateEditModal] = useState(0)
   const [editRate, setEditRate] = useState({})
+  const [roomRateDeleteModal, setRoomRateDeleteModal] = useState(0)
+  const [deleteRate, setDeleteRate] = useState({})
+  const [addConditionalRate, setAddConditionalRate] = useState(0)
 
   /** Use Effect to fetch details from the Local Storage **/
   useEffect(() => {
@@ -190,12 +195,12 @@ function Room() {
           {
             type: "button",
             label: "Edit",
-            operation: (e) => { setEditRate(item);setRoomRateEditModal(1) }
+            operation: (e) => { setEditRate(item); setRoomRateEditModal(1) }
           },
           {
             type: "button",
             label: "Delete",
-            operation: () => { alert(`Delete hit ${JSON.stringify(item)}`) }
+            operation: () => { setDeleteRate(item); setRoomRateDeleteModal(1); }
           }
 
         ],
@@ -205,6 +210,9 @@ function Room() {
     setRoomRates(genData)
   }
 
+  const addButtonAction = () =>{
+    setAddConditionalRate(1)
+  }
   // Fetch Room Details
   const fetchDetails = async () => {
     const url = `/api/${currentProperty.address_province.replace(/\s+/g, '-')}/${currentProperty.address_city}/${currentProperty.property_category}s/${currentProperty.property_id}/${currentroom}`
@@ -278,7 +286,6 @@ function Room() {
     const url = `/api/all_room_services`
     axios.get(url)
       .then((response) => {
-        alert(JSON.stringify(response.data))
         setServices(response.data);
         logger.info("url  to fetch roomtypes hitted successfully")
       })
@@ -1590,445 +1597,442 @@ function Room() {
 
           {/* Multiple Bed */}
           {disp === 4 ?
-          <div id='4' className='block py-1'>
-            <div className={`${color?.whitebackground} shadow rounded-lg px-12 sm:p-6 xl:p-8  2xl:col-span-2`}>
-              <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`]}
-                selected={1}
-                color={color} />
-              <h6 className={`${color?.text} text-xl flex leading-none pl-6 lg:pt-2 pt-6  pb-2 font-bold`}>
-                {language?.room} {language?.description}
-              </h6>
+            <div id='4' className='block py-1'>
+              <div className={`${color?.whitebackground} shadow rounded-lg px-12 sm:p-6 xl:p-8  2xl:col-span-2`}>
+                <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`]}
+                  selected={1}
+                  color={color} />
+                <h6 className={`${color?.text} text-xl flex leading-none pl-6 lg:pt-2 pt-6  pb-2 font-bold`}>
+                  {language?.room} {language?.description}
+                </h6>
 
-              <div className={visible === 0 ? 'block py-1' : 'hidden'}><LoaderTable /></div>
-              <div className={visible === 1 ? 'block py-1' : 'hidden'}>
-                <Table gen={gen} setGen={setGen} add={() => setView(1)} name="Additional Services"
-                  color={color}
-                  mark="beds"
-                  edit={editBed} delete={deleteBed}
-                  common={language?.common} cols={language?.BedsCols} /> </div>
+                <div className={visible === 0 ? 'block py-1' : 'hidden'}><LoaderTable /></div>
+                <div className={visible === 1 ? 'block py-1' : 'hidden'}>
+                  <Table gen={gen} setGen={setGen} add={() => setView(1)} name="Additional Services"
+                    color={color}
+                    mark="beds"
+                    edit={editBed} delete={deleteBed}
+                    common={language?.common} cols={language?.BedsCols} /> </div>
 
-              <div className="flex items-center mt-2 justify-end space-x-2 sm:space-x-3 ml-auto">
-                <Button Primary={language?.Previous} onClick={() => {
-                  setDisp(0)
-                }} />
-                <Button Primary={language?.Next} onClick={() => {
-                  setDisp(1)
-                }} />
+                <div className="flex items-center mt-2 justify-end space-x-2 sm:space-x-3 ml-auto">
+                  <Button Primary={language?.Previous} onClick={() => {
+                    setDisp(0)
+                  }} />
+                  <Button Primary={language?.Next} onClick={() => {
+                    setDisp(1)
+                  }} />
+                </div>
               </div>
-            </div>
-          </div> : undefined}
+            </div> : undefined}
 
           {/* Single Bed */}
           {disp === 5 ?
-          <div id='5' className='block py-1'>
-            <div className={`${color?.whitebackground} shadow rounded-lg px-12 sm:p-6 xl:p-8  2xl:col-span-2`}>
-              <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`]} selected={1} color={color} />
-              <h6 className={`${color?.text} text-xl flex leading-none pl-6 lg:pt-2 pt-6  pb-2 font-bold`}>
-                {language?.room} {language?.description}
-              </h6>
-              <div className="flex flex-wrap">
+            <div id='5' className='block py-1'>
+              <div className={`${color?.whitebackground} shadow rounded-lg px-12 sm:p-6 xl:p-8  2xl:col-span-2`}>
+                <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`]} selected={1} color={color} />
+                <h6 className={`${color?.text} text-xl flex leading-none pl-6 lg:pt-2 pt-6  pb-2 font-bold`}>
+                  {language?.room} {language?.description}
+                </h6>
+                <div className="flex flex-wrap">
 
-                <div className="w-full lg:w-6/12 px-4">
-                  <div className="relative w-full mb-3">
-                    <label
-                      className={`text-sm  font-medium ${color?.text} block py-1 mb-2`}
-                      htmlFor="grid-password">
-                      {language?.bed} {language?.Length}({language?.incm})
-                      <span style={{ color: "#ff0000" }}>*</span>
-                    </label>
-                    <div className={visible === 0 ? 'block py-1' : 'hidden'}><Lineloader /></div>
-                    <div className={visible === 1 ? 'block py-1' : 'hidden'}>
-                      <input
-                        type="text" defaultValue={bedDetails?.bed_length}
-                        className={`shadow-sm ${color?.greybackground} ${color?.text}  border border-gray-300  sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`}
-                        onChange={
-                          (e) => (
-                            setBedDetails({ ...bedDetails, bed_length: e.target.value }, setFlag(1))
-                          )
-                        }
-                      />
-                      <p className="text-sm text-red-700 font-light">
-                        {error?.bed_length}</p>
+                  <div className="w-full lg:w-6/12 px-4">
+                    <div className="relative w-full mb-3">
+                      <label
+                        className={`text-sm  font-medium ${color?.text} block py-1 mb-2`}
+                        htmlFor="grid-password">
+                        {language?.bed} {language?.Length}({language?.incm})
+                        <span style={{ color: "#ff0000" }}>*</span>
+                      </label>
+                      <div className={visible === 0 ? 'block py-1' : 'hidden'}><Lineloader /></div>
+                      <div className={visible === 1 ? 'block py-1' : 'hidden'}>
+                        <input
+                          type="text" defaultValue={bedDetails?.bed_length}
+                          className={`shadow-sm ${color?.greybackground} ${color?.text}  border border-gray-300  sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`}
+                          onChange={
+                            (e) => (
+                              setBedDetails({ ...bedDetails, bed_length: e.target.value }, setFlag(1))
+                            )
+                          }
+                        />
+                        <p className="text-sm text-red-700 font-light">
+                          {error?.bed_length}</p>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="w-full lg:w-6/12 px-4">
-                  <div className="relative w-full mb-3">
-                    <label className={`text-sm font-medium ${color?.text} block py-1 mb-2`}
-                      htmlFor="grid-password">
-                      {language?.bed}  {language?.width}({language?.incm})
-                      <span style={{ color: "#ff0000" }}>*</span>
-                    </label>
-                    <div className={visible === 0 ? 'block py-1' : 'hidden'}><Lineloader /></div>
-                    <div className={visible === 1 ? 'block py-1' : 'hidden'}>
-                      <input
-                        type="text"
-                        className={`shadow-sm ${color?.greybackground} ${color?.text}  border border-gray-300  sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`}
-                        defaultValue={bedDetails?.bed_width}
-                        onChange={
-                          (e) => (
-                            setBedDetails({ ...bedDetails, bed_width: e.target.value }, setFlag(1))
-                          )
-                        }
-                      />
-                      <p className="text-sm text-sm text-red-700 font-light">
-                        {error?.bed_width}</p>
+                  <div className="w-full lg:w-6/12 px-4">
+                    <div className="relative w-full mb-3">
+                      <label className={`text-sm font-medium ${color?.text} block py-1 mb-2`}
+                        htmlFor="grid-password">
+                        {language?.bed}  {language?.width}({language?.incm})
+                        <span style={{ color: "#ff0000" }}>*</span>
+                      </label>
+                      <div className={visible === 0 ? 'block py-1' : 'hidden'}><Lineloader /></div>
+                      <div className={visible === 1 ? 'block py-1' : 'hidden'}>
+                        <input
+                          type="text"
+                          className={`shadow-sm ${color?.greybackground} ${color?.text}  border border-gray-300  sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`}
+                          defaultValue={bedDetails?.bed_width}
+                          onChange={
+                            (e) => (
+                              setBedDetails({ ...bedDetails, bed_width: e.target.value }, setFlag(1))
+                            )
+                          }
+                        />
+                        <p className="text-sm text-sm text-red-700 font-light">
+                          {error?.bed_width}</p>
+                      </div>
                     </div>
                   </div>
+
                 </div>
+                <div className="flex items-center mt-2 justify-end space-x-2 sm:space-x-3 ml-auto">
+                  <Button Primary={language?.Previous} onClick={() => {
+                    setDisp(0)
+                  }} />
 
-              </div>
-              <div className="flex items-center mt-2 justify-end space-x-2 sm:space-x-3 ml-auto">
-                <Button Primary={language?.Previous} onClick={() => {
-                  setDisp(0)
-                }} />
-
-                <div className={(spinner === 0 && flag !== 1) ? 'block py-1' : 'hidden'}>
-                  <Button Primary={language?.UpdateDisabled} /></div>
-                <div className={(spinner === 0 && flag === 1) ? 'block py-1' : 'hidden'}>
-                  <Button Primary={language?.Update} onClick={() => {
-                    validationBedData();
+                  <div className={(spinner === 0 && flag !== 1) ? 'block py-1' : 'hidden'}>
+                    <Button Primary={language?.UpdateDisabled} /></div>
+                  <div className={(spinner === 0 && flag === 1) ? 'block py-1' : 'hidden'}>
+                    <Button Primary={language?.Update} onClick={() => {
+                      validationBedData();
+                    }} />
+                  </div>
+                  <div className={(spinner === 1 && flag === 1) ? 'block py-1' : 'hidden'}>
+                    <Button Primary={language?.SpinnerUpdate} />
+                  </div>
+                  <Button Primary={language?.Next} onClick={() => {
+                    setDisp(1)
                   }} />
                 </div>
-                <div className={(spinner === 1 && flag === 1) ? 'block py-1' : 'hidden'}>
-                  <Button Primary={language?.SpinnerUpdate} />
-                </div>
-                <Button Primary={language?.Next} onClick={() => {
-                  setDisp(1)
-                }} />
               </div>
-            </div>
-          </div> : undefined}
+            </div> : undefined}
 
           {/* Room Services */}
           {disp === 1 ?
-          <div id='1' className='block py-1'>
-            <div className={`${color?.whitebackground} shadow rounded-lg mt-2 mx-1 px-12 sm:p-6 xl:p-8  2xl:col-span-2`}>
+            <div id='1' className='block py-1'>
+              <div className={`${color?.whitebackground} shadow rounded-lg mt-2 mx-1 px-12 sm:p-6 xl:p-8  2xl:col-span-2`}>
 
-              <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`]} selected={2} color={color} />
+                <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`]} selected={2} color={color} />
 
-              <h6 className={`${color?.text} text-xl flex leading-none pl-6 pt-2 font-bold  mb-8`}>
-                {language?.room} {language?.services}
-              </h6>
-              <div className="flex flex-col my-4">
-                <div className="overflow-x-auto">
-                  <div className="align-middle inline-block py-1 min-w-full">
-                    <div className="shadow-sm overflow-hidden">
-                      <table className="table-fixed min-w-full divide-y mx-8 divide-gray-200">
-                        <thead className={`${color.greybackground}`}>
-                          <tr>
-                            <th
-                              scope="col"
-                              className={`${color.text} py-4 px-2 text-left text-xs font-semibold uppercase`}
-                            >
-                              {language?.service} {language?.name}
-                            </th>
-                            <th
-                              scope="col"
-                              className={`${color.text} py-4 px-6 text-left text-xs font-semibold uppercase`}
-                            >
-                              {language?.service} {language?.edit}
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody className={`${color.text} divide-y divide-gray-200`}>
-                          {services?.map((item, idx) => (
-                            <tr className={`${color?.hover}`} key={idx}>
-                              <td className="py-4 flex items-center whitespace-nowrap space-x-6 mr-12 lg:mr-0">
-                                <span className={`${color.text} py-4 px-2 whitespace-nowrap text-base font-medium capitalize `}>
-                                  {"  " +
-                                    item?.service_name?.replace(/_+/g, " ")}
-                                </span>
-                              </td>
+                <h6 className={`${color?.text} text-xl flex leading-none pl-6 pt-2 font-bold  mb-8`}>
+                  {language?.room} {language?.services}
+                </h6>
+                <div className="flex flex-col my-4">
+                  <div className="overflow-x-auto">
+                    <div className="align-middle inline-block py-1 min-w-full">
+                      <div className="shadow-sm overflow-hidden">
+                        <table className="table-fixed min-w-full divide-y mx-8 divide-gray-200">
+                          <thead className={`${color.greybackground}`}>
+                            <tr>
+                              <th
+                                scope="col"
+                                className={`${color.text} py-4 px-2 text-left text-xs font-semibold uppercase`}
+                              >
+                                {language?.service} {language?.name}
+                              </th>
+                              <th
+                                scope="col"
+                                className={`${color.text} py-4 px-6 text-left text-xs font-semibold uppercase`}
+                              >
+                                {language?.service} {language?.edit}
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody className={`${color.text} divide-y divide-gray-200`}>
+                            {services?.map((item, idx) => (
+                              <tr className={`${color?.hover}`} key={idx}>
+                                <td className="py-4 flex items-center whitespace-nowrap space-x-6 mr-12 lg:mr-0">
+                                  <span className={`${color.text} py-4 px-2 whitespace-nowrap text-base font-medium capitalize `}>
+                                    {"  " +
+                                      item?.service_name?.replace(/_+/g, " ")}
+                                  </span>
+                                </td>
 
-                              <td className={`${color.text} px-4 py-4 whitespace-nowrap text-base font-normal `}>
-                                <div className="flex">
-                                  <div className="form-check ml-4 form-check-inline">
+                                <td className={`${color.text} px-4 py-4 whitespace-nowrap text-base font-normal `}>
+                                  <div className="flex">
+                                    <div className="form-check ml-4 form-check-inline">
 
-                                    <label htmlFor={"default-toggle" + idx} className="inline-flex relative items-center cursor-pointer">
+                                      <label htmlFor={"default-toggle" + idx} className="inline-flex relative items-center cursor-pointer">
 
-                                      <input type="checkbox" value={item?.service_value} checked={item?.service_value == true}
-                                        onChange={() => {
-                                          setServices(services?.map((i) => {
+                                        <input type="checkbox" value={item?.service_value} checked={item?.service_value == true}
+                                          onChange={() => {
+                                            setServices(services?.map((i) => {
 
-                                            if (i?.service_id === item?.service_id) {
-                                              i.service_value = !i.service_value
+                                              if (i?.service_id === item?.service_id) {
+                                                i.service_value = !i.service_value
 
-                                            }
-                                            return i
-                                          }))
-                                        }}
-                                        id={"default-toggle" + idx} className="sr-only peer" />
-                                      <div
-                                        className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 
+                                              }
+                                              return i
+                                            }))
+                                          }}
+                                          id={"default-toggle" + idx} className="sr-only peer" />
+                                        <div
+                                          className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 
                                  dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 
                                  peer-checked:after:translate-x-full 
                                  peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] 
                                  after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5
                                   after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
 
-                                    </label>
+                                      </label>
+                                    </div>
                                   </div>
-                                </div>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                      <div className="flex items-center justify-end space-x-2 sm:space-x-3 ml-auto"></div>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                        <div className="flex items-center justify-end space-x-2 sm:space-x-3 ml-auto"></div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className="flex items-center mt-4 justify-end space-x-2 sm:space-x-3 ml-auto">
-                <Button Primary={language?.Previous} onClick={() => { setDisp(0) }} />
-                <div className={spinner === 0 ? 'block py-1' : 'hidden'}>
-                  <Button Primary={roomDetails?.room_facilities !== undefined ? language?.Update : language?.Submit}
-                    onClick={() => { roomDetails?.room_facilities !== undefined ? editServices() : submitServices() }} />
+                <div className="flex items-center mt-4 justify-end space-x-2 sm:space-x-3 ml-auto">
+                  <Button Primary={language?.Previous} onClick={() => { setDisp(0) }} />
+                  <div className={spinner === 0 ? 'block py-1' : 'hidden'}>
+                    <Button Primary={roomDetails?.room_facilities !== undefined ? language?.Update : language?.Submit}
+                      onClick={() => { roomDetails?.room_facilities !== undefined ? editServices() : submitServices() }} />
+                  </div>
+                  <div className={spinner === 1 ? 'block py-1' : 'hidden'}>
+                    <Button Primary={roomDetails?.room_facilities !== undefined ? language?.SpinnerUpdate : language?.SpinnerSubmit}
+                    />
+                  </div>
+                  <Button Primary={language?.Next} onClick={() => { setDisp(2) }} />
                 </div>
-                <div className={spinner === 1 ? 'block py-1' : 'hidden'}>
-                  <Button Primary={roomDetails?.room_facilities !== undefined ? language?.SpinnerUpdate : language?.SpinnerSubmit}
-                  />
-                </div>
-                <Button Primary={language?.Next} onClick={() => { setDisp(2) }} />
               </div>
-            </div>
-          </div> : undefined}
+            </div> : undefined}
 
           {/* Room Gallery */}
           {disp === 2 ?
-          <div id='2' className='block py-1'>
-            <div className={`${color?.whitebackground} shadow rounded-lg sm:p-6 xl:p-8  2xl:col-span-2 my-3`}>
+            <div id='2' className='block py-1'>
+              <div className={`${color?.whitebackground} shadow rounded-lg sm:p-6 xl:p-8  2xl:col-span-2 my-3`}>
 
-              <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`]} selected={3} color={color} />
-              <h6 className={`${color?.text} text-base  flex leading-none mb-2 mx-2 pt-2 font-semibold`}>
-                {language?.room}  {language?.gallery}
-              </h6>
-              <div className="sm:flex py-2 ">
-                <div className="hidden sm:flex items-center sm:divide-x sm:divide-gray-100 mb-3 ml-5 sm:mb-0">
-                  <form className="lg:pr-3" id="imageSearchBox">
-                    <label htmlFor="users-search" className="sr-only">
-                      {language?.search}
-                    </label>
-                    <div className="mt-1 relative lg:w-64 xl:w-96">
-                      <input
-                        type="text"
-                        name="imageSearch"
-                        onChange={(e) => searchImage(e.target.value)}
-                        className={`${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`}
-                        placeholder={language?.searchforimages}
-                      ></input>
-                    </div>
-                  </form>
-                  {/*  icons to delete , clear , setting */}
+                <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`]} selected={3} color={color} />
+                <h6 className={`${color?.text} text-base  flex leading-none mb-2 mx-2 pt-2 font-semibold`}>
+                  {language?.room}  {language?.gallery}
+                </h6>
+                <div className="sm:flex py-2 ">
+                  <div className="hidden sm:flex items-center sm:divide-x sm:divide-gray-100 mb-3 ml-5 sm:mb-0">
+                    <form className="lg:pr-3" id="imageSearchBox">
+                      <label htmlFor="users-search" className="sr-only">
+                        {language?.search}
+                      </label>
+                      <div className="mt-1 relative lg:w-64 xl:w-96">
+                        <input
+                          type="text"
+                          name="imageSearch"
+                          onChange={(e) => searchImage(e.target.value)}
+                          className={`${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`}
+                          placeholder={language?.searchforimages}
+                        ></input>
+                      </div>
+                    </form>
+                    {/*  icons to delete , clear , setting */}
 
-                  <div className="flex space-x-1 pl-0 sm:pl-2 mt-3 sm:mt-0">
-                    {showSearchedImages === 1 ? (
+                    <div className="flex space-x-1 pl-0 sm:pl-2 mt-3 sm:mt-0">
+                      {showSearchedImages === 1 ? (
+                        <a
+                          href="#"
+                          onClick={() => {
+                            setShowSearchedImages(0);
+                            clearSearchField();
+                          }}
+                          className={`${color?.textgray}  hover:${color?.text} cursor-pointer p-1 ${color?.hover} rounded inline-flex justify-center`}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            title="clear search"
+                            width="26"
+                            height="26"
+                            fill="currentColor"
+                            className="bi bi-eraser-fill"
+                            viewBox="0 0 16 16"
+                          >
+                            {" "}
+                            <path d="M8.086 2.207a2 2 0 0 1 2.828 0l3.879 3.879a2 2 0 0 1 0 2.828l-5.5 5.5A2 2 0 0 1 7.879 15H5.12a2 2 0 0 1-1.414-.586l-2.5-2.5a2 2 0 0 1 0-2.828l6.879-6.879zm.66 11.34L3.453 8.254 1.914 9.793a1 1 0 0 0 0 1.414l2.5 2.5a1 1 0 0 0 .707.293H7.88a1 1 0 0 0 .707-.293l.16-.16z" />{" "}
+                          </svg>
+                        </a>
+                      ) : (
+                        <></>
+                      )}
                       <a
                         href="#"
-                        onClick={() => {
-                          setShowSearchedImages(0);
-                          clearSearchField();
-                        }}
                         className={`${color?.textgray}  hover:${color?.text} cursor-pointer p-1 ${color?.hover} rounded inline-flex justify-center`}
                       >
                         <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          title="clear search"
-                          width="26"
-                          height="26"
+                          className="w-6 h-6"
                           fill="currentColor"
-                          className="bi bi-eraser-fill"
-                          viewBox="0 0 16 16"
+                          viewBox="0 0 20 20"
+                          xmlns="http://www.w3.org/2000/svg"
                         >
-                          {" "}
-                          <path d="M8.086 2.207a2 2 0 0 1 2.828 0l3.879 3.879a2 2 0 0 1 0 2.828l-5.5 5.5A2 2 0 0 1 7.879 15H5.12a2 2 0 0 1-1.414-.586l-2.5-2.5a2 2 0 0 1 0-2.828l6.879-6.879zm.66 11.34L3.453 8.254 1.914 9.793a1 1 0 0 0 0 1.414l2.5 2.5a1 1 0 0 0 .707.293H7.88a1 1 0 0 0 .707-.293l.16-.16z" />{" "}
+                          <path
+                            fillRule="evenodd"
+                            d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
+                            clipRule="evenodd"
+                          ></path>
                         </svg>
                       </a>
-                    ) : (
-                      <></>
-                    )}
-                    <a
-                      href="#"
-                      className={`${color?.textgray}  hover:${color?.text} cursor-pointer p-1 ${color?.hover} rounded inline-flex justify-center`}
-                    >
-                      <svg
-                        className="w-6 h-6"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
-                          clipRule="evenodd"
-                        ></path>
-                      </svg>
-                    </a>
-                    <a
-                      onClick={allDelete}
-                      className={
-                        check?.length === 0 || undefined
-                          ? `${color?.textgray} cursor-pointer p-1 ${color?.hover} rounded inline-flex
+                      <a
+                        onClick={allDelete}
+                        className={
+                          check?.length === 0 || undefined
+                            ? `${color?.textgray} cursor-pointer p-1 ${color?.hover} rounded inline-flex
                                 justify-center`
-                          : `${color?.textgray} bg-red-600 cursor-pointer p-1 ${color?.hover} rounded inline-flex
+                            : `${color?.textgray} bg-red-600 cursor-pointer p-1 ${color?.hover} rounded inline-flex
                                 justify-center`
-                      }
-                    >
-                      <svg
-                        className="w-6 h-6"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg"
+                        }
                       >
-                        <path
-                          fillRule="evenodd"
-                          d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                          clipRule="evenodd"
-                        ></path>
-                      </svg>
-                    </a>
-                    <a
-                      href="#"
-                      className={`${color?.textgray} hover:${color?.text} cursor-pointer p-1 ${color?.hover} rounded inline-flex justify-center`}
-                    >
-                      <svg
-                        className="w-6 h-6"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg"
+                        <svg
+                          className="w-6 h-6"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                            clipRule="evenodd"
+                          ></path>
+                        </svg>
+                      </a>
+                      <a
+                        href="#"
+                        className={`${color?.textgray} hover:${color?.text} cursor-pointer p-1 ${color?.hover} rounded inline-flex justify-center`}
                       >
-                        <path
-                          fillRule="evenodd"
-                          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                          clipRule="evenodd"
-                        ></path>
-                      </svg>
-                    </a>
-                    <a
-                      href="#"
-                      className={`${color?.textgray} hover:${color?.text} cursor-pointer p-1 ${color?.hover} rounded inline-flex justify-center`}
-                    >
-                      <svg
-                        className="w-6 h-6"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg"
+                        <svg
+                          className="w-6 h-6"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                            clipRule="evenodd"
+                          ></path>
+                        </svg>
+                      </a>
+                      <a
+                        href="#"
+                        className={`${color?.textgray} hover:${color?.text} cursor-pointer p-1 ${color?.hover} rounded inline-flex justify-center`}
                       >
-                        <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path>
-                      </svg>
-                    </a>
+                        <svg
+                          className="w-6 h-6"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path>
+                        </svg>
+                      </a>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2 sm:space-x-3 ml-auto">
+
+                    <Button Primary={language?.Add} onClick={() => setAddImage(1)} />
+
                   </div>
                 </div>
-                <div className="flex items-center space-x-2 sm:space-x-3 ml-auto">
 
-                  <Button Primary={language?.Add} onClick={() => setAddImage(1)} />
-
-                </div>
-              </div>
-
-              <div className="flex flex-wrap" >
-                <div className={visible === 0 ? 'block py-1 w-auto h-auto m-6 w-32 flex' : 'hidden'}><Imageloader /> <Imageloader /><Imageloader /></div>
-                <div className={visible === 1 ? 'block py-1 flex flex-wrap' : 'hidden'}>
-                  <div className="flex-wrap container grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="flex flex-wrap" >
+                  <div className={visible === 0 ? 'block py-1 w-auto h-auto m-6 w-32 flex' : 'hidden'}><Imageloader /> <Imageloader /><Imageloader /></div>
+                  <div className={visible === 1 ? 'block py-1 flex flex-wrap' : 'hidden'}>
+                    <div className="flex-wrap container grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
 
 
 
-                    {roomimages.map((item, idx) => {
-                      return (
+                      {roomimages.map((item, idx) => {
+                        return (
 
-                        <>
-                          <div
-                            className="block py-1 text-blueGray-600  text-xs font-bold "
-                            key={idx}
-                          >
+                          <>
                             <div
-                              className="relative cursor-pointer"
-                              tooltip
-                              title="Click here to view or edit."
+                              className="block py-1 text-blueGray-600  text-xs font-bold "
+                              key={idx}
                             >
-                              <a href="#" className="relative flex">
-                                <input
-                                  type="checkbox"
-                                  id={item?.image_id}
-                                  tooltip
-                                  title={`${JSON.stringify(item)}Click here to delete image ${item.image_title}.`}
-                                  name={item?.image_id}
-                                  checked={item?.isChecked || false}
-                                  onClick={(e) => {
-                                    handlecheckbox(e);
-                                  }}
-                                  className="bottom-0 right-0 cursor-pointer absolute bg-gray-30 opacity-30 m-1 border-gray-300 text-cyan-600  checked:opacity-100 focus:ring-3 focus:ring-cyan-200 h-4 w-4 rounded-full"
-
-                                />
-
-                                {check?.length === 0 || check?.length === undefined ? (
-                                  <img
-                                    htmlFor={item?.image_id}
-                                    className={`rounded-lg`}
-                                    src={item.image_link}
-                                    alt="Room Image"
-                                    style={{ height: "170px", width: "450px" }}
-                                    onClick={() => {
-                                      setEnlargeImage(1);
-                                      setActionEnlargeImage(item);
-                                      setIndexImage(item?.idx);
+                              <div
+                                className="relative cursor-pointer"
+                                tooltip
+                                title="Click here to view or edit."
+                              >
+                                <a href="#" className="relative flex">
+                                  <input
+                                    type="checkbox"
+                                    id={item?.image_id}
+                                    tooltip
+                                    title={`${JSON.stringify(item)}Click here to delete image ${item.image_title}.`}
+                                    name={item?.image_id}
+                                    checked={item?.isChecked || false}
+                                    onClick={(e) => {
+                                      handlecheckbox(e);
                                     }}
+                                    className="bottom-0 right-0 cursor-pointer absolute bg-gray-30 opacity-30 m-1 border-gray-300 text-cyan-600  checked:opacity-100 focus:ring-3 focus:ring-cyan-200 h-4 w-4 rounded-full"
+
                                   />
-                                ) : (
-                                  <img
-                                    htmlFor={item?.image_id}
-                                    className={`rounded-lg`}
-                                    src={item.image_link}
-                                    alt="Room Image"
-                                    style={{ height: "170px", width: "450px" }}
-                                  />
-                                )}
-                              </a>
+
+                                  {check?.length === 0 || check?.length === undefined ? (
+                                    <img
+                                      htmlFor={item?.image_id}
+                                      className={`rounded-lg`}
+                                      src={item.image_link}
+                                      alt="Room Image"
+                                      style={{ height: "170px", width: "450px" }}
+                                      onClick={() => {
+                                        setEnlargeImage(1);
+                                        setActionEnlargeImage(item);
+                                        setIndexImage(item?.idx);
+                                      }}
+                                    />
+                                  ) : (
+                                    <img
+                                      htmlFor={item?.image_id}
+                                      className={`rounded-lg`}
+                                      src={item.image_link}
+                                      alt="Room Image"
+                                      style={{ height: "170px", width: "450px" }}
+                                    />
+                                  )}
+                                </a>
+                              </div>
                             </div>
-                          </div>
-                        </>
-                      )
-                    })}
+                          </>
+                        )
+                      })}
+                    </div>
                   </div>
                 </div>
+                <div className="flex items-center justify-end space-x-2 sm:space-x-3 ml-auto mt-8">
+                  <Button Primary={language?.Previous} onClick={() => { setDisp(1) }} />
+                  <Button Primary={language?.Next} onClick={() => { setDisp(3) }} />
+                </div>
               </div>
-              <div className="flex items-center justify-end space-x-2 sm:space-x-3 ml-auto mt-8">
-                <Button Primary={language?.Previous} onClick={() => { setDisp(1) }} />
-                <Button Primary={language?.Next} onClick={() => { setDisp(3) }} />
-              </div>
-            </div>
-          </div> : undefined}
+            </div> : undefined}
 
           {/* Room Rates */}
           {disp === 3 ?
-          <div id='3' className='block py-1'>
-            <div className={`${color?.whitebackground} shadow rounded-lg  sm:p-6 xl:p-8  2xl:col-span-2`}>
-              {/* widget progress starts */}
-              <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`]} selected={4} color={color} />{/* widget progress ends */}
+            <div id='3' className='block py-1'>
+              <div className={`${color?.whitebackground} shadow rounded-lg  sm:p-6 xl:p-8  2xl:col-span-2`}>
+                {/* widget progress starts */}
+                <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`]} selected={4} color={color} />{/* widget progress ends */}
 
-              <GenericTable
-                color={color}
-                language={language}
-                addButton={false}
-                tableName={`Room Rates`}
-                // cols={["checkbox", "Guest Name", "Booking From", "Booking To", "Transaction No.", "status", "Actions"]}
-                cols={["Meal Name", "Price", "Actions"]}
-                data={roomRates}
-
-              // deleteAll={() => { alert("feature not functional"); }}
-              />
-
-
-            </div>
-          </div> : undefined}
+                <GenericTable
+                  color={color}
+                  language={language}
+                  addButton={true}
+                  addButtonAction={addButtonAction }
+                  showOptions={false}
+                  tableName={`Room Rates`}
+                  cols={["Meal Name", "Price", "Actions"]}
+                  data={roomRates}
+                  />
+              </div>
+            </div> : undefined}
 
 
         </div>
 
         {/* New image enlarge */}
-        <div id="enlarge" className={enlargeImage === 1 ? "block py-1" : "hidden"}>
+        {enlargeImage === 1 ? <div id="enlarge" className={"block py-1"}>
           <div className="overflow-x-hidden overflow-y-auto fixed top-4 left-0 right-0 backdrop-blur-xl   sm:inset-0 bg-black/30 md:inset-0 z-50 flex justify-center items-center h-modal sm:h-full">
             <div className="flex justify-start ml-2 mr-auto">
               {/* //Left arrow symbol*/}
@@ -2173,7 +2177,7 @@ function Room() {
               </svg>
             </div>
           </div>
-        </div>
+        </div> : undefined}
 
         {/* Modal Add Image */}
         <div className={addImage === 1 ? 'block py-1' : 'hidden'}>
@@ -2463,15 +2467,41 @@ function Room() {
           </div>
         </div>
 
+        {/* Modal add rate plans */}
+        {addConditionalRate === 1 ?
+          <Modal
+            color={color}
+            title={'Add Meal Rate Plan'}
+            description={
+              <RoomPlanAdd color={color} language={language} roomData={editRate} fetchDetails={fetchDetails} setRoomRateEditModal={setRoomRateEditModal} />
+            }
+            setShowModal={setAddConditionalRate}
+            showCloseButton={false} />
+          : undefined}
+
         {/* Modal edit rate plans */}
-        {roomRateEditModal === 1 ? 
-        <Modal title={'Edit Rate'} 
-        description={
-          <RoomEdit color={color} language={language} roomData={editRate} fetchDetails={fetchDetails} setRoomRateEditModal={setRoomRateEditModal}/>
-        }
-        setShowModal={setRoomRateEditModal}
-        showCloseButton={false} />
-        : undefined}
+        {roomRateEditModal === 1 ?
+          <Modal
+            color={color}
+            title={'Edit Rate'}
+            description={
+              <RoomEdit color={color} language={language} roomData={editRate} fetchDetails={fetchDetails} setRoomRateEditModal={setRoomRateEditModal} />
+            }
+            setShowModal={setRoomRateEditModal}
+            showCloseButton={false} />
+          : undefined}
+
+        {/* Modal delete rate plans */}
+        {roomRateDeleteModal === 1 ?
+          <Modal
+            title={'Delete Rate'}
+            color={color}
+            description={
+              <RoomDelete color={color} language={language} roomData={deleteRate} fetchDetails={fetchDetails} setShowModal={setRoomRateDeleteModal} />
+            }
+            setShowModal={setRoomRateDeleteModal}
+            showCloseButton={false} />
+          : undefined}
 
         {/* Toast Container */}
         <ToastContainer position="top-center"

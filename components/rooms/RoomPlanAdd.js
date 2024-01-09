@@ -1,14 +1,27 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import InputText from '../utils/InputText';
 import Button from '../Button';
 import { toast, ToastContainer } from 'react-toastify';
 import axios from 'axios';
+import DropDown from '../utils/DropDown';
 
-function RoomEdit({ roomData, color, language, fetchDetails, setRoomRateEditModal }) {
+function RoomPlanAdd({ roomData, color, language, fetchDetails, setRoomRateEditModal }) {
     const [editedRoomPrice, setEditedRoomPrice] = useState({})
+    const [mealPlans, setMealPlans] = useState({})
+    const [loader, setLoader] = useState(1)
+
     const [error, setError] = useState({})
     const [mutationFlag, setMutationFlag] = useState(false)
     const [showEditSpinner, setShowEditSpinner] = useState(false)
+    useEffect(()=>{
+        let url=`/api/all_meals`
+        axios.get(url).then((response)=>{
+            setMealPlans(response.data);
+            setLoader(0);
+        }).catch((error)=>{
+            toast.error("API:Meal plan fetch failed!")
+        })
+    },[])
     const validateEditedRate = (editedRoomPrice) => {
         const { price } = editedRoomPrice;
         let flag = false;
@@ -54,6 +67,18 @@ function RoomEdit({ roomData, color, language, fetchDetails, setRoomRateEditModa
     return (<>
         <div className='flex flex-wrap'>
             {/* meal name  */}
+             <DropDown
+             label={'Meal Name'}
+             visible={loader}
+             defaultValue={'Select plan'}
+             onChangeAction={(e)=>alert(JSON.stringify(e))}
+             color={color}
+             req={true}
+             options = {[]}
+             error={error}
+             title={"select rate plan to be implemented"}
+             tooltip={true}
+            /> 
             <InputText
                 label={"Meal Name"}
                 visible={1}
@@ -113,4 +138,4 @@ function RoomEdit({ roomData, color, language, fetchDetails, setRoomRateEditModa
     )
 }
 
-export default RoomEdit
+export default RoomPlanAdd

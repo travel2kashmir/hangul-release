@@ -9,7 +9,7 @@ const DropDown = ({
   visible,
   defaultValue,
   onChangeAction,
-  color,
+  color={},
   req,
   options = [],
   error,
@@ -50,7 +50,7 @@ const DropDown = ({
             <option defaultValue={defaultValue} disabled selected>
               {defaultValue}
             </option>
-            {options.map((i, Index) => {
+            {options?.map((i, Index) => {
               return (
                 <option className={`${color?.dropdownTextColor}`} key={Index} value={i?.value}>
                   {i?.label}

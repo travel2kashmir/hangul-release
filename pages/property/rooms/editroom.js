@@ -210,7 +210,7 @@ function Room() {
     setRoomRates(genData)
   }
 
-  const addButtonAction = () =>{
+  const addRateButtonAction = () =>{
     setAddConditionalRate(1)
   }
   // Fetch Room Details
@@ -1378,8 +1378,7 @@ function Room() {
                           <div className={visible === 0 ? 'block py-1' : 'hidden'}><Lineloader /></div>
                           <div className={visible === 1 ? 'block py-1' : 'hidden'}>
                             <Multiselect
-                              className={` shadow-sm ${color?.greybackground} ${color?.text} mb-3 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full
-                    `}
+                              className={`shadow-sm ${color?.greybackground} ${color?.text} mb-3 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full`}
                               isObject={true}
                               options={lang?.Views}
                               onRemove={(event) => { views(event) }}
@@ -2019,7 +2018,7 @@ function Room() {
                   color={color}
                   language={language}
                   addButton={true}
-                  addButtonAction={addButtonAction }
+                  addButtonAction={addRateButtonAction }
                   showOptions={false}
                   tableName={`Room Rates`}
                   cols={["Meal Name", "Price", "Actions"]}
@@ -2473,7 +2472,10 @@ function Room() {
             color={color}
             title={'Add Meal Rate Plan'}
             description={
-              <RoomPlanAdd color={color} language={language} roomData={editRate} fetchDetails={fetchDetails} setRoomRateEditModal={setRoomRateEditModal} />
+              <RoomPlanAdd color={color} language={language} 
+              roomData={editRate} fetchDetails={fetchDetails} 
+              setRoomRateEditModal={setAddConditionalRate} 
+              currentroom={currentroom}/>
             }
             setShowModal={setAddConditionalRate}
             showCloseButton={false} />

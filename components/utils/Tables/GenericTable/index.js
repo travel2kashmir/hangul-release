@@ -8,7 +8,7 @@ import InlineTableBody from "./InlineTableBody";
 import Pagination from "./Pagination";
 var checked = [];
 
-function GenericTable({ inlineTable, color, language, deleteAll, cols, addButton, tableName, addButtonAction,showOptions=true, ...args }) {
+function GenericTable({ inlineTable, color, language, deleteAll, cols, addButton, tableName, addButtonAction=()=>{},showOptions=true, ...args }) {
     const [itemsPerPage, setItemsPerPage] = useState(5);
     const [page, setPage] = useState(1);
     const [error, setError] = useState({});

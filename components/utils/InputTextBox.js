@@ -41,7 +41,7 @@ function InputTextBox({ label, visible, defaultValue, onChangeAction, error, col
         <div data-testid="vis1" className={visible === 1 ? "block" : "hidden"}>
 
           <textarea data-testid="input"
-            rows="5"
+            rows="3"
             columns="50"
             id='text'
             className={`whitespace-pre-wrap shadow-sm ${color?.greybackground}  border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}

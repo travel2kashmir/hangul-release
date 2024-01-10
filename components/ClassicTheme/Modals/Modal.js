@@ -31,9 +31,9 @@ function Modal({ color,title, description, setShowModal,showCloseButton=true }) 
                     </div>
 
                     <div className='px-5 py-2'>
-                        <p className='text-sm text-slate-500'>
+                        <div className='text-sm text-slate-500'>
                             {description}
-                        </p>
+                        </div>
                     </div>
 
                   {showCloseButton===true &&  <div className="items-center p-5 border-t border-gray-200 rounded-b">

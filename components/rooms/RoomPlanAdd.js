@@ -103,7 +103,7 @@ function RoomPlanAdd({ roomData, color, language, fetchDetails, setRoomRateEditM
             <InputText
                 label={"Price"}
                 visible={loader}
-                defaultValue={roomData.price}
+                defaultValue={roomData?.price}
                 onChangeAction={(e) => {
                     setMealPlans({ ...mealPlans, "price": e.target.value });
                     setMutationFlag(true)

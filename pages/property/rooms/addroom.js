@@ -28,6 +28,9 @@ import Router from 'next/router'
 import { addInventoryDetail } from '../../../components/redux/hangulSlice';
 import BreadCrumb from '../../../components/utils/BreadCrumb';
 import { fetchRoomtypes, fetchServices, validationRoomDescription, validationBedData, submitServices, navigationList } from '../../../components/logic/property/Rooms/AddRoom';
+import GenericTable from '../../../components/utils/Tables/GenericTable';
+import AddNewRatesofRoom from '../../../components/rooms/AddNewRatesofRoom';
+
 
 const logger = require("../../../services/logger");
 var currentLogged;
@@ -51,6 +54,7 @@ function Addroom() {
   const [roomId, setRoomId] = useState([])
   const [finalView, setFinalView] = useState([])
   const [add, setAdd] = useState(0)
+  // const [disp, setDisp] = useState(4);
   const [disp, setDisp] = useState(0);
   const [modified, setModified] = useState({})
   const [error, setError] = useState({})
@@ -596,39 +600,9 @@ function Addroom() {
     setFinalView(final_view_data);
   }
 
-  // Validate Room Description
-  // const validationRoomDescription = () => {
-  //   var result = validateRoom(allRoomDes, finalView, roomIdentifiers?.split(","))
-  //   if (result === true) {
-  //     if (allRoomDes?.room_type_id === 'rt001' || allRoomDes?.room_type_id === 'rt002' || allRoomDes?.room_type_id === 'rt003' || allRoomDes?.room_type_id === 'rt004'
-  //       || allRoomDes?.room_type_id === 'rt005') {
-  //       setDisp(1);
-  //       setError({});
-  //     }
-  //     else {
-  //       submitRoomDescription();
-  //     }
-  //   }
-  //   else {
-  //     setError(result)
-  //   }
-  // }
-
-  // Validate Beds Data
-  // const validationBedData = () => {
-  //   var result = validateBedData(BedData)
-  //   if (result === true) {
-  //     submitRoomDescription(setError, allRoomDes, setSpinner, currentProperty, setRoomId, submitBed, submitView, submitInventory, manageIdentifiers, setAllRoomDes, setDisp);
-  //   }
-  //   else {
-  //     setError(result)
-  //   }
-  // }
-
+  
   // Validate Rates
-
-
-  const validationRates = () => {
+const validationRates = () => {
     var result = validateRoomRates(allRoomRates)
     if (result === true) {
       submitRoomRates();
@@ -1468,149 +1442,9 @@ function Addroom() {
 
           {/* Room Rates */}
           <div id='4' className={disp === 4 ? 'block' : 'hidden'}>
-            <div className={`${color?.whitebackground} mt-4 shadow rounded-lg p-4 sm:p-6 xl:p-8`}>
-              <div className="relative before:hidden  before:lg:block before:absolute before:w-[64%] before:h-[3px] before:top-0 before:bottom-0 before:mt-4 before:bg-slate-100 before:dark:bg-darkmode-400 flex flex-col lg:flex-row justify-center px-5 my-10 sm:px-20">
-                <div className="intro-x lg:text-center flex items-center mt-5 lg:mt-0 lg:block flex-1 z-10">
-                  <button className="w-10 h-10 rounded-full btn text-slate-500  bg-slate-100  dark:bg-darkmode-400 dark:border-darkmode-400">1</button>
-                  <div className={`lg:w-32 text-base lg:mt-3 ml-3 lg:mx-auto ${color.widget}`}> {language?.room} {language?.description}</div>
-                </div>
-
-                <div className="intro-x lg:text-center flex items-center mt-5 lg:mt-0 lg:block flex-1 z-10">
-                  <button className="w-10 h-10 rounded-full btn text-slate-500 bg-slate-100 dark:bg-darkmode-400 dark:border-darkmode-400"
-                  >2</button>
-                  <div className={`${color.widget} lg:w-32 text-base lg:mt-3 ml-3 lg:mx-auto`}>
-                    {language?.room} {language?.services}</div>
-                </div>
-
-                <div className="intro-x lg:text-center flex items-center lg:block flex-1 z-10">
-                  <button className="w-10 h-10 rounded-full btn text-slate-500 bg-slate-100 dark:bg-darkmode-400 dark:border-darkmode-400">3</button>
-                  <div className={`lg:w-32 font-medium ${color.crossbg} text-base lg:mt-3 ml-3 lg:mx-auto`}> {language?.room} {language?.gallery}</div>
-                </div>
-                <div className="intro-x lg:text-center flex items-center lg:block flex-1 z-10">
-                  <button className="w-10 h-10 rounded-full btn text-white bg-cyan-600 btn-primary"
-                  >4</button>
-                  <div className={`lg:w-32 font-medium ${color.crossbg} text-base lg:mt-3 ml-3 lg:mx-auto`}> {language?.room} {language?.rates}</div>
-                </div>
-
-              </div>
-              <h6 className={`${color?.text} text-base  flex leading-none  pt-2 font-semibold`}>
-                {language?.room} {language?.rates}
-              </h6>
-              <div className="pt-6">
-                <div className=" md:px-2 mx-auto w-full">
-                  <div className="flex flex-wrap">
-                    <div className="w-full lg:w-6/12 px-4">
-                      <div className="relative w-full mb-3">
-                        <label
-                          className={`text-sm font-medium ${color?.text} block mb-2`}
-                          htmlFor="grid-password"
-                        >
-                          {language?.currency}
-                        </label>
-                        <select className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
-                          onChange={
-                            (e) => (
-                              setAllRoomRates({ ...allRoomRates, currency: e.target.value })
-                            )
-                          }>
-                          <option selected disabled>{language?.select}</option>
-                          {lang?.CurrencyData?.map(i => {
-                            return (
-
-                              <option key={i.currency_code} value={i.currency_code}>{i?.currency_name}</option>)
-                          }
-                          )}
-                        </select>
-                        <p className="text-sm text-red-700 font-light">
-                          {error?.currency}</p>
-                      </div>
-                    </div>
-                    <div className="w-full lg:w-6/12 px-4">
-                      <div className="relative w-full mb-3">
-                        <label
-                          className={`text-sm font-medium ${color?.text} block mb-2`}
-                          htmlFor="grid-password"
-                        >
-                          {language?.baserate} {language?.amount}
-                        </label>
-                        <input
-                          type="text"
-                          className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
-                          onChange={
-                            (e) => (
-                              setAllRoomRates({ ...allRoomRates, baserate_amount: e.target.value })
-                            )
-                          }
-                        />
-                        <p className="text-sm text-red-700 font-light">
-                          {error?.baserate_amount}</p>
-                      </div>
-                    </div>
-
-                    <div className="w-full lg:w-6/12 px-4">
-                      <div className="relative w-full mb-3">
-                        <label
-                          className={`text-sm font-medium ${color?.text} block mb-2`}
-                          htmlFor="grid-password"
-                        >
-                          {language?.taxrate} {language?.amount}
-                        </label>
-                        <input
-                          type="text"
-                          className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
-                          onChange={
-                            (e) => (
-                              setAllRoomRates({ ...allRoomRates, tax_amount: e.target.value, un_rate_id: allRoomDetails?.unconditional_rates?.[0]?.un_rate_id })
-                            )
-                          } />
-                        <p className="text-sm text-red-700 font-light">
-                          {error?.tax_amount}</p>
-                      </div>
-                    </div>
-
-                    <div className="w-full lg:w-6/12 px-4">
-                      <div className="relative w-full mb-3">
-                        <label
-                          className={`text-sm font-medium ${color?.text} block mb-2`}
-                          htmlFor="grid-password"
-                        >
-                          {language?.other} {language?.charges} {language?.amount}
-                        </label>
-                        <input
-                          type="text"
-                          className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
-                          onChange={
-                            (e) => (
-                              setAllRoomRates({ ...allRoomRates, otherfees_amount: e.target.value })
-                            )
-                          } />
-                        <p className="text-sm text-red-700 font-light">
-                          {error?.otherfees_amount}</p>
-                      </div>
-
-                    </div>
-                    <div className="w-full lg:w-6/12 px-4">
-                      <div className="relative w-full mb-3">
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-end space-x-2 sm:space-x-3 ml-auto">
-                      <div className={(spinner === 0 && allRoomRates?.length === 0) ? 'block' : 'hidden'}>
-                        <Button Primary={language?.SubmitDisabled} />
-                      </div>
-                      <div className={(spinner === 0 && allRoomRates?.length != 0) ? 'block' : 'hidden'}>
-                        <Button Primary={language?.Submit} onClick={validationRates} />
-                      </div>
-                      <div className={spinner === 1 ? 'block' : 'hidden'}>
-                        <Button Primary={language?.Spinnersubmit} />
-                      </div>
-
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <AddNewRatesofRoom color={color} language={language} roomId={roomId}/>
           </div>
+        
 
         </div>
 

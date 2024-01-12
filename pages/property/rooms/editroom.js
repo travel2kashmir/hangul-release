@@ -29,25 +29,28 @@ import InputText from '../../../components/utils/InputText';
 import InputTextBox from '../../../components/utils/InputTextBox';
 import DropDown from '../../../components/utils/DropDown';
 import WidgetStatus from '../../../components/widgetStatus';
-import roomDiscountValidation from '../../../components/validation/room/roomDiscountValidation';
-import roomRateModificationValidation from '../../../components/validation/room/roomRateModificationValidation';
-import searchFunction from '../../../components/searchFunction';
+import Modal from '../../../components/ClassicTheme/Modals/Modal';
 import ImageDemo from "../../../components/utils/ImageDemo"
-var language;
-var currentProperty;
-var currentroom;
-var room;
-var viewsData;
+import Router from 'next/router'
+import BreadCrumb from '../../../components/utils/BreadCrumb';
+import GenericTable from '../../../components/utils/Tables/GenericTable';
+import RoomEdit from '../../../components/rooms/RoomEdit';
+import RoomDelete from '../../../components/rooms/RoomDelete';
+import RoomPlanAdd from '../../../components/rooms/RoomPlanAdd';
+
+let language;
+let currentProperty;
+let currentroom;
+let room;
+let viewsData;
 let check = [];
 let checkDiscount = [];
 let checkModification = [];
-var resView = [];
-var currency;
-import Router from 'next/router'
-import BreadCrumb from '../../../components/utils/BreadCrumb';
+let resView = [];
+let currency;
 const logger = require("../../../services/logger");
-var currentLogged;
-var i = 0;
+let currentLogged;
+let i = 0;
 let colorToggle;
 
 
@@ -106,6 +109,11 @@ function Room() {
   const [id, setId] = useState(-1);
   const [initalIdentifiers, setInitalIdentifiers] = useState()
   const [roomIdentifiers, setRoomIdentifiers] = useState()
+  const [roomRateEditModal, setRoomRateEditModal] = useState(0)
+  const [editRate, setEditRate] = useState({})
+  const [roomRateDeleteModal, setRoomRateDeleteModal] = useState(0)
+  const [deleteRate, setDeleteRate] = useState({})
+  const [addConditionalRate, setAddConditionalRate] = useState(0)
 
   /** Use Effect to fetch details from the Local Storage **/
   useEffect(() => {
@@ -173,7 +181,38 @@ function Room() {
     setShowSearchedImages(1);
   };
 
+  //generate json to be injected in room rate table component
+  const filterRatesData = (data) => {
+    let genData = [];
+    data?.map((item) => {
+      let temp = {
+        // "checkbox": { operation: undefined },
+        "Meal Name": item.meal_name,
+        "Price": item.price,
+        "id": item.room_rate_plan_id,
 
+        Actions: [
+          {
+            type: "button",
+            label: "Edit",
+            operation: (e) => { setEditRate(item); setRoomRateEditModal(1) }
+          },
+          {
+            type: "button",
+            label: "Delete",
+            operation: () => { setDeleteRate(item); setRoomRateDeleteModal(1); }
+          }
+
+        ],
+      }
+      genData.push(temp)
+    })
+    setRoomRates(genData)
+  }
+
+  const addRateButtonAction = () =>{
+    setAddConditionalRate(1)
+  }
   // Fetch Room Details
   const fetchDetails = async () => {
     const url = `/api/${currentProperty.address_province.replace(/\s+/g, '-')}/${currentProperty.address_city}/${currentProperty.property_category}s/${currentProperty.property_id}/${currentroom}`
@@ -183,6 +222,7 @@ function Room() {
         setRoomDetails(response.data);
         setVisible(1);
         setFinalView(response?.data?.views);
+        filterRatesData(response?.data?.unconditional_rates);
         if (response.data.room_refrences !== undefined) {
           let item = response.data.room_refrences.map(item => item.room_identifier)
           setInitalIdentifiers(item.toString())
@@ -191,8 +231,6 @@ function Room() {
         if (response.data?.room_type == 'Single') {
           setBedDetails(response.data.beds?.[i])
         }
-
-        filterCurrency(response.data?.unconditional_rates?.[i]);
 
         if (response.data.room_facilities !== undefined) {
           setServices(response.data.room_facilities);
@@ -219,7 +257,7 @@ function Room() {
           }
         }
         logger.info("url  to fetch room hitted successfully");
-
+        filterCurrency(response.data?.unconditional_rates?.[i]);
       })
       .catch((error) => { logger.error("url to fetch room, failed"); });
   }
@@ -531,7 +569,7 @@ function Room() {
 
   //  update inventory 
   function updateInventory() {
-  let url = `/api/inventory`
+    let url = `/api/inventory`
     let inventorydata = {
       "inventory": [{
 
@@ -969,7 +1007,6 @@ function Room() {
     setSpinner(1);
     const imagedata = data;
     const finalImages = { images: imagedata };
-    alert(JSON.stringify(finalImages))
     axios
       .post(`/api/deleteall/images`, finalImages, {
         headers: { "content-type": "application/json" },
@@ -1113,7 +1150,6 @@ function Room() {
     }
   }
 
-
   // Validate Image
   const validationImage = () => {
     var result = validateEditGallery(actionImage)
@@ -1191,949 +1227,811 @@ function Room() {
           </h6>
 
           {/* Room Description */}
-          <div id='0' className={disp === 0 ? 'block py-1' : 'hidden'}>
-
-            <div className={`${color?.whitebackground} shadow rounded-lg px-12 sm:p-6 xl:p-8  2xl:col-span-2`}>
-              {/* progress bar starts */}
-              <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`]} selected={1} color={color} />
-              {/* Progress bar ends */}
-              <h6 className={`${color?.text} text-xl flex leading-none pl-6 lg:pt-2 pt-6  pb-2 font-bold`}>
-                {language?.room} {language?.description}
-              </h6>
-              <div className="pt-6">
-                <div className=" md:px-2 mx-auto w-full">
-                  <div className="flex flex-wrap">
-                    {/* room type */}
-                    <DropDown
-                      label={`${language?.room} ${language?.type}`}
-                      visible={visible}
-                      defaultValue={roomDetails?.room_type}
-                      onChangeAction={(e) =>
-                        setAllRoomDetails(
-                          { ...allRoomDetails, room_type_id: e.target.value },
-                          setFlag(1)
-                        )
-                      }
-                      error={error?.propertycategory}
-                      color={color}
-                      req={true}
-                      options={roomtypes?.map(i => {
-                        return (
-
-                          { value: i.room_type_id, label: i?.room_type_name.replaceAll("_", " ") }
-
-                        )
-                      })
-                      }
-
-
-                    />
-
-                    {/* room name */}
-                    <InputText
-                      label={`${language?.room} ${language?.name}`}
-                      visible={visible}
-                      defaultValue={allRoomDetails?.room_name}
-                      onChangeAction={(e) => {
-                        setAllRoomDetails({
-                          ...allRoomDetails, room_name: e.target.value,
-                        });
-                        setFlag(1);
-                      }
-                      }
-                      error={error?.room_name}
-                      color={color}
-                      req={true}
-                      tooltip={true}
-                    />
-
-                    {/*Room Description */}
-                    <InputTextBox
-                      label={`${language?.room} ${language?.description}`}
-                      visible={visible}
-                      defaultValue={allRoomDetails?.room_description}
-                      wordLimit={1000}
-                      onChangeAction={(e) => {
-                        if (e.target.value.length >= 0 && e.target.value.length < 1000) {
-                          setError({})
-                          setAllRoomDetails({ ...allRoomDetails, room_description: e.target.value }, setFlag(1))
+          {disp === 0 ?
+            <div id='0' className='block py-1'>
+              <div className={`${color?.whitebackground} shadow rounded-lg px-12 sm:p-6 xl:p-8  2xl:col-span-2`}>
+                {/* progress bar starts */}
+                <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`]} selected={1} color={color} />
+                {/* Progress bar ends */}
+                <h6 className={`${color?.text} text-xl flex leading-none pl-6 lg:pt-2 pt-6  pb-2 font-bold`}>
+                  {language?.room} {language?.description}
+                </h6>
+                <div className="pt-6">
+                  <div className=" md:px-2 mx-auto w-full">
+                    <div className="flex flex-wrap">
+                      {/* room type */}
+                      <DropDown
+                        label={`${language?.room} ${language?.type}`}
+                        visible={visible}
+                        defaultValue={roomDetails?.room_type}
+                        onChangeAction={(e) =>
+                          setAllRoomDetails(
+                            { ...allRoomDetails, room_type_id: e.target.value },
+                            setFlag(1)
+                          )
                         }
-                        else {
-                          setError({ room_description: 'word limit reached' })
+                        error={error?.propertycategory}
+                        color={color}
+                        req={true}
+                        options={roomtypes?.map(i => {
+                          return (
+
+                            { value: i.room_type_id, label: i?.room_type_name.replaceAll("_", " ") }
+
+                          )
+                        })
                         }
 
-                      }
 
-                      }
-                      error={error?.room_description}
-                      color={color}
-                      req={true}
-                      tooltip={true}
-                    />
+                      />
 
-                    {/* room capacity */}
-                    <InputText
-                      label={`${language?.room} ${language?.capacity}`}
-                      visible={visible}
-                      defaultValue={allRoomDetails?.room_capacity}
-                      onChangeAction={
-                        (e) => (
-                          setAllRoomDetails({ ...allRoomDetails, room_capacity: e.target.value }, setFlag(1))
-                        )
-                      }
-                      error={error?.room_capacity}
-                      color={color}
-                      req={true}
-                    />
-
-                    {/* max number of occupants */}
-                    <InputText
-                      label={`${language?.maximum} ${language?.number} ${language?.of} ${language?.occupants}`}
-                      visible={visible}
-                      defaultValue={allRoomDetails?.maximum_number_of_occupants}
-                      onChangeAction={
-                        (e) => (
-                          setAllRoomDetails({ ...allRoomDetails, maximum_number_of_occupants: e.target.value }, setFlag(1))
-                        )
-                      }
-                      error={error?.maximum_number_of_occupants}
-                      color={color}
-                      req={true}
-                    />
-
-                    {/* minimum number of occupants */}
-                    <InputText
-                      label={`${language?.minimum} ${language?.number} ${language?.of} ${language?.occupants}`}
-                      visible={visible}
-                      defaultValue={allRoomDetails?.minimum_number_of_occupants}
-                      onChangeAction={
-                        (e) => {
-                          setAllRoomDetails({ ...allRoomDetails, minimum_number_of_occupants: e.target.value }, setFlag(1))
+                      {/* room name */}
+                      <InputText
+                        label={`${language?.room} ${language?.name}`}
+                        visible={visible}
+                        defaultValue={allRoomDetails?.room_name}
+                        onChangeAction={(e) => {
+                          setAllRoomDetails({
+                            ...allRoomDetails, room_name: e.target.value,
+                          });
+                          setFlag(1);
                         }
-                      }
-                      error={error?.minimum_number_of_occupants}
-                      color={color}
-                      req={true}
-                    />
+                        }
+                        error={error?.room_name}
+                        color={color}
+                        req={true}
+                        tooltip={true}
+                      />
 
-                    {/* Maximum age of occupants */}
-                    <InputText
-                      label={`${language?.maximum} ${language?.age} ${language?.of} ${language?.occupants}`}
-                      visible={visible}
-                      defaultValue={allRoomDetails?.minimum_age_of_occupants}
-                      onChangeAction={
-                        (e) => (
-                          setAllRoomDetails({ ...allRoomDetails, minimum_age_of_occupants: e.target.value }, setFlag(1))
-                        )
-                      }
-                      error={error?.maximum_number_of_occupants}
-                      color={color}
-                      req={true}
-                    />
+                      {/*Room Description */}
+                      <InputTextBox
+                        label={`${language?.room} ${language?.description}`}
+                        visible={visible}
+                        defaultValue={allRoomDetails?.room_description}
+                        wordLimit={1000}
+                        onChangeAction={(e) => {
+                          if (e.target.value.length >= 0 && e.target.value.length < 1000) {
+                            setError({})
+                            setAllRoomDetails({ ...allRoomDetails, room_description: e.target.value }, setFlag(1))
+                          }
+                          else {
+                            setError({ room_description: 'word limit reached' })
+                          }
 
-                    {/* views room */}
-                    <div className="w-full lg:w-6/12 px-4">
-                      <div className="relative w-full mb-3">
-                        <label className={`text-sm font-medium ${color?.text} block py-1 mb-2`}
-                          htmlFor="grid-password">
-                          {language?.viewsfromroom}
-                          <span style={{ color: "#ff0000" }}>*</span>
-                        </label>
-                        <div className={visible === 0 ? 'block py-1' : 'hidden'}><Lineloader /></div>
-                        <div className={visible === 1 ? 'block py-1' : 'hidden'}>
-                          <Multiselect
-                            className={` shadow-sm ${color?.greybackground} ${color?.text} mb-3 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full
-                       `}
-                            isObject={true}
-                            options={lang?.Views}
-                            onRemove={(event) => { views(event) }}
-                            onSelect={(event) => { views(event) }}
-                            selectedValues={finalView}
-                            displayValue="view"
-                            closeIcon='circle'
-                            style={{
-                              chips: {
-                                background: '#0891b2',
-                                'font-size': '0.875 rem'
-                              }
+                        }
 
-                            }}
+                        }
+                        error={error?.room_description}
+                        color={color}
+                        req={true}
+                        tooltip={true}
+                      />
 
-                          />
-                          <p className="text-sm text-sm text-red-700 font-light">
-                            {error?.view}</p>
+                      {/* room capacity */}
+                      <InputText
+                        label={`${language?.room} ${language?.capacity}`}
+                        visible={visible}
+                        defaultValue={allRoomDetails?.room_capacity}
+                        onChangeAction={
+                          (e) => (
+                            setAllRoomDetails({ ...allRoomDetails, room_capacity: e.target.value }, setFlag(1))
+                          )
+                        }
+                        error={error?.room_capacity}
+                        color={color}
+                        req={true}
+                      />
+
+                      {/* max number of occupants */}
+                      <InputText
+                        label={`${language?.maximum} ${language?.number} ${language?.of} ${language?.occupants}`}
+                        visible={visible}
+                        defaultValue={allRoomDetails?.maximum_number_of_occupants}
+                        onChangeAction={
+                          (e) => (
+                            setAllRoomDetails({ ...allRoomDetails, maximum_number_of_occupants: e.target.value }, setFlag(1))
+                          )
+                        }
+                        error={error?.maximum_number_of_occupants}
+                        color={color}
+                        req={true}
+                      />
+
+                      {/* minimum number of occupants */}
+                      <InputText
+                        label={`${language?.minimum} ${language?.number} ${language?.of} ${language?.occupants}`}
+                        visible={visible}
+                        defaultValue={allRoomDetails?.minimum_number_of_occupants}
+                        onChangeAction={
+                          (e) => {
+                            setAllRoomDetails({ ...allRoomDetails, minimum_number_of_occupants: e.target.value }, setFlag(1))
+                          }
+                        }
+                        error={error?.minimum_number_of_occupants}
+                        color={color}
+                        req={true}
+                      />
+
+                      {/* Maximum age of occupants */}
+                      <InputText
+                        label={`${language?.maximum} ${language?.age} ${language?.of} ${language?.occupants}`}
+                        visible={visible}
+                        defaultValue={allRoomDetails?.minimum_age_of_occupants}
+                        onChangeAction={
+                          (e) => (
+                            setAllRoomDetails({ ...allRoomDetails, minimum_age_of_occupants: e.target.value }, setFlag(1))
+                          )
+                        }
+                        error={error?.maximum_number_of_occupants}
+                        color={color}
+                        req={true}
+                      />
+
+                      {/* views room */}
+                      <div className="w-full lg:w-6/12 px-4">
+                        <div className="relative w-full mb-3">
+                          <label className={`text-sm font-medium ${color?.text} block py-1 mb-2`}
+                            htmlFor="grid-password">
+                            {language?.viewsfromroom}
+                            <span style={{ color: "#ff0000" }}>*</span>
+                          </label>
+                          <div className={visible === 0 ? 'block py-1' : 'hidden'}><Lineloader /></div>
+                          <div className={visible === 1 ? 'block py-1' : 'hidden'}>
+                            <Multiselect
+                              className={`shadow-sm ${color?.greybackground} ${color?.text} mb-3 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full`}
+                              isObject={true}
+                              options={lang?.Views}
+                              onRemove={(event) => { views(event) }}
+                              onSelect={(event) => { views(event) }}
+                              selectedValues={finalView}
+                              displayValue="view"
+                              closeIcon='circle'
+                              style={{
+                                chips: {
+                                  background: '#0891b2',
+                                  'font-size': '0.875 rem'
+                                }
+
+                              }}
+
+                            />
+                            <p className="text-sm text-sm text-red-700 font-light">
+                              {error?.view}</p>
+                          </div>
                         </div>
                       </div>
+                      {/* Room length */}
+                      <InputText
+                        label={`${language?.room} ${language?.length} (${language?.infeet})`}
+                        visible={visible}
+                        defaultValue={allRoomDetails?.room_length}
+                        onChangeAction={
+                          (e) => (
+                            setAllRoomDetails({ ...allRoomDetails, room_length: e.target.value }, setFlag(1))
+                          )
+                        }
+                        error={error?.room_length}
+                        color={color}
+                        req={true}
+                      />
+
+                      {/* Room Breadth */}
+
+                      <InputText
+                        label={`${language?.room} ${language?.breadth} (${language?.infeet})`}
+                        visible={visible}
+                        defaultValue={allRoomDetails?.room_width}
+                        onChangeAction={
+                          (e) => (
+                            setAllRoomDetails({ ...allRoomDetails, room_width: e.target.value }, setFlag(1))
+                          )
+                        }
+                        error={error?.room_width}
+                        color={color}
+                        req={true}
+                      />
+
+                      {/* Room Height */}
+                      <InputText
+                        label={`${language?.room} ${language?.height} (${language?.infeet})`}
+                        visible={visible}
+                        defaultValue={allRoomDetails?.room_height}
+                        onChangeAction={
+                          (e) => (
+                            setAllRoomDetails({ ...allRoomDetails, room_height: e.target.value }, setFlag(1))
+                          )
+                        }
+                        error={error?.room_height}
+                        color={color}
+                        req={true}
+                      />
+
+                      {/* Room Area Read only */}
+                      <InputText
+                        label={`${language?.room} ${language?.area}`}
+                        visible={visible}
+                        defaultValue={allRoomDetails?.carpet_area}
+                        onChangeAction={undefined}
+                        color={color}
+                        disabled={true}
+                      />
+
+                      {/* Room Volume Read only */}
+                      <InputText
+                        label={`${language?.room} ${language?.volume}`}
+                        visible={visible}
+                        defaultValue={allRoomDetails?.room_volume}
+                        onChangeAction={undefined}
+                        color={color}
+                        disabled={true}
+                      />
+
+                      {/* Room Style*/}
+                      <DropDown
+                        label={language?.roomstyle}
+                        visible={visible}
+                        defaultValue={allRoomDetails?.room_style?.replaceAll("_", " ")}
+                        onChangeAction={
+                          (e) => (
+                            setAllRoomDetails({ ...allRoomDetails, room_style: e.target.value }, setFlag(1))
+                          )
+                        }
+                        error={error?.room_style}
+                        color={color}
+                        req={true}
+                        options={[
+                          { value: "western", label: "Western" },
+                          { value: "japanese", label: "Japanese" },
+                          { value: "japanese_western", label: "Japanese Western" },
+                        ]}
+                      />
+
+                      {/* Is Room Shared */}
+                      <DropDown
+                        label={language?.isroomshared}
+                        visible={visible}
+                        defaultValue={allRoomDetails?.is_room_sharing === "shared" ? "Yes" : "No"}
+                        onChangeAction={
+                          (e) => (
+                            setAllRoomDetails({ ...allRoomDetails, is_room_sharing: e.target.value }, setFlag(1))
+                          )
+                        }
+                        error={error?.is_room_sharing}
+                        color={color}
+                        req={true}
+                        options={[
+                          { value: "yes", label: "Yes" },
+                          { value: "no", label: "No" },
+
+                        ]}
+                      />
+
+                      {/* Is Room Outdoor Or Indoor */}
+                      <DropDown
+                        label={language?.isroom}
+                        visible={visible}
+                        defaultValue={allRoomDetails?.is_room}
+                        onChangeAction={
+                          (e) => (
+                            setAllRoomDetails({ ...allRoomDetails, is_room: e.target.value }, setFlag(1))
+                          )
+                        }
+                        error={error?.is_room_sharing}
+                        color={color}
+                        req={true}
+                        options={[
+                          { value: "indoor", label: "Indoor" },
+                          { value: "outdoor", label: "Outdoor" },
+
+                        ]}
+                      />
+
+                      {/* room inventory start */}
+                      <InputText
+                        label={`${language?.room} ${language?.inventory}`}
+                        visible={visible}
+                        defaultValue={allRoomDetails?.inventory_count}
+                        onChangeAction={(e) => {
+                          setAllRoomDetails({ ...allRoomDetails, inventory_count: e.target.value }, setFlag(1))
+                          setIsInventoryEdited(true)
+                        }}
+                        color={color}
+                        disabled={false}
+                        req={true}
+                        title={"Total number of rooms available"}
+                        tooltip={true}
+                        error={error?.inventory_count}
+                      />
+                      {/* room inventory end */}
+
+
+                      {/* Room identifier field start */}
+
+                      <InputText
+                        label={`${language?.room} ${language?.identifiers}`}
+                        visible={visible}
+                        defaultValue={initalIdentifiers}
+                        onChangeAction={(e) => {
+                          setRoomIdentifiers(e.target.value);
+                          setFlag(1);
+                        }}
+                        color={color}
+                        disabled={false}
+                        req={true}
+                        title={"Enter comma seperated room no\'s of similar type of rooms"}
+                        tooltip={true}
+                        error={error?.room_identifier}
+                      />
+
                     </div>
-                    {/* Room length */}
-                    <InputText
-                      label={`${language?.room} ${language?.length} (${language?.infeet})`}
-                      visible={visible}
-                      defaultValue={allRoomDetails?.room_length}
-                      onChangeAction={
-                        (e) => (
-                          setAllRoomDetails({ ...allRoomDetails, room_length: e.target.value }, setFlag(1))
-                        )
-                      }
-                      error={error?.room_length}
-                      color={color}
-                      req={true}
-                    />
-
-                    {/* Room Breadth */}
-
-                    <InputText
-                      label={`${language?.room} ${language?.breadth} (${language?.infeet})`}
-                      visible={visible}
-                      defaultValue={allRoomDetails?.room_width}
-                      onChangeAction={
-                        (e) => (
-                          setAllRoomDetails({ ...allRoomDetails, room_width: e.target.value }, setFlag(1))
-                        )
-                      }
-                      error={error?.room_width}
-                      color={color}
-                      req={true}
-                    />
-
-                    {/* Room Height */}
-                    <InputText
-                      label={`${language?.room} ${language?.height} (${language?.infeet})`}
-                      visible={visible}
-                      defaultValue={allRoomDetails?.room_height}
-                      onChangeAction={
-                        (e) => (
-                          setAllRoomDetails({ ...allRoomDetails, room_height: e.target.value }, setFlag(1))
-                        )
-                      }
-                      error={error?.room_height}
-                      color={color}
-                      req={true}
-                    />
-
-                    {/* Room Area Read only */}
-                    <InputText
-                      label={`${language?.room} ${language?.area}`}
-                      visible={visible}
-                      defaultValue={allRoomDetails?.carpet_area}
-                      onChangeAction={undefined}
-                      color={color}
-                      disabled={true}
-                    />
-
-                    {/* Room Volume Read only */}
-                    <InputText
-                      label={`${language?.room} ${language?.volume}`}
-                      visible={visible}
-                      defaultValue={allRoomDetails?.room_volume}
-                      onChangeAction={undefined}
-                      color={color}
-                      disabled={true}
-                    />
-
-                    {/* Room Style*/}
-                    <DropDown
-                      label={language?.roomstyle}
-                      visible={visible}
-                      defaultValue={allRoomDetails?.room_style?.replaceAll("_", " ")}
-                      onChangeAction={
-                        (e) => (
-                          setAllRoomDetails({ ...allRoomDetails, room_style: e.target.value }, setFlag(1))
-                        )
-                      }
-                      error={error?.room_style}
-                      color={color}
-                      req={true}
-                      options={[
-                        { value: "western", label: "Western" },
-                        { value: "japanese", label: "Japanese" },
-                        { value: "japanese_western", label: "Japanese Western" },
-                      ]}
-                    />
-
-                    {/* Is Room Shared */}
-                    <DropDown
-                      label={language?.isroomshared}
-                      visible={visible}
-                      defaultValue={allRoomDetails?.is_room_sharing === "shared" ? "Yes" : "No"}
-                      onChangeAction={
-                        (e) => (
-                          setAllRoomDetails({ ...allRoomDetails, is_room_sharing: e.target.value }, setFlag(1))
-                        )
-                      }
-                      error={error?.is_room_sharing}
-                      color={color}
-                      req={true}
-                      options={[
-                        { value: "yes", label: "Yes" },
-                        { value: "no", label: "No" },
-
-                      ]}
-                    />
-
-                    {/* Is Room Outdoor Or Indoor */}
-                    <DropDown
-                      label={language?.isroom}
-                      visible={visible}
-                      defaultValue={allRoomDetails?.is_room}
-                      onChangeAction={
-                        (e) => (
-                          setAllRoomDetails({ ...allRoomDetails, is_room: e.target.value }, setFlag(1))
-                        )
-                      }
-                      error={error?.is_room_sharing}
-                      color={color}
-                      req={true}
-                      options={[
-                        { value: "indoor", label: "Indoor" },
-                        { value: "outdoor", label: "Outdoor" },
-
-                      ]}
-                    />
-
-                    {/* room inventory start */}
-                    <InputText
-                      label={`${language?.room} ${language?.inventory}`}
-                      visible={visible}
-                      defaultValue={allRoomDetails?.inventory_count}
-                      onChangeAction={(e) => {
-                        setAllRoomDetails({ ...allRoomDetails, inventory_count: e.target.value }, setFlag(1))
-                        setIsInventoryEdited(true)
-                      }}
-                      color={color}
-                      disabled={false}
-                      req={true}
-                      title={"Total number of rooms available"}
-                      tooltip={true}
-                      error={error?.inventory_count}
-                    />
-                    {/* room inventory end */}
-
-
-                    {/* Room identifier field start */}
-
-                    <InputText
-                      label={`${language?.room} ${language?.identifiers}`}
-                      visible={visible}
-                      defaultValue={initalIdentifiers}
-                      onChangeAction={(e) => {
-                        setRoomIdentifiers(e.target.value);
-                        setFlag(1);
-                      }}
-                      color={color}
-                      disabled={false}
-                      req={true}
-                      title={"Enter comma seperated room no\'s of similar type of rooms"}
-                      tooltip={true}
-                      error={error?.room_identifier}
-                    />
+                    <div className="flex items-center justify-end space-x-2 sm:space-x-3 ml-auto">
+                      <div className={(spinner === 0 && (flag !== 1 && roomView != 1)) ? 'block py-1' : 'hidden'}>
+                        <Button Primary={language?.UpdateDisabled} />
+                      </div>
+                      <div className={(spinner === 0 && (flag === 1 || roomView === 1)) ? 'block py-1' : 'hidden'}>
+                        <Button Primary={language?.Update} onClick={() => { validationRoomDescription() }} />
+                      </div>
+                      <div className={spinner === 1 ? 'block py-1' : 'hidden'}>
+                        <Button Primary={language?.SpinnerUpdate} />
+                      </div>
+                      <Button Primary={language?.Next} onClick={() => {
+                        {
+                          (roomDetails?.room_type === 'Studio_Room' || roomDetails?.room_type === 'Semi_Double' || roomDetails?.room_type === 'King'
+                            || roomDetails?.room_type === 'Queen' || roomDetails?.room_type === 'Double') ?
+                            setDisp(4)
+                            : roomDetails?.room_type === 'Single' ?
+                              setDisp(5) :
+                              setDisp(1)
+                        }
+                      }} />
+                    </div>
 
                   </div>
-                  <div className="flex items-center justify-end space-x-2 sm:space-x-3 ml-auto">
-                    <div className={(spinner === 0 && (flag !== 1 && roomView != 1)) ? 'block py-1' : 'hidden'}>
-                      <Button Primary={language?.UpdateDisabled} />
-                    </div>
-                    <div className={(spinner === 0 && (flag === 1 || roomView === 1)) ? 'block py-1' : 'hidden'}>
-                      <Button Primary={language?.Update} onClick={() => { validationRoomDescription() }} />
-                    </div>
-                    <div className={spinner === 1 ? 'block py-1' : 'hidden'}>
-                      <Button Primary={language?.SpinnerUpdate} />
-                    </div>
-                    <Button Primary={language?.Next} onClick={() => {
-                      {
-                        (roomDetails?.room_type === 'Studio_Room' || roomDetails?.room_type === 'Semi_Double' || roomDetails?.room_type === 'King'
-                          || roomDetails?.room_type === 'Queen' || roomDetails?.room_type === 'Double') ?
-                          setDisp(4)
-                          : roomDetails?.room_type === 'Single' ?
-                            setDisp(5) :
-                            setDisp(1)
-                      }
-                    }} />
-                  </div>
-
                 </div>
-              </div>
 
+              </div>
             </div>
-          </div>
+            : undefined}
 
 
           {/* Multiple Bed */}
-          <div id='4' className={disp === 4 ? 'block py-1' : 'hidden'}>
-            <div className={`${color?.whitebackground} shadow rounded-lg px-12 sm:p-6 xl:p-8  2xl:col-span-2`}>
-              <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`]}
-                selected={1}
-                color={color} />
-              <h6 className={`${color?.text} text-xl flex leading-none pl-6 lg:pt-2 pt-6  pb-2 font-bold`}>
-                {language?.room} {language?.description}
-              </h6>
+          {disp === 4 ?
+            <div id='4' className='block py-1'>
+              <div className={`${color?.whitebackground} shadow rounded-lg px-12 sm:p-6 xl:p-8  2xl:col-span-2`}>
+                <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`]}
+                  selected={1}
+                  color={color} />
+                <h6 className={`${color?.text} text-xl flex leading-none pl-6 lg:pt-2 pt-6  pb-2 font-bold`}>
+                  {language?.room} {language?.description}
+                </h6>
 
-              <div className={visible === 0 ? 'block py-1' : 'hidden'}><LoaderTable /></div>
-              <div className={visible === 1 ? 'block py-1' : 'hidden'}>
-                <Table gen={gen} setGen={setGen} add={() => setView(1)} name="Additional Services"
-                  color={color}
-                  mark="beds"
-                  edit={editBed} delete={deleteBed}
-                  common={language?.common} cols={language?.BedsCols} /> </div>
+                <div className={visible === 0 ? 'block py-1' : 'hidden'}><LoaderTable /></div>
+                <div className={visible === 1 ? 'block py-1' : 'hidden'}>
+                  <Table gen={gen} setGen={setGen} add={() => setView(1)} name="Additional Services"
+                    color={color}
+                    mark="beds"
+                    edit={editBed} delete={deleteBed}
+                    common={language?.common} cols={language?.BedsCols} /> </div>
 
-              <div className="flex items-center mt-2 justify-end space-x-2 sm:space-x-3 ml-auto">
-                <Button Primary={language?.Previous} onClick={() => {
-                  setDisp(0)
-                }} />
-                <Button Primary={language?.Next} onClick={() => {
-                  setDisp(1)
-                }} />
-              </div>
-            </div>
-          </div>
-
-          {/* Single Bed */}
-          <div id='5' className={disp === 5 ? 'block py-1' : 'hidden'}>
-            <div className={`${color?.whitebackground} shadow rounded-lg px-12 sm:p-6 xl:p-8  2xl:col-span-2`}>
-              <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`]} selected={1} color={color} />
-              <h6 className={`${color?.text} text-xl flex leading-none pl-6 lg:pt-2 pt-6  pb-2 font-bold`}>
-                {language?.room} {language?.description}
-              </h6>
-              <div className="flex flex-wrap">
-
-                <div className="w-full lg:w-6/12 px-4">
-                  <div className="relative w-full mb-3">
-                    <label
-                      className={`text-sm  font-medium ${color?.text} block py-1 mb-2`}
-                      htmlFor="grid-password">
-                      {language?.bed} {language?.Length}({language?.incm})
-                      <span style={{ color: "#ff0000" }}>*</span>
-                    </label>
-                    <div className={visible === 0 ? 'block py-1' : 'hidden'}><Lineloader /></div>
-                    <div className={visible === 1 ? 'block py-1' : 'hidden'}>
-                      <input
-                        type="text" defaultValue={bedDetails?.bed_length}
-                        className={`shadow-sm ${color?.greybackground} ${color?.text}  border border-gray-300  sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`}
-                        onChange={
-                          (e) => (
-                            setBedDetails({ ...bedDetails, bed_length: e.target.value }, setFlag(1))
-                          )
-                        }
-                      />
-                      <p className="text-sm text-sm text-red-700 font-light">
-                        {error?.bed_length}</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="w-full lg:w-6/12 px-4">
-                  <div className="relative w-full mb-3">
-                    <label className={`text-sm font-medium ${color?.text} block py-1 mb-2`}
-                      htmlFor="grid-password">
-                      {language?.bed}  {language?.width}({language?.incm})
-                      <span style={{ color: "#ff0000" }}>*</span>
-                    </label>
-                    <div className={visible === 0 ? 'block py-1' : 'hidden'}><Lineloader /></div>
-                    <div className={visible === 1 ? 'block py-1' : 'hidden'}>
-                      <input
-                        type="text"
-                        className={`shadow-sm ${color?.greybackground} ${color?.text}  border border-gray-300  sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`}
-                        defaultValue={bedDetails?.bed_width}
-                        onChange={
-                          (e) => (
-                            setBedDetails({ ...bedDetails, bed_width: e.target.value }, setFlag(1))
-                          )
-                        }
-                      />
-                      <p className="text-sm text-sm text-red-700 font-light">
-                        {error?.bed_width}</p>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-              <div className="flex items-center mt-2 justify-end space-x-2 sm:space-x-3 ml-auto">
-                <Button Primary={language?.Previous} onClick={() => {
-                  setDisp(0)
-                }} />
-
-                <div className={(spinner === 0 && flag !== 1) ? 'block py-1' : 'hidden'}>
-                  <Button Primary={language?.UpdateDisabled} /></div>
-                <div className={(spinner === 0 && flag === 1) ? 'block py-1' : 'hidden'}>
-                  <Button Primary={language?.Update} onClick={() => {
-                    validationBedData();
+                <div className="flex items-center mt-2 justify-end space-x-2 sm:space-x-3 ml-auto">
+                  <Button Primary={language?.Previous} onClick={() => {
+                    setDisp(0)
+                  }} />
+                  <Button Primary={language?.Next} onClick={() => {
+                    setDisp(1)
                   }} />
                 </div>
-                <div className={(spinner === 1 && flag === 1) ? 'block py-1' : 'hidden'}>
-                  <Button Primary={language?.SpinnerUpdate} />
-                </div>
-                <Button Primary={language?.Next} onClick={() => {
-                  setDisp(1)
-                }} />
               </div>
-            </div>
-          </div>
+            </div> : undefined}
+
+          {/* Single Bed */}
+          {disp === 5 ?
+            <div id='5' className='block py-1'>
+              <div className={`${color?.whitebackground} shadow rounded-lg px-12 sm:p-6 xl:p-8  2xl:col-span-2`}>
+                <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`]} selected={1} color={color} />
+                <h6 className={`${color?.text} text-xl flex leading-none pl-6 lg:pt-2 pt-6  pb-2 font-bold`}>
+                  {language?.room} {language?.description}
+                </h6>
+                <div className="flex flex-wrap">
+
+                  <div className="w-full lg:w-6/12 px-4">
+                    <div className="relative w-full mb-3">
+                      <label
+                        className={`text-sm  font-medium ${color?.text} block py-1 mb-2`}
+                        htmlFor="grid-password">
+                        {language?.bed} {language?.Length}({language?.incm})
+                        <span style={{ color: "#ff0000" }}>*</span>
+                      </label>
+                      <div className={visible === 0 ? 'block py-1' : 'hidden'}><Lineloader /></div>
+                      <div className={visible === 1 ? 'block py-1' : 'hidden'}>
+                        <input
+                          type="text" defaultValue={bedDetails?.bed_length}
+                          className={`shadow-sm ${color?.greybackground} ${color?.text}  border border-gray-300  sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`}
+                          onChange={
+                            (e) => (
+                              setBedDetails({ ...bedDetails, bed_length: e.target.value }, setFlag(1))
+                            )
+                          }
+                        />
+                        <p className="text-sm text-red-700 font-light">
+                          {error?.bed_length}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="w-full lg:w-6/12 px-4">
+                    <div className="relative w-full mb-3">
+                      <label className={`text-sm font-medium ${color?.text} block py-1 mb-2`}
+                        htmlFor="grid-password">
+                        {language?.bed}  {language?.width}({language?.incm})
+                        <span style={{ color: "#ff0000" }}>*</span>
+                      </label>
+                      <div className={visible === 0 ? 'block py-1' : 'hidden'}><Lineloader /></div>
+                      <div className={visible === 1 ? 'block py-1' : 'hidden'}>
+                        <input
+                          type="text"
+                          className={`shadow-sm ${color?.greybackground} ${color?.text}  border border-gray-300  sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`}
+                          defaultValue={bedDetails?.bed_width}
+                          onChange={
+                            (e) => (
+                              setBedDetails({ ...bedDetails, bed_width: e.target.value }, setFlag(1))
+                            )
+                          }
+                        />
+                        <p className="text-sm text-sm text-red-700 font-light">
+                          {error?.bed_width}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+                <div className="flex items-center mt-2 justify-end space-x-2 sm:space-x-3 ml-auto">
+                  <Button Primary={language?.Previous} onClick={() => {
+                    setDisp(0)
+                  }} />
+
+                  <div className={(spinner === 0 && flag !== 1) ? 'block py-1' : 'hidden'}>
+                    <Button Primary={language?.UpdateDisabled} /></div>
+                  <div className={(spinner === 0 && flag === 1) ? 'block py-1' : 'hidden'}>
+                    <Button Primary={language?.Update} onClick={() => {
+                      validationBedData();
+                    }} />
+                  </div>
+                  <div className={(spinner === 1 && flag === 1) ? 'block py-1' : 'hidden'}>
+                    <Button Primary={language?.SpinnerUpdate} />
+                  </div>
+                  <Button Primary={language?.Next} onClick={() => {
+                    setDisp(1)
+                  }} />
+                </div>
+              </div>
+            </div> : undefined}
 
           {/* Room Services */}
-          <div id='1' className={disp === 1 ? 'block py-1' : 'hidden'}>
-            <div className={`${color?.whitebackground} shadow rounded-lg mt-2 mx-1 px-12 sm:p-6 xl:p-8  2xl:col-span-2`}>
+          {disp === 1 ?
+            <div id='1' className='block py-1'>
+              <div className={`${color?.whitebackground} shadow rounded-lg mt-2 mx-1 px-12 sm:p-6 xl:p-8  2xl:col-span-2`}>
 
-              <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`]} selected={2} color={color} />
+                <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`]} selected={2} color={color} />
 
-              <h6 className={`${color?.text} text-xl flex leading-none pl-6 pt-2 font-bold  mb-8`}>
-                {language?.room} {language?.services}
-              </h6>
-              <div className="flex flex-col my-4">
-                <div className="overflow-x-auto">
-                  <div className="align-middle inline-block py-1 min-w-full">
-                    <div className="shadow-sm overflow-hidden">
-                      <table className="table-fixed min-w-full divide-y mx-8 divide-gray-200">
-                        <thead className={`${color.greybackground}`}>
-                          <tr>
-                            <th
-                              scope="col"
-                              className={`${color.text} py-4 px-2 text-left text-xs font-semibold uppercase`}
-                            >
-                              {language?.service} {language?.name}
-                            </th>
-                            <th
-                              scope="col"
-                              className={`${color.text} py-4 px-6 text-left text-xs font-semibold uppercase`}
-                            >
-                              {language?.service} {language?.edit}
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody className={`${color.text} divide-y divide-gray-200`}>
-                          {services?.map((item, idx) => (
-                            <tr className={`${color?.hover}`} key={idx}>
-                              <td className="py-4 py-2 flex items-center whitespace-nowrap space-x-6 mr-12 lg:mr-0">
-                                <span className={`${color.text} py-4 px-2 whitespace-nowrap text-base font-medium capitalize `}>
-                                  {"  " +
-                                    item?.service_name?.replace(/_+/g, " ")}
-                                </span>
-                              </td>
+                <h6 className={`${color?.text} text-xl flex leading-none pl-6 pt-2 font-bold  mb-8`}>
+                  {language?.room} {language?.services}
+                </h6>
+                <div className="flex flex-col my-4">
+                  <div className="overflow-x-auto">
+                    <div className="align-middle inline-block py-1 min-w-full">
+                      <div className="shadow-sm overflow-hidden">
+                        <table className="table-fixed min-w-full divide-y mx-8 divide-gray-200">
+                          <thead className={`${color.greybackground}`}>
+                            <tr>
+                              <th
+                                scope="col"
+                                className={`${color.text} py-4 px-2 text-left text-xs font-semibold uppercase`}
+                              >
+                                {language?.service} {language?.name}
+                              </th>
+                              <th
+                                scope="col"
+                                className={`${color.text} py-4 px-6 text-left text-xs font-semibold uppercase`}
+                              >
+                                {language?.service} {language?.edit}
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody className={`${color.text} divide-y divide-gray-200`}>
+                            {services?.map((item, idx) => (
+                              <tr className={`${color?.hover}`} key={idx}>
+                                <td className="py-4 flex items-center whitespace-nowrap space-x-6 mr-12 lg:mr-0">
+                                  <span className={`${color.text} py-4 px-2 whitespace-nowrap text-base font-medium capitalize `}>
+                                    {"  " +
+                                      item?.service_name?.replace(/_+/g, " ")}
+                                  </span>
+                                </td>
 
-                              <td className={`${color.text} px-4 py-4 whitespace-nowrap text-base font-normal `}>
-                                <div className="flex">
-                                  <div className="form-check ml-4 form-check-inline">
+                                <td className={`${color.text} px-4 py-4 whitespace-nowrap text-base font-normal `}>
+                                  <div className="flex">
+                                    <div className="form-check ml-4 form-check-inline">
 
-                                    <label htmlFor={"default-toggle" + idx} className="inline-flex relative items-center cursor-pointer">
+                                      <label htmlFor={"default-toggle" + idx} className="inline-flex relative items-center cursor-pointer">
 
-                                      <input type="checkbox" value={item?.service_value} checked={item?.service_value == true}
-                                        onChange={() => {
-                                          setServices(services?.map((i) => {
+                                        <input type="checkbox" value={item?.service_value} checked={item?.service_value == true}
+                                          onChange={() => {
+                                            setServices(services?.map((i) => {
 
-                                            if (i?.service_id === item?.service_id) {
-                                              i.service_value = !i.service_value
+                                              if (i?.service_id === item?.service_id) {
+                                                i.service_value = !i.service_value
 
-                                            }
-                                            return i
-                                          }))
-                                        }}
-                                        id={"default-toggle" + idx} className="sr-only peer" />
-                                      <div
-                                        className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 
+                                              }
+                                              return i
+                                            }))
+                                          }}
+                                          id={"default-toggle" + idx} className="sr-only peer" />
+                                        <div
+                                          className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 
                                  dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 
                                  peer-checked:after:translate-x-full 
                                  peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] 
                                  after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5
                                   after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
 
-                                    </label>
+                                      </label>
+                                    </div>
                                   </div>
-                                </div>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                      <div className="flex items-center justify-end space-x-2 sm:space-x-3 ml-auto"></div>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                        <div className="flex items-center justify-end space-x-2 sm:space-x-3 ml-auto"></div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className="flex items-center mt-4 justify-end space-x-2 sm:space-x-3 ml-auto">
-                <Button Primary={language?.Previous} onClick={() => { setDisp(0) }} />
-                <div className={spinner === 0 ? 'block py-1' : 'hidden'}>
-                  <Button Primary={roomDetails?.room_facilities !== undefined ? language?.Update : language?.Submit}
-                    onClick={() => { roomDetails?.room_facilities !== undefined ? editServices() : submitServices() }} />
+                <div className="flex items-center mt-4 justify-end space-x-2 sm:space-x-3 ml-auto">
+                  <Button Primary={language?.Previous} onClick={() => { setDisp(0) }} />
+                  <div className={spinner === 0 ? 'block py-1' : 'hidden'}>
+                    <Button Primary={roomDetails?.room_facilities !== undefined ? language?.Update : language?.Submit}
+                      onClick={() => { roomDetails?.room_facilities !== undefined ? editServices() : submitServices() }} />
+                  </div>
+                  <div className={spinner === 1 ? 'block py-1' : 'hidden'}>
+                    <Button Primary={roomDetails?.room_facilities !== undefined ? language?.SpinnerUpdate : language?.SpinnerSubmit}
+                    />
+                  </div>
+                  <Button Primary={language?.Next} onClick={() => { setDisp(2) }} />
                 </div>
-                <div className={spinner === 1 ? 'block py-1' : 'hidden'}>
-                  <Button Primary={roomDetails?.room_facilities !== undefined ? language?.SpinnerUpdate : language?.SpinnerSubmit}
-                  />
-                </div>
-                <Button Primary={language?.Next} onClick={() => { setDisp(2) }} />
               </div>
-            </div>
-          </div>
+            </div> : undefined}
 
           {/* Room Gallery */}
-          <div id='2' className={disp === 2 ? 'block py-1' : 'hidden'}>
-            <div className={`${color?.whitebackground} shadow rounded-lg sm:p-6 xl:p-8  2xl:col-span-2 my-3`}>
+          {disp === 2 ?
+            <div id='2' className='block py-1'>
+              <div className={`${color?.whitebackground} shadow rounded-lg sm:p-6 xl:p-8  2xl:col-span-2 my-3`}>
 
-              <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`]} selected={3} color={color} />
-              <h6 className={`${color?.text} text-base  flex leading-none mb-2 mx-2 pt-2 font-semibold`}>
-                {language?.room}  {language?.gallery}
-              </h6>
-              <div className="sm:flex py-2 ">
-                <div className="hidden sm:flex items-center sm:divide-x sm:divide-gray-100 mb-3 ml-5 sm:mb-0">
-                  <form className="lg:pr-3" id="imageSearchBox">
-                    <label htmlFor="users-search" className="sr-only">
-                      {language?.search}
-                    </label>
-                    <div className="mt-1 relative lg:w-64 xl:w-96">
-                      <input
-                        type="text"
-                        name="imageSearch"
-                        onChange={(e) => searchImage(e.target.value)}
-                        className={`${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`}
-                        placeholder={language?.searchforimages}
-                      ></input>
-                    </div>
-                  </form>
-                  {/*  icons to delete , clear , setting */}
+                <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`]} selected={3} color={color} />
+                <h6 className={`${color?.text} text-base  flex leading-none mb-2 mx-2 pt-2 font-semibold`}>
+                  {language?.room}  {language?.gallery}
+                </h6>
+                <div className="sm:flex py-2 ">
+                  <div className="hidden sm:flex items-center sm:divide-x sm:divide-gray-100 mb-3 ml-5 sm:mb-0">
+                    <form className="lg:pr-3" id="imageSearchBox">
+                      <label htmlFor="users-search" className="sr-only">
+                        {language?.search}
+                      </label>
+                      <div className="mt-1 relative lg:w-64 xl:w-96">
+                        <input
+                          type="text"
+                          name="imageSearch"
+                          onChange={(e) => searchImage(e.target.value)}
+                          className={`${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`}
+                          placeholder={language?.searchforimages}
+                        ></input>
+                      </div>
+                    </form>
+                    {/*  icons to delete , clear , setting */}
 
-                  <div className="flex space-x-1 pl-0 sm:pl-2 mt-3 sm:mt-0">
-                    {showSearchedImages === 1 ? (
+                    <div className="flex space-x-1 pl-0 sm:pl-2 mt-3 sm:mt-0">
+                      {showSearchedImages === 1 ? (
+                        <a
+                          href="#"
+                          onClick={() => {
+                            setShowSearchedImages(0);
+                            clearSearchField();
+                          }}
+                          className={`${color?.textgray}  hover:${color?.text} cursor-pointer p-1 ${color?.hover} rounded inline-flex justify-center`}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            title="clear search"
+                            width="26"
+                            height="26"
+                            fill="currentColor"
+                            className="bi bi-eraser-fill"
+                            viewBox="0 0 16 16"
+                          >
+                            {" "}
+                            <path d="M8.086 2.207a2 2 0 0 1 2.828 0l3.879 3.879a2 2 0 0 1 0 2.828l-5.5 5.5A2 2 0 0 1 7.879 15H5.12a2 2 0 0 1-1.414-.586l-2.5-2.5a2 2 0 0 1 0-2.828l6.879-6.879zm.66 11.34L3.453 8.254 1.914 9.793a1 1 0 0 0 0 1.414l2.5 2.5a1 1 0 0 0 .707.293H7.88a1 1 0 0 0 .707-.293l.16-.16z" />{" "}
+                          </svg>
+                        </a>
+                      ) : (
+                        <></>
+                      )}
                       <a
                         href="#"
-                        onClick={() => {
-                          setShowSearchedImages(0);
-                          clearSearchField();
-                        }}
                         className={`${color?.textgray}  hover:${color?.text} cursor-pointer p-1 ${color?.hover} rounded inline-flex justify-center`}
                       >
                         <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          title="clear search"
-                          width="26"
-                          height="26"
+                          className="w-6 h-6"
                           fill="currentColor"
-                          className="bi bi-eraser-fill"
-                          viewBox="0 0 16 16"
+                          viewBox="0 0 20 20"
+                          xmlns="http://www.w3.org/2000/svg"
                         >
-                          {" "}
-                          <path d="M8.086 2.207a2 2 0 0 1 2.828 0l3.879 3.879a2 2 0 0 1 0 2.828l-5.5 5.5A2 2 0 0 1 7.879 15H5.12a2 2 0 0 1-1.414-.586l-2.5-2.5a2 2 0 0 1 0-2.828l6.879-6.879zm.66 11.34L3.453 8.254 1.914 9.793a1 1 0 0 0 0 1.414l2.5 2.5a1 1 0 0 0 .707.293H7.88a1 1 0 0 0 .707-.293l.16-.16z" />{" "}
+                          <path
+                            fillRule="evenodd"
+                            d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
+                            clipRule="evenodd"
+                          ></path>
                         </svg>
                       </a>
-                    ) : (
-                      <></>
-                    )}
-                    <a
-                      href="#"
-                      className={`${color?.textgray}  hover:${color?.text} cursor-pointer p-1 ${color?.hover} rounded inline-flex justify-center`}
-                    >
-                      <svg
-                        className="w-6 h-6"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
-                          clipRule="evenodd"
-                        ></path>
-                      </svg>
-                    </a>
-                    <a
-                      onClick={allDelete}
-                      className={
-                        check?.length === 0 || undefined
-                          ? `${color?.textgray} cursor-pointer p-1 ${color?.hover} rounded inline-flex
+                      <a
+                        onClick={allDelete}
+                        className={
+                          check?.length === 0 || undefined
+                            ? `${color?.textgray} cursor-pointer p-1 ${color?.hover} rounded inline-flex
                                 justify-center`
-                          : `${color?.textgray} bg-red-600 cursor-pointer p-1 ${color?.hover} rounded inline-flex
+                            : `${color?.textgray} bg-red-600 cursor-pointer p-1 ${color?.hover} rounded inline-flex
                                 justify-center`
-                      }
-                    >
-                      <svg
-                        className="w-6 h-6"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg"
+                        }
                       >
-                        <path
-                          fillRule="evenodd"
-                          d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                          clipRule="evenodd"
-                        ></path>
-                      </svg>
-                    </a>
-                    <a
-                      href="#"
-                      className={`${color?.textgray} hover:${color?.text} cursor-pointer p-1 ${color?.hover} rounded inline-flex justify-center`}
-                    >
-                      <svg
-                        className="w-6 h-6"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg"
+                        <svg
+                          className="w-6 h-6"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                            clipRule="evenodd"
+                          ></path>
+                        </svg>
+                      </a>
+                      <a
+                        href="#"
+                        className={`${color?.textgray} hover:${color?.text} cursor-pointer p-1 ${color?.hover} rounded inline-flex justify-center`}
                       >
-                        <path
-                          fillRule="evenodd"
-                          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                          clipRule="evenodd"
-                        ></path>
-                      </svg>
-                    </a>
-                    <a
-                      href="#"
-                      className={`${color?.textgray} hover:${color?.text} cursor-pointer p-1 ${color?.hover} rounded inline-flex justify-center`}
-                    >
-                      <svg
-                        className="w-6 h-6"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg"
+                        <svg
+                          className="w-6 h-6"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                            clipRule="evenodd"
+                          ></path>
+                        </svg>
+                      </a>
+                      <a
+                        href="#"
+                        className={`${color?.textgray} hover:${color?.text} cursor-pointer p-1 ${color?.hover} rounded inline-flex justify-center`}
                       >
-                        <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path>
-                      </svg>
-                    </a>
+                        <svg
+                          className="w-6 h-6"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path>
+                        </svg>
+                      </a>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2 sm:space-x-3 ml-auto">
+
+                    <Button Primary={language?.Add} onClick={() => setAddImage(1)} />
+
                   </div>
                 </div>
-                <div className="flex items-center space-x-2 sm:space-x-3 ml-auto">
 
-                  <Button Primary={language?.Add} onClick={() => setAddImage(1)} />
-
-                </div>
-              </div>
-
-              <div className="flex flex-wrap" >
-                <div className={visible === 0 ? 'block py-1 w-auto h-auto m-6 w-32 flex' : 'hidden'}><Imageloader /> <Imageloader /><Imageloader /></div>
-                <div className={visible === 1 ? 'block py-1 flex flex-wrap' : 'hidden'}>
-                  <div className="flex-wrap container grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="flex flex-wrap" >
+                  <div className={visible === 0 ? 'block py-1 w-auto h-auto m-6 w-32 flex' : 'hidden'}><Imageloader /> <Imageloader /><Imageloader /></div>
+                  <div className={visible === 1 ? 'block py-1 flex flex-wrap' : 'hidden'}>
+                    <div className="flex-wrap container grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
 
 
 
-                    {roomimages.map((item, idx) => {
-                      return (
+                      {roomimages.map((item, idx) => {
+                        return (
 
-                        <>
-                          <div
-                            className="block py-1 text-blueGray-600  text-xs font-bold "
-                            key={idx}
-                          >
+                          <>
                             <div
-                              className="relative cursor-pointer"
-                              tooltip
-                              title="Click here to view or edit."
+                              className="block py-1 text-blueGray-600  text-xs font-bold "
+                              key={idx}
                             >
-                              <a href="#" className="relative flex">
-                                <input
-                                  type="checkbox"
-                                  id={item?.image_id}
-                                  tooltip
-                                  title={`${JSON.stringify(item)}Click here to delete image ${item.image_title}.`}
-                                  name={item?.image_id}
-                                  checked={item?.isChecked || false}
-                                  onClick={(e) => {
-                                    handlecheckbox(e);
-                                  }}
-                                  className="bottom-0 right-0 cursor-pointer absolute bg-gray-30 opacity-30 m-1 border-gray-300 text-cyan-600  checked:opacity-100 focus:ring-3 focus:ring-cyan-200 h-4 w-4 rounded-full"
-
-                                />
-
-                                {check?.length === 0 || check?.length === undefined ? (
-                                  <img
-                                    htmlFor={item?.image_id}
-                                    className={`rounded-lg`}
-                                    src={item.image_link}
-                                    alt="Room Image"
-                                    style={{ height: "170px", width: "450px" }}
-                                    onClick={() => {
-                                      setEnlargeImage(1);
-                                      setActionEnlargeImage(item);
-                                      setIndexImage(item?.idx);
+                              <div
+                                className="relative cursor-pointer"
+                                tooltip
+                                title="Click here to view or edit."
+                              >
+                                <a href="#" className="relative flex">
+                                  <input
+                                    type="checkbox"
+                                    id={item?.image_id}
+                                    tooltip
+                                    title={`${JSON.stringify(item)}Click here to delete image ${item.image_title}.`}
+                                    name={item?.image_id}
+                                    checked={item?.isChecked || false}
+                                    onClick={(e) => {
+                                      handlecheckbox(e);
                                     }}
+                                    className="bottom-0 right-0 cursor-pointer absolute bg-gray-30 opacity-30 m-1 border-gray-300 text-cyan-600  checked:opacity-100 focus:ring-3 focus:ring-cyan-200 h-4 w-4 rounded-full"
+
                                   />
-                                ) : (
-                                  <img
-                                    htmlFor={item?.image_id}
-                                    className={`rounded-lg`}
-                                    src={item.image_link}
-                                    alt="Room Image"
-                                    style={{ height: "170px", width: "450px" }}
-                                  />
-                                )}
-                              </a>
+
+                                  {check?.length === 0 || check?.length === undefined ? (
+                                    <img
+                                      htmlFor={item?.image_id}
+                                      className={`rounded-lg`}
+                                      src={item.image_link}
+                                      alt="Room Image"
+                                      style={{ height: "170px", width: "450px" }}
+                                      onClick={() => {
+                                        setEnlargeImage(1);
+                                        setActionEnlargeImage(item);
+                                        setIndexImage(item?.idx);
+                                      }}
+                                    />
+                                  ) : (
+                                    <img
+                                      htmlFor={item?.image_id}
+                                      className={`rounded-lg`}
+                                      src={item.image_link}
+                                      alt="Room Image"
+                                      style={{ height: "170px", width: "450px" }}
+                                    />
+                                  )}
+                                </a>
+                              </div>
                             </div>
-                          </div>
-                        </>
-                      )
-                    })}
+                          </>
+                        )
+                      })}
+                    </div>
                   </div>
                 </div>
+                <div className="flex items-center justify-end space-x-2 sm:space-x-3 ml-auto mt-8">
+                  <Button Primary={language?.Previous} onClick={() => { setDisp(1) }} />
+                  <Button Primary={language?.Next} onClick={() => { setDisp(3) }} />
+                </div>
               </div>
-              <div className="flex items-center justify-end space-x-2 sm:space-x-3 ml-auto mt-8">
-                <Button Primary={language?.Previous} onClick={() => { setDisp(1) }} />
-                <Button Primary={language?.Next} onClick={() => { setDisp(3) }} />
-              </div>
-            </div>
-          </div>
+            </div> : undefined}
 
           {/* Room Rates */}
-          <div id='3' className={disp === 3 ? 'block py-1' : 'hidden'}>
-            <div className={`${color?.whitebackground} shadow rounded-lg  sm:p-6 xl:p-8  2xl:col-span-2`}>
-              {/* widget progress starts */}
-              <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`]} selected={4} color={color} />{/* widget progress ends */}
+          {disp === 3 ?
+            <div id='3' className='block py-1'>
+              <div className={`${color?.whitebackground} shadow rounded-lg  sm:p-6 xl:p-8  2xl:col-span-2`}>
+                {/* widget progress starts */}
+                <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`]} selected={4} color={color} />{/* widget progress ends */}
 
-              {/* page label starts */}
-              <h6 className={`${color?.text} text-base  flex leading-none  pt-2 font-semibold`}>
-                {language?.room} {language?.rates}
-              </h6>
-              {/* page label ends */}
-              <div className="pt-6">
-                <div className=" md:px-2 mx-auto w-full">
-
-                  {/* room rate form starts */}
-                  <div className="flex flex-wrap">
-                    {/* currency drop down */}
-                    <div className="w-full lg:w-6/12 px-4">
-                      <div className="relative w-full mb-3">
-                        <label
-                          className={`text-sm font-medium ${color?.text} block py-1 mb-2`}
-                          htmlFor="grid-password"
-                        >
-                          {language?.currency}
-                          <span style={{ color: "#ff0000" }}>*</span>
-                        </label>
-                        <div className={visible === 0 ? 'block py-1' : 'hidden'}><Lineloader /></div>
-                        <div className={visible === 1 ? 'block py-1' : 'hidden'}>
-                          <select className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`}
-                            onChange={
-                              (e) => (
-                                setAllRoomRates({ ...allRoomRates, currency: e.target.value }, setFlag(1))
-                              )
-                            }>
-                            <option selected disabled>{allRoomRates?.currency}</option>
-                            {lang?.CurrencyData?.map(i => {
-                              return (
-
-                                <option key={i.currency_code} value={i.currency_code}>{i?.currency_name}</option>)
-                            }
-                            )}
-                          </select>
-                          <p className="text-sm text-sm text-red-700 font-light">
-                            {error?.currency}</p>
-                        </div>
-                      </div>
-                    </div>
-                    {/* base rate amount  */}
-                    <div className="w-full lg:w-6/12 px-4">
-                      <div className="relative w-full mb-3">
-                        <label
-                          className={`text-sm font-medium ${color?.text} block py-1 mb-2`}
-                          htmlFor="grid-password"
-                        >
-                          {language?.baserate} {language?.amount}
-                          <span style={{ color: "#ff0000" }}>*</span>
-                        </label>
-                        <div className={visible === 0 ? 'block py-1' : 'hidden'}><Lineloader /></div>
-                        <div className={visible === 1 ? 'block py-1' : 'hidden'}>
-                          <input
-                            type="text"
-                            className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`}
-                            defaultValue={roomDetails?.unconditional_rates?.[0]?.baserate_amount}
-                            onChange={
-                              (e) => (
-                                setAllRoomRates({ ...allRoomRates, baserate_amount: e.target.value }, setFlag(1))
-                              )
-                            }
-                          />
-                          <p className="text-sm text-sm text-red-700 font-light">
-                            {error?.baserate_amount}</p>
-                        </div>
-                      </div>
-                    </div>
-                    {/* tax amount */}
-                    <div className="w-full lg:w-6/12 px-4">
-                      <div className="relative w-full mb-3">
-                        <label
-                          className={`text-sm font-medium ${color?.text} block py-1 mb-2`}
-                          htmlFor="grid-password"
-                        >
-                          {language?.taxrate} {language?.amount}
-                          <span style={{ color: "#ff0000" }}>*</span>
-                        </label>
-                        <div className={visible === 0 ? 'block py-1' : 'hidden'}><Lineloader /></div>
-                        <div className={visible === 1 ? 'block py-1' : 'hidden'}>
-                          <input
-                            type="text"
-                            className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`}
-                            defaultValue={roomDetails?.unconditional_rates?.[0]?.tax_amount}
-                            onChange={
-                              (e) => (
-                                setAllRoomRates({ ...allRoomRates, tax_amount: e.target.value, un_rate_id: allRoomDetails?.unconditional_rates?.[0]?.un_rate_id }, setFlag(1))
-                              )
-                            } />
-                          <p className="text-sm text-sm text-red-700 font-light">
-                            {error?.tax_amount}</p></div>
-                      </div>
-                    </div>
-                    {/* other charges amount */}
-                    <div className="w-full lg:w-6/12 px-4">
-                      <div className="relative w-full mb-3">
-                        <label
-                          className={`text-sm font-medium ${color?.text} block py-1 mb-2`}
-                          htmlFor="grid-password">
-                          {language?.other} {language?.charges} {language?.amount}
-                          <span style={{ color: "#ff0000" }}>*</span>
-                        </label>
-                        <div className={visible === 0 ? 'block py-1' : 'hidden'}><Lineloader /></div>
-                        <div className={visible === 1 ? 'block py-1' : 'hidden'}>
-                          <input
-                            type="text"
-                            className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`}
-                            defaultValue={roomDetails?.unconditional_rates?.[0]?.otherfees_amount}
-                            onChange={
-                              (e) => (
-                                setAllRoomRates({ ...allRoomRates, otherfees_amount: e.target.value }, setFlag(1))
-                              )
-                            } />
-                          <p className="text-sm text-sm text-red-700 font-light">
-                            {error?.otherfees_amount}</p></div>
-                      </div>
-                    </div>
-                    {/* blank */}
-                    <div className="w-full lg:w-6/12 px-4">
-                      <div className="relative w-full mb-3">
-                      </div>
-                    </div>
-                    {/* buttons start */}
-                    <div className="flex items-center justify-end space-x-2 sm:space-x-3 ml-auto">
-                      <Button Primary={language?.Previous} onClick={() => { setDisp(2) }} />
-                      <div className={(spinner === 0 && flag !== 1) ? 'block py-1' : 'hidden'}>
-                        <Button Primary={language?.UpdateDisabled} />
-                      </div>
-                      <div className={(spinner === 0 && flag === 1) ? 'block py-1' : 'hidden'}>
-                        <Button Primary={language?.Update} onClick={() => {
-                          validationRates();
-                        }} />
-                      </div>
-
-
-                      <div className={spinner === 1 ? 'block py-1' : 'hidden'}>
-                        <Button Primary={language?.SpinnerUpdate} />
-                      </div>
-
-                      {/* <Button Primary={language?.Next} onClick={() => { setDisp(6) }} /> */}
-
-                    </div>
-                    {/* buttons end */}
-                  </div>
-                  {/* room rate form ends */}
-
-
-
-
-                </div>
+                <GenericTable
+                  color={color}
+                  language={language}
+                  addButton={true}
+                  addButtonAction={addRateButtonAction }
+                  showOptions={false}
+                  tableName={`Room Rates`}
+                  cols={["Meal Name", "Price", "Actions"]}
+                  data={roomRates}
+                  />
               </div>
-            </div>
-          </div>
+            </div> : undefined}
 
 
         </div>
 
-
-
         {/* New image enlarge */}
-        <div id="enlarge" className={enlargeImage === 1 ? "block py-1" : "hidden"}>
+        {enlargeImage === 1 ? <div id="enlarge" className={"block py-1"}>
           <div className="overflow-x-hidden overflow-y-auto fixed top-4 left-0 right-0 backdrop-blur-xl   sm:inset-0 bg-black/30 md:inset-0 z-50 flex justify-center items-center h-modal sm:h-full">
             <div className="flex justify-start ml-2 mr-auto">
               {/* //Left arrow symbol*/}
@@ -2278,7 +2176,7 @@ function Room() {
               </svg>
             </div>
           </div>
-        </div>
+        </div> : undefined}
 
         {/* Modal Add Image */}
         <div className={addImage === 1 ? 'block py-1' : 'hidden'}>
@@ -2567,6 +2465,45 @@ function Room() {
             </div>
           </div>
         </div>
+
+        {/* Modal add rate plans */}
+        {addConditionalRate === 1 ?
+          <Modal
+            color={color}
+            title={'Add Meal Rate Plan'}
+            description={
+              <RoomPlanAdd color={color} language={language} 
+              roomData={editRate} fetchDetails={fetchDetails} 
+              setRoomRateEditModal={setAddConditionalRate} 
+              currentroom={currentroom}/>
+            }
+            setShowModal={setAddConditionalRate}
+            showCloseButton={false} />
+          : undefined}
+
+        {/* Modal edit rate plans */}
+        {roomRateEditModal === 1 ?
+          <Modal
+            color={color}
+            title={'Edit Rate'}
+            description={
+              <RoomEdit color={color} language={language} roomData={editRate} fetchDetails={fetchDetails} setRoomRateEditModal={setRoomRateEditModal} />
+            }
+            setShowModal={setRoomRateEditModal}
+            showCloseButton={false} />
+          : undefined}
+
+        {/* Modal delete rate plans */}
+        {roomRateDeleteModal === 1 ?
+          <Modal
+            title={'Delete Rate'}
+            color={color}
+            description={
+              <RoomDelete color={color} language={language} roomData={deleteRate} fetchDetails={fetchDetails} setShowModal={setRoomRateDeleteModal} />
+            }
+            setShowModal={setRoomRateDeleteModal}
+            showCloseButton={false} />
+          : undefined}
 
         {/* Toast Container */}
         <ToastContainer position="top-center"

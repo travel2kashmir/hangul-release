@@ -8,7 +8,7 @@ import InlineTableBody from "./InlineTableBody";
 import Pagination from "./Pagination";
 var checked = [];
 
-function GenericTable({ inlineTable, color, language, deleteAll, cols, addButton, tableName, addButtonAction, ...args }) {
+function GenericTable({ inlineTable, color, language, deleteAll, cols, addButton, tableName, addButtonAction = () => { }, showOptions = true, ...args }) {
     const [itemsPerPage, setItemsPerPage] = useState(5);
     const [page, setPage] = useState(1);
     const [error, setError] = useState({});
@@ -71,7 +71,7 @@ function GenericTable({ inlineTable, color, language, deleteAll, cols, addButton
                         </form>
                         {/* search form end */}
                         {/* icons start */}
-                        <div className="flex space-x-1 pl-0 sm:pl-2 mt-3 sm:mt-0">
+                        {showOptions === true ? <div className="flex space-x-1 pl-0 sm:pl-2 mt-3 sm:mt-0">
                             <span className={`${color?.textgray} hover:${color?.text} cursor-pointer p-1 ${color?.hover} rounded inline-flex justify-center`}>
                                 <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd"></path></svg>
                             </span>
@@ -88,14 +88,14 @@ function GenericTable({ inlineTable, color, language, deleteAll, cols, addButton
                             <span className={`${color?.textgray} hover:${color?.text} cursor-pointer p-1 ${color?.hover} rounded inline-flex justify-center`}>
                                 <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path></svg>
                             </span>
-                        </div>
+                        </div> : undefined}
                         {/* icons end*/}
                         {/* if add button is true then show icon  */}
                         {addButton === true ? <div className="flex items-center justify-center space-x-2 sm:space-x-3 ml-auto">
                             <button className="mr-4  bg-cyan-600 hover:bg-cyan-700 text-white  sm:inline-flex  
                              font-semibold
                                     rounded-lg text-sm px-5 py-2 text-center 
-                              items-center ease-linear transition-all duration-150" onClick={() => addButtonAction()} >
+                              items-center ease-linear transition-all duration-150" onClick={addButtonAction} >
                                 {`Add `}</button>
 
                         </div> : <></>}

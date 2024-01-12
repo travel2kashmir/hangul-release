@@ -83,25 +83,18 @@ function Bookings() {
                 var temp = {
                     // "checkbox": { operation: undefined },
                     "Guest Name": item.guest_name,
-                    // "Booking From": item.booking_from,
-                    // "Booking To": item.booking_to,
                     "Booking Date": `${item.booking_from} to ${item.booking_to}`,
                     "Transaction No.": item.transaction_id,
                     "status": item.transaction_id && JSON.stringify(!item.is_cancelled),
                     "id": item.booking_id,
-                    // isChecked: false,
-                    // isChecked:true,
+                    
                     Actions: [
                         {
                             type: "button",
                             label: "View",
                             operation: (item) => { viewCurrentBookingDetails(item) }
                         }
-                        // {
-                        //     type: "button",
-                        //     label: "Delete",
-                        //     operation: (item) => { deleteBooking(item) }
-                        // }
+                        
                     ],
                 }
                 genData.push(temp)

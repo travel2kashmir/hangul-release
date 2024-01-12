@@ -9,7 +9,7 @@ const DropDown = ({
   visible,
   defaultValue,
   onChangeAction,
-  color,
+  color={},
   req,
   options = [],
   error,
@@ -21,7 +21,7 @@ const DropDown = ({
       <div data-testid="child0" className="relative w-full mb-3">
         <div className="flex">
           <label data-testid="checkingcolor"
-            className={`text-sm font-medium ${color?.titleTextColor} block mb-2`}
+            className={`text-sm font-medium ${color?.titleTextColor ||color?.text} block mb-2`}
             htmlFor="grid-password"
           >
             {label}
@@ -41,7 +41,7 @@ const DropDown = ({
         </div>
         <div data-testid="vis1" className={visible === 1 ? "block" : "hidden"}>
           <select data-testid="input"
-            className={`shadow-sm ${color?.bodyBgColor} capitalize border border-gray-300 ${color?.inputTextColor} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
+            className={`shadow-sm ${color?.bodyBgColor} ${color?.greybackground} capitalize border border-gray-300 ${color?.inputTextColor} ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
             onChange={(e) =>
               onChangeAction(e)
             }
@@ -50,9 +50,9 @@ const DropDown = ({
             <option defaultValue={defaultValue} disabled selected>
               {defaultValue}
             </option>
-            {options.map((i, Index) => {
+            {options?.map((i, Index) => {
               return (
-                <option className={`${color?.dropdownTextColor}`} key={Index} value={i?.value}>
+                <option className={`${color?.dropdownTextColor} ${color?.greybackground} ${color?.text}`} key={Index} value={i?.value}>
                   {i?.label}
                 </option>
               );

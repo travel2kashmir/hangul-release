@@ -1,13 +1,13 @@
 import React from 'react'
 
 
-function Modal({ title, description, setShowModal }) {
+function Modal({ color,title, description, setShowModal,showCloseButton=true }) {
     return (
-        <div className="overflow-x-hidden overflow-y-auto fixed top-0 left-0 right-0 backdrop-blur-3xl h-screen bg-black/30 md:inset-0 z-50 flex justify-center items-center sm:h-full">
+        <div className="overflow-x-hidden overflow-y-auto fixed top-0 left-0 right-0 backdrop-blur-3xl h-screen bg-gray/80 md:inset-0 z-50 flex justify-center items-center sm:h-full">
             <div className="relative w-full max-w-2xl px-4 h-auto md:h-auto ">
-                <div className='bg-white rounded-lg shadow relative'>
+                <div className={`${color!=undefined?color.whitebackground:`bg-white`} rounded-lg shadow relative`}>
                     <div className="flex items-start justify-between p-5 border-b rounded-t">
-                        <h3 className='text-black text-xl font-semibold'>{title}</h3>
+                        <h3 className={`${color!=undefined?color.text:`text-black`} text-xl font-semibold`}>{title}</h3>
                         <button
                             type="button"
                             onClick={() => {
@@ -31,14 +31,14 @@ function Modal({ title, description, setShowModal }) {
                     </div>
 
                     <div className='px-5 py-2'>
-                        <p className='text-sm text-slate-500'>
+                        <div className='text-sm text-slate-500'>
                             {description}
-                        </p>
+                        </div>
                     </div>
 
-                    <div className="items-center p-5 border-t border-gray-200 rounded-b">
+                  {showCloseButton===true &&  <div className="items-center p-5 border-t border-gray-200 rounded-b">
                         <button onClick={() => setShowModal(0)} className="text-white bg-slate-700 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2">Close</button>
-                    </div>
+                    </div>}
 
                 </div>
             </div>

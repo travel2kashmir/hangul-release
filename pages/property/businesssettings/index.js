@@ -47,7 +47,7 @@ function Index() {
   const [allHotelDetails, setAllHotelDetails] = useState([]);
   const [color, setColor] = useState({})
   const [mode, setMode] = useState()
-  const [spinner, setSpinner] = useState(0)
+  const [spinner, setSpinner] = useState(false)
   const [currencies, setCurrencies] = useState([])
   const [mutationFlag, setMutationFlag] = useState(false)
   const [error, setError] = useState({})

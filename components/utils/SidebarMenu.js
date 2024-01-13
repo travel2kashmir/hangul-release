@@ -510,6 +510,7 @@ function SidebarMenu({ color, Primary, language, Type }) {
 
           <div className="space-y-2 pt-2">
             <ul>
+              {/* property summary start  */}
               <li className={`${color.text} ${color.sidebar} group text-base font-normal rounded-lg flex items-center p-2  group`}>
                 <svg
                   className={`w-6 h-6 ${color.textgray} flex-shrink-0  ${color.iconhover} transition duration-75`}
@@ -527,6 +528,10 @@ function SidebarMenu({ color, Primary, language, Type }) {
                   <Link href={{ pathname: Primary?.propertysummary, query: { id: 1 } }}><a>{language?.propertysummary}</a></Link>
                 </span>
               </li>
+              {/* property summary end  */}
+
+              {/* themes start  */}
+
               <li className={`${color.text} ${color.sidebar} group text-base font-normal rounded-lg flex items-center p-2  group`}>
                 <svg
                   className={`w-6 h-6 ${color.textgray} flex-shrink-0  ${color.iconhover} transition duration-75`}
@@ -544,6 +549,27 @@ function SidebarMenu({ color, Primary, language, Type }) {
                   <Link href={{ pathname: Primary?.theme, query: { id: 1 } }}><a>{language?.theme}</a></Link>
                 </span>
               </li>
+              {/* themes end  */}
+
+              {/* business settings start  */}
+              <li className={`${color.text} ${color.sidebar} group text-base font-normal rounded-lg flex items-center p-2  group`}>
+                <svg
+                  className={`w-6 h-6 ${color.textgray} flex-shrink-0  ${color.iconhover} transition duration-75`}
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 
+              0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2
+               2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
+                  ></path>
+                </svg>
+                <span className="ml-3 flex-1 whitespace-nowrap">
+                  <Link href={{ pathname: Primary?.businesssettings, query: { id: 1 } }}><a>{language?.businesssettings}</a></Link>
+                </span>
+              </li>
+              {/* business settings end  */}
               {/* {JSON.stringify(Type) === "2" ? <></> :
                   <>
                     <li className={`${color.text} ${color.sidebar} group text-base font-normal rounded-lg flex items-center p-2  group`}>

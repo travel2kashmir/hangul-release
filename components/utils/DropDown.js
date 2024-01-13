@@ -52,7 +52,8 @@ const DropDown = ({
             </option>
             {options?.map((i, Index) => {
               return (
-                <option className={`${color?.dropdownTextColor} ${color?.greybackground} ${color?.text}`} key={Index} value={i?.value}>
+                <option className={`${color?.dropdownTextColor} ${color?.greybackground} ${color?.text}`} key={Index}
+                name={i?.label} value={i?.value}>
                   {i?.label}
                 </option>
               );

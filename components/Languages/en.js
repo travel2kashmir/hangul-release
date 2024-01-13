@@ -1,4 +1,5 @@
 export default {
+  businesssettings:"Business Settings",
   outofservice:"Out Of Service",
   datefrom:"Date from",
   dateto:"Date to",
@@ -828,7 +829,8 @@ export default {
     packages: './itinerary/packages',
     itineraries: './itineraries',
     roomsprices: './pricecalendar',
-    bookings: './bookings'
+    bookings: './bookings',
+    businesssettings:'./businesssettings'
 
   },
   "Side": {
@@ -864,7 +866,9 @@ export default {
     packages: '../itinerary/packages',
     itineraries: '../itineraries',
     roomsprices: './pricecalendar',
-    bookings: './bookings'
+    bookings: './bookings',
+    businesssettings:'./businesssettings'
+
   },
   "PlaceSide": {
     dashboard: '../property/dashboard',
@@ -899,7 +903,8 @@ export default {
     packages: '../itinerary/packages',
     itineraries: '../../itineraries',
     roomsprices: '../../pricecalendar',
-    bookings: '../../bookings'
+    bookings: '../../bookings',
+    businesssettings:'../../businesssettings'
   },
   "SideInventory": {
     dashboard: './dashboard',
@@ -934,7 +939,8 @@ export default {
     packages: './../itinerary/packages',
     itineraries: './../itineraries',
     roomsprices: './pricecalendar',
-    bookings: './bookings'
+    bookings: './bookings',
+    businesssettings:'./businesssettings'
   },
 
   "Side1": {
@@ -970,7 +976,8 @@ export default {
     packages: '../../itinerary/packages',
     itineraries: '../../itineraries',
     roomsprices: '../pricecalendar',
-    bookings: '../bookings'
+    bookings: '../bookings',
+    businesssettings:'../businesssettings'
   },
 
   "Side2": {
@@ -1005,7 +1012,7 @@ export default {
     packages: '../itinerary/packages',
     itineraries: '../../itineraries',
     roomsprices: '../../pricecalendar',
-    bookings: '../../bookings'
+    businesssettings:'../../businesssettings'
   },
   "Foot": {
     termsandconditions: './termsandconditions',

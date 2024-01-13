@@ -1,4 +1,5 @@
 export default {
+  businesssettings:"إعدادات الأعمال",
   outofservice:"خارج الخدمة",
   datefrom:"التاريخ من",
   dateto:"تاريخ ل",

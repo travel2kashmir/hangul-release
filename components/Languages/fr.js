@@ -1,4 +1,5 @@
 export default {
+  businesssettings:"Paramètres professionnels",
   outofservice:"Hors service",
   datefrom:"dater de",
   dateto:"date à",

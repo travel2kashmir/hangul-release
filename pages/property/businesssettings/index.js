@@ -82,7 +82,7 @@ function Index() {
     axios.get(url)
       .then((response) => {
         setAllHotelDetails(response.data);
-        filterCountry(response.data.address?.[i]);
+        setUniversalData(response.data?.business_settings[0]||{})
         logger.info("url  to fetch property details hitted successfully")
       })
       .catch((error) => { logger.error("url to fetch property details, failed") });
@@ -128,9 +128,8 @@ function Index() {
 
   // save universal data 
   function saveUniversal() {
-    let data = { "universal_data": [universalData] }
+    let data = { "universal_data": [{...universalData,"property_id":currentProperty.property_id}] }
     let url = "/api/universal_data";
-    console.log(JSON.stringify(data));
     axios.post(url, data, { "headers": { "content-type": "application/json" } })
       .then((res) => {
         setSpinner(false);
@@ -145,7 +144,7 @@ function Index() {
   }
   return (
     <>
-      <Title name={`Engage |  ${language?.propertysummary}`} />
+      <Title name={`Engage |  Business Settings`} />
 
       <Header
         color={color}
@@ -232,7 +231,7 @@ function Index() {
                     color={color}
                     req={true}
                     options={[{ "value": "percentage", "label": "percentage" },
-                    { "value": "flat", "label": "flat" }]}
+                    { "value": "fixed", "label": "fixed" }]}
                     error={error?.other_fee_type}
                     title={"Other fee type will help in calculation other fees"}
                     tooltip={true}

@@ -14,6 +14,7 @@ import Multiselect from 'multiselect-react-dropdown';
 import axios from 'axios';
 import DropDown from '../utils/DropDown';
 import { toast } from 'react-toastify';
+import Capsule from '../utils/Capsule';
 let i = 0;
 let lang;
 
@@ -29,12 +30,16 @@ const RoomPriceCalendar = ({ color, language, currentProperty }) => {
     const [roomColors, setRoomColors] = useState([])
     const [globalRoomData, setGlobalRoomData] = useState([])
     const [selectedColors, setSelectedColors] = useState([]);
+    const [unfilteredRooms, setUnfilteredRooms] = useState([]);
+    const [roomPrices, setRoomPrices] = useState([])
+    const [selectedRates, setSelectedRates] = useState({})
     function initialData() {
         // creates an array of object and from that array duplicates are removed using set
         axios.get(`/api/room_prices/${currentProperty.property_id}`).then((response) => {
             // console.log(response.data.map((i) => ({ ...i, "title": i.base_rate })))
-            let roomPrice = response.data.map((i) => ({ ...i, "title": i.base_rate }))
-
+            // let roomPrice = response.data.map((i) => ({ ...i, "title": `${i.base_rate} - ${i.meal_name}` }))
+            let roomPrice = response.data.filter(i => i.meal_name === 'Room Only - RO').map((i) => ({ ...i, "title": `${i.base_rate} - ${i.meal_name}` }))
+            setUnfilteredRooms(response.data);
 
             let uniqueListOfRooms = Array.from(new Set(roomPrice?.map(item => ({ "room_id": item.room_id, "room_name": item.room_name })).map(JSON.stringify)), JSON.parse);
             setRooms(uniqueListOfRooms);
@@ -120,7 +125,14 @@ const RoomPriceCalendar = ({ color, language, currentProperty }) => {
         setSelectedDate({ "date": `${event.start.getFullYear()}-${event.start.getMonth() + 1}-${event.start.getDate()}`, "visibleDate": `${event.start.getDate()}-${event.start.getMonth() + 1}-${event.start.getFullYear()}` });
         setModalVisible(true);
         setTitle(event?.title);
-        // console.log(JSON.stringify(event));
+
+        let dateObj = new Date(event.start)
+        dateObj.setDate(event.start.getDate() + 1)
+        const thisRoom = unfilteredRooms.filter(i => (i.room_id === event.extendedProps.room_id && i.date == dateObj.toISOString().substring(0, 10)))
+        setRoomPrices(thisRoom)
+        setSelectedRates(() => thisRoom.filter((room) => room.meal_name === 'Room Only - RO')[0])
+
+        // console.log(JSON.stringify(event.start.toISOString().substring(0, 10)));
     }
 
     const updateRate = () => {
@@ -226,7 +238,7 @@ const RoomPriceCalendar = ({ color, language, currentProperty }) => {
                                             label={`${selectedRoom?.room_name} Rate`}
                                             disabled={true}
                                             visible={1}
-                                            defaultValue={title}
+                                            defaultValue={`${selectedRates.base_rate} (${selectedRates.meal_name})`}
                                             color={color}
                                             req={true}
                                             title={`enter new rate of room for ${JSON.stringify(selectedDate)}`}
@@ -245,29 +257,38 @@ const RoomPriceCalendar = ({ color, language, currentProperty }) => {
                                     </div>
                                 </div>
                             </form>
-                            <div className={`items-center px-4 py-2 ${editUI === 'none' ? "" : "border-b"} border-gray-200 `}>
-                                <Button Primary={language?.Update} onClick={() => { updateRate() }} />
-
+                            
+                            {/* capsules start */}
+                           
+                            <div className={`flex flex-wrap justify-center items-center ${editUI === 'none' ? "" : "border-b"} border-gray-200 `}>
+                                {roomPrices.map((i, index) =>
+                                    <Capsule key={index}
+                                        title={i.meal_name}
+                                        color={selectedRates.meal_name===i.meal_name?'bg-cyan-700':'bg-cyan-500'}
+                                        textColor={'text-white'}
+                                        onClick={() => setSelectedRates(i)} />
+                                )}
                             </div>
-
+                            {/* capsules end  */}
 
                             {/* discount ui */}
                             {editUI === 'discount' ?
                                 <div>
-                                    <RoomDiscounts room_id={selectedRoom?.room_id} 
-                                    dateSelected={selectedDate.date}
-                                    setModalVisible={setModalVisible}
-                                    initialData={initialData}/>
+                                    <RoomDiscounts room_id={selectedRoom?.room_id}
+                                        dateSelected={selectedDate.date}
+                                        setModalVisible={setModalVisible}
+                                        initialData={initialData} />
                                 </div>
                                 : undefined}
                             {/* modification ui */}
                             {editUI === 'modification' ?
                                 <div>
-                                    <RoomRateModification room_id={selectedRoom?.room_id} 
-                                    dateSelected={selectedDate.date} 
-                                    base_rate={selectedRoom?.base_rate} 
-                                    setModalVisible={setModalVisible}
-                                    initialData={initialData}/>
+                                    <RoomRateModification room_id={selectedRoom?.room_id}
+                                        dateSelected={selectedDate.date}
+                                        // base_rate={selectedRoom?.base_rate}
+                                        base_rate={selectedRates.base_rate}
+                                        setModalVisible={setModalVisible}
+                                        initialData={initialData} />
                                 </div> : undefined}
 
 

@@ -1,27 +1,12 @@
 import React from "react";
-import StarRatings from 'react-star-ratings';
-
 import Sidebar from "../../../components/Sidebar";
 import Title from '../../../components/title';
-import lang from '../../../components/GlobalData'
 import Header from "../../../components/Header";
 import { useState, useEffect } from "react";
 import axios from 'axios';
-import Link from "next/link";
-import DarkModeLogic from "../../../components/darkmodelogic";
-import english from "../../../components/Languages/en"
-import french from "../../../components/Languages/fr"
-import arabic from "../../../components/Languages/ar";
+import {english,french,arabic} from "../../../components/Languages/Languages"
 import colorFile from "../../../components/colors/Color";
-import Capsule from "../../../components/utils/Capsule";
 // Import Swiper React components
-import { Swiper, SwiperSlide } from "swiper/react";
-import Carousel from 'better-react-carousel';
-// Import Swiper styles
-import "swiper/css";
-import "swiper/css/navigation";
-// import required modules
-import SwiperCore, { Autoplay, Pagination, Navigation } from "swiper";
 import Router, { useRouter } from "next/router";
 const logger = require("../../../services/logger");
 import { ToastContainer, toast } from "react-toastify";

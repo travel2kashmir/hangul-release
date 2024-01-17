@@ -21,6 +21,7 @@ import { InitialActions, ColorToggler } from "../../../components/initalActions"
 import BreadCrumb from "../../../components/utils/BreadCrumb";
 import Multiselect from 'multiselect-react-dropdown';
 import validateUnavailability from "../../../components/validation/room/roomUnavailability";
+import Capsule from "../../../components/utils/Capsule";
 
 var currentLogged;
 let colorToggle;

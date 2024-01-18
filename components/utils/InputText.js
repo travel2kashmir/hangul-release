@@ -41,7 +41,7 @@ function InputText({
           <LineLoader />
         </div>
         <div data-testid="vis1" className={visible === 1 ? "block" : "hidden"}>
-          <input
+        {disabled===false && <input
             type="text"
             data-testid="input"
             className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
@@ -49,7 +49,11 @@ function InputText({
             required
             onChange={(e) => onChangeAction(e)}
             disabled={disabled}
-          />
+          />}
+          {/* if the disabled is true then we mimic filed such that the values can be displayed easily  */}
+          {disabled===true && <div className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}>
+            {defaultValue}
+            </div>}
           <p
             data-testid="Error"
             title={error}

@@ -27,7 +27,7 @@ var i = 0;
 let colorToggle;
 
 
-function RoomDiscounts({ room_id,dateSelected,setModalVisible,initialData }) {
+function RoomDiscounts({ room_id,meal,dateSelected,setModalVisible,initialData }) {
     const [color, setColor] = useState({})
     const [mode, setMode] = useState()
     const [property_name, setProperty_name] = useState('')
@@ -39,10 +39,17 @@ function RoomDiscounts({ room_id,dateSelected,setModalVisible,initialData }) {
         "date_to": dateSelected,
         "discount_type": "",
         "discount_on": "",
-        "discount": ""
+        "discount": "",
+        "room_rate_plan_id":meal?.room_rate_plan_id
     }
-    const [discount, setDiscount] = useState([discountTemplate]?.map((i, id) => { return { ...i, index: id } }))
-
+    // const [discount, setDiscount] = useState([discountTemplate]?.map((i, id) => { return { ...i, index: id } }))
+    const [discount, setDiscount] = useState([ { ...discountTemplate, index: 0 } ])
+    // whenever meal is changed this useEffect will kick in to change value of room_rate_plan_id in template
+    
+    useEffect(()=>{
+        setDiscount(prev=>prev.map((i)=>({...i,"room_rate_plan_id":meal?.room_rate_plan_id})))
+    },[meal])
+    
     // runs at load time
     useEffect(() => {
         const resp = InitialActions({ setColor, setMode })
@@ -74,7 +81,6 @@ function RoomDiscounts({ room_id,dateSelected,setModalVisible,initialData }) {
 
     const addDiscount = () => {
         let result = roomDiscountValidation(discount)
-       
         if (result === true) {
             let url = '/api/room_discount';
             axios.post(url, discount, { header: { "content-type": "application/json" } })
@@ -117,7 +123,7 @@ function RoomDiscounts({ room_id,dateSelected,setModalVisible,initialData }) {
             <div id="main-content">
                     <div className={`${color?.whitebackground} border-b rounded-lg`}>
                     <h3 className={`${color?.text} text-xl flex leading-none pl-6  pb-2 pt-6  font-bold`}>
-                        Discount
+                        Discount {JSON.stringify(meal)}
                     </h3>
                     <form id='discountForm'>
                         {/* input forms start */}
@@ -183,6 +189,18 @@ function RoomDiscounts({ room_id,dateSelected,setModalVisible,initialData }) {
                                                 req={true}
                                                 error={error[index]?.date_to}
                                             /> */}
+
+                                             {/* Meal Name*/}
+                                             <InputText
+                                                label={`Meal Name`}
+                                                defaultValue={meal?.meal_name}
+                                                visible={1}
+                                                color={color}
+                                                disabled={true}
+                                                req={false}
+                                                error={error[index]?.discount}
+                                            />
+
 
                                             {/* discount type */}
                                             <DropDown

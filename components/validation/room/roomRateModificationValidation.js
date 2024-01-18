@@ -7,7 +7,6 @@ const roomRateModificationValidation = (all_data) => {
     var flag = []
     var final_flag = true;
     all_data.map((data, index) => {
-        alert(JSON.stringify(data))
         // is data present checking start 
         if (data?.date_from === "" || data?.date_from === undefined) {
             flag.push(false)

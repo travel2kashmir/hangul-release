@@ -28,7 +28,7 @@ var i = 0;
 let colorToggle;
 
 
-function RoomRateModification({ room_id, dateSelected, base_rate,setModalVisible,initialData }) {
+function RoomRateModification({ room_id, dateSelected, meal, base_rate, setModalVisible, initialData }) {
     const [color, setColor] = useState({})
     const [mode, setMode] = useState()
     const [property_name, setProperty_name] = useState('')
@@ -52,9 +52,16 @@ function RoomRateModification({ room_id, dateSelected, base_rate,setModalVisible
         "date_from": dateSelected,
         "date_to": dateSelected,
         "orginal_rate": base_rate,
-        "modified_rate": ""
+        "modified_rate": "",
+        "room_rate_plan_id": meal?.room_rate_plan_id
     }
     const [modification, setModification] = useState([modificationTemplate]?.map((i, id) => { return { ...i, index: id } }))
+    // kicks in whenever value of meal changes 
+    useEffect(() => {
+        setModification(prev => prev.map((i) => ({ ...i, "room_rate_plan_id": meal?.room_rate_plan_id })))
+    }, [meal])
+
+
 
     function addDiscountTemplate() {
         setModification([...modification, modificationTemplate]?.map((i, id) => { return { ...i, index: id } }))
@@ -92,7 +99,7 @@ function RoomRateModification({ room_id, dateSelected, base_rate,setModalVisible
                     });
                     document.getElementById('modificationForm').reset();
                     initialData();
-                    setTimeout(()=>setModalVisible(false),1000) 
+                    setTimeout(() => setModalVisible(false), 1000)
 
                 }).catch((err) => {
                     toast.error("API: Failed to save modification", {
@@ -155,12 +162,23 @@ function RoomRateModification({ room_id, dateSelected, base_rate,setModalVisible
 
 
                                 <div className="flex flex-wrap">
+                                    {/* Discount*/}
+                                    <InputText
+                                        label={`Meal Name`}
+                                        defaultValue={meal?.meal_name}
+                                        visible={1}
+                                        color={color}
+                                        disabled={true}
+                                        req={false}
+                                        error={error[index]?.discount}
+                                    />
+
                                     {/*Orginal Rate*/}
                                     <InputText
                                         label={`Orginal Rate`}
                                         visible={1}
                                         defaultValue={base_rate}
-                                        onChangeAction={(e) =>undefined }
+                                        onChangeAction={(e) => undefined}
                                         color={color}
                                         req={true}
                                         error={error[index]?.orginal_rate}
@@ -186,7 +204,7 @@ function RoomRateModification({ room_id, dateSelected, base_rate,setModalVisible
 
                     }
                     <div className=' flex justify-end mr-6 py-2'>
-                       <Button
+                        <Button
                             Primary={language?.Submit}
                             onClick={() => addModification()}
                         />

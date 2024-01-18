@@ -274,7 +274,8 @@ const RoomPriceCalendar = ({ color, language, currentProperty }) => {
                             {/* discount ui */}
                             {editUI === 'discount' ?
                                 <div>
-                                    <RoomDiscounts room_id={selectedRoom?.room_id}
+                                    <RoomDiscounts room_id={selectedRates?.room_id}
+                                        meal={{"meal_name":selectedRates?.meal_name,"room_rate_plan_id":selectedRates?.room_rate_plan_id}}
                                         dateSelected={selectedDate.date}
                                         setModalVisible={setModalVisible}
                                         initialData={initialData} />
@@ -285,8 +286,8 @@ const RoomPriceCalendar = ({ color, language, currentProperty }) => {
                                 <div>
                                     <RoomRateModification room_id={selectedRoom?.room_id}
                                         dateSelected={selectedDate.date}
-                                        // base_rate={selectedRoom?.base_rate}
                                         base_rate={selectedRates.base_rate}
+                                        meal={{"meal_name":selectedRates?.meal_name,"room_rate_plan_id":selectedRates?.room_rate_plan_id}}
                                         setModalVisible={setModalVisible}
                                         initialData={initialData} />
                                 </div> : undefined}

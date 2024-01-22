@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import info from '../../public/info.svg'
 import Image from 'next/image'
 import Tooltip from "./Tooltip";
-function InputTextBox({ label, visible, defaultValue, onChangeAction, error, color, req, title, tooltip, wordLimit = 500 }) {
+function InputTextBox({ label, visible, defaultValue, onChangeAction, error, color, req, title, tooltip, wordLimit = 500,disabled=false }) {
 
   const [defVal, setDefVal] = useState(defaultValue?.length)
 
@@ -40,7 +40,7 @@ function InputTextBox({ label, visible, defaultValue, onChangeAction, error, col
         </div>
         <div data-testid="vis1" className={visible === 1 ? "block" : "hidden"}>
 
-          <textarea data-testid="input"
+        {disabled===false && <textarea data-testid="input"
             rows="3"
             columns="50"
             id='text'
@@ -53,7 +53,12 @@ function InputTextBox({ label, visible, defaultValue, onChangeAction, error, col
             }
             defaultValue={defaultValue}
             required
-          />
+          />}
+          {disabled===true && <div 
+          className={`whitespace-pre-wrap shadow-sm ${color?.greybackground}  border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
+          >
+            {defaultValue}
+            </div>}
           <p data-testid='Error' title={error} className="text-sm  text-red-700 font-light">
             {error}</p>
         </div>

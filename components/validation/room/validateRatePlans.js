@@ -1,4 +1,5 @@
 function validateRatePlans(rates) {
+    console.log(rates)
     let errors = Array(rates.length).fill({});
     let hasError = false;
 
@@ -14,9 +15,25 @@ function validateRatePlans(rates) {
             temp.price = "Price must be provided";
             hasError = true;
         }
+        if (rate.extra_adult_price === "" || rate.extra_adult_price === null ) {
+            temp.exta_adult_price = "extra_adult_price must be provided";
+            hasError = true;
+        }
+        if (rate.extra_child_price === "" || rate.extra_child_price === null ) {
+            temp.extra_child_price = "extra_child_price must be provided";
+            hasError = true;
+        }
 
         if (!/^\d+(\.\d+)?$/.test(rate.price)) {
             temp.price = "Price must be non negative number";
+            hasError = true;
+        }
+        if (!/^\d+(\.\d+)?$/.test(rate.extra_adult_price)) {
+            temp.exta_adult_price = "exta_adult_price must be non negative number";
+            hasError = true;
+        }
+        if (!/^\d+(\.\d+)?$/.test(rate.extra_child_price)) {
+            temp.extra_child_price = "extra_child_price must be non negative number";
             hasError = true;
         }
 

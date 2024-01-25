@@ -26,14 +26,16 @@ function RoomEdit({ roomData, color, language, fetchDetails, setRoomRateEditModa
 
     const sendRateUpdate = () => {
         setShowEditSpinner(true)
-        let result = validateEditedRate(editedRoomPrice);
+        let result = validateEditedRate({...editedRoomPrice,...roomData});
         if (result === true) {
             let url = '/api/room_rate_plan';
             let data = {
                 "room_rate_plan": [
                     {
                         "room_rate_plan_id": roomData?.room_rate_plan_id,
-                        "price": editedRoomPrice.price
+                        "price": editedRoomPrice.price,
+                        "extra_adult_price":editedRoomPrice.extra_adult_price,
+                        "extra_child_price":editedRoomPrice.extra_child_price
                     }
                 ]
             }
@@ -49,6 +51,7 @@ function RoomEdit({ roomData, color, language, fetchDetails, setRoomRateEditModa
         }
         else {
             setError(result)
+            setShowEditSpinner(false)
         }
     }
     return (<>
@@ -70,7 +73,7 @@ function RoomEdit({ roomData, color, language, fetchDetails, setRoomRateEditModa
                 visible={1}
                 defaultValue={roomData.price}
                 onChangeAction={(e) => {
-                    setEditedRoomPrice({ ...roomData, "price": e.target.value });
+                    setEditedRoomPrice({ ...editedRoomPrice, "price": e.target.value });
                     setMutationFlag(true)
                 }}
                 error={error?.price}
@@ -78,6 +81,36 @@ function RoomEdit({ roomData, color, language, fetchDetails, setRoomRateEditModa
                 req={true}
                 tooltip={true}
                 title={'New price for the meal plan'}
+            />
+            {/* extra adult price  */}
+            <InputText
+                label={"Extra Adult Price"}
+                visible={1}
+                defaultValue={roomData.extra_adult_price}
+                onChangeAction={(e) => {
+                    setEditedRoomPrice({ ...editedRoomPrice, "extra_adult_price": e.target.value });
+                    setMutationFlag(true)
+                }}
+                error={error?.extra_adult_price}
+                color={color}
+                req={true}
+                tooltip={true}
+                title={'New extra adult price for the meal plan'}
+            />
+            {/* extra child price  */}
+            <InputText
+                label={"Extra Child Price"}
+                visible={1}
+                defaultValue={roomData.extra_child_price}
+                onChangeAction={(e) => {
+                    setEditedRoomPrice({ ...editedRoomPrice, "extra_child_price": e.target.value });
+                    setMutationFlag(true)
+                }}
+                error={error?.extra_child_price}
+                color={color}
+                req={true}
+                tooltip={true}
+                title={'New extra child price for the meal plan'}
             />
         </div>
         <div className='flex justify-end'>

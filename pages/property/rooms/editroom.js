@@ -114,7 +114,7 @@ function Room() {
   const [roomRateDeleteModal, setRoomRateDeleteModal] = useState(0)
   const [deleteRate, setDeleteRate] = useState({})
   const [addConditionalRate, setAddConditionalRate] = useState(0)
-
+  const [presentPlans, setPresentPlans] = useState([])
   /** Use Effect to fetch details from the Local Storage **/
   useEffect(() => {
     const resp = InitialActions({ setColor, setMode })
@@ -189,6 +189,8 @@ function Room() {
         // "checkbox": { operation: undefined },
         "Meal Name": item.meal_name,
         "Price": item.price,
+        "Extra Adult Price": item?.extra_adult_price || 0,
+        "Extra Child Price": item?.extra_child_price || 0,
         "id": item.room_rate_plan_id,
 
         Actions: [
@@ -210,7 +212,7 @@ function Room() {
     setRoomRates(genData)
   }
 
-  const addRateButtonAction = () =>{
+  const addRateButtonAction = () => {
     setAddConditionalRate(1)
   }
   // Fetch Room Details
@@ -257,7 +259,7 @@ function Room() {
           }
         }
         logger.info("url  to fetch room hitted successfully");
-        filterCurrency(response.data?.unconditional_rates?.[i]);
+        setPresentPlans(response.data?.unconditional_rates?.map((i) => i.meal_plan_id))
       })
       .catch((error) => { logger.error("url to fetch room, failed"); });
   }
@@ -1395,7 +1397,7 @@ function Room() {
                               }}
 
                             />
-                            <p className="text-sm text-sm text-red-700 font-light">
+                            <p className="text-sm text-red-700 font-light">
                               {error?.view}</p>
                           </div>
                         </div>
@@ -2018,12 +2020,12 @@ function Room() {
                   color={color}
                   language={language}
                   addButton={true}
-                  addButtonAction={addRateButtonAction }
+                  addButtonAction={addRateButtonAction}
                   showOptions={false}
                   tableName={`Room Rates`}
-                  cols={["Meal Name", "Price", "Actions"]}
+                  cols={["Meal Name", "Price", "Extra Adult Price", "Extra Child Price", "Actions"]}
                   data={roomRates}
-                  />
+                />
               </div>
             </div> : undefined}
 
@@ -2472,10 +2474,11 @@ function Room() {
             color={color}
             title={'Add Meal Rate Plan'}
             description={
-              <RoomPlanAdd color={color} language={language} 
-              roomData={editRate} fetchDetails={fetchDetails} 
-              setRoomRateEditModal={setAddConditionalRate} 
-              currentroom={currentroom}/>
+              <RoomPlanAdd color={color} language={language}
+                fetchDetails={fetchDetails}
+                setRoomRateEditModal={setAddConditionalRate}
+                currentroom={currentroom}
+                presentPlans={presentPlans} />
             }
             setShowModal={setAddConditionalRate}
             showCloseButton={false} />

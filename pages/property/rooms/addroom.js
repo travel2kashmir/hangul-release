@@ -123,18 +123,6 @@ function Addroom() {
   }
 
 
-  // // Room Types
-  // const fetchRoomtypes = async () => {
-  //   const url = `/api/room-types`
-  //   axios.get(url)
-  //     .then((response) => {
-  //       setRoomtypes(response.data);
-  //       logger.info("url  to fetch roomtypes hitted successfully")
-  //       setVisible(1)
-  //     })
-  //     .catch((error) => { logger.error("url to fetch roomtypes, failed") });
-  // }
-
   // Image Template
   const imageTemplate = {
     property_id: currentProperty?.property_id,
@@ -206,17 +194,6 @@ function Addroom() {
 
   }
 
-  // Room Services
-  // const fetchServices = async () => {
-  //   const url = `/api/all_room_services`
-  //   axios.get(url)
-  //     .then((response) => {
-  //       setServices(response.data);
-  //       logger.info("url  to fetch roomtypes hitted successfully")
-  //     })
-  //     .catch((error) => { logger.error("url to fetch roomtypes, failed") });
-  // }
-
   /*For Room Description*/
   const [allRoomDes, setAllRoomDes] = useState([]);
 
@@ -264,60 +241,6 @@ function Addroom() {
       })
   }
 
-  /*  Submit Function for Room Description */
-  // function submitRoomDescription() {
-  //   setError({});
-  //   if (allRoomDes.length !== 0) {
-  //     setSpinner(1)
-  //     const finalData = { ...allRoomDes, status: true, property_id: currentProperty?.property_id }
-  //     axios.post('/api/room', JSON.stringify(finalData), { headers: { 'content-type': 'application/json' } })
-  //       .then(response => {
-  //         setSpinner(0);
-  //         toast.success("API: Room created successfully", {
-  //           position: "top-center",
-  //           autoClose: 5000,
-  //           hideProgressBar: false,
-  //           closeOnClick: true,
-  //           pauseOnHover: true,
-  //           draggable: true,
-  //           progress: undefined,
-  //         });
-  //         setRoomId(response.data.room_id)
-  //         if (allRoomDes?.room_type_id === 'rt001' || allRoomDes?.room_type_id === 'rt002' || allRoomDes?.room_type_id === 'rt003'
-  //           || allRoomDes?.room_type_id === 'rt004' || allRoomDes?.room_type_id === 'rt005') { submitBed(response.data.room_id) }
-  //         submitView(response.data.room_id)
-  //         submitInventory(response.data.room_id)
-  //         manageIdentifiers(response.data.room_id, allRoomDes?.room_type_id)
-  //         setAllRoomDes([]);
-  //         setDisp(2);
-  //         setError({});
-  //       })
-  //       .catch(error => {
-  //         setSpinner(0);
-  //         toast.error("API: Room Description Error! ", {
-  //           position: "top-center",
-  //           autoClose: 5000,
-  //           hideProgressBar: false,
-  //           closeOnClick: true,
-  //           pauseOnHover: true,
-  //           draggable: true,
-  //           progress: undefined,
-  //         });
-  //       }
-  //       )
-  //   }
-  //   else {
-  //     toast.error("App: Please fill the room details ", {
-  //       position: "top-center",
-  //       autoClose: 5000,
-  //       hideProgressBar: false,
-  //       closeOnClick: true,
-  //       pauseOnHover: true,
-  //       draggable: true,
-  //       progress: undefined,
-  //     });
-  //   }
-  // }
 
   /** For Bed**/
   const BedTemplate = {
@@ -483,53 +406,6 @@ function Addroom() {
     }
   }
 
-  /*Function to add room service*/
-  // const submitServices = () => {
-  //   setSpinner(1);
-  //   services.map(
-  //     (i) => (i.room_id = roomId, i.status = i.service_value)
-  //   )
-  //   services.map(
-  //     (i) => {
-  //       if (JSON.stringify(i.service_value) !== "true") {
-  //         return (
-
-  //           i.service_value = false,
-  //           i.status = false
-  //         )
-  //       }
-  //     }
-  //   )
-  //   var total = { "room_services": services }
-  //   const url = '/api/room_facilities'
-  //   axios.post(url, total, { header: { "content-type": "application/json" } }).then
-  //     ((response) => {
-  //       setSpinner(0);
-  //       toast.success("API: Room services add success.", {
-  //         position: "top-center",
-  //         autoClose: 5000,
-  //         hideProgressBar: false,
-  //         closeOnClick: true,
-  //         pauseOnHover: true,
-  //         draggable: true,
-  //         progress: undefined,
-  //       });
-  //       setDisp(3);
-  //     })
-  //     .catch((error) => {
-  //       setSpinner(0);
-  //       toast.error("API: Room Services add error. ", {
-  //         position: "top-center",
-  //         autoClose: 5000,
-  //         hideProgressBar: false,
-  //         closeOnClick: true,
-  //         pauseOnHover: true,
-  //         draggable: true,
-  //         progress: undefined,
-  //       });
-  //     })
-
-  // }
 
   /* Function for Room Rates*/
   const submitRoomRates = () => {

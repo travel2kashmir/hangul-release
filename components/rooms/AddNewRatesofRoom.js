@@ -15,6 +15,8 @@ function AddNewRatesofRoom({ color, language, roomId }) {
         "room_id": roomId,
         "meal_plan_id": "",
         "price": "",
+        "extra_adult_price":"",
+        "extra_child_price":"",
         "index": ""
     }
     const [idx, setIdx] = useState(1);
@@ -83,6 +85,8 @@ function AddNewRatesofRoom({ color, language, roomId }) {
                 })
         }
         else {
+            setSpinner(0);
+            console.log(result)
             setError(result);
         }
     }
@@ -103,7 +107,7 @@ function AddNewRatesofRoom({ color, language, roomId }) {
                                 <Cross />
                             </div> : undefined}
 
-                            <div key={i.index} className="flex flex-wrap my-4 border border-gray-400 rounded-md p-4">
+                            <div key={i.index} className="flex flex-wrap my-4 border border-gray-200 rounded-lg p-4 shadow-sm">
                                 {/*  meal name  */}
                                 <DropDown
                                     label={'Meal Name'}
@@ -147,6 +151,36 @@ function AddNewRatesofRoom({ color, language, roomId }) {
                                     req={true}
                                     tooltip={true}
                                     title={'New price for the meal plan'}
+                                />
+                                {/* extra adult price  */}
+                                <InputText
+                                    label={"Extra Adult Price"}
+                                    visible={loader}
+                                    defaultValue={''}
+                                    onChangeAction={(e) => {
+                                        setMutationFlag(true)
+                                        onChangeData(e.target.value, i.index, "extra_adult_price")
+                                    }}
+                                    error={error[index]?.extra_adult_price}
+                                    color={color}
+                                    req={true}
+                                    tooltip={true}
+                                    title={'Extra adult price for the meal plan'}
+                                />
+                                {/* extra_child_price  */}
+                                <InputText
+                                    label={"Extra Child Price"}
+                                    visible={loader}
+                                    defaultValue={''}
+                                    onChangeAction={(e) => {
+                                        setMutationFlag(true)
+                                        onChangeData(e.target.value, i.index, "extra_child_price")
+                                    }}
+                                    error={error[index]?.extra_child_price}
+                                    color={color}
+                                    req={true}
+                                    tooltip={true}
+                                    title={'extra child price for the meal plan'}
                                 />
 
 

@@ -5,12 +5,12 @@ import { toast, ToastContainer } from 'react-toastify';
 import axios from 'axios';
 import DropDown from '../utils/DropDown';
 import InputTextBox from '../utils/InputTextBox';
+import CountdownTimer from '../BookingEngine/CountDownTimer';
 
-function RoomPlanAdd({ roomData, color, language, fetchDetails, setRoomRateEditModal,currentroom }) {
+function RoomPlanAdd({ color, language, fetchDetails, setRoomRateEditModal, currentroom, presentPlans }) {
     const [mealPlans, setMealPlans] = useState({})
-    const [dropDownOptions, setDropDownOptions] = useState([])
+    const [dropDownOptions, setDropDownOptions] = useState([{}])
     const [loader, setLoader] = useState(0)
-
     const [error, setError] = useState({})
     const [mutationFlag, setMutationFlag] = useState(false)
     const [showEditSpinner, setShowEditSpinner] = useState(false)
@@ -18,7 +18,7 @@ function RoomPlanAdd({ roomData, color, language, fetchDetails, setRoomRateEditM
         let url = `/api/all_meals`
         axios.get(url).then((response) => {
             console.log(response.data)
-            setDropDownOptions(response.data.map(i => { return ({ value: JSON.stringify(i), label: i.name }) }))
+            setDropDownOptions(response.data.filter(plan => !presentPlans.includes(plan.meal_plan_id)).map(i => { return ({ value: JSON.stringify(i), label: i.name }) }))
             setLoader(1);
         }).catch((error) => {
             toast.error("API:Meal plan fetch failed!")
@@ -47,9 +47,11 @@ function RoomPlanAdd({ roomData, color, language, fetchDetails, setRoomRateEditM
             let data = {
                 "room_rate_plan": [
                     {
-                        "room_id":currentroom,
-                        "meal_plan_id":mealPlans.meal_plan_id,
-                        "price":mealPlans.price
+                        "room_id": currentroom,
+                        "meal_plan_id": mealPlans.meal_plan_id,
+                        "price": mealPlans.price,
+                        "extra_adult_price": mealPlans.extra_adult_price,
+                        "extra_child_price": mealPlans.extra_child_price
                     }
                 ]
             }
@@ -71,9 +73,8 @@ function RoomPlanAdd({ roomData, color, language, fetchDetails, setRoomRateEditM
     const onDropDownChange = (data) => {
         setMealPlans(JSON.parse(data));
     }
-    return (<>
+    return (<>{dropDownOptions.length != 0 ? <>
         <div className='flex flex-wrap'>
-
             {/*  meal name  */}
             <DropDown
                 label={'Meal Name'}
@@ -103,7 +104,6 @@ function RoomPlanAdd({ roomData, color, language, fetchDetails, setRoomRateEditM
             <InputText
                 label={"Price"}
                 visible={loader}
-                defaultValue={roomData?.price}
                 onChangeAction={(e) => {
                     setMealPlans({ ...mealPlans, "price": e.target.value });
                     setMutationFlag(true)
@@ -113,6 +113,34 @@ function RoomPlanAdd({ roomData, color, language, fetchDetails, setRoomRateEditM
                 req={true}
                 tooltip={true}
                 title={'New price for the meal plan'}
+            />
+            {/* extra adult price  */}
+            <InputText
+                label={"Extra Adult Price"}
+                visible={1}
+                onChangeAction={(e) => {
+                    setMealPlans({ ...mealPlans, "extra_adult_price": e.target.value });
+                    setMutationFlag(true)
+                }}
+                error={error?.extra_adult_price}
+                color={color}
+                req={true}
+                tooltip={true}
+                title={'New extra adult price for the meal plan'}
+            />
+            {/* extra child price  */}
+            <InputText
+                label={"Extra Child Price"}
+                visible={1}
+                onChangeAction={(e) => {
+                    setMealPlans({ ...mealPlans, "extra_child_price": e.target.value });
+                    setMutationFlag(true)
+                }}
+                error={error?.extra_child_price}
+                color={color}
+                req={true}
+                tooltip={true}
+                title={'New extra child price for the meal plan'}
             />
         </div>
         <div className='flex justify-end'>
@@ -133,7 +161,16 @@ function RoomPlanAdd({ roomData, color, language, fetchDetails, setRoomRateEditM
                     Primary={language?.SpinnerAdd}
                 />
                 : undefined}
+        </div></> : <div className='text-lg p-2 font-bold'>
+        All Plans Already Selected
+        <div className='flex flex-wrap justify-center items-center w-full'>
+            <CountdownTimer time={5} onTimerComplete={(e) => setRoomRateEditModal(0)} Text={'Redirecting in'} unit={'second'} />
         </div>
+
+    </div>
+    }
+
+
         <ToastContainer position="top-center"
             autoClose={5000}
             hideProgressBar={false}

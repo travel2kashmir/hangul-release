@@ -401,35 +401,6 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
         })
     }
 
-    //changes count of rooms available on that particular day
-    // function changeBookingCount() {
-    //     const bookingDataArray = [];
-    //     // Function to get an array of dates between two dates
-    //     const datesBetween = getDates(checkinDate, checkoutDate);
-    //     // Iterate through each date between checkinDate and checkoutDate
-    //     datesBetween.forEach((date) => {
-    //         // For each selected room, create an object
-    //         selectedRoomsArray.forEach((item) => {
-    //             const room_id = item.room_id;
-    //             const booking_count = selectedQuantitiesMap.get(room_id);
-
-    //             // Add the object to the array
-    //             bookingDataArray.push({
-    //                 room_id,
-    //                 booking_count,
-    //                 date: date.toISOString().split('T')[0], // Format date as "YYYY-MM-DD"
-    //             });
-    //         });
-    //     });
-
-    //     // Now bookingDataArray contains the array of objects with room_id, booking_count, and date for each room and each day between checkinDate and checkoutDate
-    //     let url = '/api/room_booking_update'
-    //     axios.put(url, bookingDataArray, { header: { "content-type": "application/json" } })
-    //         .then((response) => {
-    //             setpayNowLoader(false)
-    //         })
-    //         .catch((error) => console.log(error))
-    // }
 
     // this function resets the values
     function closeButtonAction() {
@@ -453,18 +424,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
         }
     }
 
-    // function getDates(startDate, endDate) {
-    //     const dateArray = [];
-    //     let currentDate = new Date(startDate);
-
-    //     while (currentDate <= new Date(endDate)) {
-    //         dateArray.push(new Date(currentDate));
-    //         currentDate.setDate(currentDate.getDate() + 1);
-    //     }
-
-    //     return dateArray;
-    // }
-
+   
     return (
         <div className={`min-h-screen ${color?.bgColor}`}>
 
@@ -518,7 +478,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                         onTimerComplete={closeButtonAction}
                         color={color}
 
-                    />
+                    /> 
                 </div>
 
             </div>
@@ -618,6 +578,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                         </h6>
                         <button onClick={() => { addGuest() }} className='ml-auto px-4 py-1 bg-cyan-700 hover:bg-cyan-900 rounded-md text-white'>Add Guests</button>
                     </div>
+                    {JSON.stringify(rate)}
                     <div className="pt-1 pb-4">
                         <div className="md:px-4 mx-auto w-full">
                             {guest.map((i, loopIndex) => (

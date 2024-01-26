@@ -44,16 +44,13 @@ function Addroom() {
   const [allRoomDetails, setAllRoomDetails] = useState([])
   const [spinner, setSpinner] = useState(0)
   const [spin, setSpin] = useState(0)
-  const [darkModeSwitcher, setDarkModeSwitcher] = useState()
   const [color, setColor] = useState({})
   const [visible, setVisible] = useState(0)
   const [roomtypes, setRoomtypes] = useState({});
-  const [image, setImage] = useState({})
   const [actionImage, setActionImage] = useState({})
   const [services, setServices] = useState([])
   const [roomId, setRoomId] = useState([])
   const [finalView, setFinalView] = useState([])
-  const [add, setAdd] = useState(0)
   // const [disp, setDisp] = useState(4);
   const [disp, setDisp] = useState(0);
   const [modified, setModified] = useState({})

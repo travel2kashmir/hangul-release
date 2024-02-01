@@ -17,6 +17,7 @@ import ButtonLoader from './ButtonLoader';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import DeleteBin from '../utils/Icons/DeleteBin';
 function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, setShowModal, setSearched, checkinDate, checkoutDate }) {
 
     let guestTemplate = {
@@ -29,9 +30,11 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
     const [guestDetailerror, setGuestDetailError] = useState({})
     const [gstDetailerror, setGstDetailError] = useState({})
     const [guest, setGuest] = useState([{ ...guestTemplate, index: 0 }]);
+    const [extraGuest, setExtraGuest] = useState();
     const [addGst, setAddGst] = useState(false);
     const [gstDetails, setGstDetails] = useState({})
     const [guestIndex, setGuestIndex] = useState(0)
+    const [extraGuestIndex, setExtraGuestIndex] = useState(-1)
     const [rate, setRate] = useState({})
     const [selectedRoom, setSelectedRoom] = useState({})
     const [disabled, setDisabled] = useState(false)
@@ -46,6 +49,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
         totalTaxAmount: 0,
         totalOtherFees: 0,
     });
+    const [addExtraGuest,setAddExtraGuest]=useState(false)
 
     const { totalFinalRate, totalTaxAmount, totalOtherFees } = totals;
     const couponDiscount = 0;
@@ -63,10 +67,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
     // console.log("this is roomSelected set using redux", roomsSelected)
 
     const [selectedRoomsArray, setSelectedRoomsArray] = useState([])
-    // Create an array of rooms that match the room_ids in roomsSelected
-    // const selectedRoomsArray = rooms.filter((room) => roomsSelected.has(room.room_id)) ;
-    // console.log("Selected rooms:", selectedRoomsArray);
-
+   
     useEffect(() => {
         setSelectedRoomsArray(rooms.filter((room) => roomsSelected.has(room.room_id)));
     }, [roomsSelected])
@@ -85,7 +86,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
     const totalSelectedQuantities = [...selectedQuantitiesMap.values()].reduce((acc, quantity) => acc + quantity, 0);
 
     // check the boolean value of reserveRoom state and based on this changed the css of payNow button
-    // const reserveRoom = useSelector(state => state.reserveRoom);
+    
     const reservationIdentity = useSelector(state => state.reservationIdentity)
 
 
@@ -169,26 +170,50 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
     const addGuest = () => {
         setGuestIndex(guestIndex + 1);
         setGuest([...guest, { ...guestTemplate, index: guestIndex + 1 }])
+        setAddExtraGuest(false)
     }
-
+    const newExtraGuest= ()=>{
+        setExtraGuestIndex(extraGuestIndex + 1);
+        extraGuest != undefined? setExtraGuest([...extraGuest, { ...guestTemplate, index: extraGuestIndex + 1 }]):setExtraGuest([{ ...guestTemplate, index: extraGuestIndex + 1 }])
+        setAddExtraGuest(true);
+    }
 
     // to handle changes in data
     const handleChangeInGuest = (e, index, i) => {
-        let dataNotToBeChanged = guest?.filter((item, id) => item.index != index);
-        let dataToBeChanged = guest?.filter((item, id) => item.index === index)[0];
-
-        //  'i' is a variable holding the key to be changed
-        dataToBeChanged = { ...dataToBeChanged, [i]: e.target.value };
-
-        // Updating the guest array
-        dataNotToBeChanged?.length === 0 ? setGuest([dataToBeChanged]) : setGuest([...dataNotToBeChanged, dataToBeChanged].sort((a, b) => a.index - b.index));
-    }
+        setGuest(prevGuest => {
+          return prevGuest.map((item) => {
+            return item.index === index ? { ...item, [i]: e.target.value } : item;
+          }).sort((a, b) => a.index - b.index);
+        });
+      };
+      
+    // to handle changes in extra guest data
+    const handleChangeInExtraGuest = (e, index, i) => {
+        setExtraGuest(prevExtraGuest => {
+          return prevExtraGuest.map((item) => {
+            if (item.index === index) {
+              return { ...item, [i]: e.target.value };
+            } else {
+              return item;
+            }
+          }).sort((a, b) => a.index - b.index);
+        });
+      };
+      
 
 
     // to remove guest from ui
     const removeGuest = (indexToRemove) => {
         const updatedGuests = guest.filter((i, index) => i.index !== indexToRemove);
         setGuest(updatedGuests); //list of guest not removed
+    };
+    // to remove extra guest from ui
+    const removeExtraGuest = (indexToRemove) => {
+        if(extraGuest?.length===1){
+            setAddExtraGuest(false); setExtraGuest(undefined)}
+        else{const updatedGuests = extraGuest.filter((i, index) => i.index !== indexToRemove);
+        setExtraGuest(updatedGuests); //list of guest not removed
+        }
     };
 
     // Function to remove data from 'room_data' in local storage based on room_id
@@ -517,7 +542,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                                 return <tr className={`${color?.text?.description}`} key={index}>
                                     <td>{room?.room_name}</td>
                                     <td>{room?.room_type}</td>
-                                    <td>{rate[room?.room_id].meal_name!==null?rate[room?.room_id].meal_name:"Room Only - RO"}</td>
+                                    <td>{rate[room?.room_id]?.meal_name}</td>
                                     <td>
                                         {/* drop down to change room quantity  */}
                                         <select
@@ -542,27 +567,12 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                                         <button
                                             className="text-white bg-red-500 border-0 py-1 px-4 focus:outline-none hover:bg-red-600 rounded text-md"
                                             onClick={() => {
-                                                dispatch(removeRoomFromSelected(room?.room_id))
+                                                dispatch(removeRoomFromSelected(room?.room_id)) //remove room from selected list
                                                 removeRoomRateByRoomId(room?.room_id)  //remove room_rate from local storage
-                                                // let reservationdata = reservationIdentity.filter((item) => item.room_id === room?.room_id)[0]
-                                                // removeReservationFromDB(room?.room_id, reservationdata?.reservation_time)
                                                 dispatch(removeReservationFromReservationIdentity(room?.room_id))
                                             }}
                                         >
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                strokeWidth={1.5}
-                                                stroke="currentColor"
-                                                className="w-6 h-6"
-                                            >
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
-                                                />
-                                            </svg>
+                                           <DeleteBin/>
                                         </button></td>
                                 </tr>
                             })}
@@ -574,16 +584,29 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                         <h6
                             className={`${color?.text?.title} text-xl flex my-auto leading-none pl-2 font-bold`}
                         >
-                            Guest Details
+                            Guest Details 
+                            
                         </h6>
-                        <button onClick={() => { addGuest() }} className='ml-auto px-4 py-1 bg-cyan-700 hover:bg-cyan-900 rounded-md text-white'>Add Guests</button>
+
+                        <div
+                        className={`${color?.text?.title} text-md flex m-auto font-normal`}
+                        > {totalRoomsCapacity-guest?.length} more guest can be added</div>
+                        
+                        <button onClick={() => { 
+                            guest?.length < totalRoomsCapacity?addGuest():newExtraGuest()
+                             }} 
+                        className={`ml-auto px-4 py-1 ${guest?.length <= totalRoomsCapacity?'bg-cyan-700 hover:bg-cyan-900':'bg-cyan-400 '}  rounded-md text-white`}>
+                            {guest?.length < totalRoomsCapacity?'Add Guests':'Add Extra Guests'}
+                        </button>
+                        {JSON.stringify(addExtraGuest)}
                     </div>
                     {JSON.stringify(rate)}
+                    {JSON.stringify(extraGuest)}
                     <div className="pt-1 pb-4">
                         <div className="md:px-4 mx-auto w-full">
                             {guest.map((i, loopIndex) => (
                                 <div className='border border-slate-400 rounded-xl p-2 m-2' key={i.index}>
-                                    {loopIndex != 0 ? <div className='flex justify-end'><button onClick={() => removeGuest(i.index)}><RxCross2 /></button></div> : <></>}
+                                    {loopIndex != 0 && addExtraGuest != 1 ? <div className='flex justify-end'><button onClick={() => removeGuest(i.index)}><RxCross2 /></button></div> : <></>}
                                     <div className="flex flex-wrap ">
 
                                         {/* guest name  */}
@@ -601,6 +624,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                                             req={true}
                                             title={'Guest Name'}
                                             tooltip={true}
+                                           
                                         />
 
                                         {/* guest email  */}
@@ -653,6 +677,49 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                                 </div>
                             ))}
 
+                            {/* extra guest starts */}
+                            { addExtraGuest== true ?
+                            extraGuest.map((i, loopIndex) => (
+                                <div className='border border-slate-400 rounded-xl p-2 m-2' key={i.index}>
+                                    <div className='flex justify-end'><button onClick={() => removeExtraGuest(i.index)}><RxCross2 /></button></div> 
+                                    <div className="flex flex-wrap ">
+
+                                        {/* guest name  */}
+                                        <InputText
+                                            label={'Extra Guest Name'}
+                                            visible={1}
+                                            defaultValue={``}
+                                            onChangeAction={(e) => {
+                                                handleChangeInExtraGuest(e, i.index, "guest_name")
+                                            }
+                                            }
+                                            error={guestDetailerror[loopIndex]?.guest_name}
+                                            color={color?.theme === "light" ? Color?.light : Color?.dark}
+                                            // color={Color?.light}
+                                            req={true}
+                                            title={'Guest Name'}
+                                            tooltip={true}
+                                           
+                                        />
+                                        {/* Age */}
+                                        <InputText
+                                        label={'Extra Guest Age [in years] '}
+                                           visible={1}
+                                            defaultValue={``}
+                                            onChangeAction={(e) => {
+                                                handleChangeInExtraGuest(e, i.index, "guest_age")
+                                            }}
+                                            error={guestDetailerror[loopIndex]?.guest_age}
+                                            color={color?.theme === "light" ? Color?.light : Color?.dark}
+                                            req={true}
+                                            title={'Guest Age'}
+                                            tooltip={true}
+                                        />
+                                    </div>
+                                </div>
+                            )):undefined}
+                            
+                            {/* extra guest ends */}
 
 
                             <input type="checkbox" name="add_gst" onClick={() => { setAddGst(!addGst); setGstDetails({}) }} />
@@ -710,10 +777,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
 
                         </div>
 
-                        {/* buttons  */}
-                        {/* <div className='flex flex-wrap w-full gap-2 p-2'>
-                            <button className='my-2 px-4 py-3 bg-green-700 hover:bg-green-900 rounded-md text-white w-full'>Submit</button>
-                        </div> */}
+                       
                     </div>
 
 

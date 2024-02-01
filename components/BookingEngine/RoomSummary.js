@@ -46,12 +46,15 @@ function RoomSummary({ color, setDisplay, setShowModal, setRoomsLoader, setSearc
       existingData = JSON.parse(existingData);
 
       // Append the new data to the existing data (assuming 'room_id' is unique)
-      existingData[room_rates.room_id] = room_rates;
-
+      // let {extra_adult_price,extra_child_price} = room_data.unconditional_rates.filter(i=>i.room_rate_plan_id===room_rates.room_rate_plan_id)[0]
+      let {extra_adult_price,extra_child_price} = selectedRoom.unconditional_rates.filter(i=>i.room_rate_plan_id===room_rates.room_rate_plan_id)[0]
+      existingData[room_rates.room_id] = {...room_rates,extra_adult_price,extra_child_price};
     } else {
       // If there is no existing data, create a new object with the new data
+      // let {extra_adult_price,extra_child_price} = room_data.unconditional_rates.filter(i=>i.room_rate_plan_id===room_rates.room_rate_plan_id)[0]
+      let {extra_adult_price,extra_child_price} = selectedRoom.unconditional_rates.filter(i=>i.room_rate_plan_id===room_rates.room_rate_plan_id)[0]
       existingData = {
-        [room_rates.room_id]: room_rates
+        [room_rates.room_id]: {...room_rates,extra_adult_price,extra_child_price}
       };
     }
 
@@ -59,7 +62,7 @@ function RoomSummary({ color, setDisplay, setShowModal, setRoomsLoader, setSearc
 
     // Store the updated data back in local storage
     localStorage.setItem('room_rates', JSON.stringify(existingData));
-
+    dispatch(setRoomsSelected([{ "room_id": room_rates?.room_id, "meal_name": room_rates?.meal_name || 'Room Only - RO' }]));
     setDisplay(2);
   }
 

@@ -18,6 +18,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import DeleteBin from '../utils/Icons/DeleteBin';
+import DropDown from '../utils/DropDown';
 function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, setShowModal, setSearched, checkinDate, checkoutDate }) {
 
     let guestTemplate = {
@@ -27,6 +28,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
         "guest_age": ""
 
     }
+    const [extraGuestError, setExtraGuestError] = useState({})
     const [guestDetailerror, setGuestDetailError] = useState({})
     const [gstDetailerror, setGstDetailError] = useState({})
     const [guest, setGuest] = useState([{ ...guestTemplate, index: 0 }]);
@@ -49,7 +51,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
         totalTaxAmount: 0,
         totalOtherFees: 0,
     });
-    const [addExtraGuest,setAddExtraGuest]=useState(false)
+    const [addExtraGuest, setAddExtraGuest] = useState(false)
 
     const { totalFinalRate, totalTaxAmount, totalOtherFees } = totals;
     const couponDiscount = 0;
@@ -62,17 +64,17 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
     const numberOfNights = Math.round((endDate - startDate) / oneDay);
 
     const roomsSelectedInitial = useSelector(state => state.roomsSelected)
-    const roomsSelected=new Set(roomsSelectedInitial.map(i=>i.room_id))
-    
+    const roomsSelected = new Set(roomsSelectedInitial.map(i => i.room_id))
+
     // console.log("this is roomSelected set using redux", roomsSelected)
 
     const [selectedRoomsArray, setSelectedRoomsArray] = useState([])
-   
+
     useEffect(() => {
         setSelectedRoomsArray(rooms.filter((room) => roomsSelected.has(room.room_id)));
     }, [roomsSelected])
 
-
+    
     const inventoryDetail = useSelector(state => state.inventoryDetail)
     //  stored the lowest inventory available in the inventory_available variable.
     const inventory_available = Math.min(...inventoryDetail.map((item) => item.available_inventory))
@@ -86,7 +88,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
     const totalSelectedQuantities = [...selectedQuantitiesMap.values()].reduce((acc, quantity) => acc + quantity, 0);
 
     // check the boolean value of reserveRoom state and based on this changed the css of payNow button
-    
+
     const reservationIdentity = useSelector(state => state.reservationIdentity)
 
 
@@ -94,6 +96,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
     // for getting the data from the local storage and setting the data
     useEffect(() => {
         let room = localStorage.getItem("room_data")
+
         setSelectedRoom(JSON.parse(room))
 
         let room_rates = localStorage.getItem("room_rates")
@@ -170,36 +173,35 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
     const addGuest = () => {
         setGuestIndex(guestIndex + 1);
         setGuest([...guest, { ...guestTemplate, index: guestIndex + 1 }])
-        setAddExtraGuest(false)
     }
-    const newExtraGuest= ()=>{
+    const newExtraGuest = () => {
         setExtraGuestIndex(extraGuestIndex + 1);
-        extraGuest != undefined? setExtraGuest([...extraGuest, { ...guestTemplate, index: extraGuestIndex + 1 }]):setExtraGuest([{ ...guestTemplate, index: extraGuestIndex + 1 }])
+        extraGuest != undefined ? setExtraGuest([...extraGuest, { ...guestTemplate, index: extraGuestIndex + 1 }]) : setExtraGuest([{ ...guestTemplate, index: extraGuestIndex + 1 }])
         setAddExtraGuest(true);
     }
 
     // to handle changes in data
     const handleChangeInGuest = (e, index, i) => {
         setGuest(prevGuest => {
-          return prevGuest.map((item) => {
-            return item.index === index ? { ...item, [i]: e.target.value } : item;
-          }).sort((a, b) => a.index - b.index);
+            return prevGuest.map((item) => {
+                return item.index === index ? { ...item, [i]: e.target.value } : item;
+            }).sort((a, b) => a.index - b.index);
         });
-      };
-      
+    };
+
     // to handle changes in extra guest data
     const handleChangeInExtraGuest = (e, index, i) => {
         setExtraGuest(prevExtraGuest => {
-          return prevExtraGuest.map((item) => {
-            if (item.index === index) {
-              return { ...item, [i]: e.target.value };
-            } else {
-              return item;
-            }
-          }).sort((a, b) => a.index - b.index);
+            return prevExtraGuest.map((item) => {
+                if (item.index === index) {
+                    return { ...item, [i]: e.target.value };
+                } else {
+                    return item;
+                }
+            }).sort((a, b) => a.index - b.index);
         });
-      };
-      
+    };
+
 
 
     // to remove guest from ui
@@ -209,10 +211,12 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
     };
     // to remove extra guest from ui
     const removeExtraGuest = (indexToRemove) => {
-        if(extraGuest?.length===1){
-            setAddExtraGuest(false); setExtraGuest(undefined)}
-        else{const updatedGuests = extraGuest.filter((i, index) => i.index !== indexToRemove);
-        setExtraGuest(updatedGuests); //list of guest not removed
+        if (extraGuest?.length === 1) {
+            setAddExtraGuest(false); setExtraGuest(undefined)
+        }
+        else {
+            const updatedGuests = extraGuest.filter((i, index) => i.index !== indexToRemove);
+            setExtraGuest(updatedGuests); //list of guest not removed
         }
     };
 
@@ -260,7 +264,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
     }
 
     function removeReservationFromDB(room_id, reservation_time, action) {
-       
+
         if (action === "close") {
             setCancelBookingLoader(false)
             setDisplay(0)
@@ -272,7 +276,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
             dispatch(clearInventoryDetail())
             deleteRoomDetails()
         }
-      
+
     }
 
     function SubmitGuestDetails() {
@@ -340,7 +344,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                 "room_name": item.room_name,
                 "room_type": item.room_type,
                 "room_count": selectedQuantitiesMap?.get(item?.room_id),
-                "meal_name": rate[item?.room_id].meal_name!==null?rate[item?.room_id].meal_name:"Room Only - RO"
+                "meal_name": rate[item?.room_id].meal_name !== null ? rate[item?.room_id].meal_name : "Room Only - RO"
             })
         })
 
@@ -379,7 +383,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                 ...roomBookingData, ...roomsForThisBooking, ...guestsForThisBooking, ...finalInvoiceForThisBooking
             }]
         }
-      
+
         axios.post(bookingURL, bookingData, {
             header: { "content-type": "application/json" },
         }).then((response) => {
@@ -449,14 +453,15 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
         }
     }
 
-   
+
     return (
         <div className={`min-h-screen ${color?.bgColor}`}>
 
             {/* app bar  */}
             <div>
-          
+
                 <div className={`flex justify-between w-full py-5 px-3 md:px-5 border-b  ${color?.border}`}>
+                    {/* back arrow start  */}
                     <div className='flex'>
                         <i className='my-auto'
                             onClick={() => {
@@ -471,16 +476,17 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                         </i>
                         <h1 className={` ${color?.text?.title} text-xl my-auto font-bold ml-2 md:ml-5`}>Review Booking</h1>
                     </div>
+                    {/* back arrow end */}
 
-                    {/* timer for medium and large screen */}
+                    {/* timer for medium and large screen start */}
                     <div className='hidden md:block my-auto'>
                         <CountdownTimer
                             time={15}
                             onTimerComplete={closeButtonAction}
                             color={color}
-
                         />
                     </div>
+                    {/* timer for medium and large screen end */}
 
                     {cancelBookingLoader === true ?
                         <ButtonLoader
@@ -503,7 +509,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                         onTimerComplete={closeButtonAction}
                         color={color}
 
-                    /> 
+                    />
                 </div>
 
             </div>
@@ -572,7 +578,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                                                 dispatch(removeReservationFromReservationIdentity(room?.room_id))
                                             }}
                                         >
-                                           <DeleteBin/>
+                                            <DeleteBin />
                                         </button></td>
                                 </tr>
                             })}
@@ -584,24 +590,39 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                         <h6
                             className={`${color?.text?.title} text-xl flex my-auto leading-none pl-2 font-bold`}
                         >
-                            Guest Details 
-                            
+                            Guest Details
                         </h6>
 
                         <div
-                        className={`${color?.text?.title} text-md flex m-auto font-normal`}
-                        > {totalRoomsCapacity-guest?.length} more guest can be added</div>
+                            className={`${color?.text?.title} text-md flex m-auto font-normal`}
+                        > {totalRoomsCapacity - guest?.length} more guest can be added</div>
+
+                        {guest?.length < totalRoomsCapacity?<button 
+                        onClick={addGuest}
+                        className={`ml-auto px-4 py-1 bg-cyan-700 hover:bg-cyan-900  rounded-md text-white`}>
+                            {'Add Guests'}
+                        </button>:
+                        <button 
+                        onClick={newExtraGuest}
+                        disabled={selectedRoomsArray.filter(i=>i.extra_guest_allowed>0).length===0}
+                            className={`ml-auto px-4 py-1 ${selectedRoomsArray.filter(i=>i.extra_guest_allowed>0).length!==0 ? 'bg-cyan-700 hover:bg-cyan-900' : 'bg-cyan-600 '}  rounded-md text-white`}>
+                            {'Add Extra Guests'}
+                        </button>}
                         
-                        <button onClick={() => { 
-                            guest?.length < totalRoomsCapacity?addGuest():newExtraGuest()
-                             }} 
-                        className={`ml-auto px-4 py-1 ${guest?.length <= totalRoomsCapacity?'bg-cyan-700 hover:bg-cyan-900':'bg-cyan-400 '}  rounded-md text-white`}>
-                            {guest?.length < totalRoomsCapacity?'Add Guests':'Add Extra Guests'}
-                        </button>
-                        {JSON.stringify(addExtraGuest)}
                     </div>
-                    {JSON.stringify(rate)}
-                    {JSON.stringify(extraGuest)}
+                    
+                    {/* allowed extra guest list start */}
+                    {
+                        selectedRoomsArray.map((i, idx) => {
+                            return (
+                                <div className={`flex flex-wrap items-center justify-center`} key={idx}>
+                                  <span className="font-semibold text-sm mx-2">{i?.room_name}</span>  extra guest allowed {(i?.room_capacity - i?.maximum_number_of_occupants) * selectedQuantitiesMap?.get(i?.room_id)}
+                                </div>
+                            )
+                        })
+                    }
+                    {/* allowed extra guest list start */}
+                  
                     <div className="pt-1 pb-4">
                         <div className="md:px-4 mx-auto w-full">
                             {guest.map((i, loopIndex) => (
@@ -624,7 +645,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                                             req={true}
                                             title={'Guest Name'}
                                             tooltip={true}
-                                           
+
                                         />
 
                                         {/* guest email  */}
@@ -678,47 +699,63 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                             ))}
 
                             {/* extra guest starts */}
-                            { addExtraGuest== true ?
-                            extraGuest.map((i, loopIndex) => (
-                                <div className='border border-slate-400 rounded-xl p-2 m-2' key={i.index}>
-                                    <div className='flex justify-end'><button onClick={() => removeExtraGuest(i.index)}><RxCross2 /></button></div> 
-                                    <div className="flex flex-wrap ">
 
-                                        {/* guest name  */}
-                                        <InputText
-                                            label={'Extra Guest Name'}
-                                            visible={1}
-                                            defaultValue={``}
-                                            onChangeAction={(e) => {
-                                                handleChangeInExtraGuest(e, i.index, "guest_name")
-                                            }
-                                            }
-                                            error={guestDetailerror[loopIndex]?.guest_name}
-                                            color={color?.theme === "light" ? Color?.light : Color?.dark}
-                                            // color={Color?.light}
-                                            req={true}
-                                            title={'Guest Name'}
-                                            tooltip={true}
-                                           
-                                        />
-                                        {/* Age */}
-                                        <InputText
-                                        label={'Extra Guest Age [in years] '}
-                                           visible={1}
-                                            defaultValue={``}
-                                            onChangeAction={(e) => {
-                                                handleChangeInExtraGuest(e, i.index, "guest_age")
-                                            }}
-                                            error={guestDetailerror[loopIndex]?.guest_age}
-                                            color={color?.theme === "light" ? Color?.light : Color?.dark}
-                                            req={true}
-                                            title={'Guest Age'}
-                                            tooltip={true}
-                                        />
+                            {addExtraGuest == true ?
+                                extraGuest.map((i, loopIndex) => (
+                                    <div className='border border-slate-400 rounded-xl p-2 m-2' key={i.index}>
+                                        <div className='flex justify-end'><button onClick={() => removeExtraGuest(i.index)}><RxCross2 /></button></div>
+                                        <div className="flex flex-wrap ">
+                                            {JSON.stringify(extraGuest)}
+                                            {/* select extra guest for room  */}
+
+                                            <DropDown
+                                                label={'Select Room'}
+                                                visible={1}
+                                                defaultValue={'select room'}
+                                                onChangeAction={(e) => handleChangeInExtraGuest(e, i.index, "room_id")}
+                                                color={color}
+                                                req={true}
+                                                options={selectedRoomsArray.filter(i=>i.extra_guest_allowed>0).map(i => ({ "label": i.room_name, "value": i.room_id }))}
+                                                error={extraGuestError[loopIndex]?.room}
+                                                tooltip={'select room for which extra guest is being selected'}
+                                            />
+
+
+                                            {/* guest name  */}
+                                            <InputText
+                                                label={'Extra Guest Name'}
+                                                visible={1}
+                                                defaultValue={``}
+                                                onChangeAction={(e) => {
+                                                    handleChangeInExtraGuest(e, i.index, "guest_name")
+                                                }
+                                                }
+                                                error={extraGuestError[loopIndex]?.guest_name}
+                                                color={color?.theme === "light" ? Color?.light : Color?.dark}
+                                                // color={Color?.light}
+                                                req={true}
+                                                title={'Guest Name'}
+                                                tooltip={true}
+
+                                            />
+                                            {/* Age */}
+                                            <InputText
+                                                label={'Extra Guest Age [in years] '}
+                                                visible={1}
+                                                defaultValue={``}
+                                                onChangeAction={(e) => {
+                                                    handleChangeInExtraGuest(e, i.index, "guest_age")
+                                                }}
+                                                error={extraGuestError[loopIndex]?.guest_age}
+                                                color={color?.theme === "light" ? Color?.light : Color?.dark}
+                                                req={true}
+                                                title={'Guest Age'}
+                                                tooltip={true}
+                                            />
+                                        </div>
                                     </div>
-                                </div>
-                            )):undefined}
-                            
+                                )) : undefined}
+
                             {/* extra guest ends */}
 
 
@@ -777,7 +814,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
 
                         </div>
 
-                       
+
                     </div>
 
 

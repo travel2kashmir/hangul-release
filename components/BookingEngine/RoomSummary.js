@@ -107,29 +107,7 @@ function RoomSummary({ color, setDisplay, setShowModal, setRoomsLoader, setSearc
 
   }
 
-  // function generateBookingObjects(start_date, end_date, otherData) {
-  //   const bookingObjects = [];
-  //   let currentDate = new Date(start_date); // Start with the start_date
-
-  //   while (currentDate <= new Date(end_date)) {
-  //     const bookingDate = new Date(currentDate);
-  //     const bookingDateString = bookingDate.toISOString().split('T')[0]; // Format the date as YYYY-MM-DD
-
-  //     const bookingObject = {
-  //       booking_date: bookingDateString,
-  //       ...otherData
-  //     };
-
-  //     bookingObjects.push(bookingObject);
-
-  //     // Move to the next day
-  //     currentDate.setDate(currentDate.getDate() + 1);
-  //   }
-
-  //   return bookingObjects;
-  // }
-
-
+  
   function closeButtonAction() {
     // if there is any reservation in DB then remove them first else perform the other funtions
     if (reservationIdentity.length > 0) {
@@ -220,10 +198,7 @@ function RoomSummary({ color, setDisplay, setShowModal, setRoomsLoader, setSearc
           </i>
 
           {/* back icon */}
-          {/* <i className='cursor-pointer my-auto' onClick={closeButtonAction}> */}
-          {/* <AiOutlineClose color='red' size={20} /> */}
-          {/* <span className='text-red-600 text-sm font-semibold'>Cancel Booking</span> */}
-          {/* </i> */}
+          
           {cancelBookingLoader === true ?
             <ButtonLoader
               classes='text-red-600 text-sm font-semibold cursor-pointer my-auto'

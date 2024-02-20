@@ -8,8 +8,9 @@ import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { removeRoomFromSelected, clearRoomsSelected, setAddMoreRoom, setGuestDetails, clearGuestDetails, clearInventoryDetail, clearReservationIdentity, removeReservationFromReservationIdentity, updateBookingInfo } from '../redux/hangulSlice';
 // validation
-import GuestDetailValidation from '../validation/bookingEngine/GuestDetailValidation'
-import GstValidation from '../validation/bookingEngine/GstDetailValidation'
+import ExtraGuestDetailValidation from "../validation/bookingEngine/ExtraGuestDetailValidation";
+import GuestDetailValidation from '../validation/bookingEngine/GuestDetailValidation';
+import GstValidation from '../validation/bookingEngine/GstDetailValidation';
 // timestamp
 import formatDateToCustomFormat from '../generalUtility/timeStampMaker'
 import CountdownTimer from './CountDownTimer';
@@ -50,10 +51,11 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
         totalFinalRate: 0,
         totalTaxAmount: 0,
         totalOtherFees: 0,
+        extraGuestCharges:0
     });
     const [addExtraGuest, setAddExtraGuest] = useState(false)
 
-    const { totalFinalRate, totalTaxAmount, totalOtherFees } = totals;
+    const { totalFinalRate,extraGuestCharges, totalTaxAmount, totalOtherFees } = totals;
     const couponDiscount = 0;
 
     const startDate = new Date(checkinDate); // Booking start date
@@ -74,7 +76,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
         setSelectedRoomsArray(rooms.filter((room) => roomsSelected.has(room.room_id)));
     }, [roomsSelected])
 
-    
+
     const inventoryDetail = useSelector(state => state.inventoryDetail)
     //  stored the lowest inventory available in the inventory_available variable.
     const inventory_available = Math.min(...inventoryDetail.map((item) => item.available_inventory))
@@ -103,12 +105,11 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
         setRate(JSON.parse(room_rates))
 
         // Calculate the total final rate
-        const calculatedTotals = calculateTotalFinalRate(rate, selectedQuantitiesMap);
-
+        const calculatedTotals = addExtraGuest===true?calculateTotalFinalRate(rate, selectedQuantitiesMap,extraGuest):calculateTotalFinalRate(rate, selectedQuantitiesMap);
         // Update the state with the new totals
         setTotals(calculatedTotals);
 
-    }, [rate])
+    }, [rate,extraGuest])
 
     // to check for selected rooms whenever the page renders
     useEffect(() => {
@@ -143,27 +144,49 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
 
 
     // Function to calculate the total final rate from multiple objects
-    function calculateTotalFinalRate(rate, selectedQuantitiesMap) {
+    function calculateTotalFinalRate(rate, selectedQuantitiesMap,extraGuest=undefined) {
         let totalFinalRate = 0;
         let totalTaxAmount = 0;
         let totalOtherFees = 0;
+        let extraGuestCharges=extraGuest!=undefined?0:undefined;
 
         // Loop through the objects and accumulate the total_final_rate values
         for (const roomKey in rate) {
             if (rate.hasOwnProperty(roomKey)) {
                 const room = rate[roomKey];
+                
                 const selectedQuantity = selectedQuantitiesMap.get(roomKey) || 1; // Default to 1 if no quantity is selected
 
                 // Calculate the updated total final rate, total tax amount, and total other fees
-                totalFinalRate += room.total_final_rate * selectedQuantity;
-                totalTaxAmount += room.total_tax_amount * selectedQuantity;
-                totalOtherFees += room.total_otherfees_amount * selectedQuantity;
+                if(extraGuest!=undefined){
+                    extraGuest.forEach((guest)=>{
+                        if(guest.room_id===roomKey){
+                            console.log(`Guest age \t"${guest.guest_age}`)
+                            if(guest.guest_age<=12){
+                                extraGuestCharges+=room.extra_child_price;
+                            }
+                            else{
+                                extraGuestCharges+=room.extra_adult_price;
+                            }
+                        }
+                    })
+                    // totalFinalRate += room.total_final_rate * selectedQuantity;
+                    // totalTaxAmount += room.total_tax_amount * selectedQuantity;
+                    // totalOtherFees += room.total_otherfees_amount * selectedQuantity;
+                }
+                
+                    totalFinalRate += room.total_final_rate * selectedQuantity;
+                    totalTaxAmount += room.total_tax_amount * selectedQuantity;
+                    totalOtherFees += room.total_otherfees_amount * selectedQuantity;
+                
+                
             }
         }
 
         // Return the values as an object
         return {
             totalFinalRate: totalFinalRate,
+            extraGuestCharges:extraGuestCharges,
             totalTaxAmount: totalTaxAmount,
             totalOtherFees: totalOtherFees,
         };
@@ -282,13 +305,20 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
     function SubmitGuestDetails() {
         let validationResults = [];
         let isGuestDetailsValid = GuestDetailValidation(guest);
-
+        let isExtraGuestDetailsValid = ExtraGuestDetailValidation(extraGuest);
         // isGuestDetailsValid can be either true or an error object
         if (isGuestDetailsValid !== true) {
             // Guest details are invalid, you can handle the error here
             setGuestDetailError(isGuestDetailsValid);
             validationResults.push(false)
         }
+
+        if (isExtraGuestDetailsValid !== true) {
+            // Guest details are invalid, you can handle the error here
+            setExtraGuestError(isExtraGuestDetailsValid);
+            validationResults.push(false)
+        }
+
         else {
             validationResults.push(true)
             setGuestDetailError({})
@@ -480,11 +510,11 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
 
                     {/* timer for medium and large screen start */}
                     <div className='hidden md:block my-auto'>
-                        <CountdownTimer
+                        {/* <CountdownTimer
                             time={15}
                             onTimerComplete={closeButtonAction}
                             color={color}
-                        />
+                        /> */}
                     </div>
                     {/* timer for medium and large screen end */}
 
@@ -504,12 +534,12 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
 
                 {/* timer for mobile screen */}
                 <div className='block md:hidden bg-slate-100 border-b-2 pb-2'>
-                    <CountdownTimer
+                    {/* <CountdownTimer
                         time={15}
                         onTimerComplete={closeButtonAction}
                         color={color}
 
-                    />
+                    /> */}
                 </div>
 
             </div>
@@ -597,32 +627,32 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                             className={`${color?.text?.title} text-md flex m-auto font-normal`}
                         > {totalRoomsCapacity - guest?.length} more guest can be added</div>
 
-                        {guest?.length < totalRoomsCapacity?<button 
-                        onClick={addGuest}
-                        className={`ml-auto px-4 py-1 bg-cyan-700 hover:bg-cyan-900  rounded-md text-white`}>
+                        {guest?.length < totalRoomsCapacity ? <button
+                            onClick={addGuest}
+                            className={`ml-auto px-4 py-1 bg-cyan-700 hover:bg-cyan-900  rounded-md text-white`}>
                             {'Add Guests'}
-                        </button>:
-                        <button 
-                        onClick={newExtraGuest}
-                        disabled={selectedRoomsArray.filter(i=>i.extra_guest_allowed>0).length===0}
-                            className={`ml-auto px-4 py-1 ${selectedRoomsArray.filter(i=>i.extra_guest_allowed>0).length!==0 ? 'bg-cyan-700 hover:bg-cyan-900' : 'bg-cyan-600 '}  rounded-md text-white`}>
-                            {'Add Extra Guests'}
-                        </button>}
-                        
+                        </button> :
+                            <button
+                                onClick={newExtraGuest}
+                                disabled={selectedRoomsArray.filter(i => i.extra_guest_allowed > 0).length === 0}
+                                className={`ml-auto px-4 py-1 ${selectedRoomsArray.filter(i => i.extra_guest_allowed > 0).length !== 0 ? 'bg-cyan-700 hover:bg-cyan-900' : 'bg-cyan-600 '}  rounded-md text-white`}>
+                                {'Add Extra Guests'}
+                            </button>}
+
                     </div>
-                    
+
                     {/* allowed extra guest list start */}
                     {
                         selectedRoomsArray.map((i, idx) => {
                             return (
                                 <div className={`flex flex-wrap items-center justify-center`} key={idx}>
-                                  <span className="font-semibold text-sm mx-2">{i?.room_name}</span>  extra guest allowed {(i?.room_capacity - i?.maximum_number_of_occupants) * selectedQuantitiesMap?.get(i?.room_id)}
+                                    <span className="font-semibold text-sm mx-2">{i?.room_name}</span>  extra guest allowed {(i?.room_capacity - i?.maximum_number_of_occupants) * selectedQuantitiesMap?.get(i?.room_id)}
                                 </div>
                             )
                         })
                     }
                     {/* allowed extra guest list start */}
-                  
+
                     <div className="pt-1 pb-4">
                         <div className="md:px-4 mx-auto w-full">
                             {guest.map((i, loopIndex) => (
@@ -713,10 +743,10 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                                                 visible={1}
                                                 defaultValue={'select room'}
                                                 onChangeAction={(e) => handleChangeInExtraGuest(e, i.index, "room_id")}
-                                                color={color}
+                                                color={color?.theme === "light" ? Color?.light : Color?.dark}
                                                 req={true}
-                                                options={selectedRoomsArray.filter(i=>i.extra_guest_allowed>0).map(i => ({ "label": i.room_name, "value": i.room_id }))}
-                                                error={extraGuestError[loopIndex]?.room}
+                                                options={selectedRoomsArray.filter(i => i.extra_guest_allowed > 0).map(i => ({ "label": i.room_name, "value": i.room_id }))}
+                                                error={extraGuestError[loopIndex]?.room_id}
                                                 tooltip={'select room for which extra guest is being selected'}
                                             />
 
@@ -809,7 +839,6 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
 
 
                                 </div>
-
                                 : <></>}
 
                         </div>
@@ -825,11 +854,36 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                 <div id="price-breakup" className={`border border-slate-400 ${color?.boxColor} p-4 mt-10 md:mt-0 text-black h-fit w-full text-start  md:w-5/12 lg:w-4/12  rounded-2xl `}>
                     <div className=' w-full h-1/2 my-2'>
                         <h1 className={`${color?.text?.title} font-extrabold p-2 text-xl`}>Price Breakup</h1>
-                        <div className={`${color?.text?.description} flex justify-start items-start my-4  border-b border-slate-400`}> <div className='p-2 w-4/5 font-semibold'>{totalSelectedQuantities} Room for {numberOfNights === 0 ? '1 Day' : numberOfNights === 1 ? '1 Night' : `${numberOfNights} Nights`}<br /> <div className='text-sm font-normal px-3'>base price</div></div> <div className='mx-2 my-auto flex justify-end w-full'>₹ {totalFinalRate}</div></div>
-                        <div className={`${color?.text?.description} flex justify-start items-start my-4  border-b border-slate-400`}> <div className='p-2 w-4/5 font-semibold'>Taxes</div> <div className='mx-2 my-auto flex justify-end w-full'>₹ {totalTaxAmount}</div></div>
-                        <div className={`${color?.text?.description} flex justify-start items-start my-4  border-b border-slate-400`}> <div className='p-2 w-4/5 font-semibold'>Other Fees</div> <div className='mx-2 my-auto flex justify-end w-full'>₹ {totalOtherFees}</div></div>
+                        {/* total final rate start  */}
+                        <div className={`${color?.text?.description} flex justify-start items-start my-4  border-b border-slate-400`}> <div className='p-2 w-4/5 font-semibold'>{totalSelectedQuantities} Room for {numberOfNights === 0 ? '1 Day' : numberOfNights === 1 ? '1 Night' : `${numberOfNights} Nights`}<br /> <div className='text-sm font-normal px-3'>base price</div></div>
+                            <div className='mx-2 my-auto flex justify-end w-full'>₹ {totalFinalRate}</div>
+                        </div>
+                        {/* total final rate end */}
+
+                        {/* total extra guest rate start  */}
+                        {addExtraGuest == true && <div className={`${color?.text?.description} flex justify-start items-start my-4  border-b border-slate-400`}> <div className='p-2 w-4/5 font-semibold'>extra guest charges</div>
+                            <div className='mx-2 my-auto flex justify-end w-full'>₹ {extraGuestCharges?extraGuestCharges:0}</div>
+                        </div>}
+                        {/* total extra guest rate end */}
+
+
+                        {/* total tax amount start  */}
+                        <div className={`${color?.text?.description} flex justify-start items-start my-4  border-b border-slate-400`}> <div className='p-2 w-4/5 font-semibold'>Taxes</div>
+                            <div className='mx-2 my-auto flex justify-end w-full'>₹ {totalTaxAmount}</div>
+                        </div>
+                        {/* total tax amount end*/}
+
+                        {/* total other fees start  */}
+                        <div className={`${color?.text?.description} flex justify-start items-start my-4  border-b border-slate-400`}> <div className='p-2 w-4/5 font-semibold'>Other Fees</div>
+                            <div className='mx-2 my-auto flex justify-end w-full'>₹ {totalOtherFees}</div>
+                        </div>
+                        {/* total other fees end  */}
                         {/* <div className='flex  items-start my-4  border-b-2'> <div className='p-2 w-4/5 font-semibold'>Coupon Discounts</div> <div className='mx-2 my-auto flex justify-end w-full'>₹ {couponDiscount}.00</div></div> */}
-                        <div className={`${color?.text?.title} flex justify-start items-start my-4`}> <div className='p-2 w-4/5 font-bold'>Total Amount To Be Paid</div> <div className='mx-2 flex justify-end w-full text-2xl font-bold'>₹ {(totalFinalRate + totalTaxAmount + totalOtherFees) - couponDiscount}</div></div>
+                        {/* total final rate start */}
+                        <div className={`${color?.text?.title} flex justify-start items-start my-4`}> <div className='p-2 w-4/5 font-bold'>Total Amount To Be Paid</div>
+                            <div className='mx-2 flex justify-end w-full text-2xl font-bold'>₹ {(totalFinalRate + totalTaxAmount + totalOtherFees + (extraGuestCharges||0)) - couponDiscount}</div>
+                        </div>
+                        {/* total final rate end */}
                     </div>
 
                     {/* coupon code section */}
@@ -852,8 +906,23 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                             disabled={disabled || totalFinalRate + totalTaxAmount + totalOtherFees === 0}
                             onClick={() => {
                                 // setDisplay(4)
+                                
+                                let totalExtaGuest = selectedRoomsArray.reduce((total, room) => {
+                                    return total + Number(room.extra_guest_allowed);
+                                }, 0)
+                                alert(JSON.stringify(extraGuest.length === totalExtaGuest))
                                 if (guest.length <= totalRoomsCapacity) {
-                                    SubmitGuestDetails();
+                                    if (addExtraGuest === true && extraGuest.length === totalExtaGuest) {
+                                        SubmitGuestDetails();
+                                    }
+
+                                    else if (addExtraGuest === false) {
+                                        SubmitGuestDetails();
+                                    }
+                                    else {
+                                        toast.error('APP: Extra guest more than permissible limit.');
+                                    }
+
                                 } else {
                                     toast.error('APP: No selected room can accommodate the current number of guests.');
                                 }

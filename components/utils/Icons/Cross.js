@@ -1,7 +1,7 @@
 function Cross() {
   return (
     <svg
-    className="w-5 h-5"
+    className="w-5 h-5 cursor-pointer"
     fill="currentColor"
     viewBox="0 0 20 20"
     xmlns="http://www.w3.org/2000/svg"

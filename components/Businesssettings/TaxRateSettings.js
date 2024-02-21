@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import InputText from '../utils/InputText';
 import Button from '../Button';
 import Cross from '../utils/Icons/Cross';
-import { handleChangeInTaxes, addTaxTemplate,removeTaxTemplate, taxSlabValidation, saveTaxes,deleteTaxPlan,actionOnCross } from './Utiles';
+import { handleChangeInTaxes, addTaxTemplate, removeTaxTemplate, taxSlabValidation, saveTaxes, deleteTaxPlan, actionOnCross } from './Utiles';
 import { ToastContainer, toast } from "react-toastify";
 import axios from 'axios';
 import Modal from '../NewTheme/modal';
@@ -42,7 +42,7 @@ function TaxRateSettings({ color, language, taxPlans, property_id }) {
             setSpinner(false);
         }
     }
-    
+
     return (
         <>
 
@@ -57,12 +57,12 @@ function TaxRateSettings({ color, language, taxPlans, property_id }) {
                             Tax rate Settings
                         </h6>
 
-                        <div className='bg-gray-200 border'><Button
+                       <Button
                             testid="test_button"
                             Primary={language?.Add}
                             onClick={() => addTaxTemplate(taxIndex, setTaxIndex, taxes, setTaxes, property_id)}
                         />
-                        </div>
+                       
                     </div>
 
                     {/* form body start  */}
@@ -70,7 +70,7 @@ function TaxRateSettings({ color, language, taxPlans, property_id }) {
                         <div className=" md:px-4 mx-auto w-full">
                             {taxes.map((item, index) => {
                                 return (<div key={item.index} className="border p-2 m-2 rounded-md">
-                                    <div className="flex justify-end" onClick={() => actionOnCross(item, setTaxes,setDeletePlan)}><Cross /></div>
+                                    <div className="flex justify-end" onClick={() => actionOnCross(item, setTaxes, setDeletePlan)}><Cross /></div>
                                     <div className="flex flex-wrap ">
                                         {/*tax slab start*/}
                                         <InputText
@@ -161,6 +161,7 @@ function TaxRateSettings({ color, language, taxPlans, property_id }) {
                 draggable
                 pauseOnHover />
 
+            {/* modal for delete  */}
             {deletePlan.status === true &&
                 <Modal
                     title={'Delete Tax'}
@@ -169,7 +170,7 @@ function TaxRateSettings({ color, language, taxPlans, property_id }) {
                         <div className={`flex flex-wrap ${color.whiteBackground} ${color?.text} text-md font-semibold items-center`}>
                             <div>Are you sure you want to delete tax plan?</div>
                             <div className='flex flex-wrap w-full my-2 justify-end'>
-                                <Button Primary={language?.Delete} onClick={() => deleteTaxPlan(deletePlan.tax_plan_id, deletePlan.index,setDeletePlan,removeTaxTemplate,setTaxes)} />
+                                <Button Primary={language?.Delete} onClick={() => deleteTaxPlan(deletePlan.tax_plan_id, deletePlan.index, setDeletePlan, removeTaxTemplate, setTaxes)} />
                                 <Button Primary={language?.Cancel} onClick={() => setDeletePlan({ "status": false, "tax_plan_id": undefined })} />
                             </div>
                         </div>

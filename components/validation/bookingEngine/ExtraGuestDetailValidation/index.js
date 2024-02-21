@@ -1,10 +1,6 @@
 export default function validateGuestDetail(data) {
-    var error = [];
-
-    for (let i = 0; i < data.length; i++) {
-        error.push({})
-    }
-    var flag = false;
+    let error = new Array(data.length).fill({});
+    let flag = false;
 
     data.map((guest, index) => {
         // Validate all fields for the first guest

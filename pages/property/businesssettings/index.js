@@ -265,7 +265,7 @@ function Index() {
 
           </div>
 
-          <TaxRateSettings color={color} language={language} />
+          <TaxRateSettings color={color} language={language} taxPlans={allHotelDetails?.tax_plans} property_id={allHotelDetails?.property_id}/>
           {/* Toast Container */}
 
 

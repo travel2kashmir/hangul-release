@@ -6,6 +6,8 @@ import { handleChangeInTaxes, addTaxTemplate, removeTaxTemplate, taxSlabValidati
 import { ToastContainer, toast } from "react-toastify";
 import axios from 'axios';
 import Modal from '../NewTheme/modal';
+import { IoIosAddCircleOutline } from "react-icons/io";
+import { CgRemove } from "react-icons/cg";
 
 function TaxRateSettings({ color, language, taxPlans, property_id }) {
     const taxTemp = {
@@ -19,7 +21,7 @@ function TaxRateSettings({ color, language, taxPlans, property_id }) {
     const [deletePlan, setDeletePlan] = useState({ "status": false, "tax_plan_id": undefined })
     const [taxIndex, setTaxIndex] = useState(0)
     const [taxes, setTaxes] = useState(taxPlans || [{ ...taxTemp, index: taxIndex }])
-
+    const [showTaxes,setShowTaxes]=useState(false)
     useEffect(() => {
         if (taxPlans != undefined) {
             setTaxes(taxPlans.sort((a, b) => a.tax_slab_start - b.tax_slab_start).map((i, idx) => ({ ...i, property_id, index: idx })));
@@ -45,26 +47,42 @@ function TaxRateSettings({ color, language, taxPlans, property_id }) {
 
     return (
         <>
-
-            <div className={`${color?.greybackground} w-full  py-2`}>
+           {!showTaxes && <div className={`${color?.whitebackground} shadow rounded-lg w-full my-2 py-2 h-20 overflow-y-hidden`}>
+            
+                <div className='flex flex-wrap justify-between py-4 px-6'>
+                    <h6
+                        className={`${color?.text} text-xl flex font-bold`}
+                    >
+                        Tax rate Settings
+                    </h6>
+                 <button onClick={()=>setShowTaxes(true)} className='px-4 py-2 rounded-md bg-cyan-600 text-white'>
+                 <IoIosAddCircleOutline />
+                 </button>
+                </div>
+            </div>} 
+            {showTaxes && <div className={`${color?.greybackground} w-full  py-2 `}>
                 <div
                     className={`${color?.whitebackground} shadow rounded-lg `}
-                >
+                >  
+               
+
                     <div className='flex flex-wrap justify-between py-4 px-6'>
                         <h6
                             className={`${color?.text} text-xl flex font-bold`}
                         >
                             Tax rate Settings
                         </h6>
-
-                       <Button
+                        <button onClick={()=>setShowTaxes(false)} className=' m-2 px-4 py-2 rounded-md bg-cyan-600 text-white'><CgRemove /></button>
+                        
+                    </div>
+                    <div className='flex justify-end mr-6'>
+                    <Button
                             testid="test_button"
                             Primary={language?.Add}
                             onClick={() => addTaxTemplate(taxIndex, setTaxIndex, taxes, setTaxes, property_id)}
                         />
-                       
-                    </div>
 
+                    </div>
                     {/* form body start  */}
                     <div>
                         <div className=" md:px-4 mx-auto w-full">
@@ -150,7 +168,7 @@ function TaxRateSettings({ color, language, taxPlans, property_id }) {
                     </div>
 
                 </div>
-            </div>
+            </div>}
             <ToastContainer position="top-center"
                 autoClose={5000}
                 hideProgressBar={false}

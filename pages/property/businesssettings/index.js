@@ -187,23 +187,7 @@ function Index() {
                   />
                   {/* select currency ends  */}
 
-                  {/* enter discount rate start */}
-                  <InputText
-                    label={"Tax Rate"}
-                    visible={1}
-                    defaultValue={universalData?.tax_rate}
-                    onChangeAction={(e) => {
-                      setMutationFlag(true);
-                      setUniversalData({ ...universalData, tax_rate: e.target.value });
-                    }
-                    }
-                    error={error?.tax_rate}
-                    color={color}
-                    req={true}
-                    title={'The tax applied on purchase in percentage'}
-                    tooltip={true}
-                  />
-                  {/* discount rate ends  */}
+               
                   {/* other fees type start  */}
                   <DropDown
                     label={'Other Fees Calculation'}

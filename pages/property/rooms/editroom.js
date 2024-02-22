@@ -2023,7 +2023,7 @@ function Room() {
                   addButtonAction={addRateButtonAction}
                   showOptions={false}
                   tableName={`Room Rates`}
-                  cols={["Meal Name", "Price", "Extra Adult Price", "Extra Child Price", "Actions"]}
+                  cols={["Meal Name", "Price","Tax","Other Charges", "Extra Adult Price", "Extra Child Price", "Actions"]}
                   data={roomRates}
                 />
               </div>

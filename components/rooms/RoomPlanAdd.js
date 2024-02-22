@@ -25,16 +25,33 @@ function RoomPlanAdd({ color, language, fetchDetails, setRoomRateEditModal, curr
         })
     }, [])
     const validateEditedRate = (editedRoomPrice) => {
-        const { price } = editedRoomPrice;
+        const { price,tax,other_charges,extra_adult_price,extra_child_price } = editedRoomPrice;
         let flag = false;
         let errorFound = {}
         if (isNaN(price)) {
             flag = true;
-            errorFound.price = "Rate should be number";
+            errorFound.price = "APP: Rate should be number";
         }
         if (price <= 0) {
             flag = true
-            errorFound.price = "Rate should be greater than zero";
+            errorFound.price = "APP: Rate should be greater than zero";
+        }
+        if(isNaN(tax) || tax<=0){
+            flag = true
+            errorFound.tax = "APP: Tax should be valid positive number";
+        }
+        if(isNaN(other_charges) || other_charges<0){
+            flag = true
+            errorFound.other_charges = "APP: Other Charges should be valid positive number";
+        }
+        if(!isNaN(extra_adult_price) && parseFloat(extra_adult_price)<0){
+            flag = true
+            errorFound.extra_adult_price = "APP: Extra adult price should be valid positive number";
+        }
+        alert(typeof extra_child_price)
+        if(!isNaN(extra_child_price) && parseFloat(extra_child_price)<0){
+            flag = true
+            errorFound.extra_child_price = "APP: Extra child charges should be valid positive number";
         }
         return flag === true ? errorFound : true
     }
@@ -42,6 +59,7 @@ function RoomPlanAdd({ color, language, fetchDetails, setRoomRateEditModal, curr
     const sendNewRate = () => {
         setShowEditSpinner(true)
         let result = validateEditedRate(mealPlans);
+        alert(JSON.stringify(result))
         if (result === true) {
             let url = '/api/room_rate_plan';
             let data = {
@@ -51,7 +69,9 @@ function RoomPlanAdd({ color, language, fetchDetails, setRoomRateEditModal, curr
                         "meal_plan_id": mealPlans.meal_plan_id,
                         "price": mealPlans.price,
                         "extra_adult_price": mealPlans.extra_adult_price,
-                        "extra_child_price": mealPlans.extra_child_price
+                        "extra_child_price": mealPlans.extra_child_price,
+                        "other_charges":mealPlans.other_charges,
+                        "tax":mealPlans.tax
                     }
                 ]
             }
@@ -67,6 +87,7 @@ function RoomPlanAdd({ color, language, fetchDetails, setRoomRateEditModal, curr
         }
         else {
             setError(result)
+            setShowEditSpinner(false)
         }
     }
 
@@ -88,7 +109,7 @@ function RoomPlanAdd({ color, language, fetchDetails, setRoomRateEditModal, curr
                 title={"select rate plan to be implemented"}
                 tooltip={true}
             />
-
+                {/* meal description auto filled  */}
             <InputTextBox
                 label={"Meal Description"}
                 visible={loader}
@@ -114,6 +135,34 @@ function RoomPlanAdd({ color, language, fetchDetails, setRoomRateEditModal, curr
                 tooltip={true}
                 title={'New price for the meal plan'}
             />
+            {/* meal tax */}
+            <InputText
+                label={"Tax Amount"}
+                visible={loader}
+                onChangeAction={(e) => {
+                    setMealPlans({ ...mealPlans, "tax": e.target.value });
+                    setMutationFlag(true)
+                }}
+                error={error?.tax}
+                color={color}
+                req={true}
+                tooltip={true}
+                title={'Tax amount to be charged'}
+            />
+            {/* othercharges */}
+            <InputText
+                label={"Other Charges"}
+                visible={loader}
+                onChangeAction={(e) => {
+                    setMealPlans({ ...mealPlans, "other_charges": e.target.value });
+                    setMutationFlag(true)
+                }}
+                error={error?.other_charges}
+                color={color}
+                req={true}
+                tooltip={true}
+                title={'Other Charges'}
+            />
             {/* extra adult price  */}
             <InputText
                 label={"Extra Adult Price"}
@@ -124,7 +173,7 @@ function RoomPlanAdd({ color, language, fetchDetails, setRoomRateEditModal, curr
                 }}
                 error={error?.extra_adult_price}
                 color={color}
-                req={true}
+                req={false}
                 tooltip={true}
                 title={'New extra adult price for the meal plan'}
             />
@@ -138,7 +187,7 @@ function RoomPlanAdd({ color, language, fetchDetails, setRoomRateEditModal, curr
                 }}
                 error={error?.extra_child_price}
                 color={color}
-                req={true}
+                req={false}
                 tooltip={true}
                 title={'New extra child price for the meal plan'}
             />

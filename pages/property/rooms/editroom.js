@@ -64,7 +64,7 @@ function Room() {
   const [allRoomDetails, setAllRoomDetails] = useState([])
   const [modified, setModified] = useState([])
   const [flag, setFlag] = useState([])
-  const [disp, setDisp] = useState(0);
+  const [disp, setDisp] = useState(3);
   const [error, setError] = useState({});
   const [finalView, setFinalView] = useState([])
   const [roomDetails, setRoomDetails] = useState([])
@@ -192,6 +192,8 @@ function Room() {
         "Extra Adult Price": item?.extra_adult_price || 0,
         "Extra Child Price": item?.extra_child_price || 0,
         "id": item.room_rate_plan_id,
+        "Tax":item.tax,
+        "Other Charges":item.other_charges,
 
         Actions: [
           {

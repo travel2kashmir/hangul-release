@@ -15,10 +15,19 @@ function validateRatePlans(rates) {
             temp.price = "Price must be provided";
             hasError = true;
         }
-        if (rate.extra_adult_price === "" || rate.extra_adult_price === null ) {
-            temp.exta_adult_price = "extra_adult_price must be provided";
+        if (rate.tax === "" || rate.tax === null || rate.tax<0 || isNaN(rate.tax) ) {
+            temp.tax = "Tax must be positive number";
             hasError = true;
         }
+        if (rate.other_charges === "" || rate.other_charges === null || rate.other_charges < 0 || isNaN(rate.other_charges) ) {
+            temp.other_charges = "Other charges must be positive number";
+            hasError = true;
+        }
+        if (rate.extra_adult_price === "" || rate.extra_adult_price === null || rate.extra_adult_price < 0 || isNaN(rate.extra_adult_price) ) {
+            temp.extra_adult_price = "Extra adult charges must be positive number";
+            hasError = true;
+        }
+       
         if (rate.extra_child_price === "" || rate.extra_child_price === null ) {
             temp.extra_child_price = "extra_child_price must be provided";
             hasError = true;

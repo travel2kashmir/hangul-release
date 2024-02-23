@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import InputText from '../utils/InputText';
-import InputNumber from '../utils/InputNumber';
 import Button from '../Button';
 import { toast, ToastContainer } from 'react-toastify';
 import axios from 'axios';

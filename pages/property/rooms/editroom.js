@@ -64,7 +64,7 @@ function Room() {
   const [allRoomDetails, setAllRoomDetails] = useState([])
   const [modified, setModified] = useState([])
   const [flag, setFlag] = useState([])
-  const [disp, setDisp] = useState(3);
+  const [disp, setDisp] = useState(0);
   const [error, setError] = useState({});
   const [finalView, setFinalView] = useState([])
   const [roomDetails, setRoomDetails] = useState([])

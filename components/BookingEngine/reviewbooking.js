@@ -51,11 +51,11 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
         totalFinalRate: 0,
         totalTaxAmount: 0,
         totalOtherFees: 0,
-        extraGuestCharges:0
+        extraGuestCharges: 0
     });
     const [addExtraGuest, setAddExtraGuest] = useState(false)
 
-    const { totalFinalRate,extraGuestCharges, totalTaxAmount, totalOtherFees } = totals;
+    const { totalFinalRate, extraGuestCharges, totalTaxAmount, totalOtherFees } = totals;
     const couponDiscount = 0;
 
     const startDate = new Date(checkinDate); // Booking start date
@@ -76,10 +76,9 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
         setSelectedRoomsArray(rooms.filter((room) => roomsSelected.has(room.room_id)));
     }, [roomsSelected])
 
-
     const inventoryDetail = useSelector(state => state.inventoryDetail)
     //  stored the lowest inventory available in the inventory_available variable.
-    const inventory_available = Math.min(...inventoryDetail.map((item) => item.available_inventory))
+    // const inventory_available = Math.min(...inventoryDetail.map((item) => item.available_inventory))
 
     const dispatch = useDispatch();
 
@@ -92,25 +91,6 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
     // check the boolean value of reserveRoom state and based on this changed the css of payNow button
 
     const reservationIdentity = useSelector(state => state.reservationIdentity)
-
-
-
-    // for getting the data from the local storage and setting the data
-    useEffect(() => {
-        let room = localStorage.getItem("room_data")
-
-        setSelectedRoom(JSON.parse(room))
-
-        let room_rates = localStorage.getItem("room_rates")
-        setRate(JSON.parse(room_rates))
-
-        // Calculate the total final rate
-        const calculatedTotals = addExtraGuest===true?calculateTotalFinalRate(rate, selectedQuantitiesMap,extraGuest):calculateTotalFinalRate(rate, selectedQuantitiesMap);
-        // Update the state with the new totals
-        setTotals(calculatedTotals);
-
-    }, [rate,extraGuest])
-
     // to check for selected rooms whenever the page renders
     useEffect(() => {
         // Create a new Map with keys from roomsSelected and values as 1
@@ -121,14 +101,6 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
         // Update the selectedQuantitiesMap state
         setSelectedQuantitiesMap(newSelectedQuantitiesMap);
     }, [])
-
-    // Function to update the selected quantity for a room
-    const updateSelectedQuantity = (room_id, quantity) => {
-        const newMap = new Map(selectedQuantitiesMap);
-        newMap.set(room_id, quantity);
-        setSelectedQuantitiesMap(newMap);
-    };
-
     useEffect(() => {
         let capacityArray = selectedRoomsArray.map((room) => ({
             room_id: room.room_id,
@@ -141,32 +113,58 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
         // Update the totalRoomsCapacity state
         setTotalRoomsCapacity(totalCapacity);
     }, [selectedQuantitiesMap, roomsSelected])
+    // for getting the data from the local storage and setting the data
+    useEffect(() => {
+        calculateBill()
+    }, [extraGuest, selectedQuantitiesMap])
+    function calculateBill() {
+        let room = localStorage.getItem("room_data")
+        setSelectedRoom(JSON.parse(room))
+        let room_rates = localStorage.getItem("room_rates")
+        // if(JSON.parse(room_rates)!=rate){
+        setRate(JSON.parse(room_rates))
+        // }
+        // Calculate the total final rate
+        const calculatedTotals = calculateTotalFinalRate(JSON.parse(room_rates), selectedQuantitiesMap, addExtraGuest === true ? extraGuest : undefined);
+        console.debug(JSON.stringify(calculatedTotals))
+        // Update the state with the new totals
+        setTotals(calculatedTotals);
+
+    }
+
+    // Function to update the selected quantity for a room
+    const updateSelectedQuantity = (room_id, quantity) => {
+        const newMap = new Map(selectedQuantitiesMap);
+        newMap.set(room_id, quantity);
+        setSelectedQuantitiesMap(newMap);
+    };
+
 
 
     // Function to calculate the total final rate from multiple objects
-    function calculateTotalFinalRate(rate, selectedQuantitiesMap,extraGuest=undefined) {
+    function calculateTotalFinalRate(rate, selectedQuantitiesMap, extraGuest = undefined) {
         let totalFinalRate = 0;
         let totalTaxAmount = 0;
         let totalOtherFees = 0;
-        let extraGuestCharges=extraGuest!=undefined?0:undefined;
+        let extraGuestCharges = extraGuest != undefined ? 0 : undefined;
 
         // Loop through the objects and accumulate the total_final_rate values
         for (const roomKey in rate) {
             if (rate.hasOwnProperty(roomKey)) {
-                const room = rate[roomKey];
-                
+                const room = rate[roomKey]; //har ek room ka price detail
                 const selectedQuantity = selectedQuantitiesMap.get(roomKey) || 1; // Default to 1 if no quantity is selected
 
                 // Calculate the updated total final rate, total tax amount, and total other fees
-                if(extraGuest!=undefined){
-                    extraGuest.forEach((guest)=>{
-                        if(guest.room_id===roomKey){
+                if (extraGuest != undefined) {
+                    extraGuest.forEach((guest) => {
+                        //calculating extra guest charges
+                        if (guest.room_id === roomKey) {
                             console.log(`Guest age \t"${guest.guest_age}`)
-                            if(guest.guest_age<=12){
-                                extraGuestCharges+=room.extra_child_price;
+                            if (guest.guest_age <= 12) {
+                                extraGuestCharges += room.extra_child_price;
                             }
-                            else{
-                                extraGuestCharges+=room.extra_adult_price;
+                            else {
+                                extraGuestCharges += room.extra_adult_price;
                             }
                         }
                     })
@@ -174,19 +172,19 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                     // totalTaxAmount += room.total_tax_amount * selectedQuantity;
                     // totalOtherFees += room.total_otherfees_amount * selectedQuantity;
                 }
-                
-                    totalFinalRate += room.total_final_rate * selectedQuantity;
-                    totalTaxAmount += room.total_tax_amount * selectedQuantity;
-                    totalOtherFees += room.total_otherfees_amount * selectedQuantity;
-                
-                
+
+                totalFinalRate += room.total_final_rate * selectedQuantity;
+                totalTaxAmount += room.total_tax_amount * selectedQuantity;
+                totalOtherFees += room.total_otherfees_amount * selectedQuantity;
+
+
             }
         }
 
         // Return the values as an object
         return {
             totalFinalRate: totalFinalRate,
-            extraGuestCharges:extraGuestCharges,
+            extraGuestCharges: extraGuestCharges,
             totalTaxAmount: totalTaxAmount,
             totalOtherFees: totalOtherFees,
         };
@@ -265,6 +263,8 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                 // Handle the case where the specified room_id doesn't exist in the data
                 console.log(`Room with room_id ${roomIdToRemove} not found.`);
             }
+            calculateBill();
+            
         } else {
             // Handle the case where there is no existing data in local storage
             console.log('No existing room data found in local storage.');
@@ -590,13 +590,29 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                                             }}
                                         >
                                             {/* Generate options for the dropdown based on inventory_available */}
-                                            {Array.from({ length: inventory_available || 1 }, (_, index) => index + 1).map((quantity) => (
+                                            {/* {Array.from({ length: inventory_available || 1 }, (_, index) => index + 1).map((quantity) => (
+                                                <option key={quantity} value={quantity}>
+                                                    {quantity}
+                                                </option>
+                                            ))} */}
+
+                                            {/* {Array.from({ length: Math.min(...inventoryDetail?.filter(item => item?.room_id === room?.room_id)?.map(item => item?.available_inventory)) || 1 }, (_, index) => index + 1).map((quantity) => (
+                                                <option key={quantity} value={quantity}>
+                                                    {quantity}
+                                                </option>
+                                            ))} */}
+
+
+                                            {Array.from({ length: Math.min(...(inventoryDetail?.filter(item => item?.room_id === room?.room_id)?.map(item => item?.available_inventory)) || [1]) }, (_, index) => index + 1).map((quantity) => (
                                                 <option key={quantity} value={quantity}>
                                                     {quantity}
                                                 </option>
                                             ))}
 
+
                                         </select>
+
+
                                     </td>
                                     <td className='text-red-800 '>
                                         {/* delete icon  */}
@@ -735,7 +751,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                                     <div className='border border-slate-400 rounded-xl p-2 m-2' key={i.index}>
                                         <div className='flex justify-end'><button onClick={() => removeExtraGuest(i.index)}><RxCross2 /></button></div>
                                         <div className="flex flex-wrap ">
-                                            {JSON.stringify(extraGuest)}
+
                                             {/* select extra guest for room  */}
 
                                             <DropDown
@@ -861,8 +877,8 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                         {/* total final rate end */}
 
                         {/* total extra guest rate start  */}
-                        {addExtraGuest == true && <div className={`${color?.text?.description} flex justify-start items-start my-4  border-b border-slate-400`}> <div className='p-2 w-4/5 font-semibold'>extra guest charges</div>
-                            <div className='mx-2 my-auto flex justify-end w-full'>₹ {extraGuestCharges?extraGuestCharges:0}</div>
+                        {addExtraGuest == true && <div className={`${color?.text?.description} flex justify-start items-start my-4  border-b border-slate-400`}> <div className='p-2 w-4/5 font-semibold'>Extra Guest Charges</div>
+                            <div className='mx-2 my-auto flex justify-end w-full'>₹ {extraGuestCharges ? extraGuestCharges : 0}</div>
                         </div>}
                         {/* total extra guest rate end */}
 
@@ -881,7 +897,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                         {/* <div className='flex  items-start my-4  border-b-2'> <div className='p-2 w-4/5 font-semibold'>Coupon Discounts</div> <div className='mx-2 my-auto flex justify-end w-full'>₹ {couponDiscount}.00</div></div> */}
                         {/* total final rate start */}
                         <div className={`${color?.text?.title} flex justify-start items-start my-4`}> <div className='p-2 w-4/5 font-bold'>Total Amount To Be Paid</div>
-                            <div className='mx-2 flex justify-end w-full text-2xl font-bold'>₹ {(totalFinalRate + totalTaxAmount + totalOtherFees + (extraGuestCharges||0)) - couponDiscount}</div>
+                            <div className='mx-2 flex justify-end w-full text-2xl font-bold'>₹ {(totalFinalRate + totalTaxAmount + totalOtherFees + (extraGuestCharges || 0)) - couponDiscount}</div>
                         </div>
                         {/* total final rate end */}
                     </div>
@@ -906,7 +922,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                             disabled={disabled || totalFinalRate + totalTaxAmount + totalOtherFees === 0}
                             onClick={() => {
                                 // setDisplay(4)
-                                
+
                                 let totalExtaGuest = selectedRoomsArray.reduce((total, room) => {
                                     return total + Number(room.extra_guest_allowed);
                                 }, 0)

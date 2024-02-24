@@ -30,6 +30,7 @@ export const hangulSlice = createSlice({
         removeRoomFromSelected: (state, action) => {
             const roomIdToRemove = action.payload;
             state.roomsSelected =state.roomsSelected.filter(roomId => roomId.room_id !== roomIdToRemove);
+            state.inventoryDetail=state.inventoryDetail.filter(room=>room.room_id !== roomIdToRemove)
         },
         // Add a reducer case to handle clearing roomsSelected
         clearRoomsSelected: (state) => {
@@ -39,7 +40,8 @@ export const hangulSlice = createSlice({
             state.addMoreRoom = action.payload
         },
         addInventoryDetail: (state, action) => {
-            state.inventoryDetail = action.payload
+            // state.inventoryDetail = action.payload
+            state.inventoryDetail = [...state.inventoryDetail,...action.payload]
         },
         clearInventoryDetail: (state, action) => {
             state.inventoryDetail = []

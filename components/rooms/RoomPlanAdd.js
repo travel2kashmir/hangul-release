@@ -48,7 +48,7 @@ function RoomPlanAdd({ color, language, fetchDetails, setRoomRateEditModal, curr
             flag = true
             errorFound.extra_adult_price = "APP: Extra adult price should be valid positive number";
         }
-        alert(typeof extra_child_price)
+       
         if(!isNaN(extra_child_price) && parseFloat(extra_child_price)<0){
             flag = true
             errorFound.extra_child_price = "APP: Extra child charges should be valid positive number";
@@ -59,7 +59,7 @@ function RoomPlanAdd({ color, language, fetchDetails, setRoomRateEditModal, curr
     const sendNewRate = () => {
         setShowEditSpinner(true)
         let result = validateEditedRate(mealPlans);
-        alert(JSON.stringify(result))
+        
         if (result === true) {
             let url = '/api/room_rate_plan';
             let data = {
@@ -94,7 +94,9 @@ function RoomPlanAdd({ color, language, fetchDetails, setRoomRateEditModal, curr
     const onDropDownChange = (data) => {
         setMealPlans(JSON.parse(data));
     }
-    return (<>{dropDownOptions.length != 0 ? <>
+    return (<>
+    {
+    dropDownOptions.length != 0 ? <>
         <div className='flex flex-wrap'>
             {/*  meal name  */}
             <DropDown

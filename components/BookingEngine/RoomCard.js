@@ -41,13 +41,13 @@ function RoomCard({ color, filteredRoomData, roomImage, setDisplay, checkinDate,
     if (existingData) {
       // Parse the existing data from JSON
       existingData = JSON.parse(existingData);
-      alert("data already exist")
+     
       // Append the new data to the existing data (assuming 'room_id' is unique)room_rate_plan_id
       let {extra_adult_price,extra_child_price} = room_data.unconditional_rates.filter(i=>i.room_rate_plan_id===room_rates.room_rate_plan_id)[0]
       existingData[room_rates.room_id] = {...room_rates,extra_adult_price,extra_child_price};
 
     } else {
-      alert("new data comming in",JSON.stringify(room_data))
+     
       // If there is no existing data, create a new object with the new data
       let {extra_adult_price,extra_child_price} = room_data?.unconditional_rates?.filter(i=>i.room_rate_plan_id===room_rates.room_rate_plan_id)[0]
       existingData = {

@@ -30,10 +30,10 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
 
     }
     const [extraGuestError, setExtraGuestError] = useState({})
-    const [guestDetailerror, setGuestDetailError] = useState({})
+    const [guestDetailError, setGuestDetailError] = useState([])
     const [gstDetailerror, setGstDetailError] = useState({})
     const [guest, setGuest] = useState([{ ...guestTemplate, index: 0 }]);
-    const [extraGuest, setExtraGuest] = useState();
+    const [extraGuest, setExtraGuest] = useState(undefined);
     const [addGst, setAddGst] = useState(false);
     const [gstDetails, setGstDetails] = useState({})
     const [guestIndex, setGuestIndex] = useState(0)
@@ -79,7 +79,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
     const inventoryDetail = useSelector(state => state.inventoryDetail)
     //  stored the lowest inventory available in the inventory_available variable.
     // const inventory_available = Math.min(...inventoryDetail.map((item) => item.available_inventory))
-
+    const [inventoryState, setInventoryState] = useState(inventoryDetail)
     const dispatch = useDispatch();
 
     // Create a state variable for the Map
@@ -126,7 +126,6 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
         // }
         // Calculate the total final rate
         const calculatedTotals = calculateTotalFinalRate(JSON.parse(room_rates), selectedQuantitiesMap, addExtraGuest === true ? extraGuest : undefined);
-        console.debug(JSON.stringify(calculatedTotals))
         // Update the state with the new totals
         setTotals(calculatedTotals);
 
@@ -138,8 +137,6 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
         newMap.set(room_id, quantity);
         setSelectedQuantitiesMap(newMap);
     };
-
-
 
     // Function to calculate the total final rate from multiple objects
     function calculateTotalFinalRate(rate, selectedQuantitiesMap, extraGuest = undefined) {
@@ -264,7 +261,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                 console.log(`Room with room_id ${roomIdToRemove} not found.`);
             }
             calculateBill();
-            
+
         } else {
             // Handle the case where there is no existing data in local storage
             console.log('No existing room data found in local storage.');
@@ -312,15 +309,15 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
             setGuestDetailError(isGuestDetailsValid);
             validationResults.push(false)
         }
-
+        
         if (isExtraGuestDetailsValid !== true) {
             // Guest details are invalid, you can handle the error here
             setExtraGuestError(isExtraGuestDetailsValid);
             validationResults.push(false)
         }
 
-        else {
-            validationResults.push(true)
+        if(isGuestDetailsValid === true) {
+           validationResults.push(true)
             setGuestDetailError({})
             dispatch(setGuestDetails(guest))
         }
@@ -338,7 +335,6 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                 setGstDetailError({})
             }
         }
-
         // checks if all the results are true only then this block will work.
         if (validationResults.every(result => result === true)) {
             bookingRoom()
@@ -357,16 +353,16 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
         }
 
         let guestsForThisBooking = {
-            "booking_guest_link": guest.map((guestdetail) => {
+            "booking_guest_link": (extraGuest ? [...guest, ...extraGuest] : guest).map((guestdetail) => {
                 return ({
                     "guest_name": guestdetail.guest_name,
                     "guest_email": guestdetail.guest_email,
                     "guest_age": guestdetail.guest_age,
                     "guest_phone_number": guestdetail.guest_phone_number
                 })
-            }
-            )
+            })
         }
+        
 
         let bookingRoomArray = selectedRoomsArray.map((item, index) => {
             return ({
@@ -387,7 +383,8 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                     "taxes": totalTaxAmount,
                     "other_fees": totalOtherFees,
                     "coupon_discount": couponDiscount,
-                    "total_price": totalFinalRate + totalOtherFees + totalTaxAmount - couponDiscount,
+                    "extra_guest_price":extraGuestCharges,
+                    "total_price": totalFinalRate + totalOtherFees + totalTaxAmount +extraGuestCharges  - couponDiscount,
                     "invoice_time": formatDateToCustomFormat(new Date()),
                     ...(addGst && {
                         "booking_gst_link": [
@@ -454,7 +451,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
             console.log('payment sucessful')
             // changeBookingCount()
             setpayNowLoader(false)
-            setDisplay(3)
+            setDisplay(3) //changes screen to booking sucessfull
         }).catch((err) => {
             console.log(err)
         })
@@ -483,7 +480,6 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
         }
     }
 
-
     return (
         <div className={`min-h-screen ${color?.bgColor}`}>
 
@@ -510,11 +506,11 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
 
                     {/* timer for medium and large screen start */}
                     <div className='hidden md:block my-auto'>
-                        {/* <CountdownTimer
+                        <CountdownTimer
                             time={15}
                             onTimerComplete={closeButtonAction}
                             color={color}
-                        /> */}
+                        />
                     </div>
                     {/* timer for medium and large screen end */}
 
@@ -534,12 +530,12 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
 
                 {/* timer for mobile screen */}
                 <div className='block md:hidden bg-slate-100 border-b-2 pb-2'>
-                    {/* <CountdownTimer
+                    <CountdownTimer
                         time={15}
                         onTimerComplete={closeButtonAction}
                         color={color}
 
-                    /> */}
+                    />
                 </div>
 
             </div>
@@ -589,21 +585,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                                                 updateSelectedQuantity(room?.room_id, newQuantity); // Update selected quantity in the Map
                                             }}
                                         >
-                                            {/* Generate options for the dropdown based on inventory_available */}
-                                            {/* {Array.from({ length: inventory_available || 1 }, (_, index) => index + 1).map((quantity) => (
-                                                <option key={quantity} value={quantity}>
-                                                    {quantity}
-                                                </option>
-                                            ))} */}
-
-                                            {/* {Array.from({ length: Math.min(...inventoryDetail?.filter(item => item?.room_id === room?.room_id)?.map(item => item?.available_inventory)) || 1 }, (_, index) => index + 1).map((quantity) => (
-                                                <option key={quantity} value={quantity}>
-                                                    {quantity}
-                                                </option>
-                                            ))} */}
-
-
-                                            {Array.from({ length: Math.min(...(inventoryDetail?.filter(item => item?.room_id === room?.room_id)?.map(item => item?.available_inventory)) || [1]) }, (_, index) => index + 1).map((quantity) => (
+                                            {Array.from({ length: Math.min(...(inventoryState?.filter(item => item?.room_id === room?.room_id)?.map(item => item?.available_inventory)) || [1]) }, (_, index) => index + 1).map((quantity) => (
                                                 <option key={quantity} value={quantity}>
                                                     {quantity}
                                                 </option>
@@ -675,7 +657,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                                 <div className='border border-slate-400 rounded-xl p-2 m-2' key={i.index}>
                                     {loopIndex != 0 && addExtraGuest != 1 ? <div className='flex justify-end'><button onClick={() => removeGuest(i.index)}><RxCross2 /></button></div> : <></>}
                                     <div className="flex flex-wrap ">
-
+                                           
                                         {/* guest name  */}
                                         <InputText
                                             label={loopIndex === 0 ? 'Main Guest Name' : 'Guest Name'}
@@ -685,7 +667,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                                                 handleChangeInGuest(e, i.index, "guest_name")
                                             }
                                             }
-                                            error={guestDetailerror[loopIndex]?.guest_name}
+                                            error={guestDetailError[loopIndex]?.guest_name}
                                             color={color?.theme === "light" ? Color?.light : Color?.dark}
                                             // color={Color?.light}
                                             req={true}
@@ -704,7 +686,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                                                 handleChangeInGuest(e, i.index, "guest_email")
                                             }
                                             }
-                                            error={guestDetailerror[loopIndex]?.guest_email}
+                                            error={guestDetailError[loopIndex]?.guest_email}
                                             color={color?.theme === "light" ? Color?.light : Color?.dark}
                                             req={loopIndex === 0}  // make it required only for the first guest
                                             title={'Guest email'}
@@ -720,7 +702,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                                             onChangeAction={(e) => {
                                                 handleChangeInGuest(e, i.index, "guest_phone_number")
                                             }}
-                                            error={guestDetailerror[loopIndex]?.guest_phone_number}
+                                            error={guestDetailError[loopIndex]?.guest_phone_number}
                                             color={color?.theme === "light" ? Color?.light : Color?.dark}
                                             req={loopIndex === 0}  // make it required only for the first guest
                                             title={'Guest Phone'}
@@ -734,7 +716,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                                             onChangeAction={(e) => {
                                                 handleChangeInGuest(e, i.index, "guest_age")
                                             }}
-                                            error={guestDetailerror[loopIndex]?.guest_age}
+                                            error={guestDetailError[loopIndex]?.guest_age}
                                             color={color?.theme === "light" ? Color?.light : Color?.dark}
                                             req={true}
                                             title={'Guest Age'}
@@ -858,12 +840,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                                 : <></>}
 
                         </div>
-
-
                     </div>
-
-
-
                 </div>
 
                 {/* right side div  */}
@@ -926,7 +903,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                                 let totalExtaGuest = selectedRoomsArray.reduce((total, room) => {
                                     return total + Number(room.extra_guest_allowed);
                                 }, 0)
-                                alert(JSON.stringify(extraGuest.length === totalExtaGuest))
+                                
                                 if (guest.length <= totalRoomsCapacity) {
                                     if (addExtraGuest === true && extraGuest.length === totalExtaGuest) {
                                         SubmitGuestDetails();

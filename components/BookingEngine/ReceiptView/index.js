@@ -10,7 +10,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { clearRoomsSelected, setAddMoreRoom, clearReservationIdentity, clearInventoryDetail, clearGuestDetails, updateBookingInfo } from '../../redux/hangulSlice'
 
 
-function ReceiptView({ allHotelDetails, setShowModal, setDisplay, setSearched }) {
+function 
+ReceiptView({ allHotelDetails, setShowModal, setDisplay, setSearched }) {
 
     let bookingInfo = useSelector(state => state.bookingInfo)
     let bookingId = bookingInfo.booking_id
@@ -214,6 +215,11 @@ function ReceiptView({ allHotelDetails, setShowModal, setDisplay, setSearched })
                             <h2 className='font-semibold pt-2'>Other Fees:</h2>
                             <p className='px-2'>₹{bookingDetails?.[0]?.booking_invoice?.[0]?.other_fees}</p>
                         </div>
+                        {bookingDetails?.[0]?.booking_invoice?.[0]?.extra_guest_price === undefined || null || "" ? <></> :
+                        <div className='flex justify-between items-end border-b'>
+                            <h2 className='font-semibold pt-2'>Extra Guest Fees:</h2>
+                            <p className='px-2'>₹{bookingDetails?.[0]?.booking_invoice?.[0]?.extra_guest_price}</p>
+                        </div>}
                         {bookingDetails?.[0]?.booking_invoice?.[0]?.coupon_discount === undefined || null || "" ? <></> :
                             <div className='flex justify-between items-end border-b'>
                                 <h2 className='font-semibold pt-2'>Coupon Discount:</h2>

@@ -228,7 +228,26 @@ function Classic(args) {
    const [imageSlideShow, setImageSlideShow] = useState(0);
    const [visibleImage, setVisibleImage] = useState();
    const [allImagesLink, setAllImagesLink] = useState([]);
+   const [geoLocation,setGeoLocation]=useState()
+   
 
+   useEffect(() => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            setGeoLocation({
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude
+            });
+          },
+          (error) => {
+            console.error('Error getting geolocation:', error);
+          }
+        );
+      } else {
+        console.log('Geolocation is not available');
+      }
+    }, []);
    function activateImagesSlider(image_index, allImages) {
       setVisibleImage(image_index)
       setAllImagesLink(allImages.map(i => i.image_link))
@@ -551,146 +570,151 @@ function Classic(args) {
 
                            {/* Rooms */}
                            <div id="rooms" className={singleRoom === false ? 'accordion-start accordion-panel' : 'accordion-start accordion-panel active'}>
-                              <div onClick={() => { setSingleRoom(!singleRoom); getMsgSection(singleRoom, "rooms") }} className='accordion-trigger'>
-                                 <button className='mb-6' >
-                                    <div className='accordion-trigger'>
-                                       <div className={visible === 0 ? 'block  w-32 mb-6' : 'hidden'}><SubHeading /></div>
-                                       <div className={visible === 1 ? `block ${themeColor?.titleTextColor}` : 'hidden'}>
-                                          {language?.roomstochoose} ({args?.allRooms?.rooms?.length})
-                                       </div>
+                              <div onClick={() => {
+                                 global.analytics.track("User clicked on room", {
+                                    action: "User clicked on all rooms ",
+                                    "Geolocation":geoLocation
+                                  });
+                               setSingleRoom(!singleRoom); getMsgSection(singleRoom, "rooms") }} className='accordion-trigger'>
+                              <button className='mb-6' >
+                                 <div className='accordion-trigger'>
+                                    <div className={visible === 0 ? 'block  w-32 mb-6' : 'hidden'}><SubHeading /></div>
+                                    <div className={visible === 1 ? `block ${themeColor?.titleTextColor}` : 'hidden'}>
+                                       {language?.roomstochoose} ({args?.allRooms?.rooms?.length})
                                     </div>
-                                 </button>
-                              </div>
+                                 </div>
+                              </button>
+                           </div>
 
-                              <div className={singleRoom === true ? 'block -mt-4 mb-4 ml-4 hover:cursor-pointer' : 'hidden'}>
-                                 {args?.allRooms?.rooms?.map((resource, idx) => {
-                                    return (
-                                       <div className='group' key={idx}>
+                           <div className={singleRoom === true ? 'block -mt-4 mb-4 ml-4 hover:cursor-pointer' : 'hidden'}>
+                              {args?.allRooms?.rooms?.map((resource, idx) => {
+                                 return (
+                                    <div className='group' key={idx}>
 
-                                          <div onClick={() => {
-                                             setOpen({ ...open, view: !open.view, id: idx }); getSingleSection(open?.view, resource?.room_name, "rooms")
-                                          }}>
-                                             <div className='flex capitalize mt-4 py-1'>
-                                                <div className="my-1.5 mr-1.5 -ml-2 border-gray-200 border-0 rounded-full  font-bold text-gray-600  bg-gray-200 flex items-center justify-center" style={{ height: "22px", width: "22px", fontSize: "14px" }}>
-                                                   {idx + 1}
-                                                </div>
-                                                <button className={`${themeColor?.titleTextColor} font-semibold`}>
-                                                   {resource?.room_name}
-                                                </button>
-                                                <button className='justify-end mr-1 ml-auto'>
-                                                   {open?.view === true && open?.id === idx ?
-                                                      <span className=' font-semibold text-gray-400  '>
-                                                         - </span>
-                                                      :
-                                                      <span className=' font-semibold text-gray-400  hidden group-hover:block'>
-                                                         + </span>}
-                                                </button>
+                                       <div onClick={() => {
+                                          setOpen({ ...open, view: !open.view, id: idx }); getSingleSection(open?.view, resource?.room_name, "rooms")
+                                       }}>
+                                          <div className='flex capitalize mt-4 py-1'>
+                                             <div className="my-1.5 mr-1.5 -ml-2 border-gray-200 border-0 rounded-full  font-bold text-gray-600  bg-gray-200 flex items-center justify-center" style={{ height: "22px", width: "22px", fontSize: "14px" }}>
+                                                {idx + 1}
+                                             </div>
+                                             <button className={`${themeColor?.titleTextColor} font-semibold`}>
+                                                {resource?.room_name}
+                                             </button>
+                                             <button className='justify-end mr-1 ml-auto'>
+                                                {open?.view === true && open?.id === idx ?
+                                                   <span className=' font-semibold text-gray-400  '>
+                                                      - </span>
+                                                   :
+                                                   <span className=' font-semibold text-gray-400  hidden group-hover:block'>
+                                                      + </span>}
+                                             </button>
+                                          </div>
+                                       </div>
+
+                                       <div className={open?.view === true && open?.id === idx ? 'block' : 'hidden'}>
+                                          {/* Room Description */}
+                                          {/* <div className="tour-content-block"> */}
+                                          <div className="border-b pb-10">
+                                             <div className={`text-sm md:text-base ${themeColor?.descriptionTextColor}`}>
+                                                {resource?.room_description}
                                              </div>
                                           </div>
 
-                                          <div className={open?.view === true && open?.id === idx ? 'block' : 'hidden'}>
-                                             {/* Room Description */}
-                                             {/* <div className="tour-content-block"> */}
-                                             <div className="border-b pb-10">
-                                                <div className={`text-sm md:text-base ${themeColor?.descriptionTextColor}`}>
-                                                   {resource?.room_description}
-                                                </div>
-                                             </div>
-
-                                             {/* Room Gallery */}
-                                             {Object.keys(resource).includes("room_images")
-                                                ?
-                                                <div className='py-10 border-b'>
-                                                   {/* <div className='tour-content-block1'> */}
-                                                   <div className='pb-8'>
-                                                      <div className={`${themeColor?.titleTextColor} text-center font-semibold pb-10`}>{language?.room} {language?.gallery}</div>
-                                                      <Carousel cols={2} rows={1} gap={10} autoPlay={1000} loop={true}
-                                                         responsiveLayout={[
-                                                            {
-                                                               breakpoint: 480,
-                                                               cols: 1,
-                                                               rows: 1,
-                                                               gap: 10,
-                                                               loop: true,
-                                                               autoplay: 1000
-                                                            },
-                                                            {
-                                                               breakpoint: 810,
-                                                               cols: 2,
-                                                               rows: 1,
-                                                               gap: 10,
-                                                               loop: true,
-                                                               autoplay: 1000
-                                                            },
-                                                            {
-                                                               breakpoint: 1020,
-                                                               cols: 2,
-                                                               rows: 1,
-                                                               gap: 10,
-                                                               loop: true,
-                                                               autoplay: 1000
-                                                            },
-                                                         ]}
-                                                      >
-                                                         {resource?.room_images?.map((room_resource, index) => {
-                                                            return (
-                                                               <Carousel.Item key={index} >
-                                                                  <img width="100%"
-                                                                     onClick={() => activateImagesSlider(index, resource?.room_images)}
-                                                                     style={{ height: "160px", marginBottom: "10px" }}
-                                                                     src={room_resource?.image_link}
-                                                                     alt={"Room Image"} />
-                                                                  <span className='text-gray-700' >{room_resource?.image_title}</span>
-                                                               </Carousel.Item>
-                                                            )
-                                                         })}</Carousel></div>
-                                                </div>
-                                                : <></>}
-
-
-                                             {/* Room Details */}
-                                             <div className="py-10 border-b ">
-                                                <h2 className={` ${themeColor?.titleTextColor} font-semibold  text-center`}>Room Details</h2>
-                                                {/* <div className="lg:flex  lg:justify-around pt-5 lg:pt-10"> */}
-                                                <div className="grid grid-flow-row-dense lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 pt-5 lg:pt-5 gap-3">
-                                                   <p className={`${themeColor?.descriptionTextColor} text-sm md:text-base  pb-2`}><SquareFootIcon /> &nbsp; {resource.carpet_area} SQ.FT</p>
-                                                   <p className={`${themeColor?.descriptionTextColor} text-sm md:text-base  pb-2`}><GroupsIcon />  &nbsp; {resource.room_capacity} Adults</p>
-                                                   <p className={`${themeColor?.descriptionTextColor} text-sm md:text-base  pb-2`}>{resource?.views?.map((item, index) => {
-                                                      return (
-                                                         <span key={index} >{index === 0 ? <LandscapeIcon /> : ','} &nbsp; {item?.view}  </span>
-                                                      );
-                                                   })}</p>
-
-                                                   {Object.keys(resource).includes("beds") ?
-                                                      <p className={`${themeColor?.descriptionTextColor} text-sm md:text-base  pb-2`}><BedIcon /> &nbsp; {resource.beds.length} {resource.beds.length > 1 ? "Beds" : "Bed"} <span> ({resource?.beds?.map((item, index) => {
+                                          {/* Room Gallery */}
+                                          {Object.keys(resource).includes("room_images")
+                                             ?
+                                             <div className='py-10 border-b'>
+                                                {/* <div className='tour-content-block1'> */}
+                                                <div className='pb-8'>
+                                                   <div className={`${themeColor?.titleTextColor} text-center font-semibold pb-10`}>{language?.room} {language?.gallery}</div>
+                                                   <Carousel cols={2} rows={1} gap={10} autoPlay={1000} loop={true}
+                                                      responsiveLayout={[
+                                                         {
+                                                            breakpoint: 480,
+                                                            cols: 1,
+                                                            rows: 1,
+                                                            gap: 10,
+                                                            loop: true,
+                                                            autoplay: 1000
+                                                         },
+                                                         {
+                                                            breakpoint: 810,
+                                                            cols: 2,
+                                                            rows: 1,
+                                                            gap: 10,
+                                                            loop: true,
+                                                            autoplay: 1000
+                                                         },
+                                                         {
+                                                            breakpoint: 1020,
+                                                            cols: 2,
+                                                            rows: 1,
+                                                            gap: 10,
+                                                            loop: true,
+                                                            autoplay: 1000
+                                                         },
+                                                      ]}
+                                                   >
+                                                      {resource?.room_images?.map((room_resource, index) => {
                                                          return (
-                                                            <span key={index}>{index === 0 ? '' : ' , '} {item?.bed_width} * {item?.bed_length}</span>
-
-                                                         );
-                                                      })}) cm</span>
-                                                      </p> : <></>}
-
-                                                </div>
+                                                            <Carousel.Item key={index} >
+                                                               <img width="100%"
+                                                                  onClick={() => activateImagesSlider(index, resource?.room_images)}
+                                                                  style={{ height: "160px", marginBottom: "10px" }}
+                                                                  src={room_resource?.image_link}
+                                                                  alt={"Room Image"} />
+                                                               <span className='text-gray-700' >{room_resource?.image_title}</span>
+                                                            </Carousel.Item>
+                                                         )
+                                                      })}</Carousel></div>
                                              </div>
+                                             : <></>}
 
-                                             {/* Room Facilities */}
-                                             <div className='py-10'>
-                                                <div className={` font-semibold text-center ${themeColor?.titleTextColor}`}>{language?.room} {language?.facilities}</div>
 
-                                                <div className="grid grid-flow-row-dense lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 mt-5 gap-3">
-                                                   {resource?.room_facilities?.map((item, index) => {
+                                          {/* Room Details */}
+                                          <div className="py-10 border-b ">
+                                             <h2 className={` ${themeColor?.titleTextColor} font-semibold  text-center`}>Room Details</h2>
+                                             {/* <div className="lg:flex  lg:justify-around pt-5 lg:pt-10"> */}
+                                             <div className="grid grid-flow-row-dense lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 pt-5 lg:pt-5 gap-3">
+                                                <p className={`${themeColor?.descriptionTextColor} text-sm md:text-base  pb-2`}><SquareFootIcon /> &nbsp; {resource.carpet_area} SQ.FT</p>
+                                                <p className={`${themeColor?.descriptionTextColor} text-sm md:text-base  pb-2`}><GroupsIcon />  &nbsp; {resource.room_capacity} Adults</p>
+                                                <p className={`${themeColor?.descriptionTextColor} text-sm md:text-base  pb-2`}>{resource?.views?.map((item, index) => {
+                                                   return (
+                                                      <span key={index} >{index === 0 ? <LandscapeIcon /> : ','} &nbsp; {item?.view}  </span>
+                                                   );
+                                                })}</p>
+
+                                                {Object.keys(resource).includes("beds") ?
+                                                   <p className={`${themeColor?.descriptionTextColor} text-sm md:text-base  pb-2`}><BedIcon /> &nbsp; {resource.beds.length} {resource.beds.length > 1 ? "Beds" : "Bed"} <span> ({resource?.beds?.map((item, index) => {
                                                       return (
-                                                         <span className={`${themeColor?.facilitiesTextColor}`} key={index}>
-                                                            {/* &#10004 is code for tick mark  */}
-                                                            <span>&#10004;
-                                                               {item?.service_name.replaceAll("_", " ")} </span></span>)
-                                                   })}
-                                                </div>
+                                                         <span key={index}>{index === 0 ? '' : ' , '} {item?.bed_width} * {item?.bed_length}</span>
+
+                                                      );
+                                                   })}) cm</span>
+                                                   </p> : <></>}
+
                                              </div>
+                                          </div>
+
+                                          {/* Room Facilities */}
+                                          <div className='py-10'>
+                                             <div className={` font-semibold text-center ${themeColor?.titleTextColor}`}>{language?.room} {language?.facilities}</div>
+
+                                             <div className="grid grid-flow-row-dense lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 mt-5 gap-3">
+                                                {resource?.room_facilities?.map((item, index) => {
+                                                   return (
+                                                      <span className={`${themeColor?.facilitiesTextColor}`} key={index}>
+                                                         {/* &#10004 is code for tick mark  */}
+                                                         <span>&#10004;
+                                                            {item?.service_name.replaceAll("_", " ")} </span></span>)
+                                                })}
+                                             </div>
+                                          </div>
 
 
-                                             {/* Book Now Button */}
-                                             {/* <div className='flex pb-8'>
+                                          {/* Book Now Button */}
+                                          {/* <div className='flex pb-8'>
                                                 <div className='mr-2 ml-auto justify-end'>
                                                    <button onClick={() => {
                                                       setRate({
@@ -707,610 +731,610 @@ function Classic(args) {
                                                       {language?.booknow}
                                                    </button></div>
                                              </div> */}
-                                          </div>
-                                       </div>)
+                                       </div>
+                                    </div>)
+                              })}
+
+                           </div>
+                        </div>
+
+                        {/* Amenity */}
+                        <div id="amenities" className={amenity === false ? 'accordion-start accordion-panel' : 'accordion-start accordion-panel active'}>
+                           <div onClick={() => { setAmenity(!amenity); getMsgSection(amenity, "Amenities") }} className='accordion-trigger'>
+                              <button className="mb-6">
+                                 <div className='accordion-trigger'>
+                                    <div className={visible === 0 ? 'block w-32 mb-6' : 'hidden'}><SubHeading /></div>
+                                    <div className={visible === 1 ? `block ${themeColor?.titleTextColor}` : 'hidden'}>
+                                       {language?.property} {language?.amenities} </div>
+                                 </div>
+                              </button>
+                           </div>
+                           <div className={amenity === true ? 'block' : 'hidden'}>
+                              <div className="grid ml-2 mb-5 pb-8  grid-flow-row-dense lg:grid-cols-5 md:grid-cols-4 grid-cols-2  md:gap-3 gap-1 lg:gap-3">
+
+                                 {args?.services?.map((item, idx) => {
+                                    return (
+                                       <>
+                                          {(() => {
+                                             switch (item?.service_id) {
+                                                case 'ser001': return (<div>
+                                                   {/*AC*/}
+                                                   <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
+                                                      {icon?.Icons?.[i]?.ac}
+                                                   </span>
+                                                </div>)
+                                                case 'ser002': return (<div>
+                                                   {/*All Inclusive Available*/}
+                                                   <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
+                                                      {icon?.Icons?.[i]?.inclusive}
+                                                   </span>
+                                                </div>)
+                                                case 'ser003': return (<div>
+                                                   {/*Child Friendly*/}
+                                                   <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
+                                                      {icon?.Icons?.[i]?.childfriendly}
+                                                   </span>
+                                                </div>)
+                                                case 'ser004': return (<div>
+                                                   {/*Golf Course*/}
+                                                   <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
+                                                      {icon?.Icons?.[i]?.golf}
+                                                   </span>
+                                                </div>)
+                                                case 'ser005': return (<div>
+                                                   {/*Airport Shuttle*/}
+                                                   <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
+                                                      {icon?.Icons?.[i]?.airport}
+                                                   </span>
+                                                </div>)
+                                                case 'ser006': return (<div>
+                                                   {/*Bar Lounge*/}
+                                                   <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
+                                                      {icon?.Icons?.[i]?.bar}
+                                                   </span>
+                                                </div>)
+                                                case 'ser007': return (<div>
+                                                   {/*Beach*/}
+                                                   <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
+                                                      {icon?.Icons?.[i]?.beach}
+                                                   </span>
+                                                </div>)
+                                                case 'ser008': return (<div>
+                                                   {/*Business Center*/}
+                                                   <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
+                                                      {icon?.Icons?.[i]?.bussinesscenter}
+                                                   </span>
+                                                </div>)
+                                                case 'ser009': return (<div>
+                                                   {/*Fitness Center*/}
+                                                   <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
+                                                      {icon?.Icons?.[i]?.fitnesscenter}
+                                                   </span>
+                                                </div>)
+                                                case 'ser0010': return (<div>
+                                                   {/*Free Breakfast*/}
+                                                   <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
+                                                      {icon?.Icons?.[i]?.breakfast}
+                                                   </span>
+                                                </div>)
+                                                case 'ser0011': return (<div>
+                                                   {/*Hot Tub*/}
+                                                   <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
+                                                      {icon?.Icons?.[i]?.hottub}
+                                                   </span>
+                                                </div>)
+                                                case 'ser0012': return (<div>
+                                                   {/*Laundary Service*/}
+                                                   <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
+                                                      {icon?.Icons?.[i]?.laundary}
+                                                   </span>
+                                                </div>)
+
+                                                case 'ser0013': return (<div>
+                                                   {/*Restaurant*/}
+                                                   <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
+                                                      {icon?.Icons?.[i]?.restaurant}
+                                                   </span>
+                                                </div>)
+                                                case 'ser0014': return (<div>
+                                                   {/*Room Service*/}
+                                                   <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
+                                                      {icon?.Icons?.[i]?.roomservice}
+                                                   </span>
+                                                </div>)
+                                                case 'ser0015': return (<div>
+                                                   {/*Spa*/}
+                                                   <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
+                                                      {icon?.Icons?.[i]?.spa}
+                                                   </span>
+                                                </div>)
+                                                case 'ser0016': return (<div>
+                                                   {/*Kitchen*/}
+                                                   <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
+                                                      {icon?.Icons?.[i]?.kitchen}
+                                                   </span>
+                                                </div>)
+                                                case 'ser0017': return (<div>
+                                                   {/*Parking*/}
+                                                   <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
+                                                      {icon?.Icons?.[i]?.parking}
+                                                   </span>
+                                                </div>)
+
+                                                case 'ser0018': return (<div>
+                                                   {/*Pets Allowed*/}
+                                                   <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
+                                                      {icon?.Icons?.[i]?.pets}
+                                                   </span>
+                                                </div>)
+                                                case 'ser0019': return (<div>
+                                                   {/*Smoke Free*/}
+                                                   <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
+                                                      {icon?.Icons?.[i]?.smokefree}
+                                                   </span>
+                                                </div>)
+                                                case 'ser0020': return (<div>
+                                                   {/*Swimming Pool*/}
+                                                   <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
+                                                      {icon?.Icons?.[i]?.pool}
+                                                   </span>
+                                                </div>)
+                                                case 'ser0021': return (<div>
+                                                   {/*Wheel Chair*/}
+                                                   <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
+                                                      {icon?.Icons?.[i]?.wheelchair}
+                                                   </span>
+                                                </div>)
+                                                case 'ser0022': return (<div>
+                                                   {/*Wifi Type*/}
+                                                   <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
+                                                      {icon?.Icons?.[i]?.wifi}
+                                                   </span>
+                                                </div>)
+
+                                                default: return (<div></div>)
+                                             }
+                                          })()}
+                                       </>
+                                    )
+                                 })}</div>
+                           </div>
+                        </div>
+
+                        {/* key highlights of property*/}
+                        <div id='key-amenities' className={keyAmenity === false ? 'accordion-start accordion-panel' : 'accordion-start accordion-panel active'}>
+                           <div onClick={() => { setKeyAmenity(!keyAmenity); getMsgSection(keyAmenity, "Key-Amenities") }} className='accordion-trigger'>
+                              <button className="mb-6">
+                                 <div className='accordion-trigger'>
+                                    <div className={visible === 0 ? 'block w-32 mb-6' : 'hidden'}><SubHeading /></div>
+                                    <div className={visible === 1 ? `block ${themeColor?.titleTextColor}` : 'hidden'}>
+                                       Key Amenities </div>
+                                 </div>
+                              </button>
+                           </div>
+                           <div className={keyAmenity === true ? 'block' : 'hidden'}>
+                              <div className='grid grid-flow-row-dense grid-col-2 md:grid-cols-3 text-center  gap-3'>
+                                 {filteredAdditionalService?.map((service) => {
+                                    return <div key={service.add_service_id} className="mb-5">
+                                       <p className={`${themeColor?.titleTextColor} font-semibold`}>{service.add_service_name}</p>
+                                       <p className={`${themeColor?.descriptionTextColor} text-sm md:text-base`}>{service.add_service_comment}</p>
+                                    </div>
                                  })}
 
                               </div>
                            </div>
+                        </div>
 
-                           {/* Amenity */}
-                           <div id="amenities" className={amenity === false ? 'accordion-start accordion-panel' : 'accordion-start accordion-panel active'}>
-                              <div onClick={() => { setAmenity(!amenity); getMsgSection(amenity, "Amenities") }} className='accordion-trigger'>
-                                 <button className="mb-6">
-                                    <div className='accordion-trigger'>
-                                       <div className={visible === 0 ? 'block w-32 mb-6' : 'hidden'}><SubHeading /></div>
-                                       <div className={visible === 1 ? `block ${themeColor?.titleTextColor}` : 'hidden'}>
-                                          {language?.property} {language?.amenities} </div>
-                                    </div>
-                                 </button>
-                              </div>
-                              <div className={amenity === true ? 'block' : 'hidden'}>
-                                 <div className="grid ml-2 mb-5 pb-8  grid-flow-row-dense lg:grid-cols-5 md:grid-cols-4 grid-cols-2  md:gap-3 gap-1 lg:gap-3">
-
-                                    {args?.services?.map((item, idx) => {
-                                       return (
-                                          <>
-                                             {(() => {
-                                                switch (item?.service_id) {
-                                                   case 'ser001': return (<div>
-                                                      {/*AC*/}
-                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
-                                                         {icon?.Icons?.[i]?.ac}
-                                                      </span>
-                                                   </div>)
-                                                   case 'ser002': return (<div>
-                                                      {/*All Inclusive Available*/}
-                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
-                                                         {icon?.Icons?.[i]?.inclusive}
-                                                      </span>
-                                                   </div>)
-                                                   case 'ser003': return (<div>
-                                                      {/*Child Friendly*/}
-                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
-                                                         {icon?.Icons?.[i]?.childfriendly}
-                                                      </span>
-                                                   </div>)
-                                                   case 'ser004': return (<div>
-                                                      {/*Golf Course*/}
-                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
-                                                         {icon?.Icons?.[i]?.golf}
-                                                      </span>
-                                                   </div>)
-                                                   case 'ser005': return (<div>
-                                                      {/*Airport Shuttle*/}
-                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
-                                                         {icon?.Icons?.[i]?.airport}
-                                                      </span>
-                                                   </div>)
-                                                   case 'ser006': return (<div>
-                                                      {/*Bar Lounge*/}
-                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
-                                                         {icon?.Icons?.[i]?.bar}
-                                                      </span>
-                                                   </div>)
-                                                   case 'ser007': return (<div>
-                                                      {/*Beach*/}
-                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
-                                                         {icon?.Icons?.[i]?.beach}
-                                                      </span>
-                                                   </div>)
-                                                   case 'ser008': return (<div>
-                                                      {/*Business Center*/}
-                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
-                                                         {icon?.Icons?.[i]?.bussinesscenter}
-                                                      </span>
-                                                   </div>)
-                                                   case 'ser009': return (<div>
-                                                      {/*Fitness Center*/}
-                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
-                                                         {icon?.Icons?.[i]?.fitnesscenter}
-                                                      </span>
-                                                   </div>)
-                                                   case 'ser0010': return (<div>
-                                                      {/*Free Breakfast*/}
-                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
-                                                         {icon?.Icons?.[i]?.breakfast}
-                                                      </span>
-                                                   </div>)
-                                                   case 'ser0011': return (<div>
-                                                      {/*Hot Tub*/}
-                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
-                                                         {icon?.Icons?.[i]?.hottub}
-                                                      </span>
-                                                   </div>)
-                                                   case 'ser0012': return (<div>
-                                                      {/*Laundary Service*/}
-                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
-                                                         {icon?.Icons?.[i]?.laundary}
-                                                      </span>
-                                                   </div>)
-
-                                                   case 'ser0013': return (<div>
-                                                      {/*Restaurant*/}
-                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
-                                                         {icon?.Icons?.[i]?.restaurant}
-                                                      </span>
-                                                   </div>)
-                                                   case 'ser0014': return (<div>
-                                                      {/*Room Service*/}
-                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
-                                                         {icon?.Icons?.[i]?.roomservice}
-                                                      </span>
-                                                   </div>)
-                                                   case 'ser0015': return (<div>
-                                                      {/*Spa*/}
-                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
-                                                         {icon?.Icons?.[i]?.spa}
-                                                      </span>
-                                                   </div>)
-                                                   case 'ser0016': return (<div>
-                                                      {/*Kitchen*/}
-                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
-                                                         {icon?.Icons?.[i]?.kitchen}
-                                                      </span>
-                                                   </div>)
-                                                   case 'ser0017': return (<div>
-                                                      {/*Parking*/}
-                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
-                                                         {icon?.Icons?.[i]?.parking}
-                                                      </span>
-                                                   </div>)
-
-                                                   case 'ser0018': return (<div>
-                                                      {/*Pets Allowed*/}
-                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
-                                                         {icon?.Icons?.[i]?.pets}
-                                                      </span>
-                                                   </div>)
-                                                   case 'ser0019': return (<div>
-                                                      {/*Smoke Free*/}
-                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
-                                                         {icon?.Icons?.[i]?.smokefree}
-                                                      </span>
-                                                   </div>)
-                                                   case 'ser0020': return (<div>
-                                                      {/*Swimming Pool*/}
-                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
-                                                         {icon?.Icons?.[i]?.pool}
-                                                      </span>
-                                                   </div>)
-                                                   case 'ser0021': return (<div>
-                                                      {/*Wheel Chair*/}
-                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
-                                                         {icon?.Icons?.[i]?.wheelchair}
-                                                      </span>
-                                                   </div>)
-                                                   case 'ser0022': return (<div>
-                                                      {/*Wifi Type*/}
-                                                      <span className="tooltip rounded-full hover:cursor-pointer hover:text-gray-900 text-gray-500 " title={item?.local_service_name}>
-                                                         {icon?.Icons?.[i]?.wifi}
-                                                      </span>
-                                                   </div>)
-
-                                                   default: return (<div></div>)
-                                                }
-                                             })()}
-                                          </>
-                                       )
-                                    })}</div>
-                              </div>
-                           </div>
-
-                           {/* key highlights of property*/}
-                           <div id='key-amenities' className={keyAmenity === false ? 'accordion-start accordion-panel' : 'accordion-start accordion-panel active'}>
-                              <div onClick={() => { setKeyAmenity(!keyAmenity); getMsgSection(keyAmenity, "Key-Amenities") }} className='accordion-trigger'>
-                                 <button className="mb-6">
-                                    <div className='accordion-trigger'>
-                                       <div className={visible === 0 ? 'block w-32 mb-6' : 'hidden'}><SubHeading /></div>
-                                       <div className={visible === 1 ? `block ${themeColor?.titleTextColor}` : 'hidden'}>
-                                          Key Amenities </div>
-                                    </div>
-                                 </button>
-                              </div>
-                              <div className={keyAmenity === true ? 'block' : 'hidden'}>
-                                 <div className='grid grid-flow-row-dense grid-col-2 md:grid-cols-3 text-center  gap-3'>
-                                    {filteredAdditionalService?.map((service) => {
-                                       return <div key={service.add_service_id} className="mb-5">
-                                          <p className={`${themeColor?.titleTextColor} font-semibold`}>{service.add_service_name}</p>
-                                          <p className={`${themeColor?.descriptionTextColor} text-sm md:text-base`}>{service.add_service_comment}</p>
+                        {/* Packages */}
+                        {args?.allPackages?.packages !== undefined ?
+                           <div id="packages" className={packages === false ? 'accordion-start accordion-panel' : 'accordion-start accordion-panel active'}>
+                              <div className='accordion-trigger' onClick={() => { setPackages(!packages); getMsgSection(packages, "packages") }}>
+                                 <button className="mb-6" >
+                                    <div className='accordion-trigger' >
+                                       <div className={visible === 0 ? 'block  mb-6 w-32' : 'hidden'}><SubHeading /></div>
+                                       <div className={visible === 1 ? 'block' : 'hidden'}>
+                                          {language?.packages}
                                        </div>
-                                    })}
+                                    </div>
+                                 </button></div>
+                              <div className={packages === true ? 'block -mt-4 mb-4 ml-4 hover:cursor-pointer' : 'hidden'}>
+                                 {args?.allPackages?.packages?.map((resource, idx) => {
+                                    return (
+                                       <div className='group' key={idx}>
+                                          <div onClick={() => {
+                                             setOpen({ ...open, view: !open.view, id: idx }); getSingleSection(open?.view, resource?.package_name, "packages")
+                                          }}>
+                                             <p className='flex capitalize mt-4 py-1'>
+                                                <div className="my-1.5 mr-1.5 -ml-2 border-gray-200 border-0 rounded-full  font-bold text-gray-600  bg-gray-200 flex items-center justify-center" style={{ height: "22px", width: "22px", fontSize: "14px" }}>{idx + 1}</div>
+                                                <button className='text-gray-600 font-semibold'
+                                                >{resource?.package_name} </button>
 
-                                 </div>
-                              </div>
-                           </div>
-
-                           {/* Packages */}
-                           {args?.allPackages?.packages !== undefined ?
-                              <div id="packages" className={packages === false ? 'accordion-start accordion-panel' : 'accordion-start accordion-panel active'}>
-                                 <div className='accordion-trigger' onClick={() => { setPackages(!packages); getMsgSection(packages, "packages") }}>
-                                    <button className="mb-6" >
-                                       <div className='accordion-trigger' >
-                                          <div className={visible === 0 ? 'block  mb-6 w-32' : 'hidden'}><SubHeading /></div>
-                                          <div className={visible === 1 ? 'block' : 'hidden'}>
-                                             {language?.packages}
-                                          </div>
-                                       </div>
-                                    </button></div>
-                                 <div className={packages === true ? 'block -mt-4 mb-4 ml-4 hover:cursor-pointer' : 'hidden'}>
-                                    {args?.allPackages?.packages?.map((resource, idx) => {
-                                       return (
-                                          <div className='group' key={idx}>
-                                             <div onClick={() => {
-                                                setOpen({ ...open, view: !open.view, id: idx }); getSingleSection(open?.view, resource?.package_name, "packages")
-                                             }}>
-                                                <p className='flex capitalize mt-4 py-1'>
-                                                   <div className="my-1.5 mr-1.5 -ml-2 border-gray-200 border-0 rounded-full  font-bold text-gray-600  bg-gray-200 flex items-center justify-center" style={{ height: "22px", width: "22px", fontSize: "14px" }}>{idx + 1}</div>
-                                                   <button className='text-gray-600 font-semibold'
-                                                   >{resource?.package_name} </button>
-
-                                                   <button className='justify-end mr-1 ml-auto'
-                                                   >
-                                                      {open?.view === true && open?.id === idx ?
-                                                         <span className=' font-semibold text-gray-400  '>
-                                                            - </span>
-                                                         :
-                                                         <span className=' font-semibold text-gray-400 hidden group-hover:block'>
-                                                            + </span>}</button>
-                                                </p></div>
-                                             <div className={open?.view === true && open?.id === idx ? 'block' : 'hidden'}>
-                                                {/* Package Description */}
-                                                <div className="tour-content-block">
-                                                   <div className="tour-description">
-                                                      {resource?.package_description}
-                                                      {resource?.refundable === "true" ?
-                                                         <p className='my-2'> <span className='text-gray-600 font-semibold'>Refundable till</span>  {resource?.refundable_until_days}days, {resource?.refundable_until_time}</p> :
-                                                         <></>}
-                                                   </div>
+                                                <button className='justify-end mr-1 ml-auto'
+                                                >
+                                                   {open?.view === true && open?.id === idx ?
+                                                      <span className=' font-semibold text-gray-400  '>
+                                                         - </span>
+                                                      :
+                                                      <span className=' font-semibold text-gray-400 hidden group-hover:block'>
+                                                         + </span>}</button>
+                                             </p></div>
+                                          <div className={open?.view === true && open?.id === idx ? 'block' : 'hidden'}>
+                                             {/* Package Description */}
+                                             <div className="tour-content-block">
+                                                <div className="tour-description">
+                                                   {resource?.package_description}
+                                                   {resource?.refundable === "true" ?
+                                                      <p className='my-2'> <span className='text-gray-600 font-semibold'>Refundable till</span>  {resource?.refundable_until_days}days, {resource?.refundable_until_time}</p> :
+                                                      <></>}
                                                 </div>
+                                             </div>
 
-                                                {/* Package Services */}
-                                                <div className='tour-content-block'>
-                                                   <div>
-                                                      <div className="accordion-trigger">{language?.package} {language?.services}</div>
+                                             {/* Package Services */}
+                                             <div className='tour-content-block'>
+                                                <div>
+                                                   <div className="accordion-trigger">{language?.package} {language?.services}</div>
 
-                                                      <div className="grid grid-flow-row-dense lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 mt-2 gap-3">
-                                                         {resource?.package_services.map((item, index) => {
-                                                            return (
-                                                               <>
-                                                                  {item?.value === true ? <><span className='capitalize text-gray-700' key={index}>
-                                                                     <span>&#10004;
-                                                                        {item?.package_service_name.replace(
-                                                                           /\_+/g,
-                                                                           " ")} </span></span></> : <></>}
-                                                               </>)
-                                                         })}
-                                                      </div>
-                                                   </div>
-                                                </div>
-                                                {/* Package Rooms */}
-                                                <div className='tour-content-block'>
-                                                   <div className='pt-4'>
-                                                      <div className="accordion-trigger -mt-8">{language?.package} {language?.rooms}</div>
-
-                                                      {resource?.package_rooms.map((item, index) => {
+                                                   <div className="grid grid-flow-row-dense lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 mt-2 gap-3">
+                                                      {resource?.package_services.map((item, index) => {
                                                          return (
-                                                            <span className='capitalize text-gray-700' key={index}>
-                                                               {item?.room_name} </span>)
+                                                            <>
+                                                               {item?.value === true ? <><span className='capitalize text-gray-700' key={index}>
+                                                                  <span>&#10004;
+                                                                     {item?.package_service_name.replace(
+                                                                        /\_+/g,
+                                                                        " ")} </span></span></> : <></>}
+                                                            </>)
                                                       })}
                                                    </div>
                                                 </div>
+                                             </div>
+                                             {/* Package Rooms */}
+                                             <div className='tour-content-block'>
+                                                <div className='pt-4'>
+                                                   <div className="accordion-trigger -mt-8">{language?.package} {language?.rooms}</div>
 
-                                                {/* itinerary */}
-                                                <div className="tour-content-block mb-8">
-                                                   <div className="accordion-trigger mb-4">{language?.itinerary}</div>
-                                                   <div className="tour-itinerary">
-                                                      <div className="accordion">
-                                                         <div
-                                                            className="accordion-panel accordion-introduction active"
-                                                         >
-                                                            <div className="accordion-trigger">Introduction</div>
-                                                            <div className="accordion-content">
-                                                               <p>
-                                                                  Start and end in Istanbul! With the Explorer
-                                                                  tour Best of Turkey by Land, you have a 9 days
-                                                                  tour package taking you through Istanbul,
-                                                                  Turkey and 11 other destinations in Turkey.
-                                                                  Best of Turkey by Land includes accommodation
-                                                                  in a hotel as well as an expert guide, meals,
-                                                                  transport and more.
-                                                               </p>
-                                                            </div>
+                                                   {resource?.package_rooms.map((item, index) => {
+                                                      return (
+                                                         <span className='capitalize text-gray-700' key={index}>
+                                                            {item?.room_name} </span>)
+                                                   })}
+                                                </div>
+                                             </div>
+
+                                             {/* itinerary */}
+                                             <div className="tour-content-block mb-8">
+                                                <div className="accordion-trigger mb-4">{language?.itinerary}</div>
+                                                <div className="tour-itinerary">
+                                                   <div className="accordion">
+                                                      <div
+                                                         className="accordion-panel accordion-introduction active"
+                                                      >
+                                                         <div className="accordion-trigger">Introduction</div>
+                                                         <div className="accordion-content">
+                                                            <p>
+                                                               Start and end in Istanbul! With the Explorer
+                                                               tour Best of Turkey by Land, you have a 9 days
+                                                               tour package taking you through Istanbul,
+                                                               Turkey and 11 other destinations in Turkey.
+                                                               Best of Turkey by Land includes accommodation
+                                                               in a hotel as well as an expert guide, meals,
+                                                               transport and more.
+                                                            </p>
                                                          </div>
+                                                      </div>
 
-                                                         <div className="accordion-panel  accordion-star pb-4">
-                                                            <div className="accordion-trigger">
-                                                               <span>Day 1:</span> Istanbul
-                                                            </div>
-                                                            <div className="accordion-content">
-                                                               <p>
-                                                                  Istanbul, formerly known as Constantinople, is
-                                                                  the largest city in Turkey, serving as the
-                                                                  country`s economic, cultural and historic hub.
-                                                                  The city straddles the Bosporus strait, lying
-                                                                  in both Europe and Asia, and has a population
-                                                                  of over 15 million residents, comprising 19% of
-                                                                  the population of Turkey. Istanbul is the most
-                                                                  populous European city, and the world`s
-                                                                  15th-largest city.
-                                                               </p>
-                                                               <p>
-                                                                  The city was founded as Byzantium (Byzantion)
-                                                                  in the 7th century BC by Greek settlers from
-                                                                  Megara. In 330 CE, the Roman emperor
-                                                                  Constantine the Great made it his imperial
-                                                                  capital, renaming it first as New Rome (Nova
-                                                                  Roma)and then as Constantinople
-                                                                  (Constantinopolis) after himself. The city grew
-                                                                  in size and influence, eventually becoming a
-                                                                  beacon of the Silk Road and one of the most
-                                                                  important cities in history.
-                                                               </p>
-                                                            </div>
+                                                      <div className="accordion-panel  accordion-star pb-4">
+                                                         <div className="accordion-trigger">
+                                                            <span>Day 1:</span> Istanbul
                                                          </div>
-
-                                                         <div className="accordion-panel pb-4">
-                                                            <div className="accordion-trigger">
-                                                               <span>Day 2:</span> Gallipoli
-                                                            </div>
-                                                            <div className="accordion-content">
-                                                               <p>
-                                                                  The Gallipoli peninsula is located in the
-                                                                  southern part of East Thrace, the European part
-                                                                  of Turkey, with the Aegean Sea to the west and
-                                                                  the Dardanelles strait to the east.
-                                                               </p>
-                                                               <p>
-                                                                  Gallipoli is the Italian form of the Greek name
-                                                                  Καλλίπολις (Kallípolis), meaning beautiful
-                                                                  city, the original name of the modern town of
-                                                                  Gelibolu. In antiquity, the peninsula was known
-                                                                  as the Thracian Chersonese.
-                                                               </p>
-                                                            </div>
+                                                         <div className="accordion-content">
+                                                            <p>
+                                                               Istanbul, formerly known as Constantinople, is
+                                                               the largest city in Turkey, serving as the
+                                                               country`s economic, cultural and historic hub.
+                                                               The city straddles the Bosporus strait, lying
+                                                               in both Europe and Asia, and has a population
+                                                               of over 15 million residents, comprising 19% of
+                                                               the population of Turkey. Istanbul is the most
+                                                               populous European city, and the world`s
+                                                               15th-largest city.
+                                                            </p>
+                                                            <p>
+                                                               The city was founded as Byzantium (Byzantion)
+                                                               in the 7th century BC by Greek settlers from
+                                                               Megara. In 330 CE, the Roman emperor
+                                                               Constantine the Great made it his imperial
+                                                               capital, renaming it first as New Rome (Nova
+                                                               Roma)and then as Constantinople
+                                                               (Constantinopolis) after himself. The city grew
+                                                               in size and influence, eventually becoming a
+                                                               beacon of the Silk Road and one of the most
+                                                               important cities in history.
+                                                            </p>
                                                          </div>
+                                                      </div>
 
-                                                         <div className="accordion-panel pb-4">
-                                                            <div className="accordion-trigger">
-                                                               <span>Day 3:</span> Troy
-                                                            </div>
-                                                            <div className="accordion-content">
-                                                               <p>
-                                                                  Troy or Ilium was an ancient city located at
-                                                                  Hisarlik in present-day Turkey, 30 kilometres
-                                                                  (19 mi) south-west of Çanakkale. It is known as
-                                                                  the setting for the Greek myth of the Trojan
-                                                                  War.
-                                                               </p>
-                                                               <p>
-                                                                  In Ancient Greek literature, Troy is portrayed
-                                                                  as a powerful kingdom of the Heroic Age, a
-                                                                  mythic era when monsters roamed the earth and
-                                                                  gods interacted directly with humans. The city
-                                                                  was said to have ruled the Troad until the
-                                                                  Trojan War led to its complete destruction at
-                                                                  the hands of the Greeks. The story of its
-                                                                  destruction was one of the cornerstones of
-                                                                  Greek mythology and literature, featuring
-                                                                  prominently in the Iliad and the Odyssey, as
-                                                                  well as numerous other poems and plays. Its
-                                                                  legacy played a large role in Greek society,
-                                                                  with many prominent families claiming descent
-                                                                  from those who had fought there. In the Archaic
-                                                                  era, a new city was built at the site where
-                                                                  legendary Troy was believed to have stood. In
-                                                                  the Classical era, this city became a tourist
-                                                                  destination, where visitors would leave
-                                                                  offerings to the legendary heroes.
-                                                               </p>
-                                                            </div>
+                                                      <div className="accordion-panel pb-4">
+                                                         <div className="accordion-trigger">
+                                                            <span>Day 2:</span> Gallipoli
                                                          </div>
-
-                                                         <div className="accordion-panel pb-4">
-                                                            <div className="accordion-trigger">
-                                                               <span>Day 4:</span> Kusadasi
-                                                            </div>
-                                                            <div className="accordion-content">
-                                                               <p>
-                                                                  Kuşadası is a large resort town on Turkey`s
-                                                                  Aegean coast, and the center of the seaside
-                                                                  district of the same name within Aydın
-                                                                  Province. Kuşadası is 95 km (59 mi) south of
-                                                                  İzmir, and about 60 km (37 mi) from Aydın. The
-                                                                  municipality`s primary industry is tourism. The
-                                                                  mayor of the district is Oğuzhan Turan.
-                                                               </p>
-                                                            </div>
+                                                         <div className="accordion-content">
+                                                            <p>
+                                                               The Gallipoli peninsula is located in the
+                                                               southern part of East Thrace, the European part
+                                                               of Turkey, with the Aegean Sea to the west and
+                                                               the Dardanelles strait to the east.
+                                                            </p>
+                                                            <p>
+                                                               Gallipoli is the Italian form of the Greek name
+                                                               Καλλίπολις (Kallípolis), meaning beautiful
+                                                               city, the original name of the modern town of
+                                                               Gelibolu. In antiquity, the peninsula was known
+                                                               as the Thracian Chersonese.
+                                                            </p>
                                                          </div>
+                                                      </div>
 
-                                                         <div className="accordion-panel pb-4">
-                                                            <div className="accordion-trigger">
-                                                               <span>Day 5:</span> Fethiye
-                                                            </div>
-                                                            <div className="accordion-content">
-                                                               <p>
-                                                                  Fethiye, formerly Makri (Greek: Μάκρη), is a
-                                                                  city and district of Muğla Province in the
-                                                                  Aegean Region of Turkey. It is one of the
-                                                                  prominent tourist destinations in the Turkish
-                                                                  Riviera. In 2019 its population was 162,686.
-                                                               </p>
-                                                            </div>
+                                                      <div className="accordion-panel pb-4">
+                                                         <div className="accordion-trigger">
+                                                            <span>Day 3:</span> Troy
                                                          </div>
-
-                                                         <div className="accordion-panel pb-4">
-                                                            <div className="accordion-trigger">
-                                                               <span>Day 6:</span> Oludeniz
-                                                            </div>
-                                                            <div className="accordion-content">
-                                                               <p>
-                                                                  Ölüdeniz is a small neighbourhood and beach
-                                                                  resort in the Fethiye district of Muğla
-                                                                  Province, on the Turquoise Coast of
-                                                                  southwestern Turkey, at the conjunction point
-                                                                  of the Aegean and Mediterranean sea. It is
-                                                                  located 14 km (9 mi) to the south of Fethiye,
-                                                                  near Mount Babadağ.
-                                                               </p>
-                                                            </div>
+                                                         <div className="accordion-content">
+                                                            <p>
+                                                               Troy or Ilium was an ancient city located at
+                                                               Hisarlik in present-day Turkey, 30 kilometres
+                                                               (19 mi) south-west of Çanakkale. It is known as
+                                                               the setting for the Greek myth of the Trojan
+                                                               War.
+                                                            </p>
+                                                            <p>
+                                                               In Ancient Greek literature, Troy is portrayed
+                                                               as a powerful kingdom of the Heroic Age, a
+                                                               mythic era when monsters roamed the earth and
+                                                               gods interacted directly with humans. The city
+                                                               was said to have ruled the Troad until the
+                                                               Trojan War led to its complete destruction at
+                                                               the hands of the Greeks. The story of its
+                                                               destruction was one of the cornerstones of
+                                                               Greek mythology and literature, featuring
+                                                               prominently in the Iliad and the Odyssey, as
+                                                               well as numerous other poems and plays. Its
+                                                               legacy played a large role in Greek society,
+                                                               with many prominent families claiming descent
+                                                               from those who had fought there. In the Archaic
+                                                               era, a new city was built at the site where
+                                                               legendary Troy was believed to have stood. In
+                                                               the Classical era, this city became a tourist
+                                                               destination, where visitors would leave
+                                                               offerings to the legendary heroes.
+                                                            </p>
                                                          </div>
+                                                      </div>
 
-                                                         <div className="accordion-panel pb-4">
-                                                            <div className="accordion-trigger">
-                                                               <span>Day 7:</span> Dalyan
-                                                            </div>
-                                                            <div className="accordion-content">
-                                                               <p>
-                                                                  Dalyan is a town in Muğla Province located
-                                                                  between the districts of Marmaris and Fethiye
-                                                                  on the south-west coast of Turkey. The town is
-                                                                  an independent municipality, within the
-                                                                  administrative district of Ortaca.
-                                                               </p>
-                                                               <p>
-                                                                  Dalyan achieved international fame in 1987 when
-                                                                  developers wanted to build a luxury hotel on
-                                                                  the nearby İztuzu Beach, a breeding ground for
-                                                                  the endangered loggerhead sea turtle species.
-                                                                  The incident created major international storm
-                                                                  when David Bellamy championed the cause of
-                                                                  conservationists such as June Haimoff, Peter
-                                                                  Günther, Nergis Yazgan, Lily Venizelos and
-                                                                  Keith Corbett. The development project was
-                                                                  temporarily stopped after Prince Philip called
-                                                                  for a moratorium and in 1988 the beach and its
-                                                                  hinterland were declared a protected area, viz.
-                                                                  Köyceğiz-Dalyan Special Environmental
-                                                                  Protection Area.
-                                                               </p>
-                                                               <p>
-                                                                  Life in Dalyan revolves around the Dalyan Çayı
-                                                                  River which flows past the town. The boats that
-                                                                  ply up and down the river, navigating the maze
-                                                                  of reeds, are the preferred means of transport
-                                                                  to local sites.
-                                                               </p>
-                                                            </div>
+                                                      <div className="accordion-panel pb-4">
+                                                         <div className="accordion-trigger">
+                                                            <span>Day 4:</span> Kusadasi
                                                          </div>
+                                                         <div className="accordion-content">
+                                                            <p>
+                                                               Kuşadası is a large resort town on Turkey`s
+                                                               Aegean coast, and the center of the seaside
+                                                               district of the same name within Aydın
+                                                               Province. Kuşadası is 95 km (59 mi) south of
+                                                               İzmir, and about 60 km (37 mi) from Aydın. The
+                                                               municipality`s primary industry is tourism. The
+                                                               mayor of the district is Oğuzhan Turan.
+                                                            </p>
+                                                         </div>
+                                                      </div>
 
-                                                         <div className="accordion-panel pb-4">
-                                                            <div className="accordion-trigger">
-                                                               <span>Day 8:</span> Cappadocia
-                                                            </div>
-                                                            <div className="accordion-content">
-                                                               <p>
-                                                                  Cappadocia is a historical region in Central
-                                                                  Anatolia, largely in the Nevşehir, Kayseri,
-                                                                  Aksaray, Kırşehir, Sivas and Niğde provinces in
-                                                                  Turkey.
-                                                               </p>
-                                                               <p>
-                                                                  Since the late 300s BC the name Cappadocia came
-                                                                  to be restricted to the inland province
-                                                                  (sometimes called Great Cappadocia), Upper
-                                                                  Cappadocia, which alone will be the focus of
-                                                                  this article. Lower Cappadocia is focused to
-                                                                  elsewhere.
-                                                               </p>
-                                                               <p>
-                                                                  According to Herodotus, in the time of the
-                                                                  Ionian Revolt (499 BC), the Cappadocians were
-                                                                  reported as occupying a region from Mount
-                                                                  Taurus to the vicinity of the Euxine (Black
-                                                                  Sea). Cappadocia, in this sense, was bounded in
-                                                                  the south by the chain of the Taurus Mountains
-                                                                  that separate it from Cilicia, to the east by
-                                                                  the upper Euphrates, to the north by Pontus,
-                                                                  and to the west by Lycaonia and eastern
-                                                                  Galatia.
-                                                               </p>
-                                                            </div>
+                                                      <div className="accordion-panel pb-4">
+                                                         <div className="accordion-trigger">
+                                                            <span>Day 5:</span> Fethiye
+                                                         </div>
+                                                         <div className="accordion-content">
+                                                            <p>
+                                                               Fethiye, formerly Makri (Greek: Μάκρη), is a
+                                                               city and district of Muğla Province in the
+                                                               Aegean Region of Turkey. It is one of the
+                                                               prominent tourist destinations in the Turkish
+                                                               Riviera. In 2019 its population was 162,686.
+                                                            </p>
+                                                         </div>
+                                                      </div>
+
+                                                      <div className="accordion-panel pb-4">
+                                                         <div className="accordion-trigger">
+                                                            <span>Day 6:</span> Oludeniz
+                                                         </div>
+                                                         <div className="accordion-content">
+                                                            <p>
+                                                               Ölüdeniz is a small neighbourhood and beach
+                                                               resort in the Fethiye district of Muğla
+                                                               Province, on the Turquoise Coast of
+                                                               southwestern Turkey, at the conjunction point
+                                                               of the Aegean and Mediterranean sea. It is
+                                                               located 14 km (9 mi) to the south of Fethiye,
+                                                               near Mount Babadağ.
+                                                            </p>
+                                                         </div>
+                                                      </div>
+
+                                                      <div className="accordion-panel pb-4">
+                                                         <div className="accordion-trigger">
+                                                            <span>Day 7:</span> Dalyan
+                                                         </div>
+                                                         <div className="accordion-content">
+                                                            <p>
+                                                               Dalyan is a town in Muğla Province located
+                                                               between the districts of Marmaris and Fethiye
+                                                               on the south-west coast of Turkey. The town is
+                                                               an independent municipality, within the
+                                                               administrative district of Ortaca.
+                                                            </p>
+                                                            <p>
+                                                               Dalyan achieved international fame in 1987 when
+                                                               developers wanted to build a luxury hotel on
+                                                               the nearby İztuzu Beach, a breeding ground for
+                                                               the endangered loggerhead sea turtle species.
+                                                               The incident created major international storm
+                                                               when David Bellamy championed the cause of
+                                                               conservationists such as June Haimoff, Peter
+                                                               Günther, Nergis Yazgan, Lily Venizelos and
+                                                               Keith Corbett. The development project was
+                                                               temporarily stopped after Prince Philip called
+                                                               for a moratorium and in 1988 the beach and its
+                                                               hinterland were declared a protected area, viz.
+                                                               Köyceğiz-Dalyan Special Environmental
+                                                               Protection Area.
+                                                            </p>
+                                                            <p>
+                                                               Life in Dalyan revolves around the Dalyan Çayı
+                                                               River which flows past the town. The boats that
+                                                               ply up and down the river, navigating the maze
+                                                               of reeds, are the preferred means of transport
+                                                               to local sites.
+                                                            </p>
+                                                         </div>
+                                                      </div>
+
+                                                      <div className="accordion-panel pb-4">
+                                                         <div className="accordion-trigger">
+                                                            <span>Day 8:</span> Cappadocia
+                                                         </div>
+                                                         <div className="accordion-content">
+                                                            <p>
+                                                               Cappadocia is a historical region in Central
+                                                               Anatolia, largely in the Nevşehir, Kayseri,
+                                                               Aksaray, Kırşehir, Sivas and Niğde provinces in
+                                                               Turkey.
+                                                            </p>
+                                                            <p>
+                                                               Since the late 300s BC the name Cappadocia came
+                                                               to be restricted to the inland province
+                                                               (sometimes called Great Cappadocia), Upper
+                                                               Cappadocia, which alone will be the focus of
+                                                               this article. Lower Cappadocia is focused to
+                                                               elsewhere.
+                                                            </p>
+                                                            <p>
+                                                               According to Herodotus, in the time of the
+                                                               Ionian Revolt (499 BC), the Cappadocians were
+                                                               reported as occupying a region from Mount
+                                                               Taurus to the vicinity of the Euxine (Black
+                                                               Sea). Cappadocia, in this sense, was bounded in
+                                                               the south by the chain of the Taurus Mountains
+                                                               that separate it from Cilicia, to the east by
+                                                               the upper Euphrates, to the north by Pontus,
+                                                               and to the west by Lycaonia and eastern
+                                                               Galatia.
+                                                            </p>
                                                          </div>
                                                       </div>
                                                    </div>
                                                 </div>
-                                                {/* Book Now Button */}
-                                                <div className='flex pb-8'>
-                                                   <div className='mr-2 ml-auto justify-end'>
-                                                      <button onClick={() => {
-                                                         setRate({
-                                                            base_rate_amount: resource?.base_rate_amount,
-                                                            tax_rate_amount: resource?.tax_rate_amount,
-                                                            other_charges_amount: resource?.other_charges_amount,
-                                                            base_rate_currency: resource?.base_rate_currency
-                                                         }); getSingleSection(open?.view, resource?.package_name, "Packages")
-                                                      }}
-                                                         className='bg-green-600 sm:inline-flex text-white focus:ring-4 focus:ring-green-200 font-semibold rounded-lg text-sm px-4 py-2.5 text-center ease-linear transition-all duration-150'>
-                                                         {language?.booknow}
-                                                      </button></div>
-                                                </div></div>
-                                          </div>)
-                                    })}
-
-                                 </div>
-                              </div> : <div></div>}
-
-                        </div>
-                     </div>
-                  </div>
-
-                  {/*  Reviews */}
-                  {/* <div className="tour-content-block"> */}
-                  <div className="mt-10 border-b pb-10">
-
-                     {/* <div className="tour-content-title">{language?.customer} {language?.reviews}</div> */}
-                     <div className={`mb-6 ${themeColor?.titleTextColor} text-lg md:text-2xl font-semibold`}>{language?.customer} {language?.reviews}</div>
-
-                     {/* <div className="tour-reviews"> */}
-                     <div className="flex flex-col lg:flex-row">
-
-                        {/* <div className="tour-reviews-feedback"> */}
-                        <div className={`${themeColor?.bodyBgColor} border rounded-t-lg w-full  lg:w-3/5 lg:mr-8  lg:rounded-lg `}>
-                           <Marquee duration={50000} height="370px" axis="Y" reverse={true}>
-                              {args?.allHotelDetails?.Reviews?.map((item, idx) => {
-                                 return (
-
-                                    <div className="flex justify-between items-center p-4 md:px-10 lg:p-4" key={idx} >
-                                       <div className='w-60 pr-3 md:w-full md:pr-5 lg:pr-1 lg:w-40 xl:w-60 2xl:w-60'>
-                                          <div className="text-sm lg:text-base font-semibold">
-                                             <div className={visible === 0 ? 'block w-24 mb-2' : 'hidden'}><LineLoader /></div>
-                                             <div className={visible === 1 ? `block ${themeColor?.titleTextColor}` : 'hidden'}>
-                                                {item?.review_author}</div>
-                                          </div>
-                                          <div className="text-xs lg:text-sm ">
-                                             <div className={visible === 0 ? 'block h-2 w-64 mb-6' : 'hidden'}><LineLoader /></div>
-                                             <div className={visible === 1 ? `block ${themeColor?.descriptionTextColor} whitespace-normal` : 'hidden'}>
-                                                <p > {item?.review_content}</p>
                                              </div>
-                                          </div>
-                                       </div>
-                                       <div className={`${themeColor?.titleTextColor} h-10 rounded-full text-center font-semibold text-sm capitalize`}>{'⭐'.repeat(item?.review_rating || 0)}</div>
-                                    </div>
-                                 )
-                              })}
-                              <hr className="border-gray-900 sm:mx-auto" />
-                           </Marquee>
+                                             {/* Book Now Button */}
+                                             <div className='flex pb-8'>
+                                                <div className='mr-2 ml-auto justify-end'>
+                                                   <button onClick={() => {
+                                                      setRate({
+                                                         base_rate_amount: resource?.base_rate_amount,
+                                                         tax_rate_amount: resource?.tax_rate_amount,
+                                                         other_charges_amount: resource?.other_charges_amount,
+                                                         base_rate_currency: resource?.base_rate_currency
+                                                      }); getSingleSection(open?.view, resource?.package_name, "Packages")
+                                                   }}
+                                                      className='bg-green-600 sm:inline-flex text-white focus:ring-4 focus:ring-green-200 font-semibold rounded-lg text-sm px-4 py-2.5 text-center ease-linear transition-all duration-150'>
+                                                      {language?.booknow}
+                                                   </button></div>
+                                             </div></div>
+                                       </div>)
+                                 })}
 
-                        </div>
-
-                        {/* <div className="tour-reviews-overall"> */}
-                        <div className={`tour-review-overall ${themeColor?.bodyBgColor} relative flex w-full items-center justify-center overflow-hidden rounded-b-lg border border-t-0 border-solid border-gray-300  p-10 text-center text-gray-400 lg:w-2/5 lg:rounded-lg lg:border-t lg:bg-transparent"`}>
-                           <div>
-
-                              {/* <div className="tour-reviews-overall-title"> */}
-                              <div className="text-xl font-semibold opacity-40 lg:text-2xl">
-                                 {language?.overallrating}
                               </div>
-
-                              {/* <div className="tour-reviews-overall-text"> */}
-                              <div className="mt-5 text-2xl font-semibold lg:text-4xl">
-                                 {language?.excellent}
-                              </div>
-
-                              {/* <div className="tour-reviews-overall-rating"> */}
-                              <div className="mt-6 text-4xl font-semibold lg:text-6xl">
-                                 {averageRating}
-                              </div>
-                           </div>
-                        </div>
-
-
-
+                           </div> : <div></div>}
 
                      </div>
                   </div>
-
-                  {/*call us banner */}
-                  <Banner args={args} language={language} visible={visible} />
                </div>
 
+               {/*  Reviews */}
+               {/* <div className="tour-content-block"> */}
+               <div className="mt-10 border-b pb-10">
+
+                  {/* <div className="tour-content-title">{language?.customer} {language?.reviews}</div> */}
+                  <div className={`mb-6 ${themeColor?.titleTextColor} text-lg md:text-2xl font-semibold`}>{language?.customer} {language?.reviews}</div>
+
+                  {/* <div className="tour-reviews"> */}
+                  <div className="flex flex-col lg:flex-row">
+
+                     {/* <div className="tour-reviews-feedback"> */}
+                     <div className={`${themeColor?.bodyBgColor} border rounded-t-lg w-full  lg:w-3/5 lg:mr-8  lg:rounded-lg `}>
+                        <Marquee duration={50000} height="370px" axis="Y" reverse={true}>
+                           {args?.allHotelDetails?.Reviews?.map((item, idx) => {
+                              return (
+
+                                 <div className="flex justify-between items-center p-4 md:px-10 lg:p-4" key={idx} >
+                                    <div className='w-60 pr-3 md:w-full md:pr-5 lg:pr-1 lg:w-40 xl:w-60 2xl:w-60'>
+                                       <div className="text-sm lg:text-base font-semibold">
+                                          <div className={visible === 0 ? 'block w-24 mb-2' : 'hidden'}><LineLoader /></div>
+                                          <div className={visible === 1 ? `block ${themeColor?.titleTextColor}` : 'hidden'}>
+                                             {item?.review_author}</div>
+                                       </div>
+                                       <div className="text-xs lg:text-sm ">
+                                          <div className={visible === 0 ? 'block h-2 w-64 mb-6' : 'hidden'}><LineLoader /></div>
+                                          <div className={visible === 1 ? `block ${themeColor?.descriptionTextColor} whitespace-normal` : 'hidden'}>
+                                             <p > {item?.review_content}</p>
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <div className={`${themeColor?.titleTextColor} h-10 rounded-full text-center font-semibold text-sm capitalize`}>{'⭐'.repeat(item?.review_rating || 0)}</div>
+                                 </div>
+                              )
+                           })}
+                           <hr className="border-gray-900 sm:mx-auto" />
+                        </Marquee>
+
+                     </div>
+
+                     {/* <div className="tour-reviews-overall"> */}
+                     <div className={`tour-review-overall ${themeColor?.bodyBgColor} relative flex w-full items-center justify-center overflow-hidden rounded-b-lg border border-t-0 border-solid border-gray-300  p-10 text-center text-gray-400 lg:w-2/5 lg:rounded-lg lg:border-t lg:bg-transparent"`}>
+                        <div>
+
+                           {/* <div className="tour-reviews-overall-title"> */}
+                           <div className="text-xl font-semibold opacity-40 lg:text-2xl">
+                              {language?.overallrating}
+                           </div>
+
+                           {/* <div className="tour-reviews-overall-text"> */}
+                           <div className="mt-5 text-2xl font-semibold lg:text-4xl">
+                              {language?.excellent}
+                           </div>
+
+                           {/* <div className="tour-reviews-overall-rating"> */}
+                           <div className="mt-6 text-4xl font-semibold lg:text-6xl">
+                              {averageRating}
+                           </div>
+                        </div>
+                     </div>
 
 
-               {/* Booking form  */}
-               {/* <div className={`tour-sidebar ${Color?.light?.whitebackground}`}> */}
-               <div className={`hidden lg:block relative top-8 z-20 mb-10 w-full lg:mb-0 lg:sticky lg:ml-8  lg:w-5/12 rounded-lg ${themeColor?.bookingFormColor}`}>
-                  {/* <div className="tour-receipt">
+
+
+                  </div>
+               </div>
+
+               {/*call us banner */}
+               <Banner args={args} language={language} visible={visible} />
+            </div>
+
+
+
+            {/* Booking form  */}
+            {/* <div className={`tour-sidebar ${Color?.light?.whitebackground}`}> */}
+            <div className={`hidden lg:block relative top-8 z-20 mb-10 w-full lg:mb-0 lg:sticky lg:ml-8  lg:w-5/12 rounded-lg ${themeColor?.bookingFormColor}`}>
+               {/* <div className="tour-receipt">
                      <div className="tour-receipt-head">
                         <div className="tour-amount">
                            <div className={visible === 0 ? 'block w-32' : 'hidden'}><SubHeading /></div>
@@ -1472,25 +1496,25 @@ function Classic(args) {
                      </div>
                   </div> */}
 
-                  <BookingForm
-                     themeColor={themeColor}
-                     setRoomsLoader={(e) => setRoomsLoader(e)}
-                     setShowBookingEngine={(e) => setShowBookingEngine(e)}
-                     setEnquiry={(e) => setEnquiry(e)}
-                     enquiry={enquiry}
-                     setSearched={(e) => setSearched(e)}
-                     searched={searched}
-                     setShowModalBookingForm={(e) => setShowModalBookingForm(e)}
+               <BookingForm
+                  themeColor={themeColor}
+                  setRoomsLoader={(e) => setRoomsLoader(e)}
+                  setShowBookingEngine={(e) => setShowBookingEngine(e)}
+                  setEnquiry={(e) => setEnquiry(e)}
+                  enquiry={enquiry}
+                  setSearched={(e) => setSearched(e)}
+                  searched={searched}
+                  setShowModalBookingForm={(e) => setShowModalBookingForm(e)}
 
-                  />
-                  {/* <Contactus color={Color?.light} language={language} property_id={args?.allHotelDetails?.property_id} /> */}
-               </div>
-
+               />
+               {/* <Contactus color={Color?.light} language={language} property_id={args?.allHotelDetails?.property_id} /> */}
             </div>
-         </div>
 
-         {/* Footer */}
-         <footer className="bg-gray-900 lg:mt:8 py-6" >
+         </div>
+      </div >
+
+         {/* Footer */ }
+         < footer className = "bg-gray-900 lg:mt:8 py-6" >
             <div className="md:flex md:justify-between mx-6">
                <div className="mb-6 md:mb-0 px-12 md:px-8">
 
@@ -1590,7 +1614,7 @@ function Classic(args) {
                   </div>
                </div>
             </div>
-         </footer>
+         </footer >
 
 
          <div className={showContactUs === 1 ? "block" : "hidden"}>
@@ -1626,71 +1650,71 @@ function Classic(args) {
 
          </div>
 
-         {/* ---------------booking form modal for sm and md screen --------------- */}
-         {
-            showModalBookingForm === 1 ?
-               <Modal
-                  description={
-                     <BookingForm
-                        setRoomsLoader={(e) => setRoomsLoader(e)}
-                        setShowBookingEngine={(e) => setShowBookingEngine(e)}
-                        setEnquiry={(e) => setEnquiry(e)}
-                        enquiry={enquiry}
-                        setSearched={(e) => setSearched(e)}
-                        searched={searched}
-                        setShowModalBookingForm={(e) => setShowModalBookingForm(e)}
+   {/* ---------------booking form modal for sm and md screen --------------- */ }
+   {
+      showModalBookingForm === 1 ?
+         <Modal
+            description={
+               <BookingForm
+                  setRoomsLoader={(e) => setRoomsLoader(e)}
+                  setShowBookingEngine={(e) => setShowBookingEngine(e)}
+                  setEnquiry={(e) => setEnquiry(e)}
+                  enquiry={enquiry}
+                  setSearched={(e) => setSearched(e)}
+                  searched={searched}
+                  setShowModalBookingForm={(e) => setShowModalBookingForm(e)}
 
-                     />
-                  }
-                  setShowModal={(e) => setShowModalBookingForm(e)}
                />
-               : <></>
-         }
-
-         {/* this div will only show up when the showBookingEngine is equal to 1 else there will be no such div, and the functions inside this div will only work when showBookingEngine is equal to 1 */}
-         {
-            showBookingEngine === 1 ?
-               <div className="block z-50">
-                  {allHotelDetails && <BookingModal
-                     bookingComponent={
-                        <BookingEngine
-                           color={{
-                              "theme": themeColor?.theme,
-                              "bgColor": themeColor?.bodyBgColor,
-                              // "cardColor": themeColor?.bodyBgColor,
-                              text: {
-                                 title: themeColor?.text?.title,
-                                 description: themeColor?.text?.description,
-                              }
-                              // "boxColor": themeColor?.bodyBgColor,
-                           }}
-                           roomsLoader={roomsLoader}
-                           setRoomsLoader={(e) => setRoomsLoader(e)}
-                           display={display}
-                           setDisplay={(e) => setDisplay(e)}
-                           rooms={args?.allRooms?.rooms}
-                           allHotelDetails={args?.allHotelDetails}
-                           setShowModal={(e) => setShowBookingEngine(e)}
-                           setSearched={(e) => setSearched(false)}
-                           checkinDate={enquiry.checkin}
-                           checkoutDate={enquiry.checkout}
-                        />}
-                  />}
-               </div> : undefined
-         }
-
-         {/* Toast Container */}
-         <ToastContainer
-            position="top-center"
-            autoClose={5000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
+            }
+            setShowModal={(e) => setShowModalBookingForm(e)}
          />
+         : <></>
+   }
+
+   {/* this div will only show up when the showBookingEngine is equal to 1 else there will be no such div, and the functions inside this div will only work when showBookingEngine is equal to 1 */ }
+   {
+      showBookingEngine === 1 ?
+         <div className="block z-50">
+            {allHotelDetails && <BookingModal
+               bookingComponent={
+                  <BookingEngine
+                     color={{
+                        "theme": themeColor?.theme,
+                        "bgColor": themeColor?.bodyBgColor,
+                        // "cardColor": themeColor?.bodyBgColor,
+                        text: {
+                           title: themeColor?.text?.title,
+                           description: themeColor?.text?.description,
+                        }
+                        // "boxColor": themeColor?.bodyBgColor,
+                     }}
+                     roomsLoader={roomsLoader}
+                     setRoomsLoader={(e) => setRoomsLoader(e)}
+                     display={display}
+                     setDisplay={(e) => setDisplay(e)}
+                     rooms={args?.allRooms?.rooms}
+                     allHotelDetails={args?.allHotelDetails}
+                     setShowModal={(e) => setShowBookingEngine(e)}
+                     setSearched={(e) => setSearched(false)}
+                     checkinDate={enquiry.checkin}
+                     checkoutDate={enquiry.checkout}
+                  />}
+            />}
+         </div> : undefined
+   }
+
+   {/* Toast Container */ }
+   <ToastContainer
+      position="top-center"
+      autoClose={5000}
+      hideProgressBar={false}
+      newestOnTop={false}
+      closeOnClick
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+   />
 
 
       </>

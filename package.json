@@ -34,6 +34,7 @@
     "@nrwl/next": "^14.0.2",
     "@react-pdf/renderer": "^3.1.14",
     "@reduxjs/toolkit": "^1.9.5",
+    "@segment/snippet": "^5.2.1",
     "@syncfusion/ej2-react-calendars": "^20.4.42",
     "@syncfusion/ej2-react-schedule": "^20.4.43",
     "@tailwindcss/forms": "^0.5.3",

@@ -16,6 +16,12 @@ import ClassicThemeColors from "../components/ClassicTheme/Data/Colors"
 import Cosmic from "../components/LodgeTheme";
 import CountrySide from "../components/CountrysideTheme"
 
+import Script from 'next/script'
+
+import * as snippet from '@segment/snippet'
+import Router from 'next/router';
+
+
 var language;
 function Page({ data, room_data, package_data }) {
   const [allHotelDetails, setAllHotelDetails] = useState([]);
@@ -97,11 +103,46 @@ function Page({ data, room_data, package_data }) {
 
   }, [data]);
 
+  function renderSnippet() {
+    const opts = {
+      // apiKey: process.env.NEXT_PUBLIC_ANALYTICS_WRITE_KEY,
+      apiKey: "p6FoooEYSlUjNAbGxlJA2SSrtJUM3ezM",
+   // note: the page option only covers SSR tracking.
+      page: true,
+    }
+  
+    if (process.env.NODE_ENV === 'development') {
+      return snippet.max(opts)
+    }
+  
+    return snippet.min(opts)
+  }
+  
+  useEffect(() => {
+    const handleRouteChange = (url) => {
+      if (url) {
+        alert(JSON.stringify(url))
+        global.analytics.page('Loaded Another Website Page', {
+          page: url,
+        });
+      }
+    };
+
+    Router.events.on('routeChangeComplete', handleRouteChange);
+
+    return () => {
+      Router.events.off('routeChangeComplete', handleRouteChange);
+    };
+  }, []);
 
   return (
 
-    <>
+    <> <Script
+    id="segment-script"
+    dangerouslySetInnerHTML={{ __html: renderSnippet() }}
+  />
       <Title name={`${data?.property_name}`} />
+      {/* <Title name={`${data?.property_name}`}  renderSnippet={renderSnippet}/> */}
 
       {/* Classic Theme */}
       {theme === "Classic" ?

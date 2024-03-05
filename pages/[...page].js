@@ -15,6 +15,7 @@ import ModernThemeColors from "../components/ModernTheme/Data/Colors"
 import ClassicThemeColors from "../components/ClassicTheme/Data/Colors"
 import Cosmic from "../components/LodgeTheme";
 import CountrySide from "../components/CountrysideTheme"
+import getUserIdentity from "../components/Analytics/userIdentity";
 
 import Script from 'next/script'
 
@@ -107,26 +108,36 @@ function Page({ data, room_data, package_data }) {
     const opts = {
       // apiKey: process.env.NEXT_PUBLIC_ANALYTICS_WRITE_KEY,
       apiKey: "p6FoooEYSlUjNAbGxlJA2SSrtJUM3ezM",
-   // note: the page option only covers SSR tracking.
+      // note: the page option only covers SSR tracking.
       page: true,
     }
-  
+
     if (process.env.NODE_ENV === 'development') {
       return snippet.max(opts)
     }
-  
+
     return snippet.min(opts)
   }
-  
+
+  // send analytics to segment 
   useEffect(() => {
-    const handleRouteChange = (url) => {
+    const handleRouteChange = async (url) => {
+      console.log(url)
       if (url) {
-        alert(JSON.stringify(url))
         global.analytics.page('Loaded Another Website Page', {
           page: url,
         });
+
+      };
+
+    }
+    const identifyUser = async () => {
+      const id = await getUserIdentity();
+      if (id) {
+      global.analytics.identify(id.user, id);
       }
-    };
+    }
+    identifyUser();
 
     Router.events.on('routeChangeComplete', handleRouteChange);
 
@@ -138,9 +149,9 @@ function Page({ data, room_data, package_data }) {
   return (
 
     <> <Script
-    id="segment-script"
-    dangerouslySetInnerHTML={{ __html: renderSnippet() }}
-  />
+      id="segment-script"
+      dangerouslySetInnerHTML={{ __html: renderSnippet() }}
+    />
       <Title name={`${data?.property_name}`} />
       {/* <Title name={`${data?.property_name}`}  renderSnippet={renderSnippet}/> */}
 
@@ -150,7 +161,7 @@ function Page({ data, room_data, package_data }) {
           <Classic language={language} allHotelDetails={allHotelDetails}
             allRooms={allRooms} allPackages={allPackages} services={services}
             phone={phone} email={email} initialColor={ClassicThemeColors.white} /></div> : <div className="sticky"></div>}
-      
+
       {/* Classic Theme */}
       {theme === "Classic Accessible" ?
         <div className="sticky">
@@ -219,6 +230,8 @@ function Page({ data, room_data, package_data }) {
 
   );
 }
+
+
 // This gets called on every request
 export async function getServerSideProps(context) {
   const items = context.resolvedUrl;

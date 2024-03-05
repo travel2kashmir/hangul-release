@@ -39,6 +39,7 @@ import BedIcon from '@mui/icons-material/Bed';
 import LandscapeIcon from '@mui/icons-material/Landscape';
 import GroupsIcon from '@mui/icons-material/Groups';
 import SquareFootIcon from '@mui/icons-material/SquareFoot';
+import useGeoLocation from '../../components/UserDefinedHooks/useGeoLocation';
 
 
 var currentUser;
@@ -228,26 +229,29 @@ function Classic(args) {
    const [imageSlideShow, setImageSlideShow] = useState(0);
    const [visibleImage, setVisibleImage] = useState();
    const [allImagesLink, setAllImagesLink] = useState([]);
-   const [geoLocation,setGeoLocation]=useState()
-   
-
-   useEffect(() => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            setGeoLocation({
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude
-            });
-          },
-          (error) => {
-            console.error('Error getting geolocation:', error);
-          }
-        );
-      } else {
-        console.log('Geolocation is not available');
-      }
-    }, []);
+   // const [geoLocation,setGeoLocation]=useState()
+   let geoLocation=useGeoLocation()
+   // alert(JSON.stringify(geoLocation))
+   // useEffect(()=>{
+   //    alert(JSON.stringify(geoLocation))
+   // },[])
+   // useEffect(() => {
+   //    if (navigator.geolocation) {
+   //      navigator.geolocation.getCurrentPosition(
+   //        (position) => {
+   //          setGeoLocation({
+   //            latitude: position.coords.latitude,
+   //            longitude: position.coords.longitude
+   //          });
+   //        },
+   //        (error) => {
+   //          console.error('Error getting geolocation:', error);
+   //        }
+   //      );
+   //    } else {
+   //      console.log('Geolocation is not available');
+   //    }
+   //  }, []);
    function activateImagesSlider(image_index, allImages) {
       setVisibleImage(image_index)
       setAllImagesLink(allImages.map(i => i.image_link))

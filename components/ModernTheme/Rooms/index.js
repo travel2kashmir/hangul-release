@@ -73,8 +73,8 @@ function Rooms({ rooms=[], allHotelDetails={}, hotelDetailLoader, roomDetailLoad
 
                                                 <p className="mt-5 text-xl font-semibold">{room?.room_name}</p>
 
-                                                {room?.unconditional_rates?.map((resource, index) => {
-                                                    return <p key={index} className="text-lg text-gray-500 font-medium">{resource?.baserate_currency.toUpperCase() + " " + resource?.baserate_amount}</p>
+                                                {room?.unconditional_rates?.filter(i=>i.meal_name=='Room Only').map((resource, index) => {
+                                                    return <p key={index} className="text-lg text-gray-500 font-medium">{resource?.price} local currency</p>
                                                 })}
 
                                             </div>
@@ -89,8 +89,8 @@ function Rooms({ rooms=[], allHotelDetails={}, hotelDetailLoader, roomDetailLoad
                         {selectedRoom.length != 0 ? <div className="pt-5 md:mt-8 md:pt-5 md:mb-10 rounded shadow-lg bg-slate-100">
                             <div className="flex justify-between px-5 pt-0">
                                 <p className=' text-slate-500 font-semibold tracking-wide text-center text-2xl'>{selectedRoom?.room_name} - ({selectedRoom?.room_type?.replaceAll("_", " ")})</p>
-                                {selectedRoom?.unconditional_rates?.map((resource, index) => {
-                                    return <p key={index} className="text-lg text-gray-500 font-medium">{resource?.baserate_currency + " " + resource?.baserate_amount}</p>
+                                {selectedRoom?.unconditional_rates?.filter(i=>i.meal_name=='Room Only').map((resource, index) => {
+                                    return <p key={index} className="text-lg text-gray-500 font-medium">{resource?.price} Local currency</p>
                                 })}
                             </div>
 

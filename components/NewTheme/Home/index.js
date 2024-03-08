@@ -3,7 +3,7 @@ import StarIcon from '@mui/icons-material/Star';
 import Header from './Header';
 import Loader from '../Loaders/Loader'
 
-function Home({ allHotelDetails, menu, setMenu, hotelDetailLoader, lang, setLang, setShowContactUs, setShowModalBooking }) {
+function Home({ allHotelDetails, menu, setMenu, hotelDetailLoader, lang, setLang, setShowContactUs, setShowModalBooking,cookie }) {
 
     const [mainPic, setMainPic] = useState('/imghome.webp')
 
@@ -21,7 +21,7 @@ function Home({ allHotelDetails, menu, setMenu, hotelDetailLoader, lang, setLang
     return (
         <section className="relative h-screen md:h-screen z-10">
             <div className="absolute inset-0">
-                {/* <div className="absolute inset-0 bg-[url('https://themewagon.github.io/sogo/images/slider-7.jpg')] bg-no-repeat bg-cover bg-center"></div> */}
+             
                 <div className="absolute h-full w-full">
                     <img src={mainPic} alt="cover" className={`h-full w-full`} />
                 </div>
@@ -37,6 +37,7 @@ function Home({ allHotelDetails, menu, setMenu, hotelDetailLoader, lang, setLang
                 lang={lang}
                 setLang={setLang}
                 setShowContactUs={(e) => setShowContactUs(e)}
+                cookie={cookie}
             />
 
             <div className="contentBox relative text-center pt-32 pb-0 md:top-0 lg:top-5 xl:top-10">

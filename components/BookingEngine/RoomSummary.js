@@ -13,7 +13,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useDispatch, useSelector } from 'react-redux';
 import { setRoomsSelected, setAddMoreRoom, clearRoomsSelected, clearInventoryDetail, setReserveRoom, clearReservationIdentity, clearGuestDetails, setReservationIdentity } from '../redux/hangulSlice';
 
-function RoomSummary({ color, setDisplay, setShowModal, setRoomsLoader, setSearched, checkinDate, checkoutDate }) {
+function RoomSummary({ color, setDisplay, setShowModal, setRoomsLoader, setSearched, checkinDate, checkoutDate,cookie }) {
 
   const [searchBookingInventory, setSearchBookingInventory] = useState(false)
 
@@ -149,6 +149,14 @@ function RoomSummary({ color, setDisplay, setShowModal, setRoomsLoader, setSearc
               <button
                 className='w-full mt-auto px-1 py-2 bg-green-700 hover:bg-green-900 text-white rounded-md'
                 onClick={() => {
+                  if (cookie) {
+                    const user = JSON.parse(cookie);
+                    global.analytics.track("User clicked on book now on room summary page", {
+                       action: "User clicked on book now on room summary page",
+                       user: user.user,
+                       time: Date()
+                    });
+                 }
                   setSearchBookingInventory(true)
                   dispatch(setRoomsSelected([selectedRoom?.room_id]))
                   let reservationIdentity = {
@@ -156,10 +164,6 @@ function RoomSummary({ color, setDisplay, setShowModal, setRoomsLoader, setSearc
                     reservation_time: formatDateToCustomFormat(new Date())
                   }
                   dispatch(setReservationIdentity([reservationIdentity]))
-
-                  // reserveRoom({
-                  //   "reserve_rooms": generateBookingObjects(checkinDate, checkoutDate, { "room_count": 1, ...reservationIdentity })
-                  // }, selectedRoom?.room_id)
                   dispatch(setReserveRoom(true))
                   redirectToReviewPage(rate)
                 }}
@@ -180,7 +184,16 @@ function RoomSummary({ color, setDisplay, setShowModal, setRoomsLoader, setSearc
 
       {/* app bar */}
       <div className={`flex justify-between w-full py-5 px-3 md:px-5 border-b ${color?.border}`}>
-        <div className='flex cursor-pointer' onClick={() => { setDisplay(0) }}>
+        <div className='flex cursor-pointer' onClick={() => { 
+          if (cookie) {
+            const user = JSON.parse(cookie);
+            global.analytics.track("User clicked on back", {
+               action: "User clicked on back and went to rooms cards",
+               user: user.user,
+               time: Date()
+            });
+         }
+          setDisplay(0) }}>
           <i className='my-auto'><BiArrowBack size={30} /></i>
           <h2 className={`${color?.text?.title} text-xl my-auto font-bold ml-2 md:ml-5`}>Room Summary</h2>
         </div>
@@ -188,7 +201,15 @@ function RoomSummary({ color, setDisplay, setShowModal, setRoomsLoader, setSearc
         <div className='my-auto text-base flex gap-5 md:gap-10'>
           {/* cart icon */}
           <i className='cursor-pointer'
-            onClick={() => {
+            onClick={() => { 
+              if (cookie) {
+                const user = JSON.parse(cookie);
+                global.analytics.track("User clicked on cart", {
+                   action: "User clicked on cart",
+                   user: user.user,
+                   time: Date()
+                });
+             }
               if (roomsSelected.length === 0) {
                 toast.error("APP: Cart is Empty.");
               } else {
@@ -206,6 +227,14 @@ function RoomSummary({ color, setDisplay, setShowModal, setRoomsLoader, setSearc
             />
             : <span className='text-red-600  italic text-sm font-semibold cursor-pointer my-auto'
               onClick={() => {
+                if (cookie) {
+                  const user = JSON.parse(cookie);
+                  global.analytics.track("User cancelled the booking", {
+                     action: "User cancelled the booking",
+                     user: user.user,
+                     time: Date()
+                  });
+               }
                 setCancelBookingLoader(true);
                 closeButtonAction();
               }}>Cancel Booking</span>

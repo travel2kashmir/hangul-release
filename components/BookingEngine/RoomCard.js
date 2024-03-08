@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Capsule from "../utils/Capsule"
 
-function RoomCard({ color, filteredRoomData, roomImage, setDisplay, checkinDate, checkoutDate, property_id, rates }) {
+function RoomCard({ color, filteredRoomData, roomImage, setDisplay, checkinDate, checkoutDate, property_id, rates,cookie }) {
   const dispatch = useDispatch();
   const inventoryDetail = useSelector(state => state.inventoryDetail)
   const [invData, setInvData] = useState([]);
@@ -141,7 +141,18 @@ function RoomCard({ color, filteredRoomData, roomImage, setDisplay, checkinDate,
             <p className='flex  items-center flex-wrap text-base text-slate-500 font-normal'>
               {rates.map((i) =>
                 <Capsule key={i.meal_name} color={` ${roomRates.meal_name === i.meal_name ? 'bg-cyan-700' : 'bg-gray-400'}`}
-                  onClick={() => setRoomRates(i)} title={i.meal_name} textColor={`text-white`} />
+                  onClick={() => {
+                    if (cookie) {
+                      const user = JSON.parse(cookie);
+                      global.analytics.track("User selected meal", {
+                         action: "User selected meal",
+                         room_name: filteredRoomData?.room_name,
+                         meal_name: i.meal_name,
+                         user: user.user,
+                         time: Date()
+                      });
+                   }
+                    setRoomRates(i)}} title={i.meal_name} textColor={`text-white`} />
               )}
             </p>
           </>}
@@ -182,10 +193,16 @@ function RoomCard({ color, filteredRoomData, roomImage, setDisplay, checkinDate,
               className='px-5 py-3 mb-2 text-base md:text-sm md:mb-0 md:px-3 md:py-2 rounded-md bg-green-700 hover:bg-green-900 text-white font-bold'
               onClick={() => {
                 dispatch(addInventoryDetail(invData.filter(i => i.room_id === filteredRoomData.room_id)))
-                let reservationIdentity = {
-                  room_id: roomRates?.room_id,
-                  reservation_time: formatDateToCustomFormat(new Date())
-                }
+                if (cookie) {
+                  const user = JSON.parse(cookie);
+                  global.analytics.track("User selected room and went for booking page", {
+                     action: "User selected room and went for booking page",
+                     room_name: filteredRoomData?.room_name,
+                     meal_name: roomRates.meal_name,
+                     user: user.user,
+                     time: Date()
+                  });
+               }
                
                 redirectToReviewPage(filteredRoomData, roomRates)
               }}
@@ -200,6 +217,16 @@ function RoomCard({ color, filteredRoomData, roomImage, setDisplay, checkinDate,
               style={{ fontSize: "11px" }}
               className='mt-2 px-3 py-2 md:px-2 md:py-1 rounded-md bg-cyan-700 hover:bg-cyan-900 text-white'
               onClick={() => {
+                if (cookie) {
+                  const user = JSON.parse(cookie);
+                  global.analytics.track("User selected room and went for learn more page", {
+                     action: "User selected room and went for learn more page",
+                     room_name: filteredRoomData?.room_name,
+                     meal_name: roomRates.meal_name,
+                     user: user.user,
+                     time: Date()
+                  });
+               }
                 setSearchInventory(true);
                 dispatch(addInventoryDetail(invData.filter(i => i.room_id === filteredRoomData.room_id)))
                 redirectToRoom(filteredRoomData, roomRates)

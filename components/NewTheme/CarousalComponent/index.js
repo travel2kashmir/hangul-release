@@ -4,7 +4,7 @@ import Loader from '../Loaders/Loader';
 import ImagesSlider from '../../utils/ImagesSlider';
 
 
-function CarousalComponent({ type = 'review', data = [], title, id, hotelDetailLoader }) {
+function CarousalComponent({ type = 'review', data = [], title, id, hotelDetailLoader,cookie }) {
     const [imageSlideShow, setImageSlideShow] = useState(0);
     const [visibleImage, setVisibleImage] = useState();
     const [allImagesLink, setAllImagesLink] = useState([]);
@@ -16,7 +16,16 @@ function CarousalComponent({ type = 'review', data = [], title, id, hotelDetailL
  
     }
     return (<>
-        <section id={id} className={`px-5 py-10 ${type === 'room' ? '' : 'bg-slate-200'}`}>
+        <section id={id} 
+        onClick={ ()=>{if (cookie) {
+            const user = JSON.parse(cookie);
+            global.analytics.track(`User is property ${id}`, {
+               action: `User is property ${id}`,
+               user: user.user,
+               time: Date()
+            });}
+         }}
+        className={`px-5 py-10 ${type === 'room' ? '' : 'bg-slate-200'}`}>
 
             <div>
                 {title ?

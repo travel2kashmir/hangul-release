@@ -132,11 +132,13 @@ function Page({ data, room_data, package_data }) {
 
     }
     const identifyUser = async () => {
+      // getUserIdentity() is user defined function to get user identity
       const id = await getUserIdentity();
       if (id) {
       global.analytics.identify(id.user, id);
       }
     }
+
     identifyUser();
 
     Router.events.on('routeChangeComplete', handleRouteChange);

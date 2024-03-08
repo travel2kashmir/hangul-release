@@ -17,6 +17,7 @@ import BookingModal from './BookingModal';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import MenuSM from './MenuSM';
+import readCookie from '../Analytics/readCookie';
 
 
 function Hotel({ language, HotelDetails, allRooms, allPackages, services, phone, email }) {
@@ -54,16 +55,15 @@ function Hotel({ language, HotelDetails, allRooms, allPackages, services, phone,
     })
 
     const [searched, setSearched] = useState(false)
-
+    const [cookie,setCookie]=useState()
     useEffect(() => {
+        
         getLanguage();
         getHotelDetails();
         getRoomDetails();
-
+        setCookie(readCookie('user'));
     }, []);
-    // console.log("this is the hotel details: ", allHotelDetails)
-    // console.log("this is the rooms details: ", rooms)
-
+ 
     function getLanguage() {
 
         if (language === null) {
@@ -102,6 +102,7 @@ function Hotel({ language, HotelDetails, allRooms, allPackages, services, phone,
                     hotelDetailLoader={hotelDetailLoader}
                     setShowContactUs={(e) => setShowContactUs(e)}
                     setShowModalBooking={(e) => setShowModalBooking(e)}
+                    cookie={cookie}
                 />
             </div>
 
@@ -109,14 +110,17 @@ function Hotel({ language, HotelDetails, allRooms, allPackages, services, phone,
                 allHotelDetails={allHotelDetails}
                 hotelDetailLoader={hotelDetailLoader}
                 lang={lang}
+                cookie={cookie}
             />
-
+           
             <Rooms
                 rooms={rooms}
                 showRoom={showRoom}
                 setShowRoom={setShowRoom}
                 roomDetailLoader={roomDetailLoader}
                 lang={lang}
+                currency={allHotelDetails?.business_settings!=undefined? allHotelDetails?.business_settings[0]?.currency_code : 'USD'}
+                cookie={cookie}
             />
 
 
@@ -126,6 +130,7 @@ function Hotel({ language, HotelDetails, allRooms, allPackages, services, phone,
                 data={allHotelDetails?.images}
                 title={lang?.photos}
                 hotelDetailLoader={hotelDetailLoader}
+                cookie={cookie}
             />
 
             <Services
@@ -133,6 +138,7 @@ function Hotel({ language, HotelDetails, allRooms, allPackages, services, phone,
                 services={services}
                 hotelDetailLoader={hotelDetailLoader}
                 lang={lang}
+                cookie={cookie}
             />
 
             <CarousalComponent
@@ -141,6 +147,7 @@ function Hotel({ language, HotelDetails, allRooms, allPackages, services, phone,
                 data={allHotelDetails?.Reviews}
                 title={lang?.peopleSays}
                 hotelDetailLoader={hotelDetailLoader}
+                cookie={cookie}
             />
 
             {/* booking form for lg screen */}
@@ -154,6 +161,7 @@ function Hotel({ language, HotelDetails, allRooms, allPackages, services, phone,
                     enquiry={enquiry}
                     setEnquiry={(e) => setEnquiry(e)}
                     setRoomsLoader={(e) => setRoomsLoader(e)}
+                    cookie={cookie}
                 />
             </div>
 
@@ -182,6 +190,7 @@ function Hotel({ language, HotelDetails, allRooms, allPackages, services, phone,
                                     enquiry={enquiry}
                                     setEnquiry={(e) => setEnquiry(e)}
                                     setRoomsLoader={(e) => setRoomsLoader(e)}
+                                    cookie={cookie}
                                 />
                             </div>
                         }
@@ -218,6 +227,7 @@ function Hotel({ language, HotelDetails, allRooms, allPackages, services, phone,
                                         "description": "text-gray-700",
                                     }
                                 }}
+                                cookie={cookie}
                             />}
                     />}
                 </div> : undefined}
@@ -269,6 +279,7 @@ function Hotel({ language, HotelDetails, allRooms, allPackages, services, phone,
                     lang={lang}
                     setMenu={setMenu}
                     setShowContactUs={(e) => setShowContactUs(e)}
+                    cookie={cookie}
                 />
                 : <></>
             }

@@ -11,7 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 import RoomLoader from './RoomLoader';
 
 
-function RoomCalenderView({ allHotelDetails, color, roomsLoader, setRoomsLoader, rooms, setDisplay, setShowModal, setSearched, checkinDate, checkoutDate }) {
+function RoomCalenderView({ allHotelDetails, color, roomsLoader, setRoomsLoader, rooms, setDisplay, setShowModal, setSearched, checkinDate, checkoutDate, cookie }) {
 
     const reservationIdentity = useSelector(state => state.reservationIdentity)
     const dispatch = useDispatch() //creating object of dispatch 
@@ -167,6 +167,14 @@ function RoomCalenderView({ allHotelDetails, color, roomsLoader, setRoomsLoader,
                         {/* cart option */}
                         <i className='cursor-pointer'
                             onClick={() => {
+                                if (cookie) {
+                                    const user = JSON.parse(cookie);
+                                    global.analytics.track("User clicked on cart", {
+                                       action: "User clicked on cart",
+                                       user: user.user,
+                                       time: Date()
+                                    });
+                                 }
                                 if (roomsSelected.length === 0) {
                                     toast.error("APP: Cart is Empty.");
                                 } else {
@@ -178,7 +186,17 @@ function RoomCalenderView({ allHotelDetails, color, roomsLoader, setRoomsLoader,
 
                         {/* back option */}
                         <i className='cursor-pointer'
-                            onClick={closeButtonAction}>
+                            onClick={()=>{
+                                if (cookie) {
+                                    const user = JSON.parse(cookie);
+                                    global.analytics.track("User went back to main website", {
+                                       action: "User went back to main website",
+                                       user: user.user,
+                                       time: Date()
+                                    });
+                                 }
+                                closeButtonAction()}
+                                }>
                             <AiOutlineClose color='red' size={20} />
                         </i>
                     </div>
@@ -202,6 +220,7 @@ function RoomCalenderView({ allHotelDetails, color, roomsLoader, setRoomsLoader,
                                 checkoutDate={checkoutDate}
                                 property_id={allHotelDetails?.property_id}
                                 rates={transformedData?.filter(item => Object.keys(item)[0] === room?.room_id)[0][room?.room_id]}
+                                cookie={cookie}
                             />
                         })}
                     </>

@@ -3,7 +3,17 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Loader from '../Loaders/Loader'
 import { english, arabic, french } from '../../Languages/NewTheme';
 
-function Header({ allHotelDetails, menu, setMenu, hotelDetailLoader, lang, setLang, setShowContactUs }) {
+function Header({ allHotelDetails, menu, setMenu, hotelDetailLoader, lang, setLang, setShowContactUs,cookie }) {
+   function reportAnalytics(message){
+    if (cookie) {
+        const user = JSON.parse(cookie);
+        global.analytics.track(`User checking ${message}`, {
+           action: `User checking ${message}`,
+           user: user.user,
+           time: Date()
+        });
+     }
+   }
     return (
         <header className="relative px-7 md:px-10 py-12 md:py-16 font-bold">
             <div className="flex justify-between">
@@ -20,12 +30,12 @@ function Header({ allHotelDetails, menu, setMenu, hotelDetailLoader, lang, setLa
                 <div className='flex gap-5 md:gap-10'>
                     <div className='hidden md:hidden lg:block'>
                         <ul className='lg:flex lg:gap-10 xl:gap-16 lg:text-white'>
-                            <a href="#about"><li className='hover:text-slate-300 hover:underline'>{lang?.about}</li></a>
-                            <a href="#rooms"><li className='hover:text-slate-300 hover:underline'>{lang?.rooms}</li></a>
-                            <a href="#photos"><li className='hover:text-slate-300 hover:underline'>{lang?.photos}</li></a>
-                            <a href="#services"><li className='hover:text-slate-300 hover:underline'>{lang?.services}</li></a>
-                            <a href="#reviews"><li className='hover:text-slate-300 hover:underline'>{lang?.reviews}</li></a>
-                            <a onClick={() => setShowContactUs(1)}><li className='hover:text-slate-300 hover:underline'>{lang?.contactUs}</li></a>
+                            <a href="#about"><li onClick={()=>{reportAnalytics('about')}} className='hover:text-slate-300 hover:underline'>{lang?.about}</li></a>
+                            <a href="#rooms"><li onClick={()=>{reportAnalytics('rooms')}} className='hover:text-slate-300 hover:underline'>{lang?.rooms}</li></a>
+                            <a href="#photos"><li onClick={()=>{reportAnalytics('photos')}} className='hover:text-slate-300 hover:underline'>{lang?.photos}</li></a>
+                            <a href="#services"><li onClick={()=>{reportAnalytics('services')}} className='hover:text-slate-300 hover:underline'>{lang?.services}</li></a>
+                            <a href="#reviews"><li onClick={()=>{reportAnalytics('reviews')}} className='hover:text-slate-300 hover:underline'>{lang?.reviews}</li></a>
+                            {/* <a onClick={() => setShowContactUs(1)}><li className='hover:text-slate-300 hover:underline'>{lang?.contactUs}</li></a> */}
                         </ul>
                     </div>
 

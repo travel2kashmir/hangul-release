@@ -3,7 +3,7 @@ import icon from '../../GlobalData'
 import Loader from '../Loaders/Loader';
 import { useInView } from 'react-intersection-observer';
 
-function Services({ allHotelDetails, hotelDetailLoader }) {
+function Services({ allHotelDetails, hotelDetailLoader,services }) {
 
     let i = 0;
     const filteredAdditionalService = allHotelDetails?.additional_services?.filter(service => service.status);
@@ -25,9 +25,10 @@ function Services({ allHotelDetails, hotelDetailLoader }) {
                     <Loader size={`w-full h-56 md:h-64 rounded-lg mt-10`} /> :
                     <div className="py-10 grid grid-flow-row-dense grid-cols-5 lg:grid-cols-5 md:grid-cols-4 md:col-span-9 gap-5 ">
                         {
-                            allHotelDetails?.services?.map((item, idx) => {
+                            services?.map((item, idx) => {
                                 return (
                                     <React.Fragment key={idx}>
+                                        
                                         {(() => {
                                             switch (item?.service_id) {
                                                 case 'ser001': return (

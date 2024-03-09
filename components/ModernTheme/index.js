@@ -14,7 +14,7 @@ import BookingModal from './Modals/BookingModal';
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import readCookie from '../Analytics/readCookie';
 
 function Hotel({ language, HotelDetails,
     allRooms, allPackages, services,
@@ -32,7 +32,7 @@ function Hotel({ language, HotelDetails,
     const [display, setDisplay] = useState(0);  // state to display the different views in the booking modal
     const [roomsLoader, setRoomsLoader] = useState(false);   // loader for booking engine rooms
     const [searched, setSearched] = useState(false) // this is set to true when the search is clicked on the booking form.
-
+    const [cookie,setCookie]= useState()
     // state to set the checkin and checkout state
     const [enquiry, setEnquiry] = useState({
         "checkin": "",
@@ -48,6 +48,7 @@ function Hotel({ language, HotelDetails,
         getThemeColor();
         getHotelDetails();
         getRoomDetails();
+        setCookie(readCookie('user'));
     }, [HotelDetails, allRooms, initialColor]);
 
     function getThemeColor() {
@@ -70,23 +71,25 @@ function Hotel({ language, HotelDetails,
                 menu={menu}
                 setMenu={setMenu}
                 themeColor={themeColor}
-
                 setRoomsLoader={(e) => setRoomsLoader(e)}
                 setShowBookingEngine={(e) => setShowBookingEngine(e)}
                 setEnquiry={(e) => setEnquiry(e)}
                 enquiry={enquiry}
                 setSearched={(e) => setSearched(e)}
                 searched={searched}
+                cookie={cookie}
             />
 
             <Home
                 hotelData={allHotelDetails}
+                cookie={cookie}
             />
 
 
             <About
                 hotelData={allHotelDetails}
                 initialThemeColor={themeColor}
+                cookie={cookie}
             />
 
             <Rooms
@@ -94,6 +97,8 @@ function Hotel({ language, HotelDetails,
                 rooms={rooms}
                 roomDetailLoader={roomDetailLoader}
                 hotelDetailLoader={hotelDetailLoader}
+                currency={allHotelDetails?.business_settings!=undefined? allHotelDetails?.business_settings[0]?.currency_code : 'USD'}
+                cookie={cookie}
             />
 
             {/* hotel gallery */}
@@ -101,13 +106,16 @@ function Hotel({ language, HotelDetails,
                 <div className='mx-4 mb-10 md:mb-16 text-center'>
                     <h3 className='text-2xl md:text-3xl lg:text-3xl font-normal tracking-widest border-b-2 border-black inline-block'>GALLERY</h3>
                 </div>
-                <Photos allHotelDetails={allHotelDetails} />
+                <Photos 
+                allHotelDetails={allHotelDetails}
+                cookie={cookie} />
             </div>
 
             {/* hotel Services */}
             <Services
                 services={services}
                 hotelDetailLoader={hotelDetailLoader}
+                cookie={cookie}
             />
 
             <CarousalComponent
@@ -116,6 +124,7 @@ function Hotel({ language, HotelDetails,
                 data={allHotelDetails?.Reviews}
                 title='TESTIMONIALS'
                 themeColor={themeColor}
+                cookie={cookie}
             />
 
             <Footer
@@ -143,6 +152,7 @@ function Hotel({ language, HotelDetails,
                                 setSearched={(e) => setSearched(false)}
                                 checkinDate={enquiry.checkin}
                                 checkoutDate={enquiry.checkout}
+                                cookie={cookie}
                             />}
                     />}
                 </div> : undefined}

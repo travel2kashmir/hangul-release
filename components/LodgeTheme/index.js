@@ -13,9 +13,7 @@ import BookingEngine from '../BookingEngine';
 import { AiOutlineClose } from "react-icons/ai";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
-
-
+import readCookie from '../Analytics/readCookie';
 function Hotel({ language, HotelDetails,
   allRooms, allPackages, services,
   phone, email, initialColor }) {
@@ -33,7 +31,7 @@ function Hotel({ language, HotelDetails,
   const [display, setDisplay] = useState(0);  // state to display the different views in the booking modal
   const [roomsLoader, setRoomsLoader] = useState(false);   // loader for booking engine rooms
   const [searched, setSearched] = useState(false) // this is set to true when the search is clicked on the booking form.
-
+  const [cookie, setCookie] = useState()
   // state to set the checkin and checkout state
   const [enquiry, setEnquiry] = useState({
     "checkin": "",
@@ -56,7 +54,7 @@ function Hotel({ language, HotelDetails,
   useEffect(() => {
     getHotelDetails();
     getRoomDetails();
-
+    setCookie(readCookie('user'));
   }, [HotelDetails, allRooms]);
 
   function getHotelDetails() {
@@ -81,7 +79,7 @@ function Hotel({ language, HotelDetails,
         allHotelDetails={allHotelDetails}
         setMenu={setMenu}
         hotelDetailLoader={hotelDetailLoader}
-
+        cookie={cookie}
       />
 
       <Home
@@ -92,35 +90,37 @@ function Hotel({ language, HotelDetails,
         searched={searched}
         setSearched={(e) => setSearched(e)}
         setRoomsLoader={(e) => setRoomsLoader(e)}
+        cookie={cookie}
       />
 
       <About
         allHotelDetails={allHotelDetails}
         hotelDetailLoader={hotelDetailLoader}
-
       />
 
       <Photos
         allHotelDetails={allHotelDetails}
         hotelDetailLoader={hotelDetailLoader}
-
+        cookie={cookie}
       />
 
       <Services
         services={services}
         hotelDetailLoader={hotelDetailLoader}
-
+        cookie={cookie}
       />
 
       <Rooms
         allRooms={rooms}
         roomDetailLoader={roomDetailLoader}
+        currency={allHotelDetails?.business_settings != undefined ? allHotelDetails?.business_settings[0]?.currency_code : 'USD'}
+        cookie={cookie}
       />
 
       <Review
         data={allHotelDetails?.Reviews}
         hotelDetailLoader={hotelDetailLoader}
-
+        cookie={cookie}
       />
 
       <Footer
@@ -148,6 +148,7 @@ function Hotel({ language, HotelDetails,
                 setSearched={(e) => setSearched(false)}
                 checkinDate={enquiry.checkin}
                 checkoutDate={enquiry.checkout}
+                cookie={cookie}
               />}
           />}
         </div> : undefined}

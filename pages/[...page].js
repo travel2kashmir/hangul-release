@@ -7,19 +7,15 @@ import fr from "../components/Languages/fr"
 import ar from "../components/Languages/ar"
 import { useRouter } from "next/router";
 import Classic from "./themes/classic";
-// import ClassicDark from './themes/classic-dark'
 import NewTheme from "../components/NewTheme"
-const logger = require("../services/logger");
 import Fusion from "../components/ModernTheme";
 import ModernThemeColors from "../components/ModernTheme/Data/Colors"
 import ClassicThemeColors from "../components/ClassicTheme/Data/Colors"
 import Cosmic from "../components/LodgeTheme";
 import CountrySide from "../components/CountrysideTheme"
 import getUserIdentity from "../components/Analytics/userIdentity";
-
+import renderSnippet from "../components/utils/Code/renderSnippet";
 import Script from 'next/script'
-
-import * as snippet from '@segment/snippet'
 import Router from 'next/router';
 
 
@@ -77,7 +73,6 @@ function Page({ data, room_data, package_data }) {
       data?.contacts?.map(i => { if (i.contact_type === 'Phone') { setPhone(i) } });
       data?.contacts?.map(i => { if (i.contact_type === 'Email') { setEmail(i) } });
       setDisp(1);
-      logger.info("url  to fetch property details hitted successfully")
     }
     else {
       router.push('/404');
@@ -104,20 +99,7 @@ function Page({ data, room_data, package_data }) {
 
   }, [data]);
 
-  function renderSnippet() {
-    const opts = {
-      // apiKey: process.env.NEXT_PUBLIC_ANALYTICS_WRITE_KEY,
-      apiKey: "p6FoooEYSlUjNAbGxlJA2SSrtJUM3ezM",
-      // note: the page option only covers SSR tracking.
-      page: true,
-    }
-
-    if (process.env.NODE_ENV === 'development') {
-      return snippet.max(opts)
-    }
-
-    return snippet.min(opts)
-  }
+  
 
   // send analytics to segment 
   useEffect(() => {
@@ -155,7 +137,7 @@ function Page({ data, room_data, package_data }) {
       dangerouslySetInnerHTML={{ __html: renderSnippet() }}
     />
       <Title name={`${data?.property_name}`} />
-      {/* <Title name={`${data?.property_name}`}  renderSnippet={renderSnippet}/> */}
+    
 
       {/* Classic Theme */}
       {theme === "Classic" ?

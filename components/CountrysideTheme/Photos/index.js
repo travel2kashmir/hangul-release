@@ -5,7 +5,7 @@ import ImagesSlider from '../../utils/ImagesSlider';
 import { AiOutlineArrowDown, AiOutlineArrowUp } from 'react-icons/ai'
 import Loader from '../Loaders/Loader';
 
-function Photos({ allHotelDetails, hotelDetailLoader }) {
+function Photos({ allHotelDetails, hotelDetailLoader,cookie }) {
 
     const [photos, setPhotos] = useState([]);
     const [displayPhotos, setDisplayPhotos] = useState();
@@ -63,16 +63,41 @@ function Photos({ allHotelDetails, hotelDetailLoader }) {
         setAllImagesLink(allImages.map(i => i.src))
         setImageSlideShow(1)
     }
+    const [executed, setExecuted] = useState(false);
+
+    function handleMouseOver() {
+        if (!executed && cookie) {
+            const user = JSON.parse(cookie);
+            global.analytics.track(`User checking room gallery`, {
+                action: `User checking room gallery`,
+                user: user.user,
+                time: Date()
+            });
+            setExecuted(true);
+        }
+    }
 
     return (
         <section id='photos' className='py-10 bg-custom-brown '>
-            <div ref={ref} className={`mx-2 md:mx-12 ${inView ? 'animate-slide-in' : 'opacity-0'}`} >
+            <div ref={ref} 
+            onMouseOver={handleMouseOver}
+            className={`mx-2 md:mx-12 ${inView ? 'animate-slide-in' : 'opacity-0'}`} >
                 <div className='mx-4 mb-10 md:mb-16 text-center '>
                     <h3 className='border border-black inline-block px-5 bg-custom-dark-green text-white py-2 text-lg lg:text-xl font-normal font-family-marcellus'> Explore Our Gallery</h3>
                 </div>
 
                 {hotelDetailLoader === 0 ? <Loader size={`h-72 w-full`} /> :
-                    <PhotoAlbum layout="rows" spacing={5} photos={displayPhotos} onClick={({ index }) => activateImagesSlider(index, displayPhotos)} />
+                    <PhotoAlbum layout="rows" spacing={5} photos={displayPhotos} onClick={({ index }) =>{
+                        if (cookie) {
+                            const user = JSON.parse(cookie);
+                            global.analytics.track(`User clicked on image`, {
+                                action: `User clicked on image`,
+                                user: user.user,
+                                time: Date()
+                            });
+                         
+                        }
+                        activateImagesSlider(index, displayPhotos)} } />
                 }
 
                 <p className='text-center uppercase mt-5 hover:underline'>

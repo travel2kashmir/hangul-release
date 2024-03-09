@@ -9,7 +9,7 @@ import Marquee from 'react-easy-marquee';
 import ImagesSlider from '../../utils/ImagesSlider';
 
 
-function Rooms({ allRooms = [], roomDetailLoader }) {
+function Rooms({ allRooms = [], roomDetailLoader,cookie,currency }) {
     const [ref, inView] = useInView({
         triggerOnce: true, // Trigger the animation only once
         threshold: 0.1,    // Trigger animation when 10% of the element is in view
@@ -51,7 +51,15 @@ function Rooms({ allRooms = [], roomDetailLoader }) {
                                             <div className='md:w-3/12'>
 
                                                 {Object.keys(room).includes('room_images') ? <img className='rounded-md '
-                                                    onClick={() => activateImagesSlider(0, room?.room_images)} src={room?.room_images[0].image_link}></img> : <img className='rounded-md ' src="https://themewagon.github.io/sogo/images/slider-3.jpg" alt="image" />}
+                                                    onClick={() =>{if (cookie) {
+                                                        const user = JSON.parse(cookie);
+                                                        global.analytics.track(`User clicked on room image`, {
+                                                           action: `User clicked on room image`,
+                                                           user: user.user,
+                                                           time: Date()
+                                                        });
+                                                      }
+                                                      activateImagesSlider(0, room?.room_images)} } src={room?.room_images[0].image_link}></img> : <img className='rounded-md ' src="https://themewagon.github.io/sogo/images/slider-3.jpg" alt="image" />}
 
                                             </div>
 
@@ -66,8 +74,8 @@ function Rooms({ allRooms = [], roomDetailLoader }) {
                                                         {/* room price */}
                                                         <span className='mb-5 md:my-auto md:w-3/12'>
                                                             <p>
-                                                                {room?.unconditional_rates?.map((resource, index) => {
-                                                                    return <h6 key={index} className="text-sm text-slate-700 ">FROM {resource?.baserate_currency.toUpperCase() + " " + resource?.baserate_amount}</h6>
+                                                                {room?.unconditional_rates?.filter(i => i.meal_name == 'Room Only').map((resource, index) => {
+                                                                    return <p key={index} className="text-lg text-gray-500 font-medium">{resource?.price} {currency}</p>
                                                                 })}
                                                             </p>
                                                         </span>

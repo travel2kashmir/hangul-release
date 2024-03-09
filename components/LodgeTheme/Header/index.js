@@ -5,9 +5,19 @@ import { SlCalender } from "react-icons/sl";
 import ContactUsModal from '../../ModernTheme/Modals/ContactUsModal';
 import Loader from '../Loaders/Loader';
 
-function Header({ allHotelDetails, hotelDetailLoader, setMenu }) {
+function Header({ allHotelDetails, hotelDetailLoader, setMenu,cookie }) {
 
   const [showModalContactUs, setShowModalContactUs] = useState(0);
+  function sendAnalytics(message){
+  if (cookie) {
+    const user = JSON.parse(cookie);
+    global.analytics.track(`User checking ${message}`, {
+       action: `User checking ${message}`,
+       user: user.user,
+       time: Date()
+    });
+ }
+}
 
   return (
     <section className='border-b-2 bg-custom-brown'>
@@ -35,29 +45,21 @@ function Header({ allHotelDetails, hotelDetailLoader, setMenu }) {
           {/* only for large screen  */}
           <div className='hidden lg:block my-auto lg:px-10 lg:w-6/12'>
             <ul className='flex text-lg'>
-              <li><a href='#home' className='pr-5 cursor-pointer hover:underline'>Home</a></li>
-              <li><a href='#rooms' className='pr-5 cursor-pointer hover:underline'>Rooms</a></li>
-              <li><a href='#photos' className='pr-5 cursor-pointer hover:underline'>Gallery</a></li>
-              <li><a href='#services' className='pr-5 cursor-pointer hover:underline'>Services</a></li>
+              <li onClick={()=>{sendAnalytics('home')}} ><a href='#home' className='pr-5 cursor-pointer hover:underline'>Home</a></li>
+              <li onClick={()=>{sendAnalytics('rooms')}}><a href='#rooms' className='pr-5 cursor-pointer hover:underline'>Rooms</a></li>
+              <li onClick={()=>{sendAnalytics('photos')}}><a href='#photos' className='pr-5 cursor-pointer hover:underline'>Gallery</a></li>
+              <li onClick={()=>{sendAnalytics('services')}}><a href='#services' className='pr-5 cursor-pointer hover:underline'>Services</a></li>
             </ul>
           </div>
 
         </div>
 
         <div className='hidden mr-5 md:flex md:justify-end md:my-auto md:w-5/12 lg:w-4/12'>
-          <div className='flex hover:cursor-pointer hover:underline'>
+          <div onClick={()=>{sendAnalytics('contactus')}} className='flex hover:cursor-pointer hover:underline'>
             <span className='my-auto'><CiMail /></span>
             <span className='ml-2' onClick={() => { setShowModalContactUs(1) }}> Contact</span>
           </div>
-
-          {/* book now btn */}
-          {/* <div className=' flex ml-5 md:mr-10'>
-            <span className='my-auto'><SlCalender /></span>
-            <span className='ml-2'> BOOK NOW</span>
-          </div> */}
-
         </div>
-
       </div>
 
 
@@ -69,9 +71,7 @@ function Header({ allHotelDetails, hotelDetailLoader, setMenu }) {
           property_id={allHotelDetails?.property_id}
         />
 
-        {/* <ContactUsModal
-          setShowModalContactUs={setShowModalContactUs}
-        /> */}
+      
       </div>
 
     </section>

@@ -3,7 +3,7 @@ import BookingForm from '../CustomizedUtils/BookingForm'
 import Modal from '../Modals/Modal';
 
 
-function Home({ allHotelDetails, setShowBookingEngine, setRoomsLoader, enquiry, setEnquiry, setSearched, searched }) {
+function Home({ allHotelDetails, setShowBookingEngine, setRoomsLoader, enquiry, setEnquiry, setSearched, searched,cookie}) {
 
     const [showModalBooking, setShowModalBooking] = useState(0);
     const [finalSrc, setFinalSrc] = useState();
@@ -41,7 +41,17 @@ function Home({ allHotelDetails, setShowBookingEngine, setRoomsLoader, enquiry, 
                         <div className='mt-5'>
                             <div className='flex justify-end'>
                                 <div className='border rounded-full py-3 hover:bg-custom-hover-brown hover:cursor-pointer text-white hover:text-black'>
-                                    <a onClick={() => setShowModalBooking(1)}> <span className=' px-10 uppercase  font-bold'>book now</span> </a>
+                                    <a onClick={() =>{
+                                        if (cookie) {
+                                            const user = JSON.parse(cookie);
+                                            global.analytics.track(`User opened booking form`, {
+                                               action: `User opened booking form`,
+                                               user: user.user,
+                                               time: Date()
+                                            });
+                                          }
+                                          
+                                        setShowModalBooking(1);} }> <span className=' px-10 uppercase  font-bold'>book now</span> </a>
                                 </div>
                             </div>
                         </div>
@@ -63,10 +73,11 @@ function Home({ allHotelDetails, setShowBookingEngine, setRoomsLoader, enquiry, 
                             setSearched={(e) => setSearched(e)}
                             searched={searched}
                             setShowModalBooking={(e) => setShowModalBooking(e)}
-
+                            cookie={cookie}
                         />
                     }
                     setShowModal={(e) => setShowModalBooking(e)}
+                    closeButton={false}
                 />
                 : <></>
             }

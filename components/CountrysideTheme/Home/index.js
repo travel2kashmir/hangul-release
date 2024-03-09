@@ -4,7 +4,7 @@ import BookingForm from '../CustomizedUtils/BookingForm';
 import Modal from '../Modals/Modal'
 
 
-function Home({ allHotelDetails, hotelDetailLoader, setMenu, setShowBookingEngine, setRoomsLoader, enquiry, setEnquiry, setSearched, searched }) {
+function Home({ allHotelDetails, hotelDetailLoader, setMenu, setShowBookingEngine, setRoomsLoader, enquiry, setEnquiry, setSearched, searched,cookie }) {
 
     const [showModalBooking, setShowModalBooking] = useState(0);
 
@@ -22,6 +22,7 @@ function Home({ allHotelDetails, hotelDetailLoader, setMenu, setShowBookingEngin
                 hotelDetailLoader={hotelDetailLoader}
                 setMenu={(e) => setMenu(e)}
                 setShowModalBooking={(e) => setShowModalBooking(e)}
+                cookie={cookie}
             />
 
 
@@ -47,6 +48,15 @@ function Home({ allHotelDetails, hotelDetailLoader, setMenu, setShowBookingEngin
                     <button
                         className='bg-custom-yellow text-xs font-semibold text-white rounded-lg w-24 h-14 '
                         onClick={() => {
+                            if (cookie) {
+                                const user = JSON.parse(cookie);
+                                global.analytics.track(`User clicked on book now`, {
+                                   action: `User clicked on book now`,
+                                   user: user.user,
+                                   time: Date()
+                                });
+                              }
+
                             setShowModalBooking(1)
                         }}
                     >
@@ -77,7 +87,7 @@ function Home({ allHotelDetails, hotelDetailLoader, setMenu, setShowBookingEngin
                                                     setSearched={(e) => setSearched(e)}
                                                     searched={searched}
                                                     setShowModalBooking={(e) => setShowModalBooking(e)}
-
+                                                    cookie={cookie}
                                                 />
                                             </div>
 
@@ -112,6 +122,7 @@ function Home({ allHotelDetails, hotelDetailLoader, setMenu, setShowBookingEngin
                             setSearched={(e) => setSearched(e)}
                             searched={searched}
                             setShowModalBooking={(e) => setShowModalBooking(e)}
+                            cookie={cookie}
 
                         />
                     }

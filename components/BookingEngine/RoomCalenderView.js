@@ -11,14 +11,14 @@ import "react-toastify/dist/ReactToastify.css";
 import RoomLoader from './RoomLoader';
 
 
-function RoomCalenderView({ allHotelDetails, color, roomsLoader, setRoomsLoader, rooms, setDisplay, setShowModal, setSearched, checkinDate, checkoutDate }) {
+function RoomCalenderView({ allHotelDetails, color, roomsLoader, setRoomsLoader, rooms, setDisplay, setShowModal, setSearched, checkinDate, checkoutDate, cookie }) {
 
     const reservationIdentity = useSelector(state => state.reservationIdentity)
     const dispatch = useDispatch() //creating object of dispatch 
 
     // const addMoreRooms = useSelector(state => state.addMoreRoom) //reads addMoreRoom from state into const
     const roomsSelectedInitial = useSelector(state => state.roomsSelected)
-    const roomsSelected=roomsSelectedInitial.map(i=>i.room_id)
+    const roomsSelected = roomsSelectedInitial.map(i => i.room_id)
     const [dataAsPerDate, setDataAsPerDate] = useState([]);
 
     useEffect(() => {
@@ -86,17 +86,6 @@ function RoomCalenderView({ allHotelDetails, color, roomsLoader, setRoomsLoader,
         }
     });
 
-
-    // console.log("this is the sorted final rate", sortedFinalRate)
-
-    // only those rooms whose room_id is not in roomsSelected state
-    // const roomsToDisplay = sortedFinalRate.filter((room) => {
-    //     // Check if the room_id is not in the roomsSelected array
-    //     return !roomsSelected.includes(room.room_id);
-    // });
-
-    // const uniqueRoomsToDisplay = new Set(roomsToDisplay.map(entry => JSON.stringify({ room_id: entry.room_id, property_id: entry.property_id })))
-
     // rates ka json with room_id as key 
     const transformData = (initialData) => {
         const result = Object.values(initialData.reduce((accumulator, currentItem) => {
@@ -121,56 +110,8 @@ function RoomCalenderView({ allHotelDetails, color, roomsLoader, setRoomsLoader,
     // usage:
     const transformedData = transformData(sortedFinalRate);//rates only
 
-
-    // useEffect(() => {
-    //     groupingByDate()
-    // }, [allRoomRateDetails])
-
-    // // Create an object to store room details grouped by rate_date
-    // const groupedByDate = {};
-
-    // function groupingByDate() {
-    //     // Loop through the roomDetails array
-    //     allRoomRateDetails.forEach((room) => {
-    //         const rate_date = room.rate_date;
-
-    //         // If the rate_date is not in groupedByDate, create an empty array for it
-    //         if (!groupedByDate[rate_date]) {
-    //             groupedByDate[rate_date] = [];
-    //         }
-    //         // Push the room details into the corresponding rate_date array
-    //         groupedByDate[rate_date].push(room);
-    //     });
-
-    //     // Now, groupedByDate will contain separate arrays for each rate_date
-    //     console.log("grouped by date:- ", groupedByDate);
-    //     return groupedByDate;
-    // }
-
-    // console.log("returning group", groupingByDate())
-
-    // if incase we need this function in future, this function is used to take out the lowest rate on the particular date
-    // function findingLowestRate() {
-    //     // Loop through the grouped data
-    //     for (const rate_date in groupedByDate) {
-    //         const roomsForDate = groupedByDate[rate_date];
-
-    //         // Find the room with the lowest final_rate for the current date
-    //         const lowestRoom = roomsForDate.reduce((lowest, room) => {
-    //             return room.final_rate < lowest.final_rate ? room : lowest;
-    //         });
-    //         // Store the lowest rate for the current date
-    //         lowestRatesByDate[rate_date] = lowestRoom.final_rate;
-    //     }
-
-    //     // Now, lowestRatesByDate will contain the lowest rate for each date
-    //     // console.log("lowest rate by date:- ", lowestRatesByDate);
-    //     const lowestRatesArray = Object.entries(lowestRatesByDate);
-    //     return lowestRatesArray;
-    // }
-
-    function deleteRoomDetails() {        // Function to delete room_rates and room_data from local storage
-
+    // Function to delete room_rates and room_data from local storage
+    function deleteRoomDetails() {
         // Remove the room_rates key from local storage
         localStorage.removeItem('room_rates');
         localStorage.removeItem('temp_room_rate');
@@ -180,12 +121,9 @@ function RoomCalenderView({ allHotelDetails, color, roomsLoader, setRoomsLoader,
 
         // Remove the room reservation_ids key from local storage
         localStorage.removeItem('reservation_ids');
-
     }
 
     function removeReservationFromDB(room_id, reservation_time) {
-        // let url = `/api/reserve_rooms/${room_id}/${reservation_time}`;
-        // axios.delete(url).then((response) => {
         setDisplay(0)
         setShowModal(0)
         setSearched(false)
@@ -194,9 +132,6 @@ function RoomCalenderView({ allHotelDetails, color, roomsLoader, setRoomsLoader,
         dispatch(clearReservationIdentity())
         dispatch(clearInventoryDetail())
         deleteRoomDetails()
-        // }).catch((err) => {
-        //     toast.error("API:Error in deleting reservation from DB")
-        // })
     }
 
     function closeButtonAction() {
@@ -232,6 +167,14 @@ function RoomCalenderView({ allHotelDetails, color, roomsLoader, setRoomsLoader,
                         {/* cart option */}
                         <i className='cursor-pointer'
                             onClick={() => {
+                                if (cookie) {
+                                    const user = JSON.parse(cookie);
+                                    global.analytics.track("User clicked on cart", {
+                                       action: "User clicked on cart",
+                                       user: user.user,
+                                       time: Date()
+                                    });
+                                 }
                                 if (roomsSelected.length === 0) {
                                     toast.error("APP: Cart is Empty.");
                                 } else {
@@ -243,7 +186,17 @@ function RoomCalenderView({ allHotelDetails, color, roomsLoader, setRoomsLoader,
 
                         {/* back option */}
                         <i className='cursor-pointer'
-                            onClick={closeButtonAction}>
+                            onClick={()=>{
+                                if (cookie) {
+                                    const user = JSON.parse(cookie);
+                                    global.analytics.track("User went back to main website", {
+                                       action: "User went back to main website",
+                                       user: user.user,
+                                       time: Date()
+                                    });
+                                 }
+                                closeButtonAction()}
+                                }>
                             <AiOutlineClose color='red' size={20} />
                         </i>
                     </div>
@@ -267,13 +220,14 @@ function RoomCalenderView({ allHotelDetails, color, roomsLoader, setRoomsLoader,
                                 checkoutDate={checkoutDate}
                                 property_id={allHotelDetails?.property_id}
                                 rates={transformedData?.filter(item => Object.keys(item)[0] === room?.room_id)[0][room?.room_id]}
+                                cookie={cookie}
                             />
                         })}
                     </>
                 }</>
-                </div>
             </div>
-            )
+        </div>
+    )
 }
 
-            export default RoomCalenderView
+export default RoomCalenderView

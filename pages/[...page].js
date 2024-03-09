@@ -7,14 +7,17 @@ import fr from "../components/Languages/fr"
 import ar from "../components/Languages/ar"
 import { useRouter } from "next/router";
 import Classic from "./themes/classic";
-// import ClassicDark from './themes/classic-dark'
 import NewTheme from "../components/NewTheme"
-const logger = require("../services/logger");
 import Fusion from "../components/ModernTheme";
 import ModernThemeColors from "../components/ModernTheme/Data/Colors"
 import ClassicThemeColors from "../components/ClassicTheme/Data/Colors"
 import Cosmic from "../components/LodgeTheme";
 import CountrySide from "../components/CountrysideTheme"
+import getUserIdentity from "../components/Analytics/userIdentity";
+import renderSnippet from "../components/utils/Code/renderSnippet";
+import Script from 'next/script'
+import Router from 'next/router';
+
 
 var language;
 function Page({ data, room_data, package_data }) {
@@ -70,7 +73,6 @@ function Page({ data, room_data, package_data }) {
       data?.contacts?.map(i => { if (i.contact_type === 'Phone') { setPhone(i) } });
       data?.contacts?.map(i => { if (i.contact_type === 'Email') { setEmail(i) } });
       setDisp(1);
-      logger.info("url  to fetch property details hitted successfully")
     }
     else {
       router.push('/404');
@@ -97,11 +99,45 @@ function Page({ data, room_data, package_data }) {
 
   }, [data]);
 
+  
+
+  // send analytics to segment 
+  useEffect(() => {
+    const handleRouteChange = async (url) => {
+      console.log(url)
+      if (url) {
+        global.analytics.page('Loaded Another Website Page', {
+          page: url,
+        });
+
+      };
+
+    }
+    const identifyUser = async () => {
+      // getUserIdentity() is user defined function to get user identity
+      const id = await getUserIdentity();
+      if (id) {
+      global.analytics.identify(id.user, id);
+      }
+    }
+
+    identifyUser();
+
+    Router.events.on('routeChangeComplete', handleRouteChange);
+
+    return () => {
+      Router.events.off('routeChangeComplete', handleRouteChange);
+    };
+  }, []);
 
   return (
 
-    <>
+    <> <Script
+      id="segment-script"
+      dangerouslySetInnerHTML={{ __html: renderSnippet() }}
+    />
       <Title name={`${data?.property_name}`} />
+    
 
       {/* Classic Theme */}
       {theme === "Classic" ?
@@ -109,7 +145,7 @@ function Page({ data, room_data, package_data }) {
           <Classic language={language} allHotelDetails={allHotelDetails}
             allRooms={allRooms} allPackages={allPackages} services={services}
             phone={phone} email={email} initialColor={ClassicThemeColors.white} /></div> : <div className="sticky"></div>}
-      
+
       {/* Classic Theme */}
       {theme === "Classic Accessible" ?
         <div className="sticky">
@@ -178,6 +214,8 @@ function Page({ data, room_data, package_data }) {
 
   );
 }
+
+
 // This gets called on every request
 export async function getServerSideProps(context) {
   const items = context.resolvedUrl;

@@ -13,7 +13,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useDispatch, useSelector } from 'react-redux';
 import { setRoomsSelected, setAddMoreRoom, clearRoomsSelected, clearInventoryDetail, setReserveRoom, clearReservationIdentity, clearGuestDetails, setReservationIdentity } from '../redux/hangulSlice';
 
-function RoomSummary({ color, setDisplay, setShowModal, setRoomsLoader, setSearched, checkinDate, checkoutDate }) {
+function RoomSummary({ color, setDisplay, setShowModal, setRoomsLoader, setSearched, checkinDate, checkoutDate,cookie }) {
 
   const [searchBookingInventory, setSearchBookingInventory] = useState(false)
 
@@ -46,12 +46,15 @@ function RoomSummary({ color, setDisplay, setShowModal, setRoomsLoader, setSearc
       existingData = JSON.parse(existingData);
 
       // Append the new data to the existing data (assuming 'room_id' is unique)
-      existingData[room_rates.room_id] = room_rates;
-
+      // let {extra_adult_price,extra_child_price} = room_data.unconditional_rates.filter(i=>i.room_rate_plan_id===room_rates.room_rate_plan_id)[0]
+      let {extra_adult_price,extra_child_price} = selectedRoom.unconditional_rates.filter(i=>i.room_rate_plan_id===room_rates.room_rate_plan_id)[0]
+      existingData[room_rates.room_id] = {...room_rates,extra_adult_price,extra_child_price};
     } else {
       // If there is no existing data, create a new object with the new data
+      // let {extra_adult_price,extra_child_price} = room_data.unconditional_rates.filter(i=>i.room_rate_plan_id===room_rates.room_rate_plan_id)[0]
+      let {extra_adult_price,extra_child_price} = selectedRoom.unconditional_rates.filter(i=>i.room_rate_plan_id===room_rates.room_rate_plan_id)[0]
       existingData = {
-        [room_rates.room_id]: room_rates
+        [room_rates.room_id]: {...room_rates,extra_adult_price,extra_child_price}
       };
     }
 
@@ -59,7 +62,7 @@ function RoomSummary({ color, setDisplay, setShowModal, setRoomsLoader, setSearc
 
     // Store the updated data back in local storage
     localStorage.setItem('room_rates', JSON.stringify(existingData));
-
+    dispatch(setRoomsSelected([{ "room_id": room_rates?.room_id, "meal_name": room_rates?.meal_name || 'Room Only - RO' }]));
     setDisplay(2);
   }
 
@@ -104,29 +107,7 @@ function RoomSummary({ color, setDisplay, setShowModal, setRoomsLoader, setSearc
 
   }
 
-  // function generateBookingObjects(start_date, end_date, otherData) {
-  //   const bookingObjects = [];
-  //   let currentDate = new Date(start_date); // Start with the start_date
-
-  //   while (currentDate <= new Date(end_date)) {
-  //     const bookingDate = new Date(currentDate);
-  //     const bookingDateString = bookingDate.toISOString().split('T')[0]; // Format the date as YYYY-MM-DD
-
-  //     const bookingObject = {
-  //       booking_date: bookingDateString,
-  //       ...otherData
-  //     };
-
-  //     bookingObjects.push(bookingObject);
-
-  //     // Move to the next day
-  //     currentDate.setDate(currentDate.getDate() + 1);
-  //   }
-
-  //   return bookingObjects;
-  // }
-
-
+  
   function closeButtonAction() {
     // if there is any reservation in DB then remove them first else perform the other funtions
     if (reservationIdentity.length > 0) {
@@ -168,6 +149,14 @@ function RoomSummary({ color, setDisplay, setShowModal, setRoomsLoader, setSearc
               <button
                 className='w-full mt-auto px-1 py-2 bg-green-700 hover:bg-green-900 text-white rounded-md'
                 onClick={() => {
+                  if (cookie) {
+                    const user = JSON.parse(cookie);
+                    global.analytics.track("User clicked on book now on room summary page", {
+                       action: "User clicked on book now on room summary page",
+                       user: user.user,
+                       time: Date()
+                    });
+                 }
                   setSearchBookingInventory(true)
                   dispatch(setRoomsSelected([selectedRoom?.room_id]))
                   let reservationIdentity = {
@@ -175,10 +164,6 @@ function RoomSummary({ color, setDisplay, setShowModal, setRoomsLoader, setSearc
                     reservation_time: formatDateToCustomFormat(new Date())
                   }
                   dispatch(setReservationIdentity([reservationIdentity]))
-
-                  // reserveRoom({
-                  //   "reserve_rooms": generateBookingObjects(checkinDate, checkoutDate, { "room_count": 1, ...reservationIdentity })
-                  // }, selectedRoom?.room_id)
                   dispatch(setReserveRoom(true))
                   redirectToReviewPage(rate)
                 }}
@@ -199,7 +184,16 @@ function RoomSummary({ color, setDisplay, setShowModal, setRoomsLoader, setSearc
 
       {/* app bar */}
       <div className={`flex justify-between w-full py-5 px-3 md:px-5 border-b ${color?.border}`}>
-        <div className='flex cursor-pointer' onClick={() => { setDisplay(0) }}>
+        <div className='flex cursor-pointer' onClick={() => { 
+          if (cookie) {
+            const user = JSON.parse(cookie);
+            global.analytics.track("User clicked on back", {
+               action: "User clicked on back and went to rooms cards",
+               user: user.user,
+               time: Date()
+            });
+         }
+          setDisplay(0) }}>
           <i className='my-auto'><BiArrowBack size={30} /></i>
           <h2 className={`${color?.text?.title} text-xl my-auto font-bold ml-2 md:ml-5`}>Room Summary</h2>
         </div>
@@ -207,7 +201,15 @@ function RoomSummary({ color, setDisplay, setShowModal, setRoomsLoader, setSearc
         <div className='my-auto text-base flex gap-5 md:gap-10'>
           {/* cart icon */}
           <i className='cursor-pointer'
-            onClick={() => {
+            onClick={() => { 
+              if (cookie) {
+                const user = JSON.parse(cookie);
+                global.analytics.track("User clicked on cart", {
+                   action: "User clicked on cart",
+                   user: user.user,
+                   time: Date()
+                });
+             }
               if (roomsSelected.length === 0) {
                 toast.error("APP: Cart is Empty.");
               } else {
@@ -217,10 +219,7 @@ function RoomSummary({ color, setDisplay, setShowModal, setRoomsLoader, setSearc
           </i>
 
           {/* back icon */}
-          {/* <i className='cursor-pointer my-auto' onClick={closeButtonAction}> */}
-          {/* <AiOutlineClose color='red' size={20} /> */}
-          {/* <span className='text-red-600 text-sm font-semibold'>Cancel Booking</span> */}
-          {/* </i> */}
+          
           {cancelBookingLoader === true ?
             <ButtonLoader
               classes='text-red-600 text-sm font-semibold cursor-pointer my-auto'
@@ -228,6 +227,14 @@ function RoomSummary({ color, setDisplay, setShowModal, setRoomsLoader, setSearc
             />
             : <span className='text-red-600  italic text-sm font-semibold cursor-pointer my-auto'
               onClick={() => {
+                if (cookie) {
+                  const user = JSON.parse(cookie);
+                  global.analytics.track("User cancelled the booking", {
+                     action: "User cancelled the booking",
+                     user: user.user,
+                     time: Date()
+                  });
+               }
                 setCancelBookingLoader(true);
                 closeButtonAction();
               }}>Cancel Booking</span>

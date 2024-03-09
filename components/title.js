@@ -1,12 +1,15 @@
 import React from 'react'
 import Head from 'next/head';
+import Script from 'next/script';
 
-function Title(args) {
+function Title({name}) {
   return (
     <Head>
  
     <title>
-   {args?.name}
+   {name}
+
+  
     </title>
    
     </Head>

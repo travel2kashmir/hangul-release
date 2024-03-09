@@ -192,6 +192,8 @@ function Room() {
         "Extra Adult Price": item?.extra_adult_price || 0,
         "Extra Child Price": item?.extra_child_price || 0,
         "id": item.room_rate_plan_id,
+        "Tax":item.tax,
+        "Other Charges":item.other_charges,
 
         Actions: [
           {
@@ -2023,7 +2025,7 @@ function Room() {
                   addButtonAction={addRateButtonAction}
                   showOptions={false}
                   tableName={`Room Rates`}
-                  cols={["Meal Name", "Price", "Extra Adult Price", "Extra Child Price", "Actions"]}
+                  cols={["Meal Name", "Price","Tax","Other Charges", "Extra Adult Price", "Extra Child Price", "Actions"]}
                   data={roomRates}
                 />
               </div>

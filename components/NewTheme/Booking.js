@@ -7,7 +7,7 @@ import Modal from '../NewTheme/modal';
 import BookingModal from './BookingModal'
 
 
-function BookingForm({ setShowBookingEngine, setShowModalBooking, color, searched, setSearched, enquiry, setEnquiry, setRoomsLoader }) {
+function BookingForm({ setShowBookingEngine, setShowModalBooking, color, searched, setSearched, enquiry, setEnquiry, setRoomsLoader,cookie }) {
 
     const [maxDate, setMaxDate] = useState('');
     const [err, setErr] = useState(false);
@@ -127,6 +127,16 @@ function BookingForm({ setShowBookingEngine, setShowModalBooking, color, searche
                                     setNotSelectedErr((prevValue) => ({ ...prevValue, "forCheckin": false, "forCheckout": true }))
                                 }
                                 else {
+                                    if (cookie) {
+                                        const user = JSON.parse(cookie);
+                                        global.analytics.track("User is searching for rooms", {
+                                           action: "User is searching for rooms",
+                                           checkin:enquiry.checkin,     
+                                           checkout:enquiry.checkout,
+                                           user: user.user,
+                                           time: Date()
+                                        });
+                                     }
                                     setRoomsLoader(true)
                                     setSearched(!searched);
                                     setShowBookingEngine(1);

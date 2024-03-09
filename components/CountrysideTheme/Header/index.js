@@ -7,7 +7,18 @@ import ContactUsModal from '../Modals/ContactUsModal';
 import Modal from '../Modals/Modal'
 import Loader from '../Loaders/Loader';
 
-function Header({ allHotelDetails, hotelDetailLoader, setMenu, setShowModalBooking }) {
+function Header({ allHotelDetails, hotelDetailLoader, setMenu, setShowModalBooking,cookie }) {
+    function sendAnalytics(message){
+        if (cookie) {
+            const user = JSON.parse(cookie);
+            global.analytics.track(`User checking ${message}`, {
+               action: `User checking ${message}`,
+               user: user.user,
+               time: Date()
+            });
+          }
+    }
+    
 
     const [showModalContactUs, setShowModalContactUs] = useState(0);
 
@@ -46,10 +57,10 @@ function Header({ allHotelDetails, hotelDetailLoader, setMenu, setShowModalBooki
                     {/* only for large screen  */}
                     <div className='hidden lg:block text-white my-auto lg:px-10 lg:w-6/12'>
                         <ul className='flex text-sm font-family-jost-regular'>
-                            <li><a href='#home' className='pr-5 cursor-pointer hover:underline'>HOME</a></li>
-                            <li><a href='#rooms' className='pr-5 cursor-pointer hover:underline'>ROOMS</a></li>
-                            <li><a href='#photos' className='pr-5 cursor-pointer hover:underline'>GALLERY</a></li>
-                            <li><a href='#services' className='pr-5 cursor-pointer hover:underline'>SERVICES</a></li>
+                            <li onClick={()=>sendAnalytics('home')}><a href='#home' className='pr-5 cursor-pointer hover:underline'>HOME</a></li>
+                            <li onClick={()=>sendAnalytics('rooms')}><a href='#rooms' className='pr-5 cursor-pointer hover:underline'>ROOMS</a></li>
+                            <li onClick={()=>sendAnalytics('photos')}><a href='#photos' className='pr-5 cursor-pointer hover:underline'>GALLERY</a></li>
+                            <li onClick={()=>sendAnalytics('services')}><a href='#services' className='pr-5 cursor-pointer hover:underline'>SERVICES</a></li>
                         </ul>
                     </div>
 
@@ -57,7 +68,7 @@ function Header({ allHotelDetails, hotelDetailLoader, setMenu, setShowModalBooki
 
                 <div className='hidden font-family-jost-regular text-white md:flex md:justify-end md:my-auto md:w-5/12 lg:w-4/12'>
 
-                    <div className='flex hover:cursor-pointer hover:underline margin-right'>
+                    <div onClick={()=>sendAnalytics('contact us')} className='flex hover:cursor-pointer hover:underline margin-right'>
                         <span className='my-auto'><CiMail /></span>
                         <span className='ml-2 text-sm'
                             onClick={() => {

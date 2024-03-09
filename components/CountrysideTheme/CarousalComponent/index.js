@@ -6,7 +6,7 @@ import { useInView } from 'react-intersection-observer';
 
 
 
-function CarousalComponent({ type = 'review', data = [], title, subtitle, id, hotelDetailLoader }) {
+function CarousalComponent({ type = 'review', data = [], title, subtitle, id, hotelDetailLoader, cookie }) {
 
     const [ref, inView] = useInView({
         triggerOnce: true, // Trigger the animation only once
@@ -14,7 +14,18 @@ function CarousalComponent({ type = 'review', data = [], title, subtitle, id, ho
     });
 
     return (
-        <section id={id} className={`px-5 py-10 ${type === 'room' ? '' : 'bg-custom-brown'}`}>
+        <section id={id} 
+        onClick={()=>{
+            if (cookie) {
+                const user = JSON.parse(cookie);
+                global.analytics.track(`User checking ${id}`, {
+                   action: `User checking ${id}`,
+                   user: user.user,
+                   time: Date()
+                });
+              }
+        }}
+        className={`px-5 py-10 ${type === 'room' ? '' : 'bg-custom-brown'}`}>
 
             <div ref={ref} className={`${type === 'review' ? inView ? 'animate-slide-in' : 'opacity-0' : ''}`}>
 

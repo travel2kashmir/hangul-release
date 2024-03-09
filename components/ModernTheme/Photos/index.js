@@ -3,7 +3,7 @@ import PhotoAlbum from "react-photo-album";
 import ImagesSlider from '../../utils/ImagesSlider';
 import { AiOutlineArrowDown, AiOutlineArrowUp } from 'react-icons/ai'
 
-function Photos({ allHotelDetails }) {
+function Photos({ allHotelDetails, cookie }) {
 
     const [photos, setPhotos] = useState([]);
     const [displayPhotos, setDisplayPhotos] = useState();
@@ -55,23 +55,34 @@ function Photos({ allHotelDetails }) {
         setAllImagesLink(allImages.map(i => i.src))
         setImageSlideShow(1)
     }
+    function reportAnalytics() {
+        if (cookie) {
+            const user = JSON.parse(cookie);
+            global.analytics.track(`User checking property gallery`, {
+                action: `User checking property gallery`,
+                user: user.user,
+                time: Date()
+            });
+        }
+    }
+
 
     return (
-        <div>
+        <div onClick={reportAnalytics}>
             <PhotoAlbum layout="rows" spacing={5} photos={displayPhotos} onClick={({ index }) => activateImagesSlider(index, displayPhotos)} />
             <p className='text-center uppercase mt-5'>
-                <a className='cursor-pointer hover:text-blue-500' onClick={() => { 
+                <a className='cursor-pointer hover:text-blue-500' onClick={() => {
                     // on the bases of showText.tap value we will set the photos to be displayed.
-                    showText.tap === true ? setDisplayPhotos(photos.slice(0,7)) : setDisplayPhotos(photos);
-                    
-                    setShowText((prevShowText)=>({
+                    showText.tap === true ? setDisplayPhotos(photos.slice(0, 7)) : setDisplayPhotos(photos);
+
+                    setShowText((prevShowText) => ({
                         // initially tap is false so when onClick function will work it will display in label show less and same logic will work for icon 
                         'label': prevShowText.tap === true ? 'SHOW MORE' : 'SHOW LESS',
                         'icon': prevShowText.tap === true ? <AiOutlineArrowDown className='inline-block ml-1' /> : <AiOutlineArrowUp className='inline-block ml-1' />,
-                        'tap' : !prevShowText.tap 
+                        'tap': !prevShowText.tap
                     }))
 
-                    
+
 
                 }}>
                     {showText.label}
@@ -84,8 +95,8 @@ function Photos({ allHotelDetails }) {
                 <ImagesSlider
                     visibleImage={visibleImage}
                     images={allImagesLink}
-                    setShowModal={(e) => setImageSlideShow(e)} />
-
+                    setShowModal={(e) => setImageSlideShow(e)}
+                />
             </div>
         </div>
     )

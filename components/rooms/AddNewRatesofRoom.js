@@ -15,6 +15,8 @@ function AddNewRatesofRoom({ color, language, roomId }) {
         "room_id": roomId,
         "meal_plan_id": "",
         "price": "",
+        "tax":"",
+        "other_charges":"",
         "extra_adult_price":"",
         "extra_child_price":"",
         "index": ""
@@ -151,6 +153,36 @@ function AddNewRatesofRoom({ color, language, roomId }) {
                                     req={true}
                                     tooltip={true}
                                     title={'New price for the meal plan'}
+                                />
+                                {/* tax price  */}
+                                <InputText
+                                    label={"Tax"}
+                                    visible={loader}
+                                    defaultValue={''}
+                                    onChangeAction={(e) => {
+                                        setMutationFlag(true)
+                                        onChangeData(e.target.value, i.index, "tax")
+                                    }}
+                                    error={error[index]?.tax}
+                                    color={color}
+                                    req={true}
+                                    tooltip={true}
+                                    title={'Enter calculated tax'}
+                                />
+                                {/* other price  */}
+                                <InputText
+                                    label={"Other Charges"}
+                                    visible={loader}
+                                    defaultValue={''}
+                                    onChangeAction={(e) => {
+                                        setMutationFlag(true)
+                                        onChangeData(e.target.value, i.index, "other_charges")
+                                    }}
+                                    error={error[index]?.other_charges}
+                                    color={color}
+                                    req={true}
+                                    tooltip={true}
+                                    title={'Enter calculated tax'}
                                 />
                                 {/* extra adult price  */}
                                 <InputText

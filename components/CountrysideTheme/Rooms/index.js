@@ -9,7 +9,7 @@ import RoomServices from './RoomServices';
 import Loader from '../Loaders/Loader';
 import CarousalComponent from '../CarousalComponent';
 
-function Rooms({ allHotelDetails, rooms, roomDetailLoader, showRoom, setShowRoom }) {
+function Rooms({ allHotelDetails, rooms, roomDetailLoader, showRoom, setShowRoom, cookie,currency }) {
 
     const [selectedRoom, setSelectedRoom] = useState([]);
 
@@ -32,9 +32,9 @@ function Rooms({ allHotelDetails, rooms, roomDetailLoader, showRoom, setShowRoom
                     <div className='pb-10'>
                         <div className='lg:mx-0'>
                             <div className='text-center'>
-                                <span className='text-white tracking-wider font-family-jost-regular'>Welcome To {allHotelDetails?.property_name}</span>
+                                <span className='text-white tracking-wider font-family-jost-regular text-4xl'>Welcome To {allHotelDetails?.property_name}</span>
                             </div>
-                            <h3 className='mt-5 font-family-marcellus text-center text-white text-4xl lg:text-5xl'>Select Your Cozy Room</h3>
+                            <h3 className='mt-5 font-family-marcellus text-center text-white text-4xl lg:text-3xl'>Select Your Cozy Room</h3>
 
                             {roomDetailLoader === 0 ? <Loader size={`w-full mt-5 h-72 py-3 mb-5 `} /> :
 
@@ -82,6 +82,16 @@ function Rooms({ allHotelDetails, rooms, roomDetailLoader, showRoom, setShowRoom
                                                         // className="relative w-full overflow-hidden cursor-pointer carousel-img" style={{ height: '35rem' }}
                                                         className="relative w-full overflow-hidden cursor-pointer carousel-img"
                                                         onClick={() => {
+                                                            if (cookie) {
+                                                                const user = JSON.parse(cookie);
+                                                                global.analytics.track(`User checking room`, {
+                                                                   action: `User checking room`,
+                                                                   room_name:room.room_name,
+                                                                   user: user.user,
+                                                                   time: Date()
+                                                                });
+                                                              }
+
                                                             (showRoom.index != index) ? setShowRoom({ "visible": 1, "index": index }) : setShowRoom({ "visible": 0, "index": undefined });
                                                             setSelectedRoom(room)
                                                         }}
@@ -105,8 +115,8 @@ function Rooms({ allHotelDetails, rooms, roomDetailLoader, showRoom, setShowRoom
                                                             </div>
                                                         </div>
                                                         <div className="absolute top-0 left-0 p-4">
-                                                            {room?.unconditional_rates?.map((resource, index) => {
-                                                                return <p key={index} className="text-sm px-3 py-2 text-black  font-normal border bg-white font-family-jost-regular ">{resource?.baserate_currency + " " + resource?.baserate_amount}/NIGHT</p>
+                                                            {room?.unconditional_rates?.filter(i => i.meal_name == 'Room Only').map((resource, index) => {
+                                                                return <p key={index} className="text-white text-xl font-family-marcellus">{resource?.price} {currency}</p>
                                                             })}
                                                         </div>
                                                     </div>
@@ -120,18 +130,19 @@ function Rooms({ allHotelDetails, rooms, roomDetailLoader, showRoom, setShowRoom
 
                                             <div className="flex justify-between px-5 pb-10">
                                                 <p className=' font-semibold tracking-wide text-center md:text-2xl font-family-marcellus dark-green'>{selectedRoom?.room_name} - ({selectedRoom?.room_type?.replaceAll("_", " ")})</p>
-                                                {selectedRoom?.unconditional_rates?.map((resource, index) => {
-                                                    return <p key={index} className="px-3 py-2 md:text-xl border  bg-green-700 text-white font-medium font-family-marcellus ">{resource?.baserate_currency + " " + resource?.baserate_amount}</p>
-                                                })}
+                                                {selectedRoom?.unconditional_rates?.filter(i => i.meal_name == 'Room Only').map((resource, index) => {
+                                                                    return <p key={index} className="text-lg text-gray-500 font-medium">{resource?.price} {currency}</p>
+                                                                })}
                                             </div>
 
 
                                             {/* room images */}
                                             {Object.keys(selectedRoom).includes('room_images') ?
                                                 <CarousalComponent
-                                                    id="roomPhotos"
+                                                    id="Room Photos"
                                                     type='room'
                                                     data={selectedRoom?.room_images}
+                                                    cookie={cookie}
                                                 />
                                                 : <img className='px-5 md:px-0 rounded-md md:m-auto md:w-5/12' src="https://themewagon.github.io/sogo/images/slider-3.jpg" alt="image" />
                                             }

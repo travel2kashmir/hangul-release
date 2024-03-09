@@ -5,7 +5,7 @@ import ImagesSlider from '../../utils/ImagesSlider';
 import { AiOutlineArrowDown, AiOutlineArrowUp } from 'react-icons/ai'
 import Loader from '../Loaders/Loader';
 
-function Photos({ allHotelDetails, hotelDetailLoader }) {
+function Photos({ allHotelDetails, hotelDetailLoader,cookie }) {
 
     const [photos, setPhotos] = useState([]);
     const [displayPhotos, setDisplayPhotos] = useState();
@@ -72,7 +72,18 @@ function Photos({ allHotelDetails, hotelDetailLoader }) {
                 </div>
 
                 {hotelDetailLoader === 0 ? <Loader size={`h-72 w-full`} /> :
-                    <PhotoAlbum layout="rows" spacing={5} photos={displayPhotos} onClick={({ index }) => activateImagesSlider(index, displayPhotos)} />
+                    <PhotoAlbum layout="rows" spacing={5} photos={displayPhotos} onClick={({ index }) =>{
+                        if (cookie) {
+                            const user = JSON.parse(cookie);
+                            global.analytics.track(`User clicked on gallery`, {
+                               action: `User clicked on gallery`,
+                               user: user.user,
+                               time: Date()
+                            });
+                          }
+                          
+                        activateImagesSlider(index, displayPhotos)
+                    } } />
                 }
 
                 <p className='text-center uppercase mt-5 hover:underline'>

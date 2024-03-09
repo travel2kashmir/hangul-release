@@ -3,7 +3,7 @@ import DateInput from '../../utils/DateInput'
 import DropDown from '../../utils/DropDown'
 
 
-function BookingForm({ themeColor, setShowModalBookingForm, setShowBookingEngine, enquiry, setEnquiry, setRoomsLoader, setSearched, searched }) {
+function BookingForm({ themeColor, setShowModalBookingForm, setShowBookingEngine, enquiry, setEnquiry, setRoomsLoader, setSearched, searched, cookie }) {
 
     const [maxDate, setMaxDate] = useState('');
     const [err, setErr] = useState(false);
@@ -119,6 +119,16 @@ function BookingForm({ themeColor, setShowModalBookingForm, setShowBookingEngine
                                     setNotSelectedErr((prevValue) => ({ ...prevValue, "forCheckin": false, "forCheckout": true }))
                                 }
                                 else {
+                                    if (cookie) {
+                                        const user = JSON.parse(cookie);
+                                        global.analytics.track("User searched for room", {
+                                            action: "User searched for room",
+                                            checkin: enquiry.checkin,
+                                            checkout: enquiry.checkout,
+                                            user: user.user
+                                        });
+                                    }
+
                                     setRoomsLoader(true)
                                     setSearched(!searched);
                                     setShowBookingEngine(1);

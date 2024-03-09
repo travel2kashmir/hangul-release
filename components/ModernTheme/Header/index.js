@@ -10,10 +10,21 @@ import { english } from '../../Languages/Languages';
 import BookingForm from '../CustomizedUtils/BookingForm'
 import Modal from '../Modals/Modal';
 
-function Header({ allHotelDetails, menu, setMenu, themeColor, setRoomsLoader, setShowBookingEngine, enquiry, setEnquiry, searched, setSearched }) {
+function Header({ allHotelDetails, menu, setMenu, themeColor, setRoomsLoader, setShowBookingEngine, enquiry, setEnquiry, searched, setSearched, cookie }) {
 
     const [showModalContactUs, setShowModalContactUs] = useState(0);
     const [showModalBookingForm, setShowModalBookingForm] = useState(0);
+
+    function reportAnalytics(message){
+        if (cookie) {
+            const user = JSON.parse(cookie);
+            global.analytics.track(`User checking ${message}`, {
+               action: `User checking ${message}`,
+               user: user.user,
+               time: Date()
+            });
+         }
+       }
 
     function clickHandler(id, action) {
         action === 'modal' ? id() : Router.push(`${window?.location?.origin}${window?.location?.pathname}/${id}`)
@@ -33,8 +44,7 @@ function Header({ allHotelDetails, menu, setMenu, themeColor, setRoomsLoader, se
                             starSpacing='1px'
                             name='rating'
                         />
-
-                        <h1 className={`${themeColor.textColor} text-xl pt-2 md:text-4xl md:font-light tracking-widest uppercase`}>{(allHotelDetails?.property_name)}</h1>
+                    <h1 className={`${themeColor.textColor} text-xl pt-2 md:text-4xl md:font-light tracking-widest uppercase`}>{(allHotelDetails?.property_name)}</h1>
                     </div>
 
 
@@ -54,13 +64,16 @@ function Header({ allHotelDetails, menu, setMenu, themeColor, setRoomsLoader, se
                         { "label": "Photos", "id": "#photos", "action": "href" },
                         { "label": "Services", "id": "#services", "action": "href" },
                         { "label": "Reviews", "id": "#reviews", "action": "href" },
-                        { "label": "Contact Us", "id": () => { setShowModalContactUs(1) }, "action": "modal" },
+                        // { "label": "Contact Us", "id": () => { setShowModalContactUs(1) }, "action": "modal" },
                         { "label": "Book Now", "id": () => { setShowModalBookingForm(1) }, "action": "modal" }
                         ].map((item, index) => {
                             return (
                                 <li
                                     key={index}
-                                    onClick={() => clickHandler(item?.id, item?.action)}
+                                    onClick={() =>{
+                                        reportAnalytics(item?.label)
+                                        clickHandler(item?.id, item?.action)
+                                    } }
                                     className='text-gray-400 cursor-pointer hover:text-white hover:underline'
                                 >{item?.label}</li>
                             )
@@ -92,10 +105,11 @@ function Header({ allHotelDetails, menu, setMenu, themeColor, setRoomsLoader, se
                             setSearched={(e) => setSearched(e)}
                             searched={searched}
                             setShowModalBookingForm={(e) => setShowModalBookingForm(e)}
-
+                            cookie={cookie}
                         />
                     }
                     setShowModalBookingForm={(e) => setShowModalBookingForm(e)}
+                    closeButton={false}
                 />
                 : <></>
             }

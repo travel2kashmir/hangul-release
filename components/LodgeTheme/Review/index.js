@@ -1,18 +1,34 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useInView } from 'react-intersection-observer';
 import Carousel from 'better-react-carousel';
 import StarRatings from 'react-star-ratings';
 import Loader from '../Loaders/Loader';
 
-function Review({ data, hotelDetailLoader }) {
+function Review({ data, hotelDetailLoader, cookie }) {
 
     const [ref, inView] = useInView({
         triggerOnce: true, // Trigger the animation only once
         threshold: 0.1,    // Trigger animation when 10% of the element is in view
     });
 
+    const [executed, setExecuted] = useState(false);
+
+    function handleMouseOver() {
+        if (!executed && cookie) {
+            const user = JSON.parse(cookie);
+            global.analytics.track(`User checking reviews`, {
+                action: `User checking reviews`,
+                user: user.user,
+                time: Date()
+            });
+            setExecuted(true);
+        }
+    }
+
     return (
-        <section className='bg-[url("/review7.jpg")]   bg-cover bg-no-repeat '>
+        <section
+            onMouseOver={handleMouseOver}
+            className='bg-[url("/review7.jpg")]   bg-cover bg-no-repeat '>
             <div ref={ref} className={`py-10 px-5 lg:py-24 lg:px-24 text-white ${inView ? 'animate-slide-in' : 'opacity-0'}`}>
                 <div>
                     <div className='mb-5'>
@@ -21,7 +37,18 @@ function Review({ data, hotelDetailLoader }) {
                         </div>
                     </div>
                     {hotelDetailLoader === 0 ? <Loader size={`h-44 w-full`} /> :
-                        <div className='lg:pt-10'>
+                        <div className='lg:pt-10' onClick={() => {
+                            if (cookie) {
+                                const user = JSON.parse(cookie);
+                                global.analytics.track(`User clicked on reviews`, {
+                                    action: `User clicked on reviews`,
+                                    user: user.user,
+                                    time: Date()
+                                });
+                            }
+                        }
+                        }
+                        >
                             <Carousel cols={1} rows={1} gap={10} autoPlay={5000} loop={false}
                                 responsiveLayout={[
                                     {

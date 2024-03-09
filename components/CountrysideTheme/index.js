@@ -11,9 +11,10 @@ import BookingEngine from '../BookingEngine';
 import MenuSM from './MenuSM'
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import readCookie from '../Analytics/readCookie';
 function Hotel({ language, HotelDetails, allRooms, allPackages, services, phone, email }) {
 
+    const [cookie,setCookie]= useState()
     const [allHotelDetails, setHotelDetails] = useState([]);
     const [rooms, setRooms] = useState([]);
     // loaders
@@ -47,6 +48,7 @@ function Hotel({ language, HotelDetails, allRooms, allPackages, services, phone,
     useEffect(() => {
         getHotelDetails();
         getRoomDetails();
+        setCookie(readCookie('user'));
     }, [HotelDetails, allRooms]);
 
     function getHotelDetails() {
@@ -74,17 +76,19 @@ function Hotel({ language, HotelDetails, allRooms, allPackages, services, phone,
                 searched={searched}
                 setSearched={(e) => setSearched(e)}
                 setRoomsLoader={(e) => setRoomsLoader(e)}
+                cookie={cookie}
             />
 
             <About
                 allHotelDetails={allHotelDetails}
                 hotelDetailLoader={hotelDetailLoader}
-
+                cookie={cookie}
             />
 
             <Photos
                 allHotelDetails={allHotelDetails}
                 hotelDetailLoader={hotelDetailLoader}
+                cookie={cookie}
             />
 
             <Rooms
@@ -93,11 +97,15 @@ function Hotel({ language, HotelDetails, allRooms, allPackages, services, phone,
                 roomDetailLoader={roomDetailLoader}
                 showRoom={showRoom}
                 setShowRoom={(e) => setShowRoom(e)}
+                currency={allHotelDetails?.business_settings != undefined ? allHotelDetails?.business_settings[0]?.currency_code : 'USD'}
+                cookie={cookie}
             />
 
             <Services
                 allHotelDetails={allHotelDetails}
+                services={services}
                 hotelDetailLoader={hotelDetailLoader}
+                cookie={cookie}
             />
 
             {/* for review section */}
@@ -108,6 +116,7 @@ function Hotel({ language, HotelDetails, allRooms, allPackages, services, phone,
                 title="What They Say About Us"
                 subtitle="FEEDBACK FROM OUR DEAR CLIENTS"
                 hotelDetailLoader={hotelDetailLoader}
+                cookie={cookie}
             />
 
             <Footer
@@ -139,7 +148,7 @@ function Hotel({ language, HotelDetails, allRooms, allPackages, services, phone,
                                 setSearched={(e) => setSearched(false)}
                                 checkinDate={enquiry.checkin}
                                 checkoutDate={enquiry.checkout}
-
+                                cookie={cookie}
                             />}
                     />}
                 </div> : undefined}

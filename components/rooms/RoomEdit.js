@@ -9,8 +9,8 @@ function RoomEdit({ roomData, color, language, fetchDetails, setRoomRateEditModa
     const [error, setError] = useState({})
     const [mutationFlag, setMutationFlag] = useState(false)
     const [showEditSpinner, setShowEditSpinner] = useState(false)
-    const validateEditedRate = (editedRoomPrice) => {
-        const { price } = editedRoomPrice;
+    const validateEditedRate = (newEditedRoomPrice) => {
+        const { price,tax,other_charges } = newEditedRoomPrice;
         let flag = false;
         let errorFound = {}
         if (isNaN(price)) {
@@ -21,12 +21,20 @@ function RoomEdit({ roomData, color, language, fetchDetails, setRoomRateEditModa
             flag = true
             errorFound.price = "Rate should be greater than zero";
         }
+        if(isNaN(tax) || tax<0){
+            flag = true
+            errorFound.tax = "Tax amount should be valid positive integer";
+        }
+        if(isNaN(other_charges) || other_charges<0){
+            flag = true
+            errorFound.other_charges = "Other charges amount should be valid positive integer";
+        }
         return flag === true ? errorFound : true
     }
 
     const sendRateUpdate = () => {
         setShowEditSpinner(true)
-        let result = validateEditedRate({...editedRoomPrice,...roomData});
+        let result = validateEditedRate({...roomData,...editedRoomPrice});
         if (result === true) {
             let url = '/api/room_rate_plan';
             let data = {
@@ -35,7 +43,9 @@ function RoomEdit({ roomData, color, language, fetchDetails, setRoomRateEditModa
                         "room_rate_plan_id": roomData?.room_rate_plan_id,
                         "price": editedRoomPrice.price,
                         "extra_adult_price":editedRoomPrice.extra_adult_price,
-                        "extra_child_price":editedRoomPrice.extra_child_price
+                        "extra_child_price":editedRoomPrice.extra_child_price,
+                        "tax":editedRoomPrice.tax,
+                        "other_charges":editedRoomPrice.other_charges
                     }
                 ]
             }
@@ -56,6 +66,7 @@ function RoomEdit({ roomData, color, language, fetchDetails, setRoomRateEditModa
     }
     return (<>
         <div className='flex flex-wrap'>
+
             {/* meal name  */}
             <InputText
                 label={"Meal Name"}
@@ -82,6 +93,40 @@ function RoomEdit({ roomData, color, language, fetchDetails, setRoomRateEditModa
                 tooltip={true}
                 title={'New price for the meal plan'}
             />
+
+             {/* tax price  */}
+             <InputText
+                label={"Tax"}
+                visible={1}
+                defaultValue={roomData.tax}
+                onChangeAction={(e) => {
+                    setEditedRoomPrice({ ...editedRoomPrice, "tax": e.target.value });
+                    setMutationFlag(true)
+                }}
+                error={error?.tax}
+                color={color}
+                req={true}
+                tooltip={true}
+                title={'Edit tax rates'}
+            />
+
+            {/* other charges  */}
+            <InputText
+                label={"Other Charges"}
+                visible={1}
+                defaultValue={roomData.other_charges}
+                onChangeAction={(e) => {
+                    setEditedRoomPrice({ ...editedRoomPrice, "other_charges": e.target.value });
+                    setMutationFlag(true)
+                }}
+                error={error?.other_charges}
+                color={color}
+                req={true}
+                tooltip={true}
+                title={'Other charges rates'}
+            />
+
+
             {/* extra adult price  */}
             <InputText
                 label={"Extra Adult Price"}

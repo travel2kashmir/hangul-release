@@ -1,11 +1,23 @@
-import React from 'react'
+import React,{useState} from 'react'
 import Carousel from 'better-react-carousel';
 import Loader from '../Loaders/Loader';
 
 
-function CarousalComponent({ type = 'review', data = [], title, id, hotelDetailLoader, themeColor }) {
+function CarousalComponent({ type = 'review', data = [], title, id, hotelDetailLoader, themeColor,cookie }) {
+    const [firstClick,setFirstClick]=useState(true)
     return (
-        <section id={id} className={`px-5 py-10 ${type === 'room' ? '' :  themeColor.colorTransition}`}>
+        <section id={id} onClick={()=>{
+            if(firstClick===true){
+                if (cookie) {
+                    const user = JSON.parse(cookie);
+                    global.analytics.track(`User checking ${type}`, {
+                       action: `User checking ${type}`,
+                       user: user.user,
+                       time: Date()
+                    });
+                    setFirstClick(false)
+                 }
+                }}} className={`px-5 py-10 ${type === 'Room Images' ? '' :  themeColor.colorTransition}`}>
                 <div className='pt-10'>
                     {title ?
                         <div className='mx-4 mb-10 text-center'>

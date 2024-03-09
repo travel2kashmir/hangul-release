@@ -39,7 +39,8 @@ import BedIcon from '@mui/icons-material/Bed';
 import LandscapeIcon from '@mui/icons-material/Landscape';
 import GroupsIcon from '@mui/icons-material/Groups';
 import SquareFootIcon from '@mui/icons-material/SquareFoot';
-
+import useGeoLocation from '../../components/UserDefinedHooks/useGeoLocation';
+import readCookie from '../../components/Analytics/readCookie';
 
 var currentUser;
 var currentProperty;
@@ -55,7 +56,6 @@ var defaultRate = {
 }
 
 function Classic(args) {
-
    SwiperCore.use([Navigation, Pagination, Autoplay]);
    const [showModalPrivacy, setShowModalPrivacy] = useState(0)
    const [showModalTC, setShowModalTC] = useState(0)
@@ -94,16 +94,13 @@ function Classic(args) {
    const [termsConditions, setTermsConditions] = useState()
    const [showContactUs, setShowContactUs] = useState(0);
    const [themeColor, setThemeColor] = useState(color.black);
-
-
-
    // booking enging integration 
    const [showModalBookingForm, setShowModalBookingForm] = useState(0);
    const [showBookingEngine, setShowBookingEngine] = useState(0);  // state to display the booking engine
    const [display, setDisplay] = useState(0);  // state to display the different views in the booking modal
    const [roomsLoader, setRoomsLoader] = useState(false);   // loader for booking engine rooms
    const [searched, setSearched] = useState(false) // this is set to true when the search is clicked on the booking form.
-
+   const [cookie, setCookie] = useState({});
    // state to set the checkin and checkout state
    const [enquiry, setEnquiry] = useState({
       "checkin": "",
@@ -114,10 +111,32 @@ function Classic(args) {
       "guests_below_six": 0,
       "guests_below_twelve": 0
    });
+   const [lastHoverTime, setLastHoverTime] = useState(0);
 
    const filteredAdditionalService = args?.allHotelDetails?.additional_services?.filter(service => service.status);
 
+   const handleHover = () => {
+      const currentTime = Date.now();
+      if (currentTime - lastHoverTime > 600000) { // 600000 milliseconds = 10 minutes
+        setLastHoverTime(currentTime);
+        const cookie = readCookie('user');
+        if (cookie) {
+          const user = JSON.parse(cookie);
+          global.analytics.track("User is Reading reviews", {
+            action: "User is reading reviews",
+            user: user.user,
+            time: new Date().toString()
+          });
+        }
+      }
+    };
 
+    useEffect(() => {
+      const timer = setInterval(() => {
+        setLastHoverTime(0);
+      }, 600000); // Reset after 10 minutes
+      return () => clearInterval(timer);
+    }, []);
 
    /** Router for Redirection **/
    const router = useRouter();
@@ -129,6 +148,7 @@ function Classic(args) {
       }
       firstfun();
       getThemeColor();
+      setCookie(readCookie('user'));
       const current = new Date();
       let month = current.getMonth() + 1;
       fetchHotelDetails();
@@ -142,37 +162,7 @@ function Classic(args) {
    }, [args?.language])
 
 
-   useEffect(() => {
-      getData();
-   }, [])
 
-   const getData = async () => {
-      const res = await axios.get('https://geolocation-db.com/json/');
-      setIP(res.data.IPv4)
-   }
-
-   //read from cookies
-   function getIPData(msg, url) {
-      const info = {
-         req: {
-            method: 'GET', url: `${location.pathname.toLowerCase()}${url?.toLowerCase()}`, headers: { "content-type": "application/json" }, "remoteAddress": ip,
-            "pathName": location.pathname, "port": location.port
-         }
-      }
-      logger.info(info, msg);
-   }
-
-   //  For Rooms Logger
-   function getMsgSection(state, section) {
-      if (state === false) { getIPData(`${section} section expanded`, `/${section}`) }
-      if (state === true) { getIPData(`${section}  section contract`, `/${section}`) }
-   }
-
-   //   For Single Room Logger
-   function getSingleSection(state, name, section) {
-      if (state === false) { getIPData(`${name} ${section} expanded`, `/${section}/${name.trim().replace(" ", "-")}`) }
-      if (state === true) { getIPData(`${name} ${section} contract`, `/${section}/${name.trim().replace(" ", "-")}`) }
-   }
 
    const fetchHotelDetails = async () => {
       try {
@@ -228,6 +218,8 @@ function Classic(args) {
    const [imageSlideShow, setImageSlideShow] = useState(0);
    const [visibleImage, setVisibleImage] = useState();
    const [allImagesLink, setAllImagesLink] = useState([]);
+   // const [geoLocation,setGeoLocation]=useState()
+   let geoLocation = useGeoLocation()
 
    function activateImagesSlider(image_index, allImages) {
       setVisibleImage(image_index)
@@ -239,9 +231,6 @@ function Classic(args) {
    function getThemeColor() {
       setThemeColor(args?.initialColor)
    }
-
-
-   // console.log(args?.initialColor)
 
    return (
       <>
@@ -530,7 +519,17 @@ function Classic(args) {
                                           className="rounded-lg"
                                           src={resource?.image_link}
                                           alt="room_images"
-                                          onClick={() => activateImagesSlider(index, args?.allHotelDetails?.images)} />
+                                          onClick={() =>{
+                                             if (cookie) {
+                                                const user = JSON.parse(cookie);
+                                                global.analytics.track("User is checking property gallery", {
+                                                    action: "User is checking property gallery",
+                                                    image_title:resource?.image_title,
+                                                    user: user.user,
+                                                    time: Date()
+                                                });
+                                            }
+                                             activateImagesSlider(index, args?.allHotelDetails?.images)} } />
                                     </Carousel.Item>
                                  )
                               })}</Carousel></div>
@@ -551,7 +550,17 @@ function Classic(args) {
 
                            {/* Rooms */}
                            <div id="rooms" className={singleRoom === false ? 'accordion-start accordion-panel' : 'accordion-start accordion-panel active'}>
-                              <div onClick={() => { setSingleRoom(!singleRoom); getMsgSection(singleRoom, "rooms") }} className='accordion-trigger'>
+                              <div onClick={() => {
+                                 if (cookie) {
+                                    const user = JSON.parse(cookie);
+                                    global.analytics.track("User checked rooms", {
+                                       action: "User clicked on rooms detailed",
+                                       user: user.user,
+                                       time: Date()
+                                    });
+                                 }
+                                 setSingleRoom(!singleRoom);
+                              }} className='accordion-trigger'>
                                  <button className='mb-6' >
                                     <div className='accordion-trigger'>
                                        <div className={visible === 0 ? 'block  w-32 mb-6' : 'hidden'}><SubHeading /></div>
@@ -568,7 +577,17 @@ function Classic(args) {
                                        <div className='group' key={idx}>
 
                                           <div onClick={() => {
-                                             setOpen({ ...open, view: !open.view, id: idx }); getSingleSection(open?.view, resource?.room_name, "rooms")
+
+                                             if (cookie) {
+                                                const user = JSON.parse(cookie);
+                                                global.analytics.track("User clicked on room", {
+                                                   action: "User opened room",
+                                                   room_name: resource?.room_name,
+                                                   user: user.user,
+                                                   time: Date()
+                                                });
+                                             }
+                                             setOpen({ ...open, view: !open.view, id: idx });
                                           }}>
                                              <div className='flex capitalize mt-4 py-1'>
                                                 <div className="my-1.5 mr-1.5 -ml-2 border-gray-200 border-0 rounded-full  font-bold text-gray-600  bg-gray-200 flex items-center justify-center" style={{ height: "22px", width: "22px", fontSize: "14px" }}>
@@ -636,7 +655,19 @@ function Classic(args) {
                                                             return (
                                                                <Carousel.Item key={index} >
                                                                   <img width="100%"
-                                                                     onClick={() => activateImagesSlider(index, resource?.room_images)}
+                                                                     onClick={() => {
+                                                                        if (cookie) {
+                                                                           const user = JSON.parse(cookie);
+                                                                           global.analytics.track("User clicked on room gallery", {
+                                                                              action: "User opened room gallery",
+                                                                              image_title: room_resource?.image_title,
+                                                                              user: user.user,
+                                                                              time: Date()
+                                                                           });
+                                                                        }
+                                                                        activateImagesSlider(index, resource?.room_images)
+                                                                     }
+                                                                     }
                                                                      style={{ height: "160px", marginBottom: "10px" }}
                                                                      src={room_resource?.image_link}
                                                                      alt={"Room Image"} />
@@ -716,7 +747,17 @@ function Classic(args) {
 
                            {/* Amenity */}
                            <div id="amenities" className={amenity === false ? 'accordion-start accordion-panel' : 'accordion-start accordion-panel active'}>
-                              <div onClick={() => { setAmenity(!amenity); getMsgSection(amenity, "Amenities") }} className='accordion-trigger'>
+                              <div onClick={() => {
+                                 if (cookie) {
+                                    const user = JSON.parse(cookie);
+                                    global.analytics.track("User clicked on property amenities", {
+                                       action: "User opened property amenity",
+                                       user: user.user,
+                                       time: Date()
+                                    });
+                                 }
+                                 setAmenity(!amenity);
+                              }} className='accordion-trigger'>
                                  <button className="mb-6">
                                     <div className='accordion-trigger'>
                                        <div className={visible === 0 ? 'block w-32 mb-6' : 'hidden'}><SubHeading /></div>
@@ -879,7 +920,17 @@ function Classic(args) {
 
                            {/* key highlights of property*/}
                            <div id='key-amenities' className={keyAmenity === false ? 'accordion-start accordion-panel' : 'accordion-start accordion-panel active'}>
-                              <div onClick={() => { setKeyAmenity(!keyAmenity); getMsgSection(keyAmenity, "Key-Amenities") }} className='accordion-trigger'>
+                              <div onClick={() => {
+                                 if (cookie) {
+                                    const user = JSON.parse(cookie);
+                                    global.analytics.track("User clicked on key amenities", {
+                                       action: "User is checking key amenities",
+                                       user: user.user,
+                                       time: Date()
+                                    });
+                                 }
+                                 setKeyAmenity(!keyAmenity);
+                              }} className='accordion-trigger'>
                                  <button className="mb-6">
                                     <div className='accordion-trigger'>
                                        <div className={visible === 0 ? 'block w-32 mb-6' : 'hidden'}><SubHeading /></div>
@@ -904,7 +955,7 @@ function Classic(args) {
                            {/* Packages */}
                            {args?.allPackages?.packages !== undefined ?
                               <div id="packages" className={packages === false ? 'accordion-start accordion-panel' : 'accordion-start accordion-panel active'}>
-                                 <div className='accordion-trigger' onClick={() => { setPackages(!packages); getMsgSection(packages, "packages") }}>
+                                 <div className='accordion-trigger' onClick={() => { setPackages(!packages); }}>
                                     <button className="mb-6" >
                                        <div className='accordion-trigger' >
                                           <div className={visible === 0 ? 'block  mb-6 w-32' : 'hidden'}><SubHeading /></div>
@@ -918,7 +969,7 @@ function Classic(args) {
                                        return (
                                           <div className='group' key={idx}>
                                              <div onClick={() => {
-                                                setOpen({ ...open, view: !open.view, id: idx }); getSingleSection(open?.view, resource?.package_name, "packages")
+                                                setOpen({ ...open, view: !open.view, id: idx });
                                              }}>
                                                 <p className='flex capitalize mt-4 py-1'>
                                                    <div className="my-1.5 mr-1.5 -ml-2 border-gray-200 border-0 rounded-full  font-bold text-gray-600  bg-gray-200 flex items-center justify-center" style={{ height: "22px", width: "22px", fontSize: "14px" }}>{idx + 1}</div>
@@ -1219,7 +1270,7 @@ function Classic(args) {
                                                             tax_rate_amount: resource?.tax_rate_amount,
                                                             other_charges_amount: resource?.other_charges_amount,
                                                             base_rate_currency: resource?.base_rate_currency
-                                                         }); getSingleSection(open?.view, resource?.package_name, "Packages")
+                                                         });
                                                       }}
                                                          className='bg-green-600 sm:inline-flex text-white focus:ring-4 focus:ring-green-200 font-semibold rounded-lg text-sm px-4 py-2.5 text-center ease-linear transition-all duration-150'>
                                                          {language?.booknow}
@@ -1246,7 +1297,9 @@ function Classic(args) {
                      <div className="flex flex-col lg:flex-row">
 
                         {/* <div className="tour-reviews-feedback"> */}
-                        <div className={`${themeColor?.bodyBgColor} border rounded-t-lg w-full  lg:w-3/5 lg:mr-8  lg:rounded-lg `}>
+                        <div
+                           onMouseOver={handleHover}
+                           className={`${themeColor?.bodyBgColor} border rounded-t-lg w-full  lg:w-3/5 lg:mr-8  lg:rounded-lg `}>
                            <Marquee duration={50000} height="370px" axis="Y" reverse={true}>
                               {args?.allHotelDetails?.Reviews?.map((item, idx) => {
                                  return (
@@ -1481,16 +1534,16 @@ function Classic(args) {
                      setSearched={(e) => setSearched(e)}
                      searched={searched}
                      setShowModalBookingForm={(e) => setShowModalBookingForm(e)}
-
+                     cookie={cookie}
                   />
                   {/* <Contactus color={Color?.light} language={language} property_id={args?.allHotelDetails?.property_id} /> */}
                </div>
 
             </div>
-         </div>
+         </div >
 
          {/* Footer */}
-         <footer className="bg-gray-900 lg:mt:8 py-6" >
+         < footer className="bg-gray-900 lg:mt:8 py-6" >
             <div className="md:flex md:justify-between mx-6">
                <div className="mb-6 md:mb-0 px-12 md:px-8">
 
@@ -1590,7 +1643,7 @@ function Classic(args) {
                   </div>
                </div>
             </div>
-         </footer>
+         </footer >
 
 
          <div className={showContactUs === 1 ? "block" : "hidden"}>
@@ -1639,6 +1692,7 @@ function Classic(args) {
                         setSearched={(e) => setSearched(e)}
                         searched={searched}
                         setShowModalBookingForm={(e) => setShowModalBookingForm(e)}
+                        cookie={cookie}
 
                      />
                   }
@@ -1674,6 +1728,7 @@ function Classic(args) {
                            setSearched={(e) => setSearched(false)}
                            checkinDate={enquiry.checkin}
                            checkoutDate={enquiry.checkout}
+                           cookie={cookie}
                         />}
                   />}
                </div> : undefined

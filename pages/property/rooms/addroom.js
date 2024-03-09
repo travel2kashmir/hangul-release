@@ -44,16 +44,13 @@ function Addroom() {
   const [allRoomDetails, setAllRoomDetails] = useState([])
   const [spinner, setSpinner] = useState(0)
   const [spin, setSpin] = useState(0)
-  const [darkModeSwitcher, setDarkModeSwitcher] = useState()
   const [color, setColor] = useState({})
   const [visible, setVisible] = useState(0)
   const [roomtypes, setRoomtypes] = useState({});
-  const [image, setImage] = useState({})
   const [actionImage, setActionImage] = useState({})
   const [services, setServices] = useState([])
   const [roomId, setRoomId] = useState([])
   const [finalView, setFinalView] = useState([])
-  const [add, setAdd] = useState(0)
   // const [disp, setDisp] = useState(4);
   const [disp, setDisp] = useState(0);
   const [modified, setModified] = useState({})
@@ -529,7 +526,7 @@ const validationRates = () => {
 
           {/* Room Forms */}
           {/* Room Description */}
-          <div id='0' className={disp === 0 ? 'block' : 'hidden'}>
+          {disp===0 && <div id='0' className='block'>
             <div className={`${color?.whitebackground} shadow rounded-lg px-12 sm:p-6 xl:p-8  2xl:col-span-2`}>
               <div className="relative before:hidden  before:lg:block before:absolute before:w-[64%] before:h-[3px] before:top-0 before:bottom-0 before:mt-4 before:bg-slate-100 before:dark:bg-darkmode-400 flex flex-col lg:flex-row justify-center px-5 my-10 sm:px-20">
                 <div className="intro-x lg:text-center flex items-center lg:block flex-1 z-10">
@@ -940,10 +937,10 @@ const validationRates = () => {
                 }
               </div>
             </div>
-          </div>
+          </div>}
 
           {/* Room Beds */}
-          <div id='1' className={disp === 1 ? 'block' : 'hidden'}>
+          {disp===1 && <div id='1' className='block'>
             <div className={`${color?.whitebackground} shadow rounded-lg mt-2 mx-1 px-12 sm:p-6 xl:p-8  2xl:col-span-2`}>
               <div className="relative before:hidden  before:lg:block before:absolute before:w-[64%] before:h-[3px] before:top-0 before:bottom-0 before:mt-4 before:bg-slate-100 before:dark:bg-darkmode-400 flex flex-col lg:flex-row justify-center px-5 my-10 sm:px-20">
                 <div className="intro-x lg:text-center flex items-center lg:block flex-1 z-10">
@@ -1057,10 +1054,10 @@ const validationRates = () => {
                 </>
               }
             </div>
-          </div>
+          </div>}
 
           {/* Room Services */}
-          <div id='2' className={disp === 2 ? 'block' : 'hidden'}>
+          {disp===2 && <div id='2' className='block'>
             <div className={`${color?.whitebackground} shadow rounded-lg mt-2 mx-1 px-12 sm:p-6 xl:p-8  2xl:col-span-2`}>
               <div className="relative before:hidden  before:lg:block before:absolute before:w-[64%] before:h-[3px] before:top-0 before:bottom-0 before:mt-4 before:bg-slate-100 before:dark:bg-darkmode-400 flex flex-col lg:flex-row justify-center px-5 my-10 sm:px-20">
                 <div className="intro-x lg:text-center flex items-center mt-5 lg:mt-0 lg:block flex-1 z-10">
@@ -1170,10 +1167,10 @@ const validationRates = () => {
               </div>
             </div>
 
-          </div>
+          </div>}
 
           {/* Room Gallery */}
-          <div id='3' className={disp === 3 ? 'block' : 'hidden'}>
+          {disp===3 && <div id='3' className='block'>
             <div className={`${color?.whitebackground} shadow rounded-lg p-4 sm:p-6 xl:p-8 mt-4`}>
               <div className="relative before:hidden  before:lg:block before:absolute before:w-[64%] before:h-[3px] before:top-0 before:bottom-0 before:mt-4 before:bg-slate-100 before:dark:bg-darkmode-400 flex flex-col lg:flex-row justify-center px-5 my-10 sm:px-20">
                 <div className="intro-x lg:text-center flex items-center mt-5 lg:mt-0 lg:block flex-1 z-10">
@@ -1314,12 +1311,12 @@ const validationRates = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </div>}
 
           {/* Room Rates */}
-          <div id='4' className={disp === 4 ? 'block' : 'hidden'}>
+         {disp===4 &&<div id='4' className='block'>
             <AddNewRatesofRoom color={color} language={language} roomId={roomId}/>
-          </div>
+          </div>} 
         
 
         </div>

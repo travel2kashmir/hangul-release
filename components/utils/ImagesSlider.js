@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-
-
 const ImagesSlider = ({ images, visibleImage, setShowModal }) => {
   const [currentIndex, setCurrentIndex] = useState(visibleImage);
   useEffect(() => {
@@ -15,6 +13,7 @@ const ImagesSlider = ({ images, visibleImage, setShowModal }) => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
   };
 
+  
   return (
     <div className="overflow-x-hidden overflow-y-auto fixed top-0 left-0 right-0 backdrop-blur-3xl h-screen bg-black/30 md:inset-0 z-50 flex justify-center items-center ">
       <div className="relative w-full max-w-2xl px-4 h-auto pt-20 md:pt-0 md:h-auto">

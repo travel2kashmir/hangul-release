@@ -8,10 +8,8 @@ import Link from "next/link";
 import { english, arabic, french } from "../../components/Languages/Languages"
 import Title from "../../components/title";
 import Router, { useRouter } from "next/router";
-const logger = require("../../services/logger");
 import { ToastContainer, toast } from "react-toastify";
 import Classic from "../themes/classic";
-// import ClassicDark from '../themes/classic-dark'
 import NewTheme from "../../components/NewTheme"
 import Fusion from "../../components/ModernTheme"
 import ModernThemeColors from "../../components/ModernTheme/Data/Colors"
@@ -21,13 +19,15 @@ import CountrySide from "../../components/CountrysideTheme"
 import "react-toastify/dist/ReactToastify.css";
 import BreadCrumb from "../../components/utils/BreadCrumb";
 import { InitialActions, ColorToggler } from "../../components/initalActions";
+import renderSnippet from "../../components/utils/Code/renderSnippet";
+import Script from "next/script";
 var language;
 var currentUser;
 var currentProperty;
 var currentLogged;
 let colorToggle;
-// let premiumThemes = ["Neo", "Fusion", "Fusion-red", "Fusion-green", "Fusion-white", "Cosmic", "Country-Side"];
-let premiumThemes = [];
+let premiumThemes = ["Neo", "Fusion", "Fusion-red", "Fusion-green", "Fusion-white", "Cosmic", "Country-Side"];
+// let premiumThemes = [];
 
 function Theme() {
   /** State to store Current Property Details **/
@@ -122,14 +122,10 @@ function Theme() {
         }
 
         );
-
         response.data.contacts.map(i => { if (i.contact_type === 'Phone') { setPhone(i) } });
-
-
-        response.data.contacts.map(i => { if (i.contact_type === 'Email') { setEmail(i) } });
-        logger.info("url  to fetch property details hitted successfully")
+       response.data.contacts.map(i => { if (i.contact_type === 'Email') { setEmail(i) } });
       })
-      .catch((error) => { logger.error("url to fetch property details, failed") });
+      .catch((error) => { console.error("url to fetch property details, failed") });
   }
   const fetchRoomDetails = async () => {
 
@@ -137,9 +133,8 @@ function Theme() {
     axios.get(url)
       .then((response) => {
         setAllRooms(response.data);
-        logger.info("url  to fetch room details hitted successfully")
       })
-      .catch((error) => { logger.error("url to fetch property details, failed") });
+      .catch((error) => { console.error("url to fetch property details, failed") });
   }
 
   const fetchPackageDetails = async () => {
@@ -147,9 +142,8 @@ function Theme() {
     axios.get(url)
       .then((response) => {
         setAllPackages(response.data);
-        logger.info("url  to fetch package details hitted successfully")
       })
-      .catch((error) => { logger.error("url to fetch package details, failed") });
+      .catch((error) => { console.error("url to fetch package details, failed") });
   }
 
   const sendLink = () => {
@@ -245,7 +239,10 @@ function Theme() {
 
 
   return (
-    <>
+    <><Script
+    id="segment-script"
+    dangerouslySetInnerHTML={{ __html: renderSnippet() }}
+  />
       <Title name={`Engage |  Themes`} />
 
       <Header

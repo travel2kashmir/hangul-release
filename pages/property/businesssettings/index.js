@@ -4,7 +4,7 @@ import Title from '../../../components/title';
 import Header from "../../../components/Header";
 import { useState, useEffect } from "react";
 import axios from 'axios';
-import {english,french,arabic} from "../../../components/Languages/Languages"
+import { english, french, arabic } from "../../../components/Languages/Languages"
 import colorFile from "../../../components/colors/Color";
 // Import Swiper React components
 import Router, { useRouter } from "next/router";
@@ -19,6 +19,7 @@ import GlobalData from "../../../components/GlobalData";
 import DropDown from "../../../components/utils/DropDown";
 import Button from "../../../components/Button";
 import validateUniversal from "../../../components/Businesssettings/validateUniversal";
+import TaxRateSettings from "../../../components/Businesssettings/TaxRateSettings";
 
 var language;
 var country;
@@ -67,7 +68,7 @@ function Index() {
     axios.get(url)
       .then((response) => {
         setAllHotelDetails(response.data);
-        setUniversalData(response.data?.business_settings[0]||{})
+        setUniversalData(response.data?.business_settings[0] || {})
         logger.info("url  to fetch property details hitted successfully")
       })
       .catch((error) => { logger.error("url to fetch property details, failed") });
@@ -113,7 +114,7 @@ function Index() {
 
   // save universal data 
   function saveUniversal() {
-    let data = { "universal_data": [{...universalData,"property_id":currentProperty.property_id}] }
+    let data = { "universal_data": [{ ...universalData, "property_id": currentProperty.property_id }] }
     let url = "/api/universal_data";
     axios.post(url, data, { "headers": { "content-type": "application/json" } })
       .then((res) => {
@@ -153,7 +154,6 @@ function Index() {
         <BreadCrumb
           color={color}
           crumbList={navigationList(currentLogged, currentProperty)}
-
         />
         {/* body content  */}
         <div className={`${color?.greybackground} w-full  py-2`}>
@@ -165,7 +165,7 @@ function Index() {
             >
               Business Settings
             </h6>
-
+            {/* form body start  */}
             <div className="pt-6">
               <div className=" md:px-4 mx-auto w-full">
                 <div className="flex flex-wrap">
@@ -187,23 +187,7 @@ function Index() {
                   />
                   {/* select currency ends  */}
 
-                  {/* enter discount rate start */}
-                  <InputText
-                    label={"Tax Rate"}
-                    visible={1}
-                    defaultValue={universalData?.tax_rate}
-                    onChangeAction={(e) => {
-                      setMutationFlag(true);
-                      setUniversalData({ ...universalData, tax_rate: e.target.value });
-                    }
-                    }
-                    error={error?.tax_rate}
-                    color={color}
-                    req={true}
-                    title={'The tax applied on purchase in percentage'}
-                    tooltip={true}
-                  />
-                  {/* discount rate ends  */}
+               
                   {/* other fees type start  */}
                   <DropDown
                     label={'Other Fees Calculation'}
@@ -239,35 +223,36 @@ function Index() {
                     title={'The other fees will be applied on purchase'}
                     tooltip={true}
                   />
-
-                  <div className="flex mr-2 items-center justify-end space-x-2 sm:space-x-3 ml-auto">
-                    {mutationFlag === false && spinner === false && <Button
-                      testid="test_button_disabled"
-                      Primary={language?.UpdateDisabled}
-                    />}
-                    {mutationFlag === true && spinner === false && <Button
-                      testid="test_button"
-                      Primary={language?.Update}
-                      onClick={submissionUniversal}
-                    />}
-
-                    {spinner === true && mutationFlag === true && <Button
-                      testid="test_button_spinner"
-                      Primary={language?.SpinnerUpdate}
-                    />}
-
-                  </div>
-
                 </div>
               </div>
             </div>
+            {/* form body end */}
+            {/* buttons start  */}
+            <div className="flex mr-2 items-center justify-end space-x-2 sm:space-x-3 ml-auto">
+              {mutationFlag === false && spinner === false && <Button
+                testid="test_button_disabled"
+                Primary={language?.UpdateDisabled}
+              />}
+              {mutationFlag === true && spinner === false && <Button
+                testid="test_button"
+                Primary={language?.Update}
+                onClick={submissionUniversal}
+              />}
+
+              {spinner === true && mutationFlag === true && <Button
+                testid="test_button_spinner"
+                Primary={language?.SpinnerUpdate}
+              />}
+
+            </div>
+
+
           </div>
 
-
-
-
-
+          <TaxRateSettings color={color} language={language} taxPlans={allHotelDetails?.tax_plans} property_id={allHotelDetails?.property_id}/>
           {/* Toast Container */}
+
+
           <ToastContainer position="top-center"
             autoClose={5000}
             hideProgressBar={false}
@@ -277,10 +262,7 @@ function Index() {
             pauseOnFocusLoss
             draggable
             pauseOnHover />
-
-
         </div>
-        {/* body content  */}
 
       </div>
 

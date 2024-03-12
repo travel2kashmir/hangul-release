@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useCallback } from 'react';
 import axios from 'axios';
 import InputText from '../utils/InputText';
 import Color from '../colors/Color';
 import { RxCross2, BiArrowBack, AiOutlineClose } from './Icons';
+import useRazorpay from "react-razorpay";
 // redux libraries
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
@@ -20,7 +21,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import DeleteBin from '../utils/Icons/DeleteBin';
 import DropDown from '../utils/DropDown';
-function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, setShowModal, setSearched, checkinDate, checkoutDate,cookie }) {
+function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, setShowModal, setSearched, checkinDate, checkoutDate, cookie }) {
 
     let guestTemplate = {
         "guest_name": "",
@@ -165,7 +166,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                             }
                         }
                     })
-                   
+
                 }
 
                 totalFinalRate += room.total_final_rate * selectedQuantity;
@@ -301,29 +302,29 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
         if (cookie) {
             const user = JSON.parse(cookie);
             global.analytics.track("User clicked on paynow", {
-               action: "User clicked on paynow",
-               user: user.user,
-               time: Date()
+                action: "User clicked on paynow",
+                user: user.user,
+                time: Date()
             });
-         }
+        }
         let validationResults = [];
         let isGuestDetailsValid = GuestDetailValidation(guest);
-        let isExtraGuestDetailsValid = extraGuest===undefined?true:ExtraGuestDetailValidation(extraGuest);
+        let isExtraGuestDetailsValid = extraGuest === undefined ? true : ExtraGuestDetailValidation(extraGuest);
         // isGuestDetailsValid can be either true or an error object
         if (isGuestDetailsValid !== true) {
             // Guest details are invalid, you can handle the error here
             setGuestDetailError(isGuestDetailsValid);
             validationResults.push(false)
         }
-        
+
         if (isExtraGuestDetailsValid !== true) {
             // Guest details are invalid, you can handle the error here
             setExtraGuestError(isExtraGuestDetailsValid);
             validationResults.push(false)
         }
 
-        if(isGuestDetailsValid === true) {
-           validationResults.push(true)
+        if (isGuestDetailsValid === true) {
+            validationResults.push(true)
             setGuestDetailError({})
             dispatch(setGuestDetails(guest))
         }
@@ -368,7 +369,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                 })
             })
         }
-        
+
 
         let bookingRoomArray = selectedRoomsArray.map((item, index) => {
             return ({
@@ -389,8 +390,8 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                     "taxes": totalTaxAmount,
                     "other_fees": totalOtherFees,
                     "coupon_discount": couponDiscount,
-                    "extra_guest_price":extraGuestCharges,
-                    "total_price": totalFinalRate + totalOtherFees + totalTaxAmount +(extraGuestCharges||0)  - couponDiscount,
+                    "extra_guest_price": extraGuestCharges,
+                    "total_price": totalFinalRate + totalOtherFees + totalTaxAmount + (extraGuestCharges || 0) - couponDiscount,
                     "invoice_time": formatDateToCustomFormat(new Date()),
                     ...(addGst && {
                         "booking_gst_link": [
@@ -437,11 +438,70 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
         })
     }
     //function to add payemtn gateway logic
-    function PaymentGateway(booking_id, total_price) {
-        let refrenceNumber = uuidv4(); // generating random id to replicate payment gateway response.
-        return refrenceNumber
-        // return {refrenceNumber,booking_id,total_price}
-    }
+   
+    
+  const PaymentGateway = async (booking_id, total_price) => {
+    // "use server"
+    const key = process.env.RAZORPAY_API_KEY;
+    console.log(key);
+    // Make API call to the serverless API
+    const paymentData={
+        "amount":total_price,
+        "currency":"INR",
+        "booking_id": booking_id
+    };
+    axios.post("/api/razorpay",paymentData).then((res)=>{
+        const  order  = res.data.order;
+        console.log(JSON.stringify(order));
+        console.log(order.id);
+        const options = {
+          key: process.env.RAZORPAY_API_KEY,
+          name: "Travel 2 kashmir",
+          currency: order.currency,
+          amount: order.amount,
+          order_id: order.id,
+          description: "Booking payment",
+          // image: logoBase64,
+          handler: async function (response) {
+            // if (response.length==0) return <Loading/>;
+            console.log(response);
+    
+            const data = await  fetch("/api/paymentverify", {
+              method: "POST",
+              // headers: {
+              //   // Authorization: 'YOUR_AUTH_HERE'
+              // },
+              body: JSON.stringify({
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_signature: response.razorpay_signature,
+              }),
+            });
+    
+            const res = await data.json();
+            if(res?.message=="success")
+            {
+                return res?.refrenceNumber
+            }
+          },
+          prefill: {
+            name: "Travel 2 Kashmir"
+          },
+        };
+    
+        const paymentObject = new window.Razorpay(options);
+        paymentObject.open();
+    
+        paymentObject.on("payment.failed", function (response) {
+          alert("Payment failed. Please try again. Contact support for help");
+        });
+    }).catch((err)=>{
+        console.log(err.message)
+    });
+  };
+
+
+
     //function to update invoice id 
     function addRefrenceToInvoice(paymentRefrenceNumber, booking_id) {
         let invoiceLinkUrl = "/api/booking_invoice_link";
@@ -455,7 +515,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
             header: { "content-type": "application/json" },
         }).then((responseFromInvoiceLinkUrl) => {
             // handle the third post response
-            console.log('payment sucessful')
+            // console.log('payment sucessful')
             // changeBookingCount()
             setpayNowLoader(false)
             setDisplay(3) //changes screen to booking sucessfull
@@ -471,11 +531,11 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
         if (cookie) {
             const user = JSON.parse(cookie);
             global.analytics.track("Booking Closed", {
-               action: "booking engine closed",
-               user: user.user,
-               time: Date()
+                action: "booking engine closed",
+                user: user.user,
+                time: Date()
             });
-         }
+        }
         if (reservationIdentity.length > 0) {
             reservationIdentity?.map((room) => {
                 removeReservationFromDB(room?.room_id, room?.reservation_time, "close");
@@ -509,11 +569,11 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                                 if (cookie) {
                                     const user = JSON.parse(cookie);
                                     global.analytics.track("User clicked on back", {
-                                       action: "User clicked on back in review booking page",
-                                       user: user.user,
-                                       time: Date()
+                                        action: "User clicked on back in review booking page",
+                                        user: user.user,
+                                        time: Date()
                                     });
-                                 }
+                                }
                                 if (localStorage.getItem("temp_room_rate") === null) {
                                     setDisplay(0)
                                 } else {
@@ -580,11 +640,11 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                                     if (cookie) {
                                         const user = JSON.parse(cookie);
                                         global.analytics.track("Add more rooms clicked", {
-                                           action: "User clicked on add more rooms",
-                                           user: user.user,
-                                           time: Date()
+                                            action: "User clicked on add more rooms",
+                                            user: user.user,
+                                            time: Date()
                                         });
-                                     }
+                                    }
                                     setDisplay(0);
                                 }}
                             >Add More Rooms</button>
@@ -615,14 +675,14 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                                                 if (cookie) {
                                                     const user = JSON.parse(cookie);
                                                     global.analytics.track("User changed number of rooms selected", {
-                                                       action: "User changed number of rooms selected",
-                                                       user: user.user,
-                                                       room:room?.room_name,
-                                                       meal:rate[room?.room_id]?.meal_name,
-                                                       quantity:newQuantity,
-                                                       time: Date()
+                                                        action: "User changed number of rooms selected",
+                                                        user: user.user,
+                                                        room: room?.room_name,
+                                                        meal: rate[room?.room_id]?.meal_name,
+                                                        quantity: newQuantity,
+                                                        time: Date()
                                                     });
-                                                 }
+                                                }
                                                 updateSelectedQuantity(room?.room_id, newQuantity); // Update selected quantity in the Map
                                             }}
                                         >
@@ -645,13 +705,13 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                                                 if (cookie) {
                                                     const user = JSON.parse(cookie);
                                                     global.analytics.track("User deleted selected room", {
-                                                       action: "User deleted selected room",
-                                                       user: user.user,
-                                                       room:room?.room_name,
-                                                       meal:rate[room?.room_id]?.meal_name,
-                                                       time: Date()
+                                                        action: "User deleted selected room",
+                                                        user: user.user,
+                                                        room: room?.room_name,
+                                                        meal: rate[room?.room_id]?.meal_name,
+                                                        time: Date()
                                                     });
-                                                 }
+                                                }
                                                 dispatch(removeRoomFromSelected(room?.room_id)) //remove room from selected list
                                                 removeRoomRateByRoomId(room?.room_id)  //remove room_rate from local storage
                                                 dispatch(removeReservationFromReservationIdentity(room?.room_id))
@@ -677,30 +737,32 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                         > {totalRoomsCapacity - guest?.length} more guest can be added</div>
 
                         {guest?.length < totalRoomsCapacity ? <button
-                            onClick={()=>{
+                            onClick={() => {
                                 if (cookie) {
                                     const user = JSON.parse(cookie);
                                     global.analytics.track("User added 1 more guest", {
-                                       action: "User added 1 more guest",
-                                       user: user.user,
-                                       time: Date()
+                                        action: "User added 1 more guest",
+                                        user: user.user,
+                                        time: Date()
                                     });
-                                 }
-                                addGuest()}}
+                                }
+                                addGuest()
+                            }}
                             className={`ml-auto px-4 py-1 bg-cyan-700 hover:bg-cyan-900  rounded-md text-white`}>
                             {'Add Guests'}
                         </button> :
                             <button
-                                onClick={()=>{
+                                onClick={() => {
                                     if (cookie) {
                                         const user = JSON.parse(cookie);
                                         global.analytics.track("User added extra guest", {
-                                           action: "User added extra guest",
-                                           user: user.user,
-                                           time: Date()
+                                            action: "User added extra guest",
+                                            user: user.user,
+                                            time: Date()
                                         });
-                                     }
-                                    newExtraGuest()}}
+                                    }
+                                    newExtraGuest()
+                                }}
                                 disabled={selectedRoomsArray.filter(i => i.extra_guest_allowed > 0).length === 0}
                                 className={`ml-auto px-4 py-1 ${selectedRoomsArray.filter(i => i.extra_guest_allowed > 0).length !== 0 ? 'bg-cyan-700 hover:bg-cyan-900' : 'bg-cyan-600 '}  rounded-md text-white`}>
                                 {'Add Extra Guests'}
@@ -726,7 +788,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                                 <div className='border border-slate-400 rounded-xl p-2 m-2' key={i.index}>
                                     {loopIndex != 0 && addExtraGuest != 1 ? <div className='flex justify-end'><button onClick={() => removeGuest(i.index)}><RxCross2 /></button></div> : <></>}
                                     <div className="flex flex-wrap ">
-                                           
+
                                         {/* guest name  */}
                                         <InputText
                                             label={loopIndex === 0 ? 'Main Guest Name' : 'Guest Name'}
@@ -856,16 +918,17 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                             {/* extra guest ends */}
 
 
-                            <input type="checkbox" name="add_gst" onClick={() => { 
+                            <input type="checkbox" name="add_gst" onClick={() => {
                                 if (cookie) {
                                     const user = JSON.parse(cookie);
                                     global.analytics.track("User clicked on add gst details", {
-                                       action: "User clicked on add gst details",
-                                       user: user.user,
-                                       time: Date()
+                                        action: "User clicked on add gst details",
+                                        user: user.user,
+                                        time: Date()
                                     });
-                                 }
-                                setAddGst(!addGst); setGstDetails({}) }} />
+                                }
+                                setAddGst(!addGst); setGstDetails({})
+                            }} />
                             <span className={`${color?.text?.title} font-semibold text-base mx-2`}>Add GST Details (optional)</span>
                             {addGst === true ?
                                 <div className="flex flex-wrap border-2 border-slate-400 rounded-xl p-2 m-2">
@@ -976,12 +1039,12 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                         <button
                             disabled={disabled || totalFinalRate + totalTaxAmount + totalOtherFees === 0}
                             onClick={() => {
-                                
+
 
                                 let totalExtaGuest = selectedRoomsArray.reduce((total, room) => {
                                     return total + Number(room.extra_guest_allowed);
                                 }, 0)
-                                
+
                                 if (guest.length <= totalRoomsCapacity) {
                                     if (addExtraGuest === true && extraGuest.length === totalExtaGuest) {
                                         SubmitGuestDetails();

@@ -6,7 +6,10 @@ module.exports = withAxiom(
 
     env: {
       serverURL: "http://103.136.36.27",
-      port: "5555"
+      port: "5555",
+      NEXT_PUBLIC_ANALYTICS_WRITE_KEY: "p6FoooEYSlUjNAbGxlJA2SSrtJUM3ezM",
+      RAZORPAY_API_KEY: "rzp_test_82GrH63KameXRd",
+      RAZORPAY_API_SECRET: "whjPiJlK5pmvlg7a1tpqaUZV"
     },
 
     webpack: (config) => {

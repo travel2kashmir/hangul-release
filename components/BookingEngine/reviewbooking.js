@@ -423,14 +423,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
         }).then((response) => {
             let totalPrice = finalInvoiceForThisBooking?.booking_invoice[0].total_price;
 
-            let paymentRefrenceNumber = PaymentGateway(response.data.booking_id, totalPrice)
-            // addRefrenceToInvoice(paymentRefrenceNumber, response.data.booking_id)
-
-            // // Add booking_id and property_id to local storage
-            // let propertyId = property_id; // Replace with the actual property_id
-            // let bookingId = response.data.booking_id;
-
-            // dispatch(updateBookingInfo({ booking_id: bookingId, property_id: propertyId }));
+            PaymentGateway(response.data.booking_id, totalPrice)
 
         }).catch((error) => {
             toast.error("API: Room Booking Failed,Try again Latter.");
@@ -458,11 +451,7 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                 amount: order.amount,
                 order_id: order.id,
                 description: "Booking payment",
-                // image: logoBase64,
                 handler: async function (response) {
-                    // if (response.length==0) return <Loading/>;
-                    console.log(response);
-                    
                     const data = await fetch("/api/paymentverify", {
                         method: "POST",
                         headers: {
@@ -477,15 +466,11 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
                     console.log(data)
                     const res = await data.json();
                     if (res?.message == "success") {
-                        console.log(JSON.stringify(res))
                         addRefrenceToInvoice(res?.refrenceNumber, booking_id)
-
                         // Add booking_id and property_id to local storage
                         let propertyId = property_id; // Replace with the actual property_id
                         let bookingId = booking_id;
-
                         dispatch(updateBookingInfo({ booking_id: bookingId, property_id: propertyId }));
-                        // return res?.refrenceNumber
                     }
                 },
                 prefill: {
@@ -520,8 +505,6 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
             header: { "content-type": "application/json" },
         }).then((responseFromInvoiceLinkUrl) => {
             // handle the third post response
-            // console.log('payment sucessful')
-            // changeBookingCount()
             setpayNowLoader(false)
             setDisplay(3) //changes screen to booking sucessfull
         }).catch((err) => {

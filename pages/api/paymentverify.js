@@ -6,9 +6,8 @@ const instance = new Razorpay({
 });
 
 export default async function POST(req, res) {
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =await req.body;
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = await req.body;
     const body = razorpay_order_id + "|" + razorpay_payment_id;
-    console.log("id==", body)
 
     const expectedSignature = crypto
         .createHmac("sha256", process.env.RAZORPAY_API_SECRET)
@@ -20,9 +19,8 @@ export default async function POST(req, res) {
 
     if (isAuthentic) {
         console.log("Payment is authentic")
- //  return NextResponse.redirect(new URL('/paymentsuccess', req.url));
     }
-     else {
+    else {
         return res.json({
             message: "fail"
         }, {
@@ -30,11 +28,9 @@ export default async function POST(req, res) {
         })
 
     }
-
-
     return res.json({
         message: "success",
-        refrenceNumber:razorpay_payment_id
+        refrenceNumber: razorpay_payment_id
     }, {
         status: 200,
     })

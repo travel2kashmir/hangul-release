@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import InputText from '../utils/InputText';
 import Color from '../colors/Color';
@@ -424,13 +424,13 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
             let totalPrice = finalInvoiceForThisBooking?.booking_invoice[0].total_price;
 
             let paymentRefrenceNumber = PaymentGateway(response.data.booking_id, totalPrice)
-            addRefrenceToInvoice(paymentRefrenceNumber, response.data.booking_id)
+            // addRefrenceToInvoice(paymentRefrenceNumber, response.data.booking_id)
 
-            // Add booking_id and property_id to local storage
-            let propertyId = property_id; // Replace with the actual property_id
-            let bookingId = response.data.booking_id;
+            // // Add booking_id and property_id to local storage
+            // let propertyId = property_id; // Replace with the actual property_id
+            // let bookingId = response.data.booking_id;
 
-            dispatch(updateBookingInfo({ booking_id: bookingId, property_id: propertyId }));
+            // dispatch(updateBookingInfo({ booking_id: bookingId, property_id: propertyId }));
 
         }).catch((error) => {
             toast.error("API: Room Booking Failed,Try again Latter.");
@@ -438,72 +438,77 @@ function Reviewbooking({ color, property_id, setDisplay, rooms, setRoomsLoader, 
         })
     }
     //function to add payemtn gateway logic
-   
-    
-  const PaymentGateway = async (booking_id, total_price) => {
-    // "use server"
-    const key = process.env.RAZORPAY_API_KEY;
-    console.log(key);
-    // Make API call to the serverless API
-    const paymentData={
-        "amount":total_price,
-        "currency":"INR",
-        "booking_id": booking_id
-    };
-    axios.post("/api/razorpay",paymentData).then((res)=>{
-        const  order  = res.data.order;
-        console.log(JSON.stringify(order));
-        console.log(order.id);
-        const options = {
-          key: process.env.RAZORPAY_API_KEY,
-          name: "Travel 2 kashmir",
-          currency: order.currency,
-          amount: order.amount,
-          order_id: order.id,
-          description: "Booking payment",
-          // image: logoBase64,
-          handler: async function (response) {
-            // if (response.length==0) return <Loading/>;
-            console.log(response);
-    
-            const data = await  fetch("/api/paymentverify", {
-              method: "POST",
-              // headers: {
-              //   // Authorization: 'YOUR_AUTH_HERE'
-              // },
-              body: JSON.stringify({
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_signature: response.razorpay_signature,
-              }),
-            });
-    
-            const res = await data.json();
-            if(res?.message=="success")
-            {
-                return res?.refrenceNumber
-            }
-          },
-          prefill: {
-            name: "Travel 2 Kashmir"
-          },
+
+
+    const PaymentGateway = async (booking_id, total_price) => {
+        const key = process.env.RAZORPAY_API_KEY;
+
+        // Make API call to the serverless API
+        const paymentData = {
+            "amount": total_price,
+            "currency": "INR",
+            "booking_id": booking_id
         };
-    
-        const paymentObject = new window.Razorpay(options);
-        paymentObject.open();
-    
-        paymentObject.on("payment.failed", function (response) {
-          alert("Payment failed. Please try again. Contact support for help");
+        axios.post("/api/razorpay", paymentData).then((res) => {
+            const order = res.data.order;
+            const options = {
+                key: process.env.RAZORPAY_API_KEY,
+                name: "Travel 2 kashmir",
+                currency: order.currency,
+                amount: order.amount,
+                order_id: order.id,
+                description: "Booking payment",
+                // image: logoBase64,
+                handler: async function (response) {
+                    // if (response.length==0) return <Loading/>;
+                    console.log(response);
+                    
+                    const data = await fetch("/api/paymentverify", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_signature: response.razorpay_signature,
+                        }),
+                    });
+                    console.log(data)
+                    const res = await data.json();
+                    if (res?.message == "success") {
+                        console.log(JSON.stringify(res))
+                        addRefrenceToInvoice(res?.refrenceNumber, booking_id)
+
+                        // Add booking_id and property_id to local storage
+                        let propertyId = property_id; // Replace with the actual property_id
+                        let bookingId = booking_id;
+
+                        dispatch(updateBookingInfo({ booking_id: bookingId, property_id: propertyId }));
+                        // return res?.refrenceNumber
+                    }
+                },
+                prefill: {
+                    name: "Travel 2 Kashmir"
+                },
+            };
+
+            const paymentObject = new window.Razorpay(options);
+            paymentObject.open();
+
+            paymentObject.on("payment.failed", function (response) {
+                alert("Payment failed. Please try again. Contact support for help");
+            });
+        }).catch((err) => {
+            console.log(err.message)
         });
-    }).catch((err)=>{
-        console.log(err.message)
-    });
-  };
+    };
 
 
 
     //function to update invoice id 
     function addRefrenceToInvoice(paymentRefrenceNumber, booking_id) {
+        console.log("add refrence to invoice called ")
         let invoiceLinkUrl = "/api/booking_invoice_link";
         let invoiceForThisBooking = {
             "booking_invoice_link": [{

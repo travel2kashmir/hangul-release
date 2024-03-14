@@ -1,34 +1,33 @@
 import { useEffect } from "react"
 import { Chart } from "chart.js";
-function Piechart() {
+function Piechart({color,labels,data,title,bgcolors,id,chartLabel}) {
   useEffect(() => {
-    var ctx = document.getElementById('myBarGraph').getContext('2d');
+   if(id){
+    var ctx = document.getElementById(id).getContext('2d');
     var myBarGraph = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: ["Windows", "Mac", "Linux", "Other"],
+            labels: labels,
             datasets: [{
-                data: [60,47,56,43],
-                label: "user per platform",
-                borderColor: ["aqua", "green", "red", "yellow"],
+                data: data,
+                label: chartLabel,
+                borderColor: bgcolors,
                 borderWidth: 0.5,
-                backgroundColor: 
-                ["aqua", "green", "red", "yellow"],
+                backgroundColor: bgcolors,
                 
             }
             ]
         },
     });
+   } 
 }, [])
   return (
-    <div className="py-4 w-1/2 h-1/2 bg-white rounded-lg shadow">
+    <div className={`py-4 my-2 w-full lg:w-5/12 h-1/2 ${color?.whitebackground} rounded-lg shadow`}>
       {/* line chart */}
-      <h1 className="flex justify-center mx-auto mt-2 text-xl font-semibold capitalize ">Traffic Source</h1>
+      <h1  className={`flex justify-center ${color?.text} mx-auto mt-2 text-xl font-semibold capitalize`} >{title}</h1>
       <div className="flex">
-        <div className='bg-white  pt-0  w-full h-fit my-auto '>
-          
-
-          <canvas id='myBarGraph'></canvas>
+        <div className={`${color?.whitebackground}  pt-0  w-full h-fit my-auto `}>
+          <canvas id={id}></canvas>
         </div>
       </div>
     </div>

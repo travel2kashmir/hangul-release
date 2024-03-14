@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import dashboardImage from "../../public/dash-graph.PNG"
 import Title from '../../components/title';
 import Sidebar from "../../components/Sidebar";
 import Header from "../../components/Header";
@@ -141,13 +140,82 @@ function Dashboard() {
             </div>
 
 
-            <div className='flex'>
-              <Piechart />
-              <Barchart />
+            <div className='flex flex-wrap gap-x-8 justify-center'>
+              
+              <Piechart
+                color={color}
+                labels={["Referal Traffic", "Direct Traffic", "Organic Traffic"]}
+                data={[40, 100, 34]}
+                title={`Traffic Distribution`}
+                bgcolors={[
+                  "rgb(255, 165, 0)",
+                  "rgb(34, 139, 34)",
+                  "rgb(106, 90, 205)",
+                ]}
+                id={'userTraffic'}
+              />
+              {/* traffic Distribution end*/}
+
+              {/* user Languages start  */}
+              <Piechart
+              color={color}
+                labels={["English", "Arabic", "French"]}
+                data={[70, 60, 40]}
+                title={`User Lanaguages`}
+                bgcolors={[
+                  "aqua",
+                  "teal",
+                  "green",
+                ]}
+                id={'userLanguages'}
+
+              />
+              {/* user Languages end*/}
+
+              {/* user timezone start  */}
+              <Piechart
+              color={color}
+                labels={["IST", "PDT", "UTC", "CET"]}
+                data={[70, 60, 40, 30]}
+                title={`User Time Zones`}
+                bgcolors={[
+                  "aqua",
+                  "teal",
+                  "green",
+                  "orange"
+                ]}
+                id={'userTimezones'}
+              />
+              {/* user timezone end*/}
+
+              {/* traffic source start  */}
+              <Barchart
+              color={color}
+                labels={["Windows", "Mac", "Linux", "Other"]}
+                chartLabel={`user per platform`}
+                data={[60, 47, 56, 43]}
+                title={`Traffic Source`}
+                bgcolors={["aqua", "green", "red", "yellow"]}
+                id={'userPlatforms'}
+              />
+              {/* traffic source end*/}
+
+              {/* user browser start  */}
+              <Barchart
+              color={color}
+                labels={["Chrome", "Edge", "Firefox", "Other"]}
+                chartLabel={`user per browser`}
+                data={[60, 50, 56, 43]}
+                title={`Browsers`}
+                bgcolors={["aqua", "green", "red", "yellow"]}
+                id={'userBrowsers'}
+              />
+              {/* user browser end*/}
+
             </div>
 
 
-            {/* traffic charts ends */}
+          
 
             {/* room details */}
             <div className="mt-4 w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3  gap-4">

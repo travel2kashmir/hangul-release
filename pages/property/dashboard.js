@@ -13,7 +13,7 @@ import "react-toastify/dist/ReactToastify.css";
 import CountUp from 'react-countup';
 import Piechart from '../../components/Dashboard/Piechart';
 import Barchart from '../../components/Dashboard/Barchart';
-
+import axios from 'axios';
 
 var language;
 var currentProperty;
@@ -23,7 +23,13 @@ let colorToggle;
 function Dashboard() {
   const [color, setColor] = useState({})
   const [mode, setMode] = useState()
-
+  const [roomCount,setRoomCount] = useState()
+  const [totalServices,setTotalServices] = useState([])
+  const [avgReviewRating,setAvgReviewRating] = useState([])
+  const [userBrowsers,setUserBrowsers] = useState([])
+  const [userPlatforms,setUserPlatforms] = useState([])
+  const [userTimeZone,setUserTimeZone] = useState([])
+  const [userLanguages,setUserLanguages] = useState([])
   // runs at load time
   useEffect(() => {
     const resp = InitialActions({ setColor, setMode })
@@ -31,7 +37,25 @@ function Dashboard() {
     currentLogged = resp?.currentLogged;
     currentProperty = resp?.currentProperty;
     colorToggle = resp?.colorToggle
+    fetchDashboardData()
   }, [])
+
+  function fetchDashboardData(){
+    let url=`/api/dashboard/${currentProperty?.property_id}`
+    axios.get(url).then(
+      (resp)=>{
+        setRoomCount(resp?.data?.room_count[0].total_rooms)
+        setTotalServices(resp?.data?.total_services[0].total_services)
+        setAvgReviewRating(resp?.data?.avg_review_ratings[0].aggregate_review)
+        setUserBrowsers(resp?.data?.user_browsers)
+        setUserPlatforms(resp?.data?.user_platform)
+        setUserTimeZone(resp?.data?.user_time_zone)
+        setUserLanguages(resp?.data?.user_languages)
+      }
+    ).catch((err)=>{
+      toast.error("Failed to get dashboard data");
+    })
+  }
 
   function navigationList(currentLogged, currentProperty) {
     return ([
@@ -117,6 +141,8 @@ function Dashboard() {
 
             {/* other details */}
             <div className='my-4'>
+             
+              {/* row-1  */}
               <div className='bg-sky-600 text-white shadow rounded-lg mb-4 p-4 sm:p-6 h-full'>
                 <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
                   <div className='text-center'>
@@ -125,7 +151,7 @@ function Dashboard() {
                     {/* <p className='md:pt-2 text-gray-600'>Total Customers</p> */}
                   </div>
                   <div className='text-center'>
-                    <h2 className='text-3xl md:text-4xl font-bold'><CountUp end={2000} duration={1.5} /></h2>
+                    <h2 className='text-3xl md:text-4xl font-bold'><CountUp end={roomCount} duration={1.5} /></h2>
                     <p className='md:pt-2 '>Total Rooms</p>
                     {/* <p className='md:pt-2 text-gray-600'>Total Rooms</p> */}
                   </div>
@@ -137,15 +163,36 @@ function Dashboard() {
 
                 </div>
               </div>
+              {/* row-2  */}
+              <div className='bg-sky-600 text-white shadow rounded-lg mb-1 p-4 sm:p-6 h-full'>
+                <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+                  <div className='text-center'>
+                    <h2 className='text-3xl md:text-4xl font-bold'><CountUp end={avgReviewRating} duration={1.5} /></h2>
+                    <p className='md:pt-2 '>Average Review Rating</p>
+                    {/* <p className='md:pt-2 text-gray-600'>Total Customers</p> */}
+                  </div>
+                  <div className='text-center'>
+                    <h2 className='text-3xl md:text-4xl font-bold'><CountUp end={totalServices} duration={1.5} /></h2>
+                    <p className='md:pt-2 '>Total Hotel Services</p>
+                  </div>
+                  <div className='text-center'>
+                    <h2 className='text-3xl md:text-4xl font-bold'> <CountUp end={100} duration={1.5} decimal='4' /></h2>
+                    <p className='md:pt-2 '>
+                      Item to be planned
+                    </p>
+                    {/* <p className='md:pt-2 text-gray-600'>Total Transaction</p> */}
+                  </div>
+
+                </div>
+              </div>
             </div>
 
 
             <div className='flex flex-wrap gap-x-8 justify-center'>
-              
+
               <Piechart
                 color={color}
-                labels={["Referal Traffic", "Direct Traffic", "Organic Traffic"]}
-                data={[40, 100, 34]}
+                data={{ "Referal Traffic": 40, "Direct Traffice": 100, "Organic Traffic": 34 }}
                 title={`Traffic Distribution`}
                 bgcolors={[
                   "rgb(255, 165, 0)",
@@ -155,12 +202,11 @@ function Dashboard() {
                 id={'userTraffic'}
               />
               {/* traffic Distribution end*/}
-
+                  
               {/* user Languages start  */}
               <Piechart
-              color={color}
-                labels={["English", "Arabic", "French"]}
-                data={[70, 60, 40]}
+                color={color}
+                data={userLanguages.map(i=>({[i.language]:i.language_count})).reduce((acc, obj) => ({ ...acc, ...obj }), {})}
                 title={`User Lanaguages`}
                 bgcolors={[
                   "aqua",
@@ -174,10 +220,9 @@ function Dashboard() {
 
               {/* user timezone start  */}
               <Piechart
-              color={color}
-                labels={["IST", "PDT", "UTC", "CET"]}
-                data={[70, 60, 40, 30]}
-                title={`User Time Zones`}
+                color={color}
+                data={userTimeZone.map(i=>({[i.time_zone]:i.time_zone_count})).reduce((acc, obj) => ({ ...acc, ...obj }), {})}
+               title={`User Time Zones`}
                 bgcolors={[
                   "aqua",
                   "teal",
@@ -190,10 +235,9 @@ function Dashboard() {
 
               {/* traffic source start  */}
               <Barchart
-              color={color}
-                labels={["Windows", "Mac", "Linux", "Other"]}
+                color={color}
                 chartLabel={`user per platform`}
-                data={[60, 47, 56, 43]}
+                data={userPlatforms.map(i=>({[i.platform]:i.platform_count})).reduce((acc, obj) => ({ ...acc, ...obj }), {})}
                 title={`Traffic Source`}
                 bgcolors={["aqua", "green", "red", "yellow"]}
                 id={'userPlatforms'}
@@ -202,10 +246,9 @@ function Dashboard() {
 
               {/* user browser start  */}
               <Barchart
-              color={color}
-                labels={["Chrome", "Edge", "Firefox", "Other"]}
+                color={color}
                 chartLabel={`user per browser`}
-                data={[60, 50, 56, 43]}
+                data={userBrowsers.map(i=>({[i.browser_name]:i.browser_name_count})).reduce((acc, obj) => ({ ...acc, ...obj }), {})}
                 title={`Browsers`}
                 bgcolors={["aqua", "green", "red", "yellow"]}
                 id={'userBrowsers'}
@@ -215,7 +258,7 @@ function Dashboard() {
             </div>
 
 
-          
+
 
             {/* room details */}
             <div className="mt-4 w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3  gap-4">

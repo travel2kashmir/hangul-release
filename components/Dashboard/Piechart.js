@@ -1,15 +1,16 @@
 import { useEffect } from "react"
 import { Chart } from "chart.js";
-function Piechart({color, labels, data, title, bgcolors, id }) {
+function Piechart({color, data, title, bgcolors, id }) {
   useEffect(() => {
     if (id) {
+      // let finalData=data.reduce((acc, obj) => ({ ...acc, ...obj }), {});
       var ctx = document.getElementById(id).getContext('2d');
       var myChart = new Chart(ctx, {
         type: 'pie',
         data: {
-          labels: labels,
+         labels: Object.keys(data),
           datasets: [{
-            data: data,
+          data: Object.values(data),
             borderColor: bgcolors,
             backgroundColor: bgcolors,
             borderWidth: 2,
@@ -27,7 +28,7 @@ function Piechart({color, labels, data, title, bgcolors, id }) {
         },
       });
     }
-  }, [])
+  }, [data])
   return (
     <div className={`py-4 my-2  w-full lg:w-5/12 h-1/2 ${color?.whitebackground} rounded-lg shadow`}>
       {/* line chart */}

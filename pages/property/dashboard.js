@@ -30,6 +30,10 @@ function Dashboard() {
   const [userPlatforms,setUserPlatforms] = useState([])
   const [userTimeZone,setUserTimeZone] = useState([])
   const [userLanguages,setUserLanguages] = useState([])
+  const [outOfServiceRoomsToday,setOutOfServiceRoomsToday] = useState([])
+  const [soldOutRooms,setSoldOutRooms] = useState([])
+  const [roomsAvailableToday,setRoomsAvailableToday] = useState([])
+  const [uniqueUsers,setUniqueUsers] = useState([])
   // runs at load time
   useEffect(() => {
     const resp = InitialActions({ setColor, setMode })
@@ -51,6 +55,11 @@ function Dashboard() {
         setUserPlatforms(resp?.data?.user_platform)
         setUserTimeZone(resp?.data?.user_time_zone)
         setUserLanguages(resp?.data?.user_languages)
+        setOutOfServiceRoomsToday(resp?.data?.rooms_out_of_service_today[0]?.rooms_unavailable_today)
+        setSoldOutRooms(resp?.data?.sold_out_rooms_today[0]?.rooms_booked_today)
+        setRoomsAvailableToday(resp?.data?.rooms_available_today[0]?.available_rooms)
+        setUniqueUsers(resp?.data?.unique_users[0]?.unique_users)
+
       }
     ).catch((err)=>{
       toast.error("Failed to get dashboard data");
@@ -146,8 +155,8 @@ function Dashboard() {
               <div className='bg-sky-600 text-white shadow rounded-lg mb-4 p-4 sm:p-6 h-full'>
                 <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
                   <div className='text-center'>
-                    <h2 className='text-3xl md:text-4xl font-bold'><CountUp end={569} duration={1.5} /></h2>
-                    <p className='md:pt-2 '>Total Customers</p>
+                    <h2 className='text-3xl md:text-4xl font-bold'><CountUp end={uniqueUsers} duration={1.5} /></h2>
+                    <p className='md:pt-2 '>Unique Users</p>
                     {/* <p className='md:pt-2 text-gray-600'>Total Customers</p> */}
                   </div>
                   <div className='text-center'>
@@ -268,7 +277,7 @@ function Dashboard() {
                     <h2 className='font-semibold'>Available Rooms Today</h2>
                   </div>
                   <div >
-                    <span className='text-3xl md:text-4xl leading-none font-bold text-white'><CountUp end={20} duration={1.5} /></span>
+                    <span className='text-3xl md:text-4xl leading-none font-bold text-white'><CountUp end={roomsAvailableToday} duration={1.5} /></span>
                   </div>
                 </div>
               </div>
@@ -278,7 +287,7 @@ function Dashboard() {
                     <h2 className='font-semibold'>Sold Out Rooms Today</h2>
                   </div>
                   <div >
-                    <span className='text-3xl md:text-4xl leading-none font-bold text-white'><CountUp end={10} duration={1.5} /></span>
+                    <span className='text-3xl md:text-4xl leading-none font-bold text-white'><CountUp end={soldOutRooms} duration={1.5} /></span>
                   </div>
                 </div>
               </div>
@@ -288,7 +297,7 @@ function Dashboard() {
                     <h2 className='font-semibold'>Out Of Service Rooms Today</h2>
                   </div>
                   <div >
-                    <span className='text-3xl md:text-4xl leading-none font-bold text-white'><CountUp end={5} duration={1.5} /></span>
+                    <span className='text-3xl md:text-4xl leading-none font-bold text-white'><CountUp end={outOfServiceRoomsToday} duration={1.5} /></span>
                   </div>
                 </div>
               </div>

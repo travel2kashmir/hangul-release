@@ -12,7 +12,6 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { useStore } from 'react-redux';
 
 
-
 Router.events.on('routeChangeStart', () => NProgress.start());
 Router.events.on('routeChangeComplete', () => NProgress.done());
 Router.events.on('routeChangeError', () => NProgress.done());
@@ -25,6 +24,7 @@ function MyApp({ Component, pageProps }) {
     <>
       <PersistGate persistor={store.__persistor} loading={<div>Loading...</div>}>
         <Component {...pageProps} />
+       
       </PersistGate>
 
     </>

@@ -14,6 +14,8 @@ import CountUp from 'react-countup';
 import Piechart from '../../components/Dashboard/Piechart';
 import Barchart from '../../components/Dashboard/Barchart';
 import axios from 'axios';
+import CountupBoxRow from '../../components/Dashboard/CountupBoxRow';
+import CountupBox from '../../components/Dashboard/CountupBox';
 
 var language;
 var currentProperty;
@@ -23,17 +25,19 @@ let colorToggle;
 function Dashboard() {
   const [color, setColor] = useState({})
   const [mode, setMode] = useState()
-  const [roomCount,setRoomCount] = useState()
-  const [totalServices,setTotalServices] = useState([])
-  const [avgReviewRating,setAvgReviewRating] = useState([])
-  const [userBrowsers,setUserBrowsers] = useState([])
-  const [userPlatforms,setUserPlatforms] = useState([])
-  const [userTimeZone,setUserTimeZone] = useState([])
-  const [userLanguages,setUserLanguages] = useState([])
-  const [outOfServiceRoomsToday,setOutOfServiceRoomsToday] = useState([])
-  const [soldOutRooms,setSoldOutRooms] = useState([])
-  const [roomsAvailableToday,setRoomsAvailableToday] = useState([])
-  const [uniqueUsers,setUniqueUsers] = useState([])
+  const [roomCount, setRoomCount] = useState()
+  const [totalServices, setTotalServices] = useState([])
+  const [avgReviewRating, setAvgReviewRating] = useState([])
+  const [userBrowsers, setUserBrowsers] = useState([])
+  const [userPlatforms, setUserPlatforms] = useState([])
+  const [userTimeZone, setUserTimeZone] = useState([])
+  const [userLanguages, setUserLanguages] = useState([])
+  const [outOfServiceRoomsToday, setOutOfServiceRoomsToday] = useState([])
+  const [soldOutRooms, setSoldOutRooms] = useState([])
+  const [roomsAvailableToday, setRoomsAvailableToday] = useState([])
+  const [uniqueUsers, setUniqueUsers] = useState([])
+  const [totalBookings, setTotalBookings] = useState([])
+  const [totalRoomsBooked, setTotalRoomsBooked] = useState([])
   // runs at load time
   useEffect(() => {
     const resp = InitialActions({ setColor, setMode })
@@ -44,10 +48,10 @@ function Dashboard() {
     fetchDashboardData()
   }, [])
 
-  function fetchDashboardData(){
-    let url=`/api/dashboard/${currentProperty?.property_id}`
+  function fetchDashboardData() {
+    let url = `/api/dashboard/${currentProperty?.property_id}`
     axios.get(url).then(
-      (resp)=>{
+      (resp) => {
         setRoomCount(resp?.data?.room_count[0].total_rooms)
         setTotalServices(resp?.data?.total_services[0].total_services)
         setAvgReviewRating(resp?.data?.avg_review_ratings[0].aggregate_review)
@@ -59,9 +63,11 @@ function Dashboard() {
         setSoldOutRooms(resp?.data?.sold_out_rooms_today[0]?.rooms_booked_today)
         setRoomsAvailableToday(resp?.data?.rooms_available_today[0]?.available_rooms)
         setUniqueUsers(resp?.data?.unique_users[0]?.unique_users)
+        setTotalRoomsBooked(resp?.data?.total_rooms_booked[0]?.total_rooms_booked)
+        setTotalBookings(resp?.data?.total_bookings[0]?.total_bookings)
 
       }
-    ).catch((err)=>{
+    ).catch((err) => {
       toast.error("Failed to get dashboard data");
     })
   }
@@ -150,48 +156,21 @@ function Dashboard() {
 
             {/* other details */}
             <div className='my-4'>
-             
+
               {/* row-1  */}
               <div className='bg-sky-600 text-white shadow rounded-lg mb-4 p-4 sm:p-6 h-full'>
                 <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
-                  <div className='text-center'>
-                    <h2 className='text-3xl md:text-4xl font-bold'><CountUp end={uniqueUsers} duration={1.5} /></h2>
-                    <p className='md:pt-2 '>Unique Users</p>
-                    {/* <p className='md:pt-2 text-gray-600'>Total Customers</p> */}
-                  </div>
-                  <div className='text-center'>
-                    <h2 className='text-3xl md:text-4xl font-bold'><CountUp end={roomCount} duration={1.5} /></h2>
-                    <p className='md:pt-2 '>Total Rooms</p>
-                    {/* <p className='md:pt-2 text-gray-600'>Total Rooms</p> */}
-                  </div>
-                  <div className='text-center'>
-                    <h2 className='text-3xl md:text-4xl font-bold'>₹ <CountUp end={750000} duration={1.5} decimal='4' /></h2>
-                    <p className='md:pt-2 '>Total Transaction</p>
-                    {/* <p className='md:pt-2 text-gray-600'>Total Transaction</p> */}
-                  </div>
-
+                  <CountupBox title={'Total Rooms'} countUpValue={roomCount} />
+                  <CountupBox title={'Total Bookings'} countUpValue={totalBookings} />
+                  <CountupBox title={'Total Rooms Booked'} countUpValue={totalRoomsBooked} />
                 </div>
               </div>
               {/* row-2  */}
               <div className='bg-sky-600 text-white shadow rounded-lg mb-1 p-4 sm:p-6 h-full'>
                 <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
-                  <div className='text-center'>
-                    <h2 className='text-3xl md:text-4xl font-bold'><CountUp end={avgReviewRating} duration={1.5} /></h2>
-                    <p className='md:pt-2 '>Average Review Rating</p>
-                    {/* <p className='md:pt-2 text-gray-600'>Total Customers</p> */}
-                  </div>
-                  <div className='text-center'>
-                    <h2 className='text-3xl md:text-4xl font-bold'><CountUp end={totalServices} duration={1.5} /></h2>
-                    <p className='md:pt-2 '>Total Hotel Services</p>
-                  </div>
-                  <div className='text-center'>
-                    <h2 className='text-3xl md:text-4xl font-bold'> <CountUp end={100} duration={1.5} decimal='4' /></h2>
-                    <p className='md:pt-2 '>
-                      Item to be planned
-                    </p>
-                    {/* <p className='md:pt-2 text-gray-600'>Total Transaction</p> */}
-                  </div>
-
+                  <CountupBox title={'Total Hotel Services'} countUpValue={totalServices} />
+                  <CountupBox title={'Average Review Rating'} countUpValue={avgReviewRating} decimals={2} />
+                  <CountupBox title={'Unique Users'} countUpValue={uniqueUsers} />
                 </div>
               </div>
             </div>
@@ -203,25 +182,15 @@ function Dashboard() {
                 color={color}
                 data={{ "Referal Traffic": 40, "Direct Traffice": 100, "Organic Traffic": 34 }}
                 title={`Traffic Distribution`}
-                bgcolors={[
-                  "rgb(255, 165, 0)",
-                  "rgb(34, 139, 34)",
-                  "rgb(106, 90, 205)",
-                ]}
                 id={'userTraffic'}
               />
               {/* traffic Distribution end*/}
-                  
+
               {/* user Languages start  */}
               <Piechart
                 color={color}
-                data={userLanguages.map(i=>({[i.language]:i.language_count})).reduce((acc, obj) => ({ ...acc, ...obj }), {})}
+                data={userLanguages.map(i => ({ [i.language]: i.language_count })).reduce((acc, obj) => ({ ...acc, ...obj }), {})}
                 title={`User Lanaguages`}
-                bgcolors={[
-                  "aqua",
-                  "teal",
-                  "green",
-                ]}
                 id={'userLanguages'}
 
               />
@@ -230,14 +199,8 @@ function Dashboard() {
               {/* user timezone start  */}
               <Piechart
                 color={color}
-                data={userTimeZone.map(i=>({[i.time_zone]:i.time_zone_count})).reduce((acc, obj) => ({ ...acc, ...obj }), {})}
-               title={`User Time Zones`}
-                bgcolors={[
-                  "aqua",
-                  "teal",
-                  "green",
-                  "orange"
-                ]}
+                data={userTimeZone.map(i => ({ [i.time_zone]: i.time_zone_count })).reduce((acc, obj) => ({ ...acc, ...obj }), {})}
+                title={`User Time Zones`}
                 id={'userTimezones'}
               />
               {/* user timezone end*/}
@@ -246,9 +209,8 @@ function Dashboard() {
               <Barchart
                 color={color}
                 chartLabel={`user per platform`}
-                data={userPlatforms.map(i=>({[i.platform]:i.platform_count})).reduce((acc, obj) => ({ ...acc, ...obj }), {})}
+                data={userPlatforms.map(i => ({ [i.platform]: i.platform_count })).reduce((acc, obj) => ({ ...acc, ...obj }), {})}
                 title={`Traffic Source`}
-                bgcolors={["aqua", "green", "red", "yellow"]}
                 id={'userPlatforms'}
               />
               {/* traffic source end*/}
@@ -257,9 +219,8 @@ function Dashboard() {
               <Barchart
                 color={color}
                 chartLabel={`user per browser`}
-                data={userBrowsers.map(i=>({[i.browser_name]:i.browser_name_count})).reduce((acc, obj) => ({ ...acc, ...obj }), {})}
+                data={userBrowsers.map(i => ({ [i.browser_name]: i.browser_name_count })).reduce((acc, obj) => ({ ...acc, ...obj }), {})}
                 title={`Browsers`}
-                bgcolors={["aqua", "green", "red", "yellow"]}
                 id={'userBrowsers'}
               />
               {/* user browser end*/}
@@ -270,43 +231,21 @@ function Dashboard() {
 
 
             {/* room details */}
-            <div className="mt-4 w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3  gap-4">
-              <div className="bg-yellow-500 text-white shadow rounded-lg p-4 sm:p-6 xl:p-8 ">
-                <div className="flex justify-between my-auto">
-                  <div className='my-auto'>
-                    <h2 className='font-semibold'>Available Rooms Today</h2>
-                  </div>
-                  <div >
-                    <span className='text-3xl md:text-4xl leading-none font-bold text-white'><CountUp end={roomsAvailableToday} duration={1.5} /></span>
-                  </div>
-                </div>
-              </div>
-              <div className="bg-green-700 text-white shadow-xl rounded-lg p-4 sm:p-6 xl:p-8 ">
-                <div className="flex justify-between my-auto">
-                  <div className='my-auto'>
-                    <h2 className='font-semibold'>Sold Out Rooms Today</h2>
-                  </div>
-                  <div >
-                    <span className='text-3xl md:text-4xl leading-none font-bold text-white'><CountUp end={soldOutRooms} duration={1.5} /></span>
-                  </div>
-                </div>
-              </div>
-              <div className="bg-gray-700 text-white shadow rounded-lg p-4 sm:p-6 xl:p-8 ">
-                <div className="flex justify-between my-auto">
-                  <div className='my-auto'>
-                    <h2 className='font-semibold'>Out Of Service Rooms Today</h2>
-                  </div>
-                  <div >
-                    <span className='text-3xl md:text-4xl leading-none font-bold text-white'><CountUp end={outOfServiceRoomsToday} duration={1.5} /></span>
-                  </div>
-                </div>
-              </div>
+            <div className="my-4 w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3  gap-4">
+              <CountupBoxRow title={'Available Rooms Today'}
+                countUpValue={roomsAvailableToday}
+                style={'bg-yellow-500 text-white'} />
+
+              <CountupBoxRow title={'Sold Out Rooms Today'}
+                countUpValue={soldOutRooms}
+                style={'bg-green-700 text-white'} />
+
+              <CountupBoxRow title={'Out Of Service Rooms Today'}
+                countUpValue={outOfServiceRoomsToday}
+                style={'bg-gray-700 text-white'} />
             </div>
 
-
-
-
-            {/* out of service rooms info */}
+            {/* out of service rooms info table*/}
             <div className={`${color?.whitebackground}  shadow rounded-lg mb-4 p-4 sm:p-6 h-full`}>
               <h3 className={`text-xl font-bold leading-none  ${color?.text}`}>Out of Service Rooms Today</h3>
 

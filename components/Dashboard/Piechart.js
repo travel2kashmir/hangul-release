@@ -1,10 +1,10 @@
 import { useEffect } from "react"
 import { Chart } from "chart.js";
-function Piechart({color, data, title, bgcolors, id }) {
+function Piechart({ color,data, title, id }) {
+  let bgcolors=['#4E79A7','#8CD17D','#E15759','#FABFD2','#A0CBE8','#B6992D','#FF9D9A','#B07AA1','#F28E2B','#F1CE63','#79706E','#D4A6C8','#FFBE7D','#499894','#BABA0AC','#9D7660','#59A14F','#86BCB6','#D37295','#D7B5A6'].sort(() => Math.random() - 0.5);
   useEffect(() => {
     if (id) {
-      // let finalData=data.reduce((acc, obj) => ({ ...acc, ...obj }), {});
-      var ctx = document.getElementById(id).getContext('2d');
+     var ctx = document.getElementById(id).getContext('2d');
       var myChart = new Chart(ctx, {
         type: 'pie',
         data: {

@@ -45,7 +45,12 @@ function Dashboard() {
     currentLogged = resp?.currentLogged;
     currentProperty = resp?.currentProperty;
     colorToggle = resp?.colorToggle
-    fetchDashboardData()
+    if (JSON.stringify(currentLogged) === "null") {
+      router?.push(window.location.origin);
+    }
+    else {
+      fetchDashboardData()
+    }
   }, [])
 
   function fetchDashboardData() {
@@ -151,9 +156,6 @@ function Dashboard() {
 
         <main>
           <div className="pt-6 md:px-4">
-            {/* traffic charts starts */}
-
-
             {/* other details */}
             <div className='my-4'>
 
@@ -175,74 +177,39 @@ function Dashboard() {
               </div>
             </div>
 
-
+            {/* graphical representation of data  */}
             <div className='flex flex-wrap gap-x-8 justify-center'>
 
-              <Piechart
-                color={color}
-                data={{ "Referal Traffic": 40, "Direct Traffice": 100, "Organic Traffic": 34 }}
-                title={`Traffic Distribution`}
-                id={'userTraffic'}
-              />
-              {/* traffic Distribution end*/}
-
+              <Piechart color={color} title={`Traffic Distribution`} id={'userTraffic'}
+                data={{ "Referal Traffic": 40, "Direct Traffice": 100, "Organic Traffic": 34 }} />
               {/* user Languages start  */}
-              <Piechart
-                color={color}
+              <Piechart color={color} title={`User Lanaguages`} id={'userLanguages'}
                 data={userLanguages.map(i => ({ [i.language]: i.language_count })).reduce((acc, obj) => ({ ...acc, ...obj }), {})}
-                title={`User Lanaguages`}
-                id={'userLanguages'}
-
               />
-              {/* user Languages end*/}
-
               {/* user timezone start  */}
-              <Piechart
-                color={color}
+              <Piechart color={color} title={`User Time Zones`} id={'userTimezones'}
                 data={userTimeZone.map(i => ({ [i.time_zone]: i.time_zone_count })).reduce((acc, obj) => ({ ...acc, ...obj }), {})}
-                title={`User Time Zones`}
-                id={'userTimezones'}
               />
-              {/* user timezone end*/}
 
               {/* traffic source start  */}
-              <Barchart
-                color={color}
-                chartLabel={`user per platform`}
+              <Barchart color={color} id={'userPlatforms'} title={`Traffic Source`} chartLabel={`user per platform`}
                 data={userPlatforms.map(i => ({ [i.platform]: i.platform_count })).reduce((acc, obj) => ({ ...acc, ...obj }), {})}
-                title={`Traffic Source`}
-                id={'userPlatforms'}
               />
-              {/* traffic source end*/}
 
               {/* user browser start  */}
-              <Barchart
-                color={color}
-                chartLabel={`user per browser`}
+              <Barchart color={color} chartLabel={`user per browser`} id={'userBrowsers'} title={`Browsers`}
                 data={userBrowsers.map(i => ({ [i.browser_name]: i.browser_name_count })).reduce((acc, obj) => ({ ...acc, ...obj }), {})}
-                title={`Browsers`}
-                id={'userBrowsers'}
               />
-              {/* user browser end*/}
+
 
             </div>
 
-
-
-
             {/* room details */}
             <div className="my-4 w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3  gap-4">
-              <CountupBoxRow title={'Available Rooms Today'}
-                countUpValue={roomsAvailableToday}
-                style={'bg-yellow-500 text-white'} />
+              <CountupBoxRow title={'Available Rooms Today'} countUpValue={roomsAvailableToday} style={'bg-yellow-500 text-white'} />
+              <CountupBoxRow title={'Sold Out Rooms Today'} countUpValue={soldOutRooms} style={'bg-green-700 text-white'} />
+              <CountupBoxRow title={'Out Of Service Rooms Today'} countUpValue={outOfServiceRoomsToday} style={'bg-gray-700 text-white'} />
 
-              <CountupBoxRow title={'Sold Out Rooms Today'}
-                countUpValue={soldOutRooms}
-                style={'bg-green-700 text-white'} />
-
-              <CountupBoxRow title={'Out Of Service Rooms Today'}
-                countUpValue={outOfServiceRoomsToday}
-                style={'bg-gray-700 text-white'} />
             </div>
 
             {/* out of service rooms info table*/}

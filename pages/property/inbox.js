@@ -34,11 +34,11 @@ function Inbox() {
     const [spinner, setSpinner] = useState(0)
 
     // useEffect(() => {
-    //     firstfun();
+    //     onComponentLoadActions();
     // }, [])
 
     // // function on page load
-    // const firstfun = () => {
+    // const onComponentLoadActions = () => {
     //     if (typeof window !== 'undefined') {
     //         var locale = localStorage.getItem("Language");
     //         colorToggle = localStorage.getItem("colorToggle");
@@ -130,7 +130,7 @@ function Inbox() {
     //         setColor(colorFile?.dark)
     //         localStorage.setItem("colorToggle", true)
     //     }
-    //     firstfun();
+    //     onComponentLoadActions();
     //     router.push('./inbox')
     // }
 

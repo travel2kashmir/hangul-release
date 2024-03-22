@@ -85,7 +85,7 @@ We may also use your Personal Information for several reasons including but not 
 
 function Footer(args) {
     useEffect(() => {
-        const firstfun = () => {
+        const onComponentLoadActions = () => {
             if (typeof window !== 'undefined') {
 
                 var locale = localStorage.getItem("Language");
@@ -102,7 +102,7 @@ function Footer(args) {
 
             }
         }
-        firstfun();
+        onComponentLoadActions();
     }, [])
 
     return (

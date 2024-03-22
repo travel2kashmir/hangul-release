@@ -11,7 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 import RoomLoader from './RoomLoader';
 
 
-function RoomCalenderView({ allHotelDetails, color, roomsLoader, setRoomsLoader, rooms, setDisplay, setShowModal, setSearched, checkinDate, checkoutDate, cookie }) {
+function RoomCalenderView({ allHotelDetails, color, roomsLoader, setRoomsLoader, rooms, setDisplay, setShowModal, setSearched, checkinDate, checkoutDate, cookie,closeButtonAction }) {
 
     const reservationIdentity = useSelector(state => state.reservationIdentity)
     const dispatch = useDispatch() //creating object of dispatch 
@@ -32,7 +32,7 @@ function RoomCalenderView({ allHotelDetails, color, roomsLoader, setRoomsLoader,
             setDataAsPerDate(response.data)
             setRoomsLoader(false)
         }).catch((err) => {
-            console.log(JSON.stringify(err))
+            // console.log(JSON.stringify(err))
         })
     }
     const calculateTotalFinalRate = () => {
@@ -166,15 +166,16 @@ function RoomCalenderView({ allHotelDetails, color, roomsLoader, setRoomsLoader,
                     <div className='flex gap-10'>
                         {/* cart option */}
                         <i className='cursor-pointer'
+                            data-testid='cart-icon'
                             onClick={() => {
                                 if (cookie) {
                                     const user = JSON.parse(cookie);
                                     global.analytics.track("User clicked on cart", {
-                                       action: "User clicked on cart",
-                                       user: user.user,
-                                       time: Date()
+                                        action: "User clicked on cart",
+                                        user: user.user,
+                                        time: Date()
                                     });
-                                 }
+                                }
                                 if (roomsSelected.length === 0) {
                                     toast.error("APP: Cart is Empty.");
                                 } else {
@@ -186,17 +187,19 @@ function RoomCalenderView({ allHotelDetails, color, roomsLoader, setRoomsLoader,
 
                         {/* back option */}
                         <i className='cursor-pointer'
-                            onClick={()=>{
+                            data-testid='back-icon'
+                            onClick={() => {
                                 if (cookie) {
                                     const user = JSON.parse(cookie);
                                     global.analytics.track("User went back to main website", {
-                                       action: "User went back to main website",
-                                       user: user.user,
-                                       time: Date()
+                                        action: "User went back to main website",
+                                        user: user.user,
+                                        time: Date()
                                     });
-                                 }
-                                closeButtonAction()}
-                                }>
+                                }
+                                closeButtonAction()
+                            }
+                            }>
                             <AiOutlineClose color='red' size={20} />
                         </i>
                     </div>

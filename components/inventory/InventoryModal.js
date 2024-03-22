@@ -54,7 +54,7 @@ function InventoryModal({ error, setError, setView, setInventories, view, color,
   }
 
   useEffect(() => {
-    const firstfun = () => {
+    const onComponentLoadActions = () => {
       if (typeof window !== 'undefined') {
 
         /** Current Property Basic Details fetched from the local storage **/
@@ -65,7 +65,7 @@ function InventoryModal({ error, setError, setView, setInventories, view, color,
 
       }
     }
-    firstfun();
+    onComponentLoadActions();
   }, [view])
 
   useEffect(() => {

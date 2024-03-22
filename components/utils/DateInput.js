@@ -6,7 +6,7 @@ import LineLoader from '../loaders/lineloader'
 import info from '../../public/info.svg'
 import Image from 'next/image'
 import Tooltip from "./Tooltip";
-function DateInput({ color, label, req, initialValue, onChangeAction, error, visible, max, min, title, tooltip }) {
+function  DateInput({ color, label, req, initialValue, onChangeAction, error, visible, max, min, title, tooltip }) {
 
   return (
     <div data-testid="first" className="w-full lg:w-6/12 px-4">
@@ -32,7 +32,9 @@ function DateInput({ color, label, req, initialValue, onChangeAction, error, vis
           <LineLoader />
         </div>
         <div data-testid="inputfield" className={visible === 1 ? "block" : "hidden"}>
-          <input data-testid="inputdate"
+          <input 
+          data-testid={`inputdate-${label}`}
+          // data-testid={`inputdate`}
             type="Date"
             className={`shadow-sm ${color?.bodyBgColor}  border border-gray-300 ${color?.inputTextColor} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
             defaultValue={initialValue}

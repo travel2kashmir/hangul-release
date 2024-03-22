@@ -14,7 +14,7 @@ function UserProfileHeader(args) {
   const [color, setColor] = useState({})
   const [mode, setMode] = useState(false);
   useEffect(() => {
-    const firstfun = () => {
+    const onComponentLoadActions = () => {
       if (typeof window !== 'undefined') {
 
         var locale = localStorage.getItem("Language");
@@ -33,7 +33,7 @@ function UserProfileHeader(args) {
 
       }
     }
-    firstfun();
+    onComponentLoadActions();
     currentLogged = JSON.parse(localStorage.getItem("Signin Details"));
   }, [])
   /** UseState to check whether its small screen or large screen **/

@@ -50,7 +50,7 @@ function AdminLanding() {
         })
     }
     useEffect(() => {
-        const firstfun = () => {
+        const onComponentLoadActions = () => {
             if (typeof window !== 'undefined') {
                 var locale = localStorage.getItem("Language");
                 if (locale === "ar") {
@@ -66,7 +66,7 @@ function AdminLanding() {
                 setLang(locale)
             }
         }
-        firstfun();
+        onComponentLoadActions();
         router.push('./adminlanding');
         fetchAllProperties();
         setLoc(window.location.origin)

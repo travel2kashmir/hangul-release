@@ -92,7 +92,7 @@ function AddBasicDetails() {
 
   /** Fetching language from the local storage **/
   useEffect(() => {
-    const firstfun = () => {
+    const onComponentLoadActions = () => {
       if (typeof window !== 'undefined') {
         var locale = localStorage.getItem("Language");
         setColor(colorFile?.light)
@@ -110,7 +110,7 @@ function AddBasicDetails() {
         }
       }
     }
-    firstfun();
+    onComponentLoadActions();
 
     Router.push("./addbasicdetails");
     setAllHotelDetails({ ...allHotelDetails, description_date: current })

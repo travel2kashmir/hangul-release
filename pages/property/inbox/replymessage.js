@@ -18,10 +18,10 @@ function ReplyMessage() {
     const [messageDetails, setMessageDetails] = useState([]);
 
     useEffect(() => {
-        firstfun();
+        onComponentLoadActions();
     }, [])
 
-    const firstfun = () => {
+    const onComponentLoadActions = () => {
         if (typeof window !== 'undefined') {
             var locale = localStorage.getItem("Language");
             const colorToggle = JSON.parse(localStorage.getItem("ColorToggle"));

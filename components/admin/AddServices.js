@@ -44,7 +44,7 @@ function Addservices() {
     }
     //first thing to run in page
     useEffect(() => {
-        const firstfun = () => {
+        const onComponentLoadActions = () => {
             if (typeof window !== 'undefined') {
                 var locale = localStorage.getItem("Language");
                 if (locale === "ar") {
@@ -60,7 +60,7 @@ function Addservices() {
                 property = JSON.parse(localStorage.getItem("property"));
             }
         }
-        firstfun();
+        onComponentLoadActions();
         fetchServices();
     }, [])
 

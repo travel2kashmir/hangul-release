@@ -11,7 +11,7 @@ function Navbar(args) {
   
 
   useEffect(() => {
-    const firstfun = () => {
+    const onComponentLoadActions = () => {
       if (typeof window !== 'undefined') {
 
         var locale = localStorage.getItem("Language");
@@ -28,7 +28,7 @@ function Navbar(args) {
 
       }
     }
-    firstfun();
+    onComponentLoadActions();
     currentLogged = JSON.parse(localStorage.getItem("Signin Details"));
   }, [])
   /** UseState to check whether its small screen or large screen **/

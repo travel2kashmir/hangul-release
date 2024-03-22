@@ -118,35 +118,35 @@ function Classic(args) {
    const handleHover = () => {
       const currentTime = Date.now();
       if (currentTime - lastHoverTime > 600000) { // 600000 milliseconds = 10 minutes
-        setLastHoverTime(currentTime);
-        const cookie = readCookie('user');
-        if (cookie) {
-          const user = JSON.parse(cookie);
-          global.analytics.track("User is Reading reviews", {
-            action: "User is reading reviews",
-            user: user.user,
-            time: new Date().toString()
-          });
-        }
+         setLastHoverTime(currentTime);
+         const cookie = readCookie('user');
+         if (cookie) {
+            const user = JSON.parse(cookie);
+            global.analytics.track("User is Reading reviews", {
+               action: "User is reading reviews",
+               user: user.user,
+               time: new Date().toString()
+            });
+         }
       }
-    };
+   };
 
-    useEffect(() => {
+   useEffect(() => {
       const timer = setInterval(() => {
-        setLastHoverTime(0);
+         setLastHoverTime(0);
       }, 600000); // Reset after 10 minutes
       return () => clearInterval(timer);
-    }, []);
+   }, []);
 
    /** Router for Redirection **/
    const router = useRouter();
    useEffect(() => {
-      const firstfun = () => {
+      const onComponentLoadActions = () => {
          if (typeof window !== 'undefined') {
             setLanguage(args?.language)
          }
       }
-      firstfun();
+      onComponentLoadActions();
       getThemeColor();
       setCookie(readCookie('user'));
       const current = new Date();
@@ -233,27 +233,21 @@ function Classic(args) {
    }
 
    return (
-      <>
-         {/* <div className="header w-full"> */}
+      <div data-testid='mainDiv'>
          <div className={`${themeColor?.headerBgColor} h-14 flex md:h-20 border-b w-full`}>
-            {/* <div className="container"> */}
             <div className="w-full px-5 md:px-0 md:w-11/12 flex m-auto items-center justify-between">
-
-               {/* <div className="header-logo"> */}
                <div className="flex items-center text-xl font-medium">
                   {args?.allHotelDetails?.logo !== '' ? <img src={args?.allHotelDetails?.logo} alt="logo" className='h-14' /> : <></>}
                   <span className='text-sky-600'>{args?.allHotelDetails?.property_name}
                   </span>
                </div>
 
-               {/* <div className="menu-toggle"> */}
                <div className="cursor-pointer lg:hidden">
                   <button onClick={() => { setSmSidebar(!smSidebar) }}>
                      {smSidebar === true ? <i className=' fixed top-3 md:top-6 right-5 md:right-8 z-30 '><IoClose size={20} color={`${themeColor?.menuColor}`} /></i> : <span className={`material-icons-outlined ${themeColor?.menuColor}`}> menu </span>}
                   </button>
                </div>
 
-               {/* <ul className="header-menu"> */}
                <ul className={`hidden lg:flex ${themeColor?.navtextColor}`}>
                   <select onChange={(e) => (changeLanguage(e.target.value))}
                      className={`shadow-sm  ${themeColor?.headerBgColor} border border-gray-300 sm:text-sm rounded-md focus:ring-cyan-600 focus:border-cyan-600 block w-32 py-1 px-2`}>
@@ -305,7 +299,6 @@ function Classic(args) {
                   </a> */}
                   {/* <div className="header-menu-copyright">Made with Tailwind CSS</div> */}
                </ul>
-
             </div>
 
             <div className={smSidebar === true ? "block" : "hidden"}>
@@ -378,16 +371,10 @@ function Classic(args) {
             </div>
          </div>
 
-         {/* <div className="tour container"> */}
          <div className={`${themeColor?.bodyBgColor} px-5 md:px-10 lg:px-16`}>
-
-            {/* <div className="tour-head"> */}
             <div className="py-6 lg:py-12 flex">
-
-               {/* <div id="home" className="tour-head-left"> */}
                <div id="home">
 
-                  {/* <div className="tour-title"> */}
                   <div className={`font-semibold  ${themeColor?.titleTextColor} text-xl md:text-3xl`}>
 
                      <div className={visible === 0 ? 'block w-32 mb-2' : 'hidden'}><Headloader /></div>
@@ -398,19 +385,13 @@ function Classic(args) {
                   <div className={visible === 0 ? 'block w-64' : 'hidden'}><SubHeading /></div>
                   <div className={visible === 1 ? 'block' : 'hidden'}>
 
-                     {/* <div className="tour-overview "> */}
-                     <div className="mt-4 flex text-sm text-slate-400 ">
 
-                        {/* <div className="tour-overview-item"> */}
+                     <div className="mt-4 flex text-sm text-slate-400 ">
                         <div className="relative pr-6 md:text-base">
                            {args?.allHotelDetails?.property_category} {language?.in} <span className={`${themeColor?.titleTextColor}  font-semibold`}>{args?.allHotelDetails?.address?.[i]?.address_city}</span>
                         </div>
-
-                        {/* <div className="tour-overview-item "> */}
                         <div className="relative pr-6 md:text-base">
                            <span className={`${themeColor?.titleTextColor} font-semibold`}>{args?.allHotelDetails?.star_rating} {language?.star}</span> {language?.accomodation}</div>
-
-                        {/* <div className="tour-overview-item"> */}
                         <div className="relative pr-6 md:text-base">
                            <span className='-mt-0.5 mr-1'>
                               <StarRatings
@@ -428,16 +409,11 @@ function Classic(args) {
             </div>
 
             {/* Body */}
-            {/* <div className="tour-wrapper"> */}
             <div className="flex flex-wrap items-start lg:flex-nowrap">
-
-               {/* <div className="tour-content"> */}
                <div className="w-full lg:w-7/12">
                   {/* Slider */}
                   <div className={visible === 0 ? 'block w-32 mb-2' : 'hidden'}><ImageLoader /></div>
                   <div className={visible === 1 ? 'block' : 'hidden'}>
-
-                     {/* <div className="tour-hero"> */}
                      <div className="mb-12">
                         <Swiper
                            centeredSlides={true}
@@ -462,11 +438,7 @@ function Classic(args) {
                            })}
                         </Swiper>
                      </div>
-
-                     {/* <div className="tour-content-block"> */}
                      <div className="mt-10 pb-5 border-b ">
-
-                        {/* <div className="tour-description"> */}
                         <div className={`text-sm ${themeColor?.descriptionTextColor} lg:text-base`}>
                            {args?.allHotelDetails?.description_body}
                         </div>
@@ -474,10 +446,10 @@ function Classic(args) {
                   </div>
 
                   {/* Gallery */}
-                  {/* <div id="gallery" className="tour-content-block"> */}
+
                   <div id="gallery" className="mt-10 border-b pb-10">
 
-                     {/* <div className="tour-content-title">{language?.gallery}</div> */}
+
                      <div className={`mb-6 ${themeColor?.titleTextColor} text-lg font-semibold lg:text-2xl`}>{language?.gallery}</div>
 
                      <div className="relative overflow-hidden">
@@ -519,17 +491,18 @@ function Classic(args) {
                                           className="rounded-lg"
                                           src={resource?.image_link}
                                           alt="room_images"
-                                          onClick={() =>{
+                                          onClick={() => {
                                              if (cookie) {
                                                 const user = JSON.parse(cookie);
                                                 global.analytics.track("User is checking property gallery", {
-                                                    action: "User is checking property gallery",
-                                                    image_title:resource?.image_title,
-                                                    user: user.user,
-                                                    time: Date()
+                                                   action: "User is checking property gallery",
+                                                   image_title: resource?.image_title,
+                                                   user: user.user,
+                                                   time: Date()
                                                 });
-                                            }
-                                             activateImagesSlider(index, args?.allHotelDetails?.images)} } />
+                                             }
+                                             activateImagesSlider(index, args?.allHotelDetails?.images)
+                                          }} />
                                     </Carousel.Item>
                                  )
                               })}</Carousel></div>
@@ -537,10 +510,8 @@ function Classic(args) {
                   </div>
 
                   {/* About */}
-                  {/* <div id="about" className="tour-content-block"> */}
-                  <div id="about" className="mt-10 border-b pb-10">
 
-                     {/* <div className="tour-content-title mb-8"> */}
+                  <div id="about" className="mt-10 border-b pb-10">
                      <div className={`text-lg lg:text-2xl font-semibold ${themeColor?.titleTextColor} mb-8`}>
                         {language?.about}
                      </div>
@@ -609,7 +580,7 @@ function Classic(args) {
 
                                           <div className={open?.view === true && open?.id === idx ? 'block' : 'hidden'}>
                                              {/* Room Description */}
-                                             {/* <div className="tour-content-block"> */}
+
                                              <div className="border-b pb-10">
                                                 <div className={`text-sm md:text-base ${themeColor?.descriptionTextColor}`}>
                                                    {resource?.room_description}
@@ -620,7 +591,7 @@ function Classic(args) {
                                              {Object.keys(resource).includes("room_images")
                                                 ?
                                                 <div className='py-10 border-b'>
-                                                   {/* <div className='tour-content-block1'> */}
+
                                                    <div className='pb-8'>
                                                       <div className={`${themeColor?.titleTextColor} text-center font-semibold pb-10`}>{language?.room} {language?.gallery}</div>
                                                       <Carousel cols={2} rows={1} gap={10} autoPlay={1000} loop={true}
@@ -718,26 +689,6 @@ function Classic(args) {
                                                    })}
                                                 </div>
                                              </div>
-
-
-                                             {/* Book Now Button */}
-                                             {/* <div className='flex pb-8'>
-                                                <div className='mr-2 ml-auto justify-end'>
-                                                   <button onClick={() => {
-                                                      setRate({
-                                                         base_rate_amount: resource?.unconditional_rates?.[i]?.baserate_amount,
-                                                         tax_rate_amount: resource?.unconditional_rates?.[i]?.tax_amount,
-                                                         other_charges_amount: resource?.unconditional_rates?.[i]?.otherfees_amount,
-                                                         base_rate_currency: resource?.unconditional_rates?.[i]?.baserate_currency
-                                                      }), getSingleSection(open?.view, resource?.room_name, "Rooms")
-                                                   }}
-                                                      className='bg-green-600 sm:inline-flex text-white
-                                                                  focus:ring-4 focus:ring-green-200 font-semibold
-                                                                  rounded-lg text-sm px-4 py-2.5 text-center 
-                                                                     ease-linear transition-all duration-150'>
-                                                      {language?.booknow}
-                                                   </button></div>
-                                             </div> */}
                                           </div>
                                        </div>)
                                  })}
@@ -1287,16 +1238,9 @@ function Classic(args) {
                   </div>
 
                   {/*  Reviews */}
-                  {/* <div className="tour-content-block"> */}
                   <div className="mt-10 border-b pb-10">
-
-                     {/* <div className="tour-content-title">{language?.customer} {language?.reviews}</div> */}
                      <div className={`mb-6 ${themeColor?.titleTextColor} text-lg md:text-2xl font-semibold`}>{language?.customer} {language?.reviews}</div>
-
-                     {/* <div className="tour-reviews"> */}
                      <div className="flex flex-col lg:flex-row">
-
-                        {/* <div className="tour-reviews-feedback"> */}
                         <div
                            onMouseOver={handleHover}
                            className={`${themeColor?.bodyBgColor} border rounded-t-lg w-full  lg:w-3/5 lg:mr-8  lg:rounded-lg `}>
@@ -1361,170 +1305,8 @@ function Classic(args) {
 
 
                {/* Booking form  */}
-               {/* <div className={`tour-sidebar ${Color?.light?.whitebackground}`}> */}
-               <div className={`hidden lg:block relative top-8 z-20 mb-10 w-full lg:mb-0 lg:sticky lg:ml-8  lg:w-5/12 rounded-lg ${themeColor?.bookingFormColor}`}>
-                  {/* <div className="tour-receipt">
-                     <div className="tour-receipt-head">
-                        <div className="tour-amount">
-                           <div className={visible === 0 ? 'block w-32' : 'hidden'}><SubHeading /></div>
-                           <div className={visible === 1 ? 'block' : 'hidden'}>
-                              <span className="tour-amount-old">$119</span>
-                              {rate?.base_rate_amount} {rate?.base_rate_currency.toUpperCase()}
-                              <span>/night</span>
-                           </div>
-                        </div>
-                        <div className={visible === 0 ? 'block w-10 mr-2' : 'hidden'}><SubHeading /></div>
-                        <div className={visible === 1 ? 'block' : 'hidden'}>
-                           <div className="tour-discount">-10%</div>
-                        </div>
-                     </div>
-                     <div className="tour-receipt-select">
-                        <div className="tour-receipt-select-top">
-                           <div className="tour-receipt-select-item">
-                              <div className="tour-receipt-select-icon">    
-                                 <span className="material-icons-outlined hover:cursor-pointer"
-                                  onClick={() => setCalendarIn(!calendarIn)}>
-                                    calendar_month
-                                 </span>
-                                 </div>
-                              <div className="tour-receipt-select-content">
-                                 {calendarIn === false ?
-                              <div className="tour-receipt-select-title" >
-                               <span > {d1}</span>
-                               </div>:
-                                 <input defaultValue={checkInDate} min={checkInDate}
-                                 onChange={
-                                    (e) => (
-                                      changeCheckIn(e.target.value)
-                                    )
-                                  }
-                                 className="my-1 bg-gray-50  text-gray-800
-                                 focus:ring-gray-900  border focus:border-gray-900 border-gray-400
-                                 text-sm rounded-md block w-16 mr-1 py-0.5 lg:w-16 w-14"
-                                 type="date" />}
-                            <div className="tour-receipt-select-text">
-                                 {language?.checkin}
-                                 </div>
-                          </div></div>
-                         <div className="tour-receipt-select-item">
-                             <div className="tour-receipt-select-icon">
-                                 <span className="material-icons-outlined hover:cursor-pointer" onClick={() => setCalendarOut(!calendarOut)}>
-                                    calendar_month
-                                 </span>
-                              </div>
-                              <div className="tour-receipt-select-content">
-                              {calendarOut === false ?
-                              <div className="tour-receipt-select-title"  >
-                                <span>  {d2}</span>
-                              </div>:
-                                 <input 
-                                    type="date" defaultValue={checkOutDate} min={checkOutDate} onChange={
-                                       (e) => (
-                                         changeCheckOut(e.target.value)
-                                       )
-                                     }
-                                    className="my-1 bg-gray-50  text-gray-800
-                                    focus:ring-gray-900  border focus:border-gray-900 border-gray-400
-                                    text-sm rounded-md block lg:w-16 w-14 mr-1 py-0.5" />
-                              }
-                                 <div className="tour-receipt-select-text">
-                                 {language?.checkout}
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                     
-                        <div className="tour-receipt-select-bottom">
-                        <div className="tour-receipt-select-top">
-                           <div className="tour-receipt-select-item">
-                              <div className="tour-receipt-select-icon">
-                                <span className="material-icons-outlined hover:cursor-pointer" onClick={() => setGuests(!guests)}>
-                                 person_outline
-                                 </span>
-                              </div>
-                              <div className="tour-receipt-select-content">
-                                 {guests === false ?
-                              <div className="tour-receipt-select-title">
-                          <span> 4 {language?.guests}</span>
-                        </div>:
-                                 <input   
-                                type="number" min={1}  defaultValue={4}
-                                 className="my-1 bg-gray-50  text-gray-800 px-0.5
-                                 focus:ring-gray-900  border focus:border-gray-900 border-gray-400
-                                 text-sm rounded-md block lg:w-16 w-14 mr-1 py-0.5" />
-                               }  <div className="tour-receipt-select-text">
-                                 {language?.guests}
-                                 </div>
-                          </div></div>
-                         <div className="tour-receipt-select-item">
-                             <div className="tour-receipt-select-icon">
-                                 <span className="material-icons-outlined hover:cursor-pointer" onClick={() => setChildren(!children)}>
-                                 person_outline
-                                 </span>
-                              </div>
-                              <div className="tour-receipt-select-content">
-                              {children === false ?
-                              <div className="tour-receipt-select-title">
-                         <span  >2 Infants</span>
-                        </div>:
-                                <input
-                                type="number" min={1} defaultValue={2}
-                                className="my-1 bg-gray-50  text-gray-800 px-0.5
-                                focus:ring-gray-900  border focus:border-gray-900 border-gray-400
-                                text-sm rounded-md block lg:w-16 w-14 mr-1 py-0.5" />}
-                                 <div className="tour-receipt-select-text">
-                                 Infants
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                           
-                        </div>
-                   </div>
-                     <div className="tour-receipt-detail">
-                        <div className="tour-receipt-detail-item">
-                           <div className="tour-receipt-detail-title">
-                           {language?.baserate} 
-                           </div>
-                           <div className="tour-receipt-detail-price">
-                              <div className={visible === 0 ? 'block w-16' : 'hidden'}><SubHeading /></div>
-                              <div className={visible === 1 ? 'block' : 'hidden'}>
-                                 {rate?.base_rate_amount} {rate?.base_rate_currency.toUpperCase()}</div>
-                           </div>
-                        </div>
-                        <div className="tour-receipt-detail-item">
-                           <div className="tour-receipt-detail-title">
-                           {language?.taxrate}
-                           </div>
-                           <div className="tour-receipt-detail-price"> <div className={visible === 0 ? 'block w-16' : 'hidden'}><SubHeading /></div>
-                              <div className={visible === 1 ? 'block' : 'hidden'}>
-                                 {rate?.tax_rate_amount} {rate?.base_rate_currency.toUpperCase()}</div></div>
-                        </div>
-                        <div className="tour-receipt-detail-item">
-                           <div className="tour-receipt-detail-title">{language?.servicefee}</div>
-                           <div className="tour-receipt-detail-price">
-                              <div className={visible === 0 ? 'block w-16' : 'hidden'}><SubHeading /></div>
-                              <div className={visible === 1 ? 'block' : 'hidden'}>
-                                 {rate?.tax_rate_amount} {rate?.base_rate_currency.toUpperCase()}</div></div>
-                        </div>
-                        <div className="tour-receipt-detail-item tour-receipt-detail-total">
-                           <div className="tour-receipt-detail-title">{language?.total}</div>
-                           <div className="tour-receipt-detail-price">
-                              <div className={visible === 0 ? 'block w-24' : 'hidden'}><SubHeading /></div>
-                              <div className={visible === 1 ? 'block' : 'hidden'}>
-                                 {Number(rate?.base_rate_amount) + Number(rate?.tax_rate_amount) + Number(rate?.other_charges_amount)} {rate?.base_rate_currency.toUpperCase()}</div>
-                           </div></div>
-                     </div>
-                     <div className="tour-receipt-button">
-                        <button className="tour-favorite">
-                           <span className="material-icons-outlined">
-                              favorite_border
-                           </span>
-                        </button>
-                        <button className="tour-reserve">{language?.booknow}</button>
-                     </div>
-                  </div> */}
 
+               <div className={`hidden lg:block relative top-8 z-20 mb-10 w-full lg:mb-0 lg:sticky lg:ml-8  lg:w-5/12 rounded-lg ${themeColor?.bookingFormColor}`}>
                   <BookingForm
                      themeColor={themeColor}
                      setRoomsLoader={(e) => setRoomsLoader(e)}
@@ -1536,7 +1318,7 @@ function Classic(args) {
                      setShowModalBookingForm={(e) => setShowModalBookingForm(e)}
                      cookie={cookie}
                   />
-                  {/* <Contactus color={Color?.light} language={language} property_id={args?.allHotelDetails?.property_id} /> */}
+                
                </div>
 
             </div>
@@ -1546,12 +1328,7 @@ function Classic(args) {
          < footer className="bg-gray-900 lg:mt:8 py-6" >
             <div className="md:flex md:justify-between mx-6">
                <div className="mb-6 md:mb-0 px-12 md:px-8">
-
-                  {/* <div className="header-logo lg:px-8 md:px-8 px-20"> */}
                   <div className="flex justify-center md:justify-start select-none items-center text-lg font-medium ">
-
-                     {/* <span className="material-icons-outlined header-logo-icon">
-                   mode_of_travel</span> */}
                      {args?.allHotelDetails?.logo !== '' ? <img src={args?.allHotelDetails?.logo} alt="logo" className='h-16 md:h-12 lg:h-16' /> : <></>}
 
                   </div>
@@ -1748,7 +1525,7 @@ function Classic(args) {
          />
 
 
-      </>
+      </div>
    );
 }
 export default Classic

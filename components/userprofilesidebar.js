@@ -17,11 +17,11 @@ const UserProfileSidebar = (args) => {
   const [colorToggle, setColorToggle] = useState("")
 
   useEffect(() => {
-    firstfun();
+    onComponentLoadActions();
 
   }, [])
 
-  const firstfun = () => {
+  const onComponentLoadActions = () => {
     if (typeof window !== 'undefined') {
       var locale = localStorage.getItem("Language");
 

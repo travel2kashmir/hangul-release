@@ -27,7 +27,7 @@ function UserDetails() {
     const [userData, setUserdata] = useState([]);
     const [saveData, setSaveData] = useState('');
     useEffect(() => {
-        const firstfun = () => {
+        const onComponentLoadActions = () => {
             if (typeof window !== 'undefined') {
                 locale = localStorage.getItem("Language");
                 if (locale === "ar") {
@@ -43,7 +43,7 @@ function UserDetails() {
                 currentLogged = JSON.parse(localStorage.getItem("Signin Details"));
             }
         }
-        firstfun();
+        onComponentLoadActions();
         fetchProperty();
         fetchAllProperties();
     }, [])

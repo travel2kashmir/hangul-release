@@ -68,13 +68,13 @@ function UserProfileSettings() {
       router.push(window.location.origin)
     }
     else {
-      firstfun();
+      onComponentLoadActions();
     }
 
   }, [])
 
 
-  const firstfun = () => {
+  const onComponentLoadActions = () => {
     if (typeof window !== 'undefined') {
       locale = localStorage.getItem("Language");
       colorToggle = localStorage.getItem("colorToggle");
@@ -132,7 +132,7 @@ function UserProfileSettings() {
       setColor(colorFile?.dark)
       localStorage.setItem("colorToggle", true)
     }
-    firstfun();
+    onComponentLoadActions();
     router.push('./userprofilesettings')
   }
 

@@ -38,7 +38,7 @@ const Landing = () => {
 
 
   useEffect(() => {
-    firstfun();
+    onComponentLoadActions();
     if (JSON.stringify(currentUser) === 'null') {
       router.push(window.location.origin)
     }
@@ -49,7 +49,7 @@ const Landing = () => {
 
 
 
-  const firstfun = async () => {
+  const onComponentLoadActions = async () => {
     if (typeof window !== 'undefined') {
       locale = localStorage.getItem("Language");
       colorToggle = localStorage.getItem("colorToggle");
@@ -141,7 +141,7 @@ const Landing = () => {
       setColor(colorFile?.dark)
       localStorage.setItem("colorToggle", true)
     }
-    firstfun();
+    onComponentLoadActions();
     router.push('./landing')
   }
 

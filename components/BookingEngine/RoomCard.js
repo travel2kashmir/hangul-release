@@ -17,6 +17,9 @@ function RoomCard({ color, filteredRoomData, roomImage, setDisplay, checkinDate,
   const [searchBookingInventory, setSearchBookingInventory] = useState(false)
   // loader
   const [inventoryCheckDone, setInventoryCheckDone] = useState(false)
+  // const [inventoryCheckDone, setInventoryCheckDone] = useState(
+  //   process.env.NODE_ENV === 'test' ? true : false
+  // );
   const startDate = new Date(checkinDate); // Booking start date
   const endDate = new Date(checkoutDate); // Booking end date
 
@@ -94,7 +97,7 @@ function RoomCard({ color, filteredRoomData, roomImage, setDisplay, checkinDate,
       setInvData(response.data)
       setInventoryCheckDone(true)
     }).catch((err) => {
-      console.log(JSON.stringify(err))
+      // console.log(JSON.stringify(err))
     })
   }
   // Initialize sets for non-zero and zero inventory
@@ -111,8 +114,12 @@ function RoomCard({ color, filteredRoomData, roomImage, setDisplay, checkinDate,
 
   // Iterate through invData to remove room_ids with available_inventory equal to 0 from nonZeroInventory
   invData.forEach(item => item.available_inventory === 0 && nonZeroInventory.delete(item.room_id));
+  
+  
   return (
-    <div className={`w-100 h-1/4 text-black ${color?.cardColor} rounded-xl p-4 mx-2 my-4 lg:m-4 flex flex-wrap justify-center items-center md:flex-row flex-col transition-transform transform hover:scale-105 shadow-lg`}>
+    <div 
+    data-testid={`room-${filteredRoomData.room_id}`}
+    className={`w-100 h-1/4 text-black ${color?.cardColor} rounded-xl p-4 mx-2 my-4 lg:m-4 flex flex-wrap justify-center items-center md:flex-row flex-col transition-transform transform hover:scale-105 shadow-lg`}>
 
       {/* room image */}
       <div className='md:w-1/6'>

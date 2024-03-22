@@ -90,7 +90,7 @@ function Adduser() {
 
 
   useEffect(() => {
-    const firstfun = () => {
+    const onComponentLoadActions = () => {
       if (typeof window !== 'undefined') {
         var locale = localStorage.getItem("Language");
         if (locale === "ar") {
@@ -108,7 +108,7 @@ function Adduser() {
 
       }
     }
-    firstfun();
+    onComponentLoadActions();
     Router.push("./adduser");
   }, [])
   return (<>

@@ -9,7 +9,7 @@ import { useRouter } from "next/router";
 import Button from "../components/Button";
 import { InitialActions, ColorToggler } from "../components/initalActions";
 import { english, arabic, french } from "../components/Languages/Languages"
-import {ForgotPassword, InputEmail,InputPassword, RememberMe,LocalSignin,setCookieData,getCookieData} from "../components/Login";
+import { ForgotPassword, InputEmail, InputPassword, RememberMe, LocalSignin, setCookieData, getCookieData, ChangeLanguages, ValidateFormData } from "../components/Login";
 let language;
 let currentLogged;
 let currentProperty;
@@ -30,18 +30,20 @@ function Signin() {
   /** State for internationalization **/
   useEffect(() => {
     onComponentLoadActions()
-    getCookieData(setSigninDetails,setCurrent);
+    getCookieData(setSigninDetails, setCurrent);
   }, [locale])
 
   // First Function
   const onComponentLoadActions = () => {
     if (typeof window !== 'undefined') {
+      let langCode = { "english": "en", "french": "fr", "arabic": "ar" }
       const resp = InitialActions({ setColor, setMode })
       language = resp?.language;
       currentLogged = resp?.currentLogged;
       currentProperty = resp?.currentProperty;
+      setLang(langCode[language.activeThemeLanguage])
       // colorToggle = resp?.colorToggle
-  
+
       if (JSON.stringify(currentLogged) != "null") {
         let currentUser = JSON.parse(localStorage.getItem("Signin Details"));
         if (currentUser?.id.match('user00.[0-9]*')) {
@@ -50,22 +52,14 @@ function Signin() {
         else if (currentUser?.id.match('admin00.[0-9]*')) {
           router.push('./admin/adminlanding');
         }
-      } 
-      
+      }
+
+    }
   }
-  }
- 
+
 
   /** Function for Internationalisation **/
-  const changelanguage = (item) => {
-    if (item != localStorage.getItem("Language")) {
-      let locale = item;
-      /** Language selected stored to the localstorage **/
-      localStorage.setItem("Language", locale);
-      language = locale;
-      router?.push("/", "/", { locale });
-    }
-  };
+  
 
   /** State for Sign In **/
   const [signinDetails, setSigninDetails] = useState({
@@ -73,8 +67,8 @@ function Signin() {
     password: "",
   });
 
-  
-  
+
+
   /** Sign In Submit Function **/
   const submitSignIn = async (e) => {
     e.preventDefault()
@@ -162,31 +156,11 @@ function Signin() {
 
   // Validation Function
   const validation = (signinDetails) => {
-    var Result = checkFormData(signinDetails);
-    if (Result === true) {
-      return true;
-    }
-    else {
-      setError(Result);
-      return false;
-
-    }
-
+    let result = ValidateFormData(signinDetails);
+    if (result === true) { return true; }
+    else { setError(result); return false; }
   }
-  //Checking Form Data for Validations
-  const checkFormData = (signinDetails) => {
-    var error = {};
-    if (signinDetails?.email === "" || signinDetails.email === undefined) {
-      error.email = "The email field is required."
-    }
-    if ((!signinDetails?.email?.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/) && (signinDetails?.email != "" && signinDetails.email != undefined))) {
-      error.email = "The email field is in invalid format."
-    }
-    if (signinDetails?.password === "" || signinDetails.password === undefined) {
-      error.password = "The password field is required"
-    }
-    return Object.keys(error).length === 0 ? true : error;
-  }
+
 
 
   return (
@@ -208,38 +182,39 @@ function Signin() {
               <form data-testid='signin-form' className="mt-8 space-y-6" action="#">
                 {/* email input  */}
                 <InputEmail
-                label= {language?.email}
-                onChangeAction={(e) => {
-                  setSigninDetails({
-                    ...signinDetails,
-                    email: e.target.value,
-                  }),
-                    setError({ ...error, email: '' })
-                }}
-                error={error?.email}
-                color={color}
-                disabled={false}
-                req={true}
+                  label={language?.email}
+                  onChangeAction={(e) => {
+                    setSigninDetails({
+                      ...signinDetails,
+                      email: e.target.value,
+                    }),
+                      setError({ ...error, email: '' })
+                  }}
+                  error={error?.email}
+                  color={color}
+                  disabled={false}
+                  req={true}
                 />
 
                 {/* password input  */}
                 <InputPassword
-                label= {language?.password}
-                onChangeAction={(e) => {
-                  setSigninDetails({
-                    ...signinDetails,
-                    password: e.target.value,
-                  })
-                  setError({ ...error, password: '' })
-                }}
-                error={error?.password}
-                color={color}
-                disabled={false}
-                req={true}
+                  label={language?.password}
+                  onChangeAction={(e) => {
+                    setSigninDetails({
+                      ...signinDetails,
+                      password: e.target.value,
+                    })
+                    setError({ ...error, password: '' })
+                  }}
+                  error={error?.password}
+                  color={color}
+                  disabled={false}
+                  req={true}
                 />
-               {/* remember me and forgot password   */}
+                {/* remember me and forgot password   */}
                 <div className="flex items-start">
-                  <RememberMe current setCookieData signinDetails setCurrent color remember={language?.remember}/>
+                  <RememberMe current={current} setCookieData={setCookieData} signinDetails={signinDetails}
+                    setCurrent={setCurrent} color={color} remember={language?.remember} />
                   {/* <ForgotPassword lost={language?.lost}/> */}
                 </div>
 
@@ -251,47 +226,16 @@ function Signin() {
                   <Button Primary={language?.SpinnerSignin} />
                 </div>
 
-               
+
               </form>
             </div>
           </div>
 
           {/* manage languages  */}
-          
-          <div className=" mx-64 mt-2 text-teal-600">
-            <div>
-              <button
-                data-testid="en-btn"
-                className={lang === "en" ? "text-teal-600 text-sm font-bold mx-1 " : "mx-1 text-teal-600 text-sm"}
-                onClick={() => {
-                  setLang("en");
-                  changelanguage("en");
-                }}
-              >
-                English
-              </button>|
-              <button
-                data-testid="fr-btn"
-                className={lang === "fr" ? "mx-1 text-teal-600 text-sm font-bold" : "mx-1 text-teal-600 text-sm"}
-                onClick={() => {
-                  setLang("fr");
-                  changelanguage("fr");
-                }}
-              >
-                Français
-              </button>|
-              <button
-                data-testid="ar-btn"
-                className={lang === "ar" ? "text-teal-600 text-sm font-bold mx-1" : "mx-1 text-teal-600 text-sm"}
-                onClick={() => {
-                  setLang("ar");
-                  changelanguage("ar");
-                }}
-              >
-                عربى
-              </button>
-            </div>
-          </div>
+
+          {/* <ChangeLanguages changelanguage={changelanguage} setLang={setLang} lang={lang} /> */}
+          <ChangeLanguages language={language} setLang={setLang} lang={lang} />
+
         </div>
         {/** Toast Container **/}
         <ToastContainer

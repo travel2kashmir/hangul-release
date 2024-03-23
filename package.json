@@ -42,12 +42,9 @@
     "autoprefixer": "10.4.14",
     "awesome-phonenumber": "^4.1.0",
     "axios": "^0.26.1",
-    "bcrypt": "^5.0.1",
     "bcryptjs": "^2.4.3",
     "better-react-carousel": "^1.1.1",
     "browserify-zlib": "^0.2.0",
-    "bunyan": "^1.8.15",
-    "bunyan-kafka": "^1.0.1",
     "caniuse-lite": "^1.0.30001599",
     "chart.js": "^2.9.4",
     "child_process": "^1.0.2",
@@ -56,8 +53,6 @@
     "crypto": "^1.0.1",
     "crypto-browserify": "^3.12.0",
     "crypto-js": "^4.2.0",
-    "currency-codes": "^2.1.0",
-    "currency-list": "^1.0.8",
     "dateformat": "^5.0.3",
     "emoji-picker-react": "^4.4.7",
     "eslint": "8.40.0",
@@ -127,10 +122,7 @@
     "styled-components": "^5.3.6",
     "swiper": "^8.4.2",
     "tailwindcss": "3.3.2",
-    "uuid": "^9.0.1",
-    "xml-formatter": "^2.6.1",
-    "xmldom": "^0.6.0",
-    "yarn": "^1.22.18"
+    "xml-formatter": "^2.6.1"
   },
   "devDependencies": {
     "@event-calendar/core": "^0.17.0",

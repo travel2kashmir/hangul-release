@@ -109,7 +109,7 @@ const UserProfileSidebar = (args) => {
                 <div className={colorMode === true ? 'block' : 'hidden'}>
                   <ul className="py-2 space-y-2">
 
-                    <li onClick={() => args?.Sec("system")} className={
+                    <li onClick={() => args?.Sec("system", args?.setColor)} className={
                       args?.colorToggle == "" || args?.colorToggle === undefined || args?.colorToggle === null || args?.colorToggle === "system" ?
                       `${args?.color?.text}  text-base cursor-pointer font-bold rounded-lg flex items-center p-2 pl-11`:
                       `${args?.color?.text}  text-base font-normal cursor-pointer rounded-lg flex items-center p-2 pl-11`}>
@@ -118,7 +118,7 @@ const UserProfileSidebar = (args) => {
                       viewBox="0 0 24 24"  fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M20 18c1.1 0 1.99-.9 1.99-2L22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2H0v2h24v-2h-4zM4 6h16v10H4V6z"/></svg>
                       <a>{language?.systemprefrences}</a></li>
 
-                    <li onClick={() => args?.Sec("light")} className={
+                    <li onClick={() => args?.Sec("light", args?.setColor)} className={
                     args?.colorToggle == "false" ?
                     `${args?.color?.text} ${args?.color?.sidebar} group text-base font-bold cursor-pointer  rounded-lg flex items-center p-2 pl-11`:
                     `${args?.color?.text} ${args?.color?.sidebar} group text-base font-normal cursor-pointer
@@ -138,7 +138,7 @@ const UserProfileSidebar = (args) => {
                   </svg> 
                       <a>{language?.lightmode}</a>
                     </li>
-                    <li onClick={() => args?.Sec("dark")} className={args?.colorToggle == "true" ?
+                    <li onClick={() => args?.Sec("dark", args?.setColor)} className={args?.colorToggle == "true" ?
                     `${args?.color?.text} ${args?.color?.sidebar} group text-base font-bold cursor-pointer rounded-lg flex items-center p-2 pl-11`:
                     `${args?.color?.text} ${args?.color?.sidebar} group text-base font-normal cursor-pointer
                      rounded-lg flex items-center p-2 pl-11`}>

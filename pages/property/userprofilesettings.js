@@ -11,12 +11,12 @@ import "react-toastify/dist/ReactToastify.css";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Button from "../../components/Button";
-import english from "../../components/Languages/en"
-import french from "../../components/Languages/fr"
-import arabic from "../../components/Languages/ar"
-const logger = require("../../services/logger");
-import colorFile from '../../components/colors/Color';
+import { InitialActions, ColorToggler } from "../../components/initalActions";
+import { english, arabic, french } from "../../components/Languages/Languages"
+import BreadCrumb from "../../components/utils/BreadCrumb";
+import { NavigationList } from "../../components/Landing";
 import objChecker from "lodash";
+import { ChangePassword } from '../../components/UserProfileSettings';
 var language;
 var currentUser;
 var currentLogged;
@@ -63,50 +63,30 @@ function UserProfileSettings() {
 
 
   useEffect(() => {
-
     if (JSON.stringify(currentUser) === 'null') {
       router.push(window.location.origin)
     }
     else {
       onComponentLoadActions();
     }
-
   }, [])
-
 
   const onComponentLoadActions = () => {
     if (typeof window !== 'undefined') {
-      locale = localStorage.getItem("Language");
-      colorToggle = localStorage.getItem("colorToggle");
-      if (colorToggle === "" || colorToggle === undefined || colorToggle === null || colorToggle === "system") {
-        window.matchMedia("(prefers-color-scheme:dark)").matches === true ? setColor(colorFile?.dark) : setColor(colorFile?.light);
-        setMode(window.matchMedia("(prefers-color-scheme:dark)").matches === true ? true
-          : false);
-      }
-      else if (colorToggle === "true" || colorToggle === "false") {
-        setColor(colorToggle === "true" ? colorFile?.dark : colorFile?.light);
-        setMode(colorToggle === "true" ? true : false)
-      }
+      const resp = InitialActions({ setColor, setMode })
+      language = resp?.language;
+      currentLogged = resp?.currentLogged;
+      if (JSON.stringify(currentLogged) != "null") {
+        let currentLogged = JSON.parse(localStorage.getItem("Signin Details"));
 
-      {
-        if (locale === "ar") {
-          language = arabic;
-        }
-        if (locale === "en") {
-          language = english;
-        }
-        if (locale === "fr") {
-          language = french;
-        }
       }
-
       fetchUserDetails();
-      currentLogged = JSON.parse(localStorage.getItem("Signin Details"));
-      currentUser = JSON.parse(localStorage.getItem("Signin Details"));
-      setUserDetails(JSON.parse(localStorage.getItem("Signin Details")))
       fetchUserProfileSettings();
+
     }
   }
+
+
 
   function fetchUserProfileSettings() {
     const url = `/api/user_settings/${currentUser?.id}`;
@@ -119,22 +99,6 @@ function UserProfileSettings() {
     })
 
   }
-  const colorToggler = (newColor) => {
-    if (newColor === 'system') {
-      window.matchMedia("(prefers-color-scheme:dark)").matches === true ? setColor(colorFile?.dark) : setColor(colorFile?.light)
-      localStorage.setItem("colorToggle", newColor)
-    }
-    else if (newColor === 'light') {
-      setColor(colorFile?.light)
-      localStorage.setItem("colorToggle", false)
-    }
-    else if (newColor === 'dark') {
-      setColor(colorFile?.dark)
-      localStorage.setItem("colorToggle", true)
-    }
-    onComponentLoadActions();
-    router.push('./userprofilesettings')
-  }
 
 
   const fetchUserDetails = async () => {
@@ -146,9 +110,9 @@ function UserProfileSettings() {
     })
       .then((response) => {
         setUserDetails(response?.data);
-        logger.info("url  to fetch user details hitted successfully")
+        console.log("url  to fetch user details hitted successfully")
       })
-      .catch((error) => { logger.error("url to fetch user details, failed") });
+      .catch((error) => { console.log("url to fetch user details, failed") });
   }
 
   /* Edit Basic Details Function */
@@ -299,156 +263,31 @@ function UserProfileSettings() {
     <>
       <Title name={`Engage |  ${language?.propertysummary}`} />
 
-      <UserProfileHeader color={color} Primary={color?.name} Sec={colorToggler} mode={mode} setMode={setMode} />
-      <UserProfileSidebar color={color} Primary={color?.name} Sec={colorToggler} colorToggle={colorToggle} />
+      <UserProfileHeader color={color} setColor={setColor} Primary={color?.name} Sec={ColorToggler} mode={mode} setMode={setMode} />
+      <UserProfileSidebar color={color} setColor={setColor} Primary={color?.name} Sec={ColorToggler} />
 
       {/* Body */}
       <div id="main-content"
         className={`${color?.greybackground} min-h-screen px-4 py-2 pt-24 relative overflow-y-auto lg:ml-64`}>
         {/* bread crumb */}
-        <nav className="flex mb-5 ml-4" aria-label="Breadcrumb">
-          <ol className="inline-flex items-center space-x-1 md:space-x-2">
-            <li className="inline-flex items-center">
-              <div className={`${color?.text} text-base font-medium  inline-flex items-center`}>
-                <svg
-                  className="w-5 h-5 mr-2.5"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
-                </svg>
-                <Link href={currentLogged?.id.match(/admin.[0-9]*/) ? "../admin/adminlanding" : "./landing"} className={`${color?.text} text-base font-medium  inline-flex items-center`}><a>{language?.home}</a>
-                </Link>
-              </div>
-            </li>
-            <li>
-              <div className="flex items-center">
-                <svg
-                  className="w-6 h-6 text-gray-400"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                    clipRule="evenodd"
-                  ></path>
-                </svg>
-                <span className={`${color?.textgray} text-sm   font-medium hover:text-gray-900 ml-1 md:ml-2`}>
-                  {language?.userprofile}
-                </span>
-              </div>
-            </li>
-          </ol>
-        </nav>
+         {/* bread crumb */}
+         <BreadCrumb
+          color={color}
+          crumbList={NavigationList(currentLogged, language?.userprofile)}
+        />
+        
 
 
         {/* Change Password */}
-        <div className={`${color?.whitebackground} shadow rounded-lg px-12 my-2 sm:p-6 xl:p-8  2xl:col-span-2`}>
-
-          <h3 className={`${color?.text} text-base font-bold pt-4 mb-4`}>
-            {language?.changepassword}
-          </h3>
-
-          <div className="pt-6">
-            <div className=" md:px-4 mx-auto w-full">
-              <div className="flex flex-wrap">
-                <div className="w-full lg:w-6/12 px-4">
-                  <div className="relative w-full mb-3">
-                    <label
-                      className={`${color?.text} text-base font-semibold block mb-2`}>
-                      {language?.currentpassword}
-                    </label>
-                    <input
-                      type="password"
-                      name="password"
-                      id="password"
-                      onChange={
-                        (e) => (
-                          setSigninDetails({ ...signinDetails, old_password: e.target.value }, setFlag(1))
-                        )
-                      }
-                      className={`shadow-sm ${color?.greybackground}  border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
-
-                    ></input>
-                    <p className="text-sm text-sm text-red-700 font-light">
-                      {error?.old_password}</p>
-                  </div></div>
-                <div className="w-full lg:w-6/12 px-4">
-                  <div className="relative w-full mb-3">
-                    <label
-                      className={`${color?.text} text-base font-semibold block mb-2`}
-                    >
-                      {language?.newpassword}
-                    </label>
-                    <input
-                      type="password"
-                      name="password"
-                      id="password"
-                      onChange={
-                        (e) => (
-                          setSigninDetails({ ...signinDetails, new_password: e.target.value }, setFlag(1))
-                        )
-                      }
-                      className={`shadow-sm ${color?.greybackground}  border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
-
-                    ></input>
-                    <p className="text-sm text-sm text-red-700 font-light">
-                      {error?.new_password}</p>
-                  </div></div>
-                <div className="w-full lg:w-6/12 px-4">
-                  <div className="relative w-full mb-3">
-                    <label
-                      className={`${color?.text} text-base font-semibold block mb-2`}
-                    >
-                      {language?.confirmpassword}
-                    </label>
-                    <input
-                      type="password"
-                      name="password"
-                      id="password"
-                      onChange={
-                        (e) => (
-                          setSigninDetails({ ...signinDetails, confirm_password: e.target.value }, setFlag(1))
-                        )
-                      }
-                      className={`shadow-sm ${color?.greybackground}  border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
-
-                    ></input>
-                    <p className="text-sm text-sm text-red-700 font-light">
-                      {error?.confirm_password}</p>
-                  </div>
-                </div>
-                <div className="w-full lg:w-6/12 px-4">
-                  <div className="relative w-full mb-3">
-                  </div></div>
-                <div className="w-full lg:w-6/12 px-4">
-                  <div className="relative w-full mb-3">
-                    <p className={`${color?.text} text-base font-semibold  mt-2 mb-1`}>Password requirements:</p>
-                    <p className={`${color?.textgray} text-sm   font-medium mb-1`}>Ensure that these requirements are met:</p>
-                    <div className={`${color?.textgray} text-sm ml-2  font-medium`}>
-                      At least 10 characters (and up to 100 characters)<br />
-                      At least one lowercase character<br />
-                      Inclusion of at least one special character, e.g., ! @ # ? <br />
-                    </div>
-                  </div></div>
-              </div>
-            </div>
-          </div>
-
-          <div id="btn" className="flex items-center justify-end ml-auto mr-2 ">
-            <div className={flag !== 1 && spinner === 0 ? 'block' : 'hidden'}>
-              <Button Primary={language?.UpdateDisabled} /></div>
-            <div className={spinner === 0 && flag === 1 ? 'block' : 'hidden'}>
-              <Button Primary={language?.Update} onClick={validationChangePassword} />
-            </div>
-            <div className={spinner === 1 && flag === 1 ? 'block' : 'hidden'}>
-              <Button Primary={language?.SpinnerUpdate} />
-            </div>
-          </div>
-        </div>
+        <ChangePassword color={color}
+         language={language}
+        setSigninDetails={setSigninDetails}
+         signinDetails={signinDetails}
+          spinner={spinner}
+           flag={flag} 
+           setFlag={setFlag}
+          validationChangePassword={validationChangePassword}
+           error={error}/>
 
         <div className={`${color?.greybackground}  grid  lg:grid-cols-2 md:grid-cols-1 my-2 sm:grid-cols-1 gap-3`}>
 

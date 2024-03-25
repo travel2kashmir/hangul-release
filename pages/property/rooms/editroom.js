@@ -48,7 +48,6 @@ let checkDiscount = [];
 let checkModification = [];
 let resView = [];
 let currency;
-const logger = require("../../../services/logger");
 let currentLogged;
 let i = 0;
 let colorToggle;
@@ -260,10 +259,10 @@ function Room() {
             setGen(genData);
           }
         }
-        logger.info("url  to fetch room hitted successfully");
+        console.log("url  to fetch room hitted successfully");
         setPresentPlans(response.data?.unconditional_rates?.map((i) => i.meal_plan_id))
       })
-      .catch((error) => { logger.error("url to fetch room, failed"); });
+      .catch((error) => { console.log("url to fetch room, failed"); });
   }
 
   const filterCurrency = (props) => {
@@ -291,9 +290,9 @@ function Room() {
     axios.get(url)
       .then((response) => {
         setServices(response.data);
-        logger.info("url  to fetch roomtypes hitted successfully")
+        console.log("url  to fetch roomtypes hitted successfully")
       })
-      .catch((error) => { logger.error("url to fetch roomtypes, failed") });
+      .catch((error) => { console.log("url to fetch roomtypes, failed") });
   }
 
   // Room Images
@@ -306,10 +305,10 @@ function Room() {
         })
 
         setRoomimages(imgs);
-        logger.info("url  to fetch room images hitted successfully")
+        console.log("url  to fetch room images hitted successfully")
       })
 
-      .catch((error) => { logger.error("url to fetch room images, failed") });
+      .catch((error) => { console.log("url to fetch room images, failed") });
   }
 
   // Room Types
@@ -318,9 +317,9 @@ function Room() {
     axios.get(url)
       .then((response) => {
         setRoomtypes(response.data);
-        logger.info("url  to fetch room types hitted successfully")
+        console.log("url  to fetch room types hitted successfully")
       })
-      .catch((error) => { logger.error("url to fetch roomtypes, failed") });
+      .catch((error) => { console.log("url to fetch roomtypes, failed") });
   }
 
   const onChangePhoto = (e, i) => {

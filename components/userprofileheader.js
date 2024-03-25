@@ -75,7 +75,7 @@ function UserProfileHeader(args) {
             <div className="flex mr-2 items-center justify-end space-x-2 sm:space-x-3 ml-auto">
              
                 {JSON.stringify(args?.mode) == "false" ?
-                 <button onClick={() => { args?.Sec("dark"); args?.setMode(!args?.mode) }}
+                 <button onClick={() => { args?.Sec("dark", args?.setColor); args?.setMode(!args?.mode) }}
                  id="theme-toggle"
                  type="button"
                  className="text-gray-500  bg-gray-100  focus:outline-none focus:ring-4 Focus:ring-gray-200  rounded-lg text-sm p-2.5">
@@ -91,7 +91,7 @@ function UserProfileHeader(args) {
                       d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
                     ></path> </svg></button>
                   : 
-                 <button  onClick={() => { args?.Sec("light"); args?.setMode(!args?.mode) }}
+                 <button  onClick={() => { args?.Sec("light", args?.setColor); args?.setMode(!args?.mode) }}
                  id="theme-toggle"
                  type="button"
                  className="text-gray-400 bg-gray-900 hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-700 rounded-lg text-sm 

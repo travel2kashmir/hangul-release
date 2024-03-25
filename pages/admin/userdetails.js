@@ -17,9 +17,6 @@ var currentProperty;
 var currentLogged;
 var currentUser;
 var locale;
-
-const logger = require("../../services/logger");
-
 function UserDetails() {
     const [properties, setProperties] = useState([]);
     const [spinner, setSpinner] = useState(0);
@@ -75,16 +72,16 @@ function UserDetails() {
         try {
 
             const url = `/api/properties/${currentUser.user_id}`;
-            logger.info("url" + url)
+            console.log("url" + url)
             const response = await axios.get(url, {
                 headers: { accept: "application/json" },
             });
             setUserdata(response.data);
         } catch (error) {
             if (error.response) {
-                logger.error("Current User Properties Error");
+                console.log("Current User Properties Error");
             } else {
-                logger.error("Current User Properties Error");
+                console.log("Current User Properties Error");
             }
         }
     };

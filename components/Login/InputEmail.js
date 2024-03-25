@@ -70,5 +70,4 @@ function InputEmail({
     </div>
   );
 }
-
 export default InputEmail;

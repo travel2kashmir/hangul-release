@@ -8,7 +8,6 @@ import { english, french, arabic } from "../../../components/Languages/Languages
 import colorFile from "../../../components/colors/Color";
 // Import Swiper React components
 import Router, { useRouter } from "next/router";
-const logger = require("../../../services/logger");
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Footer from '../../../components/Footer';
@@ -69,9 +68,9 @@ function Index() {
       .then((response) => {
         setAllHotelDetails(response.data);
         setUniversalData(response.data?.business_settings[0] || {})
-        logger.info("url  to fetch property details hitted successfully")
+        console.log("url  to fetch property details hitted successfully")
       })
-      .catch((error) => { logger.error("url to fetch property details, failed") });
+      .catch((error) => { console.log("url to fetch property details, failed") });
   }
 
 

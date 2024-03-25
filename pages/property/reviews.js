@@ -17,7 +17,6 @@ import validateReview from "../../components/validation/review";
 import InputTextBox from "../../components/utils/InputTextBox";
 import Title from "../../components/title";
 import Router from 'next/router'
-const logger = require("../../services/logger");
 import Image from 'next/image';
 import { InitialActions, ColorToggler } from "../../components/initalActions";
 import BreadCrumb from "../../components/utils/BreadCrumb";

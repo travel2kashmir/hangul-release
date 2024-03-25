@@ -22,7 +22,6 @@ import roomRateModificationValidation from '../../../components/validation/room/
 var language;
 var currentProperty;
 var currentroom;
-const logger = require("../../../services/logger");
 var currentLogged;
 var i = 0;
 let colorToggle;

@@ -21,7 +21,7 @@ import roomDiscountValidation from '../../validation/room/roomDiscountValidation
 var language;
 var currentProperty;
 var currentroom;
-const logger = require("../../../services/logger");
+
 var currentLogged;
 var i = 0;
 let colorToggle;

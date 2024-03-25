@@ -12,7 +12,6 @@ var currentProperty;
 var currentLogged;
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-const logger = require("../../services/logger");
 let colorToggle;
 import InputText from "../../components/utils/InputText";
 import InputTextBox from "../../components/utils/InputTextBox";

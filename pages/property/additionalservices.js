@@ -18,7 +18,6 @@ import objChecker from "lodash"
 import english from "../../components/Languages/en";
 import french from "../../components/Languages/fr";
 import arabic from "../../components/Languages/ar";
-const logger = require("../../services/logger");
 import { InitialActions, ColorToggler } from "../../components/initalActions";
 import { fetchAdditionalServices, fetchHotelDetails, navigationList, validationAdditionalServices } from '../../components/logic/property/AdditionalServices'
 

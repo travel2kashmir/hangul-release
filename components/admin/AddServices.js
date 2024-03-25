@@ -6,7 +6,7 @@ var property = '';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const logger = require("../../services/logger");
+
 
 function Addservices() {
 
@@ -35,11 +35,11 @@ function Addservices() {
         const url = `/api/services`;
         axios.get(url).then((response) => {
             setServices(response.data)
-            logger.info("All services fetched")
+            console.log("All services fetched")
             makefinal(response.data)
 
         }).catch(error => {
-            logger.error(error)
+            console.log(error)
         })
     }
     //first thing to run in page

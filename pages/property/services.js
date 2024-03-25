@@ -12,7 +12,7 @@ import { english, french, arabic } from "../../components/Languages/Languages"
 import LoaderTable from "../../components/loadertable";
 import Headloader from "../../components/loaders/headloader";
 import Addservices from '../../components/admin/AddServices';
-const logger = require("../../services/logger");
+
 import { InitialActions, ColorToggler } from "../../components/initalActions";
 import { navigationList, fetchHotelDetails } from '../../components/logic/property/Services';
 

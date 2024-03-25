@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import RememberMe from '../../components/Login/RememberMe';
-import '@testing-library/jest-dom'
+import '@testing-library/jest-dom';
 
 describe('RememberMe', () => {
   it('should toggle the current state when clicking on the checkbox', () => {

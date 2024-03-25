@@ -31,8 +31,6 @@ import { fetchRoomtypes, fetchServices, validationRoomDescription, validationBed
 import GenericTable from '../../../components/utils/Tables/GenericTable';
 import AddNewRatesofRoom from '../../../components/rooms/AddNewRatesofRoom';
 
-
-const logger = require("../../../services/logger");
 var currentLogged;
 let colorToggle;
 var language;

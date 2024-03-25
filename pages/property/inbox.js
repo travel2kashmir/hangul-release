@@ -9,7 +9,6 @@ import english from "../../components/Languages/en"
 import french from "../../components/Languages/fr"
 import arabic from "../../components/Languages/ar";
 import Title from '../../components/title';
-const logger = require("../../services/logger");
 import { ToastContainer, toast } from "react-toastify";
 import Button from "../../components/Button";
 import "react-toastify/dist/ReactToastify.css";
@@ -104,10 +103,10 @@ function Inbox() {
 
                     setMessagesFiltered(msg)
                 });
-                logger.info("url  to fetch property messages hitted success.");
+                console.log("url  to fetch property messages hitted success.");
                 setVisible(1)
             })
-            .catch((error) => { logger.error("url to fetch property messages, failed.") });
+            .catch((error) => { console.log("url to fetch property messages, failed.") });
     }
 
     const displayData = useMemo(() => {

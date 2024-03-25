@@ -17,7 +17,6 @@ var language;
 var currentProperty;
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-const logger = require("../../../services/logger");
 let colorToggle;
 var country;
 var i = 0;

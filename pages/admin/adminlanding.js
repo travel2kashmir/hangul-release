@@ -11,7 +11,6 @@ import english from "../../components/Languages/en"
 import french from "../../components/Languages/fr"
 import arabic from "../../components/Languages/ar"
 import Button from "../../components/Button";
-const logger = require("../../services/logger");
 var language;
 var currentUser;
 import Lineloader from "../../components/loaders/lineloader";

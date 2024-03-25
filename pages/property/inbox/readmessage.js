@@ -10,7 +10,6 @@ import french from "../../../components/Languages/fr"
 import arabic from "../../../components/Languages/ar";
 import { useRouter } from "next/router";
 import Title from '../../../components/title';
-const logger = require("../../../services/logger");
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 var language;
@@ -104,9 +103,9 @@ function ReadMessage() {
         axios.get(url)
             .then((response) => {
                 setMessageDetails(response?.data?.messages);
-                logger.info("url  to fetch message details hitted success.")
+                console.log("url  to fetch message details hitted success.")
             })
-            .catch((error) => { logger.error("url to fetch message details, failed.") });
+            .catch((error) => { console.log("url to fetch message details, failed.") });
     }
 
     /*   Function */

@@ -16,7 +16,6 @@ import Link from "next/link";
 import { english, french, arabic } from "../../../components/Languages/Languages";
 import Headloader from "../../../components/loaders/headloader";
 import LoaderTable from "../../../components/loadertable";
-const logger = require("../../../services/logger");
 import { InitialActions, ColorToggler } from "../../../components/initalActions";
 import BreadCrumb from "../../../components/utils/BreadCrumb";
 import Multiselect from 'multiselect-react-dropdown';
@@ -91,7 +90,7 @@ function Unavailability() {
 
             })
             .catch((error) => {
-                logger.error("url to fetch property details, failed")
+                console.log("url to fetch property details, failed")
             });
 
         const urlRef = `/api/out_of_service_rooms_refs/${currentProperty.property_id}`;
@@ -121,7 +120,7 @@ function Unavailability() {
                 setRoomRef(finalResult)
             })
             .catch((error) => {
-                logger.error("url to fetch property details, failed")
+                console.log("url to fetch property details, failed")
             });
 
         // to fetch all room_refrecnes
@@ -131,7 +130,7 @@ function Unavailability() {
                 setVisible(1);
             })
             .catch((error) => {
-                logger.error("url to fetch property details, failed")
+                console.log("url to fetch property details, failed")
             });
     }
 

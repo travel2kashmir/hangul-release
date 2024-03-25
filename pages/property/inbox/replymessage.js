@@ -62,10 +62,10 @@ function ReplyMessage() {
           .then((response) => {
             alert(JSON.stringify(response.data))
             setMessageDetails(response?.data);
-            logger.info("url  to fetch property details hitted successfully")
+            console.log("url  to fetch property details hitted successfully")
             
           })
-          .catch((error) => { logger.error("url to fetch property details, failed") });
+          .catch((error) => { console.log("url to fetch property details, failed") });
       }
    
     return (

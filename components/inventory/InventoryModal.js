@@ -8,7 +8,6 @@ import ButtonLoader from './ButtonLoader';
 var currentProperty;
 var currentRoom;
 var currentLogged;
-const logger = require("../../services/logger");
 import Multiselect from 'multiselect-react-dropdown';
 
 function InventoryModal({ error, setError, setView, setInventories, view, color, language, fetchHotelDetails }) {
@@ -28,7 +27,7 @@ function InventoryModal({ error, setError, setView, setInventories, view, color,
       .then((response) => {
         fetchRooms(response.data.length > 0 ? response.data : []);
       })
-      .catch((error) => { logger.error("url to fetch property details, failed") });
+      .catch((error) => { console.log("url to fetch property details, failed") });
   }
 
   //fetch all rooms 
@@ -40,7 +39,7 @@ function InventoryModal({ error, setError, setView, setInventories, view, color,
         setAllRooms(response?.data);
       })
       .catch((error) => {
-        logger.error("url to fetch property details, failed")
+        console.log("url to fetch property details, failed")
       });
       // all room refrences 
     axios.get(`/api/all_room_refrences/${currentProperty?.property_id}`)
@@ -49,7 +48,7 @@ function InventoryModal({ error, setError, setView, setInventories, view, color,
         setVisible(1);
       })
       .catch((error) => {
-        logger.error("url to fetch property details, failed")
+        console.log("url to fetch property details, failed")
       });
   }
 

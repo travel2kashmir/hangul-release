@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from 'react'
 import StarRatings from 'react-star-ratings';
 import english from '../../components/Languages/en';
 import icon from '../../components/GlobalData';
-import { logger, reqSerializer } from '../../utills/logger'
 import french from '../../components/Languages/fr';
 import axios from 'axios'
 import Marquee from "react-easy-marquee";

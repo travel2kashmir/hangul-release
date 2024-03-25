@@ -11,7 +11,6 @@ import Footer from "../../../components/Footer";
 import Sidebar from '../../../components/Sidebar';
 import Header from '../../../components/Header';
 import Router from 'next/router'
-const logger = require("../../../services/logger");
 import { InitialActions, ColorToggler } from '../../../components/initalActions';
 import BreadCrumb from '../../../components/utils/BreadCrumb';
 var language;

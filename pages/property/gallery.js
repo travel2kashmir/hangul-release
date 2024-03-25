@@ -19,7 +19,6 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Headloader from "../../components/loaders/headloader";
 import ImageDemo from "../../components/utils/ImageDemo";
-const logger = require("../../services/logger");
 import Router from "next/router";
 import { InitialActions, ColorToggler } from "../../components/initalActions";
 import BreadCrumb from "../../components/utils/BreadCrumb";

@@ -16,7 +16,6 @@ import GstValidation from '../validation/bookingEngine/GstDetailValidation';
 import formatDateToCustomFormat from '../generalUtility/timeStampMaker'
 import CountdownTimer from './CountDownTimer';
 import ButtonLoader from './ButtonLoader';
-import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import DeleteBin from '../utils/Icons/DeleteBin';

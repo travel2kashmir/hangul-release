@@ -42,8 +42,6 @@ function Signin() {
       currentLogged = resp?.currentLogged;
       currentProperty = resp?.currentProperty;
       setLang(langCode[language.activeThemeLanguage])
-      // colorToggle = resp?.colorToggle
-
       if (JSON.stringify(currentLogged) != "null") {
         let currentUser = JSON.parse(localStorage.getItem("Signin Details"));
         if (currentUser?.id.match('user00.[0-9]*')) {
@@ -57,17 +55,11 @@ function Signin() {
     }
   }
 
-
-  /** Function for Internationalisation **/
-  
-
   /** State for Sign In **/
   const [signinDetails, setSigninDetails] = useState({
     email: "",
     password: "",
   });
-
-
 
   /** Sign In Submit Function **/
   const submitSignIn = async (e) => {

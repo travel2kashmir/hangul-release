@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from "react";
-import objChecker from "lodash";
+
 import StarRatings from 'react-star-ratings';
-import colorFile from "../../components/colors/Color";
-import axios from 'axios';
-import Link from "next/link";
-import Headloader from "../../components/loaders/headloader";
 import Sidebar from "../../components/Sidebar";
 import Header from "../../components/Header";
 import { english, arabic, french } from "../../components/Languages/Languages"
@@ -13,7 +9,6 @@ import Button from "../../components/Button";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import reviewImage from '../../public/review.png';
-import validateReview from "../../components/validation/review";
 import InputTextBox from "../../components/utils/InputTextBox";
 import Title from "../../components/title";
 import Router from 'next/router'
@@ -21,8 +16,6 @@ import Image from 'next/image';
 import { InitialActions, ColorToggler } from "../../components/initalActions";
 import BreadCrumb from "../../components/utils/BreadCrumb";
 import { fetchReviews, navigationList, handleSubmit, delConfirm, handleEdit, onChange, resetReviewState } from "../../components/logic/property/Reviews";
-
-let colorToggle;
 var currentLogged;
 var language;
 var currentProperty;
@@ -57,13 +50,11 @@ function Reviews() {
     language = resp?.language;
     currentLogged = resp?.currentLogged;
     currentProperty = resp?.currentProperty;
-    colorToggle = resp?.colorToggle
-
     if (JSON.stringify(currentLogged) === 'null') {
       Router.push(window.location.origin)
     }
     else {
-     fetchReviews(currentProperty, setReviews, setVisible);
+      fetchReviews(currentProperty, setReviews, setVisible);
     }
   }, [])
 
@@ -84,18 +75,7 @@ function Reviews() {
   // const [review, setReview] = useState(reviewTemplate?.map((i, id) => { return { ...i, index: id } }))
   const [review, setReview] = useState(initialReviewState);
 
-  // const addReview = () => {
-  //   setReview([...review, reviewTemplate]?.map((i, id) => { return { ...i, index: id } }))
-  // }
-
-
-  // const removeReview = (index) => {
-  //   console.log("index is" + index)
-  //   const filteredReviews = review.filter((i, id) => i.index !== index)
-  //   console.log("data sent to state " + JSON.stringify(filteredReviews))
-  //   setReview(filteredReviews)
-  // }
-
+  
   return (
     <>
       <Title name={`Engage |  ${language?.reviews}`} />

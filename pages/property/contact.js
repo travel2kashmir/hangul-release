@@ -19,7 +19,6 @@ import AddModal from "../../components/contacts/AddModal";
 
 var currentLogged;
 var i = 0;
-let colorToggle;
 var language;
 var currentProperty;
 var propertyName;
@@ -46,7 +45,7 @@ function Contact() {
     language = resp?.language;
     currentLogged = resp?.currentLogged;
     currentProperty = resp?.currentProperty;
-    colorToggle = resp?.colorToggle
+    
 
     if (JSON.stringify(currentLogged) === 'null') {
       Router.push(window.location.origin)

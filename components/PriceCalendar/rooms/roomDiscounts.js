@@ -123,7 +123,7 @@ function RoomDiscounts({ room_id,meal,dateSelected,setModalVisible,initialData }
             <div id="main-content">
                     <div className={`${color?.whitebackground} border-b rounded-lg`}>
                     <h3 className={`${color?.text} text-xl flex leading-none pl-6  pb-2 pt-6  font-bold`}>
-                        Discount {JSON.stringify(meal)}
+                        Discount 
                     </h3>
                     <form id='discountForm'>
                         {/* input forms start */}
@@ -162,34 +162,7 @@ function RoomDiscounts({ room_id,meal,dateSelected,setModalVisible,initialData }
                                             </div> : <></>}
 
                                         <div className="flex flex-wrap">
-                                            {/* Date from */}
-                                            {/* <DateInput
-                                                color={color}
-                                                label={`From Date`}
-                                                visible={1}
-                                                onChangeAction={(e) => {
-                                                    onDiscountChange(e, index, `date_from`);
-                                                    let v = { "target": { "value": room_id } }
-                                                    onDiscountChange(v, index, `room_id`)
-                                                }
-                                                }
-                                                req={true}
-                                                error={error[index]?.date_from}
-                                            /> */}
-
-                                            {/* Date To */}
-                                            {/* <DateInput
-                                                color={color}
-                                                label={`Date To`}
-                                                visible={1}
-                                                onChangeAction={(e) => {
-                                                    onDiscountChange(e, index, `date_to`)
-                                                }
-                                                }
-                                                req={true}
-                                                error={error[index]?.date_to}
-                                            /> */}
-
+                                         
                                              {/* Meal Name*/}
                                              <InputText
                                                 label={`Meal Name`}

@@ -2,17 +2,12 @@ import React, { useEffect, useState } from 'react';
 import LoaderDarkTable from '../../components/loaders/darktableloader';
 import Sidebar from "../../components/Sidebar";
 import Header from "../../components/Header";
-import colorFile from "../../components/colors/Color";
-import axios from "axios";
-import Link from "next/link";
-import Table from '../../components/Table';
 import GenericTable from '../../components/utils/Tables/GenericTable';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Title from '../../components/title';
 import { english, french, arabic } from "../../components/Languages/Languages"
 import LoaderTable from "../../components/loadertable";
-import Headloader from "../../components/loaders/headloader";
 import { InitialActions, ColorToggler } from '../../components/initalActions';
 import Button from '../../components/Button';
 import Router from "next/router";
@@ -22,12 +17,11 @@ import { fetchRooms, navigationList, addRoom, confirmedDelete } from '../../comp
 var language;
 var currentProperty;
 var currentLogged;
-let colorToggle;
+
 
 function Rooms() {
   const [visible, setVisible] = useState(0)
   const [color, setColor] = useState({})
-  // const [colorToggle, setColorToggle] = useState({})
   const [mode, setMode] = useState()
   const [gen, setGen] = useState([])
   const [allrooms, setAllRooms] = useState([])
@@ -41,9 +35,6 @@ function Rooms() {
     language = resp?.language;
     currentLogged = resp?.currentLogged;
     currentProperty = resp?.currentProperty;
-    colorToggle = resp?.colorToggle
-    // setColorToggle(resp?.colorToggle)
-
     if (JSON.stringify(currentLogged) === 'null') {
       Router.push(window.location.origin)
     }

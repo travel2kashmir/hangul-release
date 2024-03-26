@@ -1,33 +1,24 @@
 import React, { useEffect, useState } from 'react';
-import validateAdditionalServices from '../../components/validation/additionalservices/additionalservicesadd';
 import validateAdditionalServicesEdit from '../../components/validation/additionalservices/additionalservicesedit';
 import LoaderDarkTable from "../../components/loaders/darktableloader";
 import axios from "axios";
-import colorFile from "../../components/colors/Color";
 import Sidebar from "../../components/Sidebar";
 import Header from "../../components/Header";
-import Link from "next/link";
 import LoaderTable from "../../components/loadertable";
-import Headloader from "../../components/loaders/headloader";
-import DarkModeLogic from "../../components/darkmodelogic";
 import Table from '../../components/Table';
 import Button from "../../components/Button";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import objChecker from "lodash"
-import english from "../../components/Languages/en";
-import french from "../../components/Languages/fr";
-import arabic from "../../components/Languages/ar";
+import {english,french,arabic} from "../../components/Languages/Languages";
 import { InitialActions, ColorToggler } from "../../components/initalActions";
 import { fetchAdditionalServices, fetchHotelDetails, navigationList, validationAdditionalServices } from '../../components/logic/property/AdditionalServices'
+import Router from 'next/router';
+import BreadCrumb from '../../components/utils/BreadCrumb';
 
 var language;
 var currentProperty;
 var currentLogged;
-import Router from 'next/router';
-import BreadCrumb from '../../components/utils/BreadCrumb';
-let colorToggle;
-
 function AdditionalServices() {
     const [visible, setVisible] = useState(0);
     const [spinner, setSpinner] = useState(0)
@@ -49,8 +40,6 @@ function AdditionalServices() {
         language = resp?.language;
         currentLogged = resp?.currentLogged;
         currentProperty = resp?.currentProperty;
-        colorToggle = resp?.colorToggle
-
         if (JSON.stringify(currentLogged) === 'null') {
             Router.push(window.location.origin)
         }

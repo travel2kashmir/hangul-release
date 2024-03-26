@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Country, State, City } from "country-state-city";
 import globalData from "../../components/GlobalData";
-import colorFile from "../../components/colors/Color";
 import Title from "../../components/title";
 import Sidebar from "../../components/Sidebar";
-import Headloader from "../../components/loaders/headloader";
 import Header from "../../components/Header";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -23,7 +21,7 @@ var i = 0;
 var currentLogged;
 var language;
 var currentProperty;
-let colorToggle;
+
 
 function Address() {
   const [visible, setVisible] = useState(0);
@@ -52,8 +50,6 @@ function Address() {
     language = resp?.language;
     currentLogged = resp?.currentLogged;
     currentProperty = resp?.currentProperty;
-    colorToggle = resp?.colorToggle
-
     if (JSON.stringify(currentLogged) === "null") {
       Router.push(window.location.origin);
     } else {

@@ -1,20 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import LoaderDarkTable from '../../../components/loaders/darktableloader';
 import validateRoomRates from '../../../components/validation/room/roomratesadd';
-import validateRoom from '../../../components/validation/room/roomdescriptionadd';
 import validateRoomGallery from '../../../components/validation/room/roomgalleryadd';
-import validateBedData from '../../../components/validation/room/roombedadd';
 import Multiselect from 'multiselect-react-dropdown';
 import lang from '../../../components/GlobalData'
-import DarkModeLogic from "../../../components/darkmodelogic";
 import axios from "axios";
-import Headloader from '../../../components/loaders/headloader';
 import Lineloader from '../../../components/loaders/lineloader';
 import Button from '../../../components/Button';
 import { ToastContainer, toast } from 'react-toastify';
-import colorFile from '../../../components/colors/Color';
 import 'react-toastify/dist/ReactToastify.css';
-import Link from "next/link";
 import Title from '../../../components/title';
 import { english, french, arabic } from "../../../components/Languages/Languages"
 import Footer from "../../../components/Footer";

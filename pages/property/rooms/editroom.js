@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import validateBedData from '../../../components/validation/room/roombedadd';
 import validateRoom from '../../../components/validation/room/roomdescriptionadd';
 import validateSingleBedEdit from '../../../components/validation/room/roomsinglebededit';
-import colorFile from '../../../components/colors/Color';
 import validateEditGallery from '../../../components/validation/room/roomgalleryedit';
 import validateRoomRates from '../../../components/validation/room/roomratesadd';
 import validateBedAdd from '../../../components/validation/room/roomsinglebedadd';
@@ -12,7 +10,6 @@ import Table from '../../../components/Table';
 import Multiselect from 'multiselect-react-dropdown';
 import lang from '../../../components/GlobalData'
 import axios from "axios";
-import Link from "next/link";
 import Button from '../../../components/Button';
 import Footer from "../../../components/Footer";
 import Sidebar from '../../../components/Sidebar'
@@ -20,7 +17,6 @@ import Header from '../../../components/Header'
 import { InitialActions, ColorToggler } from '../../../components/initalActions';
 import Title from '../../../components/title';
 import { english, french, arabic } from "../../../components/Languages/Languages"
-import Headloader from '../../../components/loaders/headloader';
 import Imageloader from '../../../components/loaders/imageloader';
 import Lineloader from '../../../components/loaders/lineloader';
 import { ToastContainer, toast } from 'react-toastify';
@@ -50,9 +46,6 @@ let resView = [];
 let currency;
 let currentLogged;
 let i = 0;
-let colorToggle;
-
-
 
 function Room() {
   const [allCheck, setAllCheck] = useState(0)
@@ -84,17 +77,13 @@ function Room() {
   const [services, setServices] = useState([])
   const [add, setAdd] = useState(0)
   const [gen, setGen] = useState([])
-
   const [selectedImage, setSelectedImage] = useState(false);
   const [indexImage, setIndexImage] = useState();
   const [isInventoryEdited, setIsInventoryEdited] = useState(false);
-
   const [enlargeImage, setEnlargeImage] = useState(0)
   const [enlargedImage, setEnlargedImage] = useState();
-
   const [mode, setMode] = useState()
   const [updateImage, setUpdateImage] = useState({});
-
   const [actionEnlargeImage, setActionEnlargeImage] = useState({})
   const [property_name, setProperty_name] = useState("")
   const [editRow, setEditRow] = useState({
@@ -122,8 +111,6 @@ function Room() {
     currentProperty = resp?.currentProperty;
     currentroom = localStorage.getItem('RoomId');
     setProperty_name(resp?.currentProperty?.property_name);
-    colorToggle = resp?.colorToggle
-
   }, [])
 
   /* Function to load Room Details when page loads */
@@ -191,8 +178,8 @@ function Room() {
         "Extra Adult Price": item?.extra_adult_price || 0,
         "Extra Child Price": item?.extra_child_price || 0,
         "id": item.room_rate_plan_id,
-        "Tax":item.tax,
-        "Other Charges":item.other_charges,
+        "Tax": item.tax,
+        "Other Charges": item.other_charges,
 
         Actions: [
           {
@@ -754,7 +741,6 @@ function Room() {
           draggable: true,
           progress: undefined,
         });
-        // setDisp(2);
       })
       .catch((error) => {
         toast.error("Room services add error.", {
@@ -1607,7 +1593,6 @@ function Room() {
                 <h6 className={`${color?.text} text-xl flex leading-none pl-6 lg:pt-2 pt-6  pb-2 font-bold`}>
                   {language?.room} {language?.description}
                 </h6>
-
                 <div className={visible === 0 ? 'block py-1' : 'hidden'}><LoaderTable /></div>
                 <div className={visible === 1 ? 'block py-1' : 'hidden'}>
                   <Table gen={gen} setGen={setGen} add={() => setView(1)} name="Additional Services"
@@ -1714,9 +1699,7 @@ function Room() {
           {disp === 1 ?
             <div id='1' className='block py-1'>
               <div className={`${color?.whitebackground} shadow rounded-lg mt-2 mx-1 px-12 sm:p-6 xl:p-8  2xl:col-span-2`}>
-
                 <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`]} selected={2} color={color} />
-
                 <h6 className={`${color?.text} text-xl flex leading-none pl-6 pt-2 font-bold  mb-8`}>
                   {language?.room} {language?.services}
                 </h6>
@@ -2024,7 +2007,7 @@ function Room() {
                   addButtonAction={addRateButtonAction}
                   showOptions={false}
                   tableName={`Room Rates`}
-                  cols={["Meal Name", "Price","Tax","Other Charges", "Extra Adult Price", "Extra Child Price", "Actions"]}
+                  cols={["Meal Name", "Price", "Tax", "Other Charges", "Extra Adult Price", "Extra Child Price", "Actions"]}
                   data={roomRates}
                 />
               </div>

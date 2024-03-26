@@ -1,23 +1,15 @@
-import React, { useRef } from "react";
-import objChecker from "lodash";
+import React, { useState, useEffect } from "react";
 import Title from "../../components/title";
-import colorFile from "../../components/colors/Color";
-import validateGallery from "../../components/validation/gallery/galleryadd";
-import validateEditGallery from "../../components/validation/gallery/galleryedit";
-import { useState, useEffect } from "react";
 import axios from "axios";
 import Sidebar from "../../components/Sidebar";
 import Header from "../../components/Header";
 import Button from "../../components/Button";
 import Link from "next/link";
-import english from "../../components/Languages/en";
-import french from "../../components/Languages/fr";
-import arabic from "../../components/Languages/ar";
+import {english,arabic,french} from "../../components/Languages/Languages";
 import Footer from "../../components/Footer";
 import Loader from "../../components/loaders/imageloader";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Headloader from "../../components/loaders/headloader";
 import ImageDemo from "../../components/utils/ImageDemo";
 import Router from "next/router";
 import { InitialActions, ColorToggler } from "../../components/initalActions";
@@ -27,7 +19,7 @@ import { fetchHotelDetails, navigationList, onChangePhoto, uploadImage, validati
 var language;
 var currentProperty;
 var currentLogged;
-let colorToggle;
+
 
 function Gallery() {
   const [visible, setVisible] = useState(0);
@@ -66,8 +58,6 @@ function Gallery() {
     language = resp?.language;
     currentLogged = resp?.currentLogged;
     currentProperty = resp?.currentProperty;
-    colorToggle = resp?.colorToggle
-
     if (JSON.stringify(currentLogged) === "null") {
       Router.push(window.location.origin);
     } else {

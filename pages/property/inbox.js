@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import colorFile from '../../components/colors/Color';
 import { useRouter } from "next/router";
-// import Link from "next/link";
 import axios from 'axios';
 import Sidebar from "../../components/Sidebar";
 import Header from "../../components/Header";
@@ -32,52 +30,12 @@ function Inbox() {
     const [deleteMultiple, setDeleteMultiple] = useState(0);
     const [spinner, setSpinner] = useState(0)
 
-    // useEffect(() => {
-    //     onComponentLoadActions();
-    // }, [])
-
-    // // function on page load
-    // const onComponentLoadActions = () => {
-    //     if (typeof window !== 'undefined') {
-    //         var locale = localStorage.getItem("Language");
-    //         colorToggle = localStorage.getItem("colorToggle");
-
-    //         if (colorToggle === "" || colorToggle === undefined || colorToggle === null || colorToggle === "system") {
-    //             window.matchMedia("(prefers-color-scheme:dark)").matches === true ?
-    //                 setColor(colorFile?.dark) : setColor(colorFile?.light);
-    //             setMode(window.matchMedia("(prefers-color-scheme:dark)").matches === true ? true : false);
-    //         }
-    //         else if (colorToggle === "true" || colorToggle === "false") {
-    //             setColor(colorToggle === "true" ? colorFile?.dark : colorFile?.light);
-    //             setMode(colorToggle === "true" ? true : false)
-
-    //         }
-    //         {
-    //             if (locale === "ar") {
-    //                 language = arabic;
-    //             }
-    //             if (locale === "en") {
-    //                 language = english;
-    //             }
-    //             if (locale === "fr") {
-    //                 language = french;
-    //             }
-    //         }
-    //         /** Current Property Details fetched from the local storage **/
-    //         currentProperty = JSON.parse(localStorage.getItem("property"));
-    //         currentLogged = JSON.parse(localStorage.getItem("Signin Details"));
-
-    //     }
-    // }
-
     // runs at load time
     useEffect(() => {
         const resp = InitialActions({ setColor, setMode })
         language = resp?.language;
         currentLogged = resp?.currentLogged;
         currentProperty = resp?.currentProperty;
-        colorToggle = resp?.colorToggle
-
         if (JSON.stringify(currentLogged) === 'null') {
             router?.push(window.location.origin)
         }
@@ -113,25 +71,6 @@ function Inbox() {
         const start = (page - 1) * itemsPerPage;
         return messagesFiltered.slice(start, start + itemsPerPage);
     }, [page, messagesFiltered, itemsPerPage]);
-
-    // color toggle function
-    // const colorToggler = (newColor) => {
-    //     if (newColor === 'system') {
-    //         window.matchMedia("(prefers-color-scheme:dark)").matches === true ? setColor(colorFile?.dark)
-    //             : setColor(colorFile?.light)
-    //         localStorage.setItem("colorToggle", newColor)
-    //     }
-    //     else if (newColor === 'light') {
-    //         setColor(colorFile?.light)
-    //         localStorage.setItem("colorToggle", false)
-    //     }
-    //     else if (newColor === 'dark') {
-    //         setColor(colorFile?.dark)
-    //         localStorage.setItem("colorToggle", true)
-    //     }
-    //     onComponentLoadActions();
-    //     router.push('./inbox')
-    // }
 
     function ItemShow(event) {
         setItemsPerPage(event.target.value);
@@ -326,12 +265,6 @@ function Inbox() {
                         <span className={`${color?.textgray} hover:${color?.text}  mr-2 cursor-pointer p-1 ${color?.hover} rounded inline-flex justify-center`}>
                             <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path></svg>
                         </span>
-                        {/* <div className="border-l mx-4  border-gray-200">
-                            <button type="button" data-modal-toggle="add-user-modal" className="mx-4 w-1/2  text-white bg-cyan-600 hover:bg-cyan-700 focus:ring-4 focus:ring-cyan-200 font-medium inline-flex items-center justify-center rounded-lg text-sm px-4 py-2 text-center sm:w-auto">
-                                <svg className="-ml-1 mr-2 h-6 w-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd"></path></svg>
-                                <Link href="./inbox/composemessage"> Compose </Link>
-                            </button>
-                        </div> */}
                     </div>
 
                     <div className="flex items-center mr-2 mb-4 sm:mb-0">

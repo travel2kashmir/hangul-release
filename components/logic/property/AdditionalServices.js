@@ -74,7 +74,7 @@ export function newAdditionalService(setSpinner, modified, setModified, setFlag,
         const url = '/api/additional_services'
         axios.post(url, final_data, { header: { "content-type": "application/json" } }).then
             ((response) => {
-                setSpinner(0);
+                
                 document.getElementById('asform').reset();
                 toast.success("Service Added Successfully!", {
                     position: "top-center",
@@ -85,7 +85,7 @@ export function newAdditionalService(setSpinner, modified, setModified, setFlag,
                     draggable: true,
                     progress: undefined,
                 });
-
+                setSpinner(0);
                 fetchAdditionalServices(currentProperty, setAdditionalServices, setGene, setVisible);
                 Router.push("./additionalservices");
                 setModified([])
@@ -135,11 +135,9 @@ export function navigationList(currentLogged, currentProperty) {
 export function validationAdditionalServices(setError, setSpinner, modified, setModified, setFlag, setView, currentProperty, setAdditionalServices, setGene, setVisible, Router) {
     setError({});
     var result = validateAdditionalServices(modified);
-    console.log("Result" + JSON.stringify(result))
     if (result === true) {
         newAdditionalService(setSpinner, modified, setModified, setFlag, setView, currentProperty, setAdditionalServices, setGene, setVisible, Router)
-
-    }
+            }
     else {
         setError(result)
     }

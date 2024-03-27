@@ -1,0 +1,36 @@
+import axios from "axios";
+export default async function fetchBooking({currentProperty,setVisible,setGenericData,viewCurrentBookingDetails}){
+        try {
+            var genData = [];
+            const url = `/api/all_bookings/${currentProperty.property_id}`
+            const response = await axios.get(url, { headers: { 'accept': 'application/json' } });
+            setVisible(1)
+            
+            response?.data?.map((item) => {
+                var temp = {
+                    // "checkbox": { operation: undefined },
+                    "Guest Name": item.guest_name,
+                    "Booking Date": `${item.booking_from} to ${item.booking_to}`,
+                    "Transaction No.": item.transaction_id,
+                    "status": item.transaction_id && JSON.stringify(!item.is_cancelled),
+                    "id": item.booking_id,
+                    
+                    Actions: [
+                        {
+                            type: "button",
+                            label: "View",
+                            operation: (item) => { viewCurrentBookingDetails(item) }
+                        }
+                        
+                    ],
+                }
+                genData.push(temp)
+            })
+
+            setGenericData(genData);
+
+        }
+        catch (error) {
+            console.log("error in fetching the booking details for this property" + error)
+        }
+    }

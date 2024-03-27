@@ -6,24 +6,19 @@ import ReactDatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import InventoryModal from "../../../components/inventory/InventoryModal";
 import Title from "../../../components/title";
-import colorFile from "../../../components/colors/Color";
 import LoaderDarkTable from "../../../components/loaders/darktableloader";
 import Sidebar from "../../../components/Sidebar";
 import { ToastContainer, toast } from "react-toastify";
 import Header from "../../../components/Header";
 import "react-toastify/dist/ReactToastify.css";
-import Link from "next/link";
 import { english, french, arabic } from "../../../components/Languages/Languages";
-import Headloader from "../../../components/loaders/headloader";
 import LoaderTable from "../../../components/loadertable";
 import { InitialActions, ColorToggler } from "../../../components/initalActions";
 import BreadCrumb from "../../../components/utils/BreadCrumb";
 import Multiselect from 'multiselect-react-dropdown';
 import validateUnavailability from "../../../components/validation/room/roomUnavailability";
-import Capsule from "../../../components/utils/Capsule";
 
 var currentLogged;
-let colorToggle;
 var language;
 var currentProperty;
 var propertyName;
@@ -64,8 +59,6 @@ function Unavailability() {
         language = resp?.language;
         currentLogged = resp?.currentLogged;
         currentProperty = resp?.currentProperty;
-        colorToggle = resp?.colorToggle
-
         if (JSON.stringify(currentLogged) === 'null') {
             Router.push(window.location.origin)
         }
@@ -83,7 +76,6 @@ function Unavailability() {
                 setVisible(1);
                 if (response.data.room_unavailability.length > 0) {
                     setInventories(response.data.room_unavailability)
-
                 } else {
                     setInventories([])
                 }
@@ -97,14 +89,10 @@ function Unavailability() {
         axios.get(urlRef)
             .then((response) => {
                 // setVisible(1);
-
                 const result = {};
-
                 response.data.forEach(item => {
                     const { room_id, unavailability_id, refrence_id } = item;
-
                     const key = `${room_id}-${unavailability_id}`;
-
                     if (result[key]) {
                         result[key].push(refrence_id);
                     } else {
@@ -421,8 +409,6 @@ function Unavailability() {
                                                                             className={`shadow-sm ${color?.greybackground} ${color?.text} mb-3 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full`}
                                                                             isObject={true}
                                                                             options={roomSubTypes}
-                                                                            // onRemove={(selectedList, removedItem) => { alert(selectedList, removedItem) }}
-                                                                            // onSelect={(selectedList, selectedItem) => { alert(selectedList, selectedItem) }}
                                                                             onRemove={(selectedList, removedItem) => { modifyOutOfService(selectedList, removedItem) }}
                                                                             onSelect={(selectedList, selectedItem) => { modifyOutOfService(selectedList, selectedItem) }}
                                                                             selectedValues={roomRef.filter(i => i.unavailability_id === inv.unavailability_id)[0].refrence_ids.map((element, id) => ({ "room_references": element }))}

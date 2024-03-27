@@ -10,15 +10,18 @@ import Button from "../../components/Button";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import objChecker from "lodash"
-import {english,french,arabic} from "../../components/Languages/Languages";
+import { english, french, arabic } from "../../components/Languages/Languages";
 import { InitialActions, ColorToggler } from "../../components/initalActions";
 import { fetchAdditionalServices, fetchHotelDetails, navigationList, validationAdditionalServices } from '../../components/logic/property/AdditionalServices'
 import Router from 'next/router';
 import BreadCrumb from '../../components/utils/BreadCrumb';
+import Modal from "../../components/NewTheme/modal";
+import { AddAdditionalService } from '../../components/AdditionalServices';
 
 var language;
 var currentProperty;
 var currentLogged;
+let colorToggle;
 function AdditionalServices() {
     const [visible, setVisible] = useState(0);
     const [spinner, setSpinner] = useState(0)
@@ -40,6 +43,7 @@ function AdditionalServices() {
         language = resp?.language;
         currentLogged = resp?.currentLogged;
         currentProperty = resp?.currentProperty;
+        colorToggle = resp?.colorToggle
         if (JSON.stringify(currentLogged) === 'null') {
             Router.push(window.location.origin)
         }
@@ -179,74 +183,32 @@ function AdditionalServices() {
                     color={color}
                     crumbList={navigationList(currentLogged, currentProperty)}
                 />
-
-                <div className={(visible === 0 && colorToggle == false ? 'block' : 'hidden')}><LoaderTable /></div>
-                <div className={(visible === 0 && colorToggle == true ? 'block' : 'hidden')}><LoaderDarkTable /></div>
-                <div className={visible === 1 ? 'block' : 'hidden'}>
+                
+                {visible === 0 && colorToggle === "false" &&<LoaderTable />}
+                {visible === 0 && colorToggle === "true" && <LoaderDarkTable />}
+                {visible === 1 &&
                     <Table gen={gene} setGen={setGene} add={() => setView(1)} name="Additional Services"
                         edit={editAdditionalServices} color={color}
                         delete={deleteAdditionalServices}
-                        common={language?.common} cols={language?.AdditionalServicesCols} /> </div>
+                        common={language?.common} cols={language?.AdditionalServicesCols} />
+               }
+
 
 
                 {/* Modal Add */}
                 <div className={view === 1 ? 'block' : 'hidden'}>
-
-                    <div className="overflow-x-hidden overflow-y-auto fixed top-4 left-0 right-0 backdrop-blur-xl bg-black/30 md:inset-0 z-50 flex justify-center items-center h-modal sm:h-full">
-                        <div className="relative w-full max-w-2xl px-4 h-full md:h-auto">
-                            <form id='asform'>
-                                <div className={`${color?.whitebackground} rounded-lg shadow relative`}>
-                                    <div className="flex items-start justify-between p-5 border-b rounded-t">
-                                        <h3 className={`${color?.text} text-xl font-semibold`}>
-                                            {language?.add} {language?.new} {language?.service}
-                                        </h3>
-                                        <button type="button" onClick={() => {
-                                            document.getElementById('asform').reset();
-                                            setError({})
-                                            setModified([])
-                                            setView(0);
-                                        }} className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center" data-modal-toggle="add-user-modal">
-                                            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>
-                                        </button>
-                                    </div>
-                                    <div className="p-6 space-y-6">
-                                        <div className="grid grid-cols-6 gap-6">
-                                            <div className="col-span-6 sm:col-span-3">
-                                                <label htmlFor="first-name" className={`text-sm ${color?.text} font-medium  block mb-2`}>{language?.service} {language?.name}</label>
-                                                <input type="text" name="first-name"
-                                                    onChange={(e) => { setModified({ ...modified, add_service_name: e.target.value }, setFlag(1)) }}
-                                                    id="first-name"
-                                                    className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg 
-                            focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`} required />
-                                                <p className="text-sm text-sm text-red-700 font-light">
-                                                    {error?.add_service_name}</p>
-                                            </div>
-                                            <div className="col-span-6 sm:col-span-3">
-                                                <label htmlFor="last-name" className={`text-sm ${color?.text} font-medium  block mb-2`}>{language?.service} {language?.description}</label>
-                                                <textarea rows="2" columns="50" name="last-name"
-                                                    onChange={(e) => { setModified({ ...modified, add_service_comment: e.target.value }, setFlag(1)) }}
-                                                    id="last-name" className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg 
-                            focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`} required />
-                                                <p className="text-sm  text-red-700 font-light">
-                                                    {error?.add_service_comment}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="items-center p-6 border-t border-gray-200 rounded-b">
-                                        <div className={flag !== 1 && spinner === 0 ? 'block' : 'hidden'}>
-                                            <Button Primary={language?.AddDisabled} /></div>
-                                        <div className={spinner === 0 && flag === 1 ? 'block' : 'hidden'}>
-                                            <Button Primary={language?.Add} onClick={() => { validationAdditionalServices(setError, setSpinner, modified, setModified, setFlag, setView, currentProperty, setAdditionalServices, setGene, setVisible, Router) }} />
-                                        </div>
-                                        <div className={spinner === 1 && flag === 1 ? 'block' : 'hidden'}>
-                                            <Button Primary={language?.SpinnerAdd} />
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+                    <Modal
+                    title={`${language?.add} ${language?.new} ${language?.service}`}
+                    description={<AddAdditionalService 
+                        color={color} setModified={setModified} modified={modified} error={error} setError={setError} language={language} spinner={spinner} setSpinner={setSpinner} flag={flag} setFlag={setFlag}
+                        validationAdditionalServices={validationAdditionalServices} setAdditionalServices={setAdditionalServices} setView={setView} 
+                        currentProperty={currentProperty} setGene={setGene} setVisible={setVisible} Router={Router}/>}
+                    setShowModal={(e)=>{document.getElementById('asform').reset();
+                    setError({})
+                    setModified([])
+                    setView(e);}}
+                    />
+                  
                 </div>
 
 

@@ -22,6 +22,7 @@ var i = 0;
 var language;
 var currentProperty;
 var propertyName;
+let colorToggle;
 
 function Contact() {
   const [gen, setGen] = useState([])
@@ -45,8 +46,7 @@ function Contact() {
     language = resp?.language;
     currentLogged = resp?.currentLogged;
     currentProperty = resp?.currentProperty;
-    
-
+    colorToggle = resp?.colorToggle
     if (JSON.stringify(currentLogged) === 'null') {
       Router.push(window.location.origin)
     }
@@ -230,11 +230,9 @@ function Contact() {
         />
 
         {/* Header */}
-        <div className={(visible === 0 && colorToggle == false ? 'block' : 'hidden')}><LoaderTable /></div>
-        <div className={(visible === 0 && colorToggle == true ? 'block' : 'hidden')}><LoaderDarkTable /></div>
-        <div className={visible === 1 ? 'block' : 'hidden'}>
-
-          <Table
+        {visible === 0 && colorToggle === 'false' && <LoaderTable />}
+        {visible === 0 && colorToggle === 'true' && <LoaderDarkTable />}
+        {visible === 1 && <Table
             gen={gen}
             setGen={setGen}
             add={() => setView(1)}
@@ -253,9 +251,8 @@ function Contact() {
             cols={language?.ContactCols}
             name="Contact"
           />
-
-        </div>
-
+}
+        
         {/* Modal Add */}
         <AddModal
           view={view}

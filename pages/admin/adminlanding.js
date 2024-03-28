@@ -7,9 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/router";
 import Header from '../../components/Languages/adminSection/header'
 import Sidebar from "../../components/Languages/adminSection/sidebar";
-import english from "../../components/Languages/en"
-import french from "../../components/Languages/fr"
-import arabic from "../../components/Languages/ar"
+import {english,french,arabic} from "../../components/Languages/Languages"
 import Button from "../../components/Button";
 var language;
 var currentUser;
@@ -237,7 +235,6 @@ function AdminLanding() {
                                                         </td>
                                                         <td className="p-2 whitespace-nowrap space-x-1">
                                                             <button
-                                                                type="button"
                                                                 onClick={() => {
                                                                     LocalProperty({ item });
                                                                     router.push("../property/propertysummary");
@@ -251,7 +248,6 @@ function AdminLanding() {
 
 
                                                             <button
-                                                                type="button"
                                                                 onClick={() => {
                                                                     setDeleteProperty(1)
                                                                     setProperty(item)
@@ -339,7 +335,6 @@ function AdminLanding() {
                                                         </td>
                                                         <td className="p-2 whitespace-nowrap space-x-1">
                                                             <button
-                                                                type="button"
                                                                 onClick={() => {
                                                                     LocalProperty({ item });
                                                                     router.push("../property/propertysummary");
@@ -353,7 +348,6 @@ function AdminLanding() {
 
 
                                                             <button
-                                                                type="button"
                                                                 onClick={() => {
                                                                     activateProperty(item?.property_id)
                                                                     setProperty(item)

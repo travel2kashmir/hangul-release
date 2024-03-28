@@ -11,7 +11,6 @@ function Modal({ title, description, setShowModal }) {
                     <div className="flex items-start justify-between p-5 border-b rounded-t">
                         <h3 className='text-black text-xl font-semibold'>{title}</h3>
                         <button
-                            type="button"
                             onClick={() => {
                                 setShowModal(0)
                             }}

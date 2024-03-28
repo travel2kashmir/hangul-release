@@ -4,8 +4,7 @@ import axios from "axios";
 import Sidebar from "../../components/Sidebar";
 import Header from "../../components/Header";
 import Button from "../../components/Button";
-import Link from "next/link";
-import {english,arabic,french} from "../../components/Languages/Languages";
+import { english, arabic, french } from "../../components/Languages/Languages";
 import Footer from "../../components/Footer";
 import Loader from "../../components/loaders/imageloader";
 import { ToastContainer, toast } from "react-toastify";
@@ -15,7 +14,8 @@ import Router from "next/router";
 import { InitialActions, ColorToggler } from "../../components/initalActions";
 import BreadCrumb from "../../components/utils/BreadCrumb";
 import { fetchHotelDetails, navigationList, onChangePhoto, uploadImage, validationGallery, validationGalleryEdit, handlecheckbox, allDelete, deleteMultiple, searchImage } from "../../components/logic/property/Gallery";
-
+import Modal from "../../components/NewTheme/modal";
+import { AddFromUrl, DeleteSelectedImages, AddNewImages, EditImage } from "../../components/Gallery";
 var language;
 var currentProperty;
 var currentLogged;
@@ -257,7 +257,7 @@ function Gallery() {
                   </a>
 
                   <a
-                    onClick={() => allDelete(setdeleteImage)}
+                    onClick={() => { check.length != 0 ? allDelete(setdeleteImage) : toast.error('APP: Select image to delete') }}
                     className={
                       check?.length === 0 || undefined
                         ? `${color?.textgray} cursor-pointer p-1 ${color?.hover} rounded inline-flex
@@ -355,137 +355,134 @@ function Gallery() {
           {/* loaders for images end */}
 
           {/* main gallery start */}
-          <div className={visible === 1 ? "block" : "hidden"}>
-            {/* fetched images */}
-            <div className={showSearchedImages === 0 ? "block" : "hidden"}>
-              <div className="flex-wrap container grid sm:grid-cols-2 py-4 -pl-6 lg:grid-cols-3 gap-4">
-                {images?.map((item, idx) => {
-                  return (
-                    <>
+          {visible === 1?
+            showSearchedImages === 0 ? <div className="flex-wrap container grid sm:grid-cols-2 py-4 -pl-6 lg:grid-cols-3 gap-4">
+              {images?.map((item, idx) => {
+                return (
+                  <>
+                    <div
+                      className="block text-blueGray-600  text-xs font-bold border rounded-lg"
+                      key={idx}
+                    >
                       <div
-                        className="block text-blueGray-600  text-xs font-bold border rounded-lg"
-                        key={idx}
+                        className="relative cursor-pointer"
+                        tooltip
+                        title="Click here to view or edit."
                       >
-                        <div
-                          className="relative cursor-pointer"
-                          tooltip
-                          title="Click here to view or edit."
-                        >
-                          <a href="#" className="relative flex">
+                        <a href="#" className="relative flex">
 
-                            <input
-                              type="checkbox"
-                              id={item?.image_id}
-                              tooltip
-                              title="Click here to delete image."
-                              name={item?.image_id}
-                              checked={item.isChecked || false}
-                              onChange={(e) => {
-                                handlecheckbox(e, images, setImages, setCheck);
-                              }}
-                              className="bottom-0 right-0 cursor-pointer absolute bg-gray-900 opacity-30 m-1 border-gray-300 text-cyan-600  checked:opacity-100 focus:ring-3 focus:ring-cyan-200 h-4 w-4 rounded-full"
+                          <input
+                            type="checkbox"
+                            id={item?.image_id}
+                            tooltip
+                            title="Click here to delete image."
+                            name={item?.image_id}
+                            checked={item.isChecked || false}
+                            onChange={(e) => {
+                              handlecheckbox(e, images, setImages, setCheck);
+                            }}
+                            className="bottom-0 right-0 cursor-pointer absolute bg-gray-900 opacity-30 m-1 border-gray-300 text-cyan-600  checked:opacity-100 focus:ring-3 focus:ring-cyan-200 h-4 w-4 rounded-full"
+                            onClick={() => {
+                              setSelectedImage(!selectedImage);
+                            }}
+                          />
+                          {check?.length === 0 || undefined ? (
+                            <img
+                              htmlFor={item?.image_id}
+                              className={`rounded-lg`}
+                              src={item.image_link}
+                              alt="Room Image"
+                              style={{ height: "170px", width: "450px" }}
                               onClick={() => {
-                                setSelectedImage(!selectedImage);
+                                setEnlargeImage(1);
+                                setActionEnlargeImage(item);
+                                setIndexImage(idx);
                               }}
                             />
-                            {check?.length === 0 || undefined ? (
-                              <img
-                                htmlFor={item?.image_id}
-                                className={`rounded-lg`}
-                                src={item.image_link}
-                                alt="Room Image"
-                                style={{ height: "170px", width: "450px" }}
-                                onClick={() => {
-                                  setEnlargeImage(1);
-                                  setActionEnlargeImage(item);
-                                  setIndexImage(idx);
-                                }}
-                              />
-                            ) : (
-                              <img
-                                htmlFor={item?.image_id}
-                                className={`rounded-lg`}
-                                src={item.image_link}
-                                alt="Room Image"
-                                style={{ height: "170px", width: "450px" }}
-                              />
-                            )}
-                          </a>
-                        </div>
-                      </div>
-                    </>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* searched images display */}
-            <div className={showSearchedImages === 1 ? "block" : "hidden"}>
-              <div className="flex-wrap container grid sm:grid-cols-2 py-4 -pl-6 lg:grid-cols-3 gap-4">
-                {searchedImages?.map((item, idx) => {
-                  return (
-                    <>
-                      <div
-                        className="block text-blueGray-600  text-xs font-bold "
-                        key={idx}
-                      >
-                        <div
-                          className="relative cursor-pointer"
-                          tooltip
-                          title="Click here to view or edit."
-                        >
-                          <a href="#" className="relative flex">
-                            <input
-                              type="checkbox"
-                              id={item?.image_id}
-                              tooltip
-                              title="Click here to delete image."
-                              name={item?.image_id}
-                              checked={item.isChecked || false}
-                              onChange={(e) => {
-                                handlecheckbox(e, images, setImages, setCheck);
-                              }}
-                              className="bottom-0 right-0 cursor-pointer absolute bg-gray-30 opacity-30 m-1 border-gray-300 text-cyan-600  checked:opacity-100 focus:ring-3 focus:ring-cyan-200 h-4 w-4 rounded-full"
-                              onClick={() => {
-                                setSelectedImage(!selectedImage);
-                              }}
+                          ) : (
+                            <img
+                              htmlFor={item?.image_id}
+                              className={`rounded-lg`}
+                              src={item.image_link}
+                              alt="Room Image"
+                              style={{ height: "170px", width: "450px" }}
                             />
-                            {check?.length === 0 || undefined ? (
-                              <img
-                                htmlFor={item?.image_id}
-                                className={`rounded-lg`}
-                                src={item.image_link}
-                                alt="Room Image"
-                                style={{ height: "170px", width: "450px" }}
-                                onClick={() => {
-                                  setEnlargeImage(1);
-                                  setActionEnlargeImage(item);
-                                  setIndexImage(idx);
-                                }}
-                              />
-                            ) : (
-                              <img
-                                htmlFor={item?.image_id}
-                                className={`rounded-lg`}
-                                src={item.image_link}
-                                alt="Room Image"
-                                style={{ height: "170px", width: "450px" }}
-                              />
-                            )}
-                          </a>
-                        </div>
+                          )}
+                        </a>
                       </div>
-                    </>
-                  );
-                })}
-              </div>
+                    </div>
+                  </>
+                );
+              })}
             </div>
-          </div>
+          
+          :
+          <div className="flex-wrap container grid sm:grid-cols-2 py-4 -pl-6 lg:grid-cols-3 gap-4">
+            {searchedImages?.map((item, idx) => {
+              return (
+                <>
+                  <div
+                    className="block text-blueGray-600  text-xs font-bold "
+                    key={idx}
+                  >
+                    <div
+                      className="relative cursor-pointer"
+                      tooltip
+                      title="Click here to view or edit."
+                    >
+                      <a href="#" className="relative flex">
+                        <input
+                          type="checkbox"
+                          id={item?.image_id}
+                          tooltip
+                          title="Click here to delete image."
+                          name={item?.image_id}
+                          checked={item.isChecked || false}
+                          onChange={(e) => {
+                            handlecheckbox(e, images, setImages, setCheck);
+                          }}
+                          className="bottom-0 right-0 cursor-pointer absolute bg-gray-30 opacity-30 m-1 border-gray-300 text-cyan-600  checked:opacity-100 focus:ring-3 focus:ring-cyan-200 h-4 w-4 rounded-full"
+                          onClick={() => {
+                            setSelectedImage(!selectedImage);
+                          }}
+                        />
+                        {check?.length === 0 || undefined ? (
+                          <img
+                            htmlFor={item?.image_id}
+                            className={`rounded-lg`}
+                            src={item.image_link}
+                            alt="Room Image"
+                            style={{ height: "170px", width: "450px" }}
+                            onClick={() => {
+                              setEnlargeImage(1);
+                              setActionEnlargeImage(item);
+                              setIndexImage(idx);
+                            }}
+                          />
+                        ) : (
+                          <img
+                            htmlFor={item?.image_id}
+                            className={`rounded-lg`}
+                            src={item.image_link}
+                            alt="Room Image"
+                            style={{ height: "170px", width: "450px" }}
+                          />
+                        )}
+                      </a>
+                    </div>
+                  </div>
+                </>
+              );
+            })}
+          </div>:undefined
+          
+          
+        }
           {/* main gallery Ends */}
         </div>
 
         {/* Modal Image Enlarge */}
-        <div id="enlarge" className={enlargeImage === 1 ? "block" : "hidden"}>
+        {enlargeImage === 1 &&
           <div className="overflow-x-hidden overflow-y-auto fixed top-4 left-0 right-0 backdrop-blur-xl   sm:inset-0 bg-black/30 md:inset-0 z-50 flex justify-center items-center h-modal sm:h-full">
             <div className="flex justify-start ml-2 mr-auto">
               {/* //Left arrow symbol*/}
@@ -627,540 +624,94 @@ function Gallery() {
               </svg>
             </div>
           </div>
-        </div>
+        }
 
         {/* Modal edit */}
-        <div className={editImage === 1 ? "block" : "hidden"}>
-          <div className="overflow-x-hidden overflow-y-auto fixed top-4 left-0 right-0 backdrop-blur-xl bg-black/30 md:inset-0 z-50 flex justify-center items-center h-modal sm:h-full">
-            <div className="relative w-full max-w-2xl px-4 h-full md:h-auto">
-              <div
-                className={`${color?.whitebackground} rounded-lg shadow relative`}
-              >
-                <div className="flex items-start justify-between p-5 border-b rounded-t">
-                  <h3 className={`${color?.text} text-xl font-semibold`}>
-                    {language?.edit} {language?.image}
-                  </h3>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setActionImage({});
-                      setError({});
-                      document.getElementById("editImage").reset();
-                      setEditImage(0);
-                    }}
-                    className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
-                    data-modal-toggle="user-modal"
-                  >
-                    <svg
-                      className="w-5 h-5"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                        clipRule="evenodd"
-                      ></path>
-                    </svg>
-                  </button>
-                </div>
-
-                <div className="p-6 space-y-6">
-                  <form id="editImage">
-                    <div className="grid grid-cols-6 gap-6">
-                      <div className="col-span-6 sm:col-span-3">
-                        <img
-                          src={actionImage?.image_link}
-                          alt="Property Image"
-                          height={"200"}
-                          width={"400"}
-                        />
-                      </div>
-                      <div className="col-span-6 sm:col-span-3">
-                        <label
-                          className={`text-sm ${color?.text} font-medium  block mb-2`}
-                          htmlFor="grid-password"
-                        >
-                          {language?.image} {language?.description}
-                          <span style={{ color: "#ff0000" }}>*</span>
-                        </label>
-                        <textarea
-                          rows="6"
-                          columns="60"
-                          className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg 
-                                            focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
-                          onChange={(e) =>
-                            setActionImage(
-                              {
-                                ...actionImage,
-                                image_description: e.target.value,
-                              },
-                              setFlag(1)
-                            )
-                          }
-                          defaultValue={actionImage?.image_description}
-                        />
-                        <p className="text-sm text-red-700 font-light">
-                          {error?.image_description}
-                        </p>
-                      </div>
-                      <div className="col-span-6 sm:col-span-3">
-                        <label
-                          className={`text-sm ${color?.text} font-medium  block mb-2`}
-                          htmlFor="grid-password"
-                        >
-                          {language?.image} {language?.titl}
-                          <span style={{ color: "#ff0000" }}>*</span>
-                        </label>
-                        <input
-                          type="text"
-                          defaultValue={actionImage?.image_title}
-                          onChange={(e) =>
-                            setActionImage(
-                              {
-                                ...actionImage,
-                                image_title: e.target.value,
-                              },
-                              setFlag(1)
-                            )
-                          }
-                          className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
-                          placeholder="Image Title"
-                        />
-                        <p className="text-sm text-red-700 font-light">
-                          {error?.image_title}
-                        </p>
-                      </div>
-                    </div>
-                  </form>
-                </div>
-                <div className="items-center p-6 border-t border-gray-200 rounded-b">
-                  <div
-                    className={flag !== 1 && spinner === 0 ? "block" : "hidden"}
-                  >
-                    <Button Primary={language?.UpdateDisabled} />
-                  </div>
-                  <div
-                    className={spinner === 0 && flag === 1 ? "block" : "hidden"}
-                  >
-                    <Button
-                      Primary={language?.Update}
-                      // onClick={validationGalleryEdit}
-                      onClick={() => validationGalleryEdit(flag, actionImage, updateImage, setAllHotelDetails, setSpinner, setEditImage, currentProperty, setGallery, setImages, setEnlargedImage, setVisible, setEnlargeImage, setActionImage, setError, Router)}
-                    />
-                  </div>
-                  <div
-                    className={spinner === 1 && flag === 1 ? "block" : "hidden"}
-                  >
-                    <Button Primary={language?.SpinnerUpdate} />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        {editImage === 1 &&
+          <Modal
+            title={`${language?.edit} ${language?.image}`}
+            description={<EditImage
+              language={language} color={color} error={error} setError={setError} flag={flag} setFlag={setFlag}
+              actionImage={actionImage} setActionImage={setActionImage}
+              spinner={spinner} setSpinner={setSpinner} currentProperty={currentProperty} setGallery={setGallery} setEnlargedImage={setEnlargedImage}
+              setVisible={setVisible} Router={Router} updateImage={updateImage} setAllHotelDetails={setAllHotelDetails} setEditImage={setEditImage} setEnlargeImage={setEnlargeImage}
+            />}
+            setShowModal={() => {
+              setActionImage({});
+              setError({});
+              document.getElementById("editImage").reset();
+              setEditImage(0);
+            }}
+          />
+        }
 
         {/* Modal Add */}
-        <div className={addImage === 1 ? "block" : "hidden"}>
-          <div className="overflow-x-hidden overflow-y-auto fixed top-4 left-0 right-0 backdrop-blur-xl bg-black/30 md:inset-0 z-50 flex justify-center items-center h-modal sm:h-full">
-            <div className="relative w-full max-w-2xl px-4 h-full md:h-auto">
-              <div
-                className={`${color?.whitebackground} rounded-lg shadow relative`}
-              >
-                <div className="flex items-start justify-between p-5 border-b rounded-t">
-                  <h3 className={`${color?.text} text-xl font-semibold`}>
-                    {language?.addnewimage}
-                  </h3>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setImage({});
-                      document.getElementById("addgallery").reset();
-                      setAddImage(0);
-                      setActionImage({});
-                      setError({});
-                    }}
-                    className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
-                  >
-                    <svg
-                      className="w-5 h-5"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                        clipRule="evenodd"
-                      ></path>
-                    </svg>
-                  </button>
-                </div>
-                <form id="addgallery">
-                  <div className="p-6 space-y-6">
-                    <div className="grid grid-cols-6 gap-6">
-                      <div className="col-span-6 sm:col-span-3">
-                        <label
-                          className={`text-sm ${color?.text} font-medium  block mb-2`}
-                          htmlFor="grid-password"
-                        >
-                          {language?.imageupload}
-                          <span style={{ color: "#ff0000" }}>*</span>
-                        </label>
-                        <div className="flex">
-                          <input
-                            type="file"
-                            name="myImage"
-                            accept="image/png, image/gif, image/jpeg, image/jpg"
-                            onChange={(e) => {
-                              onChangePhoto(e, "imageFile", image, setImage);
-                            }}
-                            className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg  focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
-                            defaultValue=""
-                          />
-                        </div>
-                        <div className="col-span-6 sm:col-span-3 mt-2">
-                          <p className="text-sm text-red-700 font-light">
-                            {error?.image_link}
-                          </p>
-                          {spin === 0 ? (
-                            <Button
-                              Primary={language?.Upload}
-                              onClick={() => uploadImage(setSpin, image, setImage)}
-                            />
-                          ) : (
-                            <Button Primary={language?.SpinnerUpload} />
-                          )}
-                        </div>
-                      </div>
-                      <div className="col-span-6 sm:col-span-3 mt-2">
-                        {/* displays image once it is loaded else demoImage */}
-                        {image?.image_link != undefined ?
-                          <img
-                            className={` ${color?.text}`}
-                            src={image?.image_link}
-                            alt="Image Preview"
-                            style={{ height: "150px", width: "250px" }}
-                          /> :
-                          <ImageDemo width={'250'} height={'150'} bgColor={'bg-gray-400'} />}
+
+        {addImage === 1 && <Modal
+          title={language?.addnewimage}
+          description={<AddNewImages
+            language={language} color={color} error={error} setError={setError} flag={flag} setFlag={setFlag}
+            actionImage={actionImage} setActionImage={setActionImage}
+            spin={spin}
+            spinner={spinner} setSpinner={setSpinner} currentProperty={currentProperty} image={image}
+            setImage={setImage} setGallery={setGallery} setImages={setImages} setEnlargedImage={setEnlargedImage}
+            setVisible={setVisible} Router={Router} addImage={addImage} addURLImage={addURLImage} setAddImage={setAddImage}
+            setAddURLImage={setAddURLImage} />}
+          setShowModal={() => {
+            setImage({});
+            document.getElementById("addgallery").reset();
+            setAddImage(0);
+            setActionImage({});
+            setError({});
+          }} />}
 
 
-                      </div>
-                      <div className="col-span-6 sm:col-span-3">
-                        <label
-                          className={`text-sm ${color?.text} capitalize font-medium  block mb-2`}
-                          htmlFor="grid-password"
-                        >
-                          {language?.image} {language?.titl}
-                          <span style={{ color: "#ff0000" }}>*</span>
-                        </label>
-                        <input
-                          type="text"
-                          onChange={(e) =>
-                            setActionImage(
-                              { ...actionImage, image_title: e.target.value },
-                              setFlag(1)
-                            )
-                          }
-                          className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg 
-                                            focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
-                          placeholder="Image Title"
-                        />
-                        <p className="text-sm text-red-700 font-light">
-                          {error?.image_title}
-                        </p>
-                      </div>
-                      <div className="col-span-6 sm:col-span-3">
-                        <label
-                          className={`text-sm ${color?.text} font-medium  block mb-2`}
-                          htmlFor="grid-password"
-                        >
-                          {language?.image} {language?.description}
-                          <span style={{ color: "#ff0000" }}>*</span>
-                        </label>
-                        <textarea
-                          rows="2"
-                          columns="60"
-                          onChange={(e) =>
-                            setActionImage(
-                              {
-                                ...actionImage,
-                                image_description: e.target.value,
-                              },
-                              setFlag(1)
-                            )
-                          }
-                          className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg 
-                                            focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
-                          defaultValue=""
-                        />
-                        <p className="text-sm text-red-700 font-light">
-                          {error?.image_description}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </form>
-                <div className="items-center p-6 border-t border-gray-200 rounded-b">
-                  <div
-                    className={flag !== 1 && spinner === 0 ? "block" : "hidden"}
-                  >
-                    <Button Primary={language?.AddDisabled} />
-                  </div>
-                  <div
-                    className={spinner === 0 && flag === 1 ? "block" : "hidden"}
-                  >
-                    <Button
-                      Primary={language?.Add}
-                      onClick={() => {
-                        validationGallery(setError, flag, actionImage, setActionImage, setSpinner, currentProperty, image, setImage, setGallery, setImages, setEnlargedImage, setVisible, Router, addImage, addURLImage, setAddImage, setAddURLImage);
-                      }}
-                    />
-                  </div>
-                  <div
-                    className={spinner === 1 && flag === 1 ? "block" : "hidden"}
-                  >
-                    <Button Primary={language?.SpinnerAdd} />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
 
         {/* Modal Add from url */}
-        <div className={addURLImage === 1 ? "block" : "hidden"}>
-          <div className="overflow-x-hidden overflow-y-auto fixed top-4 left-0 right-0 backdrop-blur-xl bg-black/30 md:inset-0 z-50 flex justify-center items-center h-modal sm:h-full">
-            <div className="relative w-full max-w-2xl px-4 h-full md:h-auto">
-              <div
-                className={`${color?.whitebackground} rounded-lg shadow relative`}
-              >
-                <div className="flex items-start justify-between p-5 border-b rounded-t">
-                  <h3 className={`${color?.text} text-xl font-semibold`}>
-                    {language?.addnewimage}
-                  </h3>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setImage({});
-                      document.getElementById("addurlgallery").reset();
-                      setAddURLImage(0);
-                      setImage({});
-                      setActionImage({});
-                      setError({});
-                    }}
-                    className="text-gray-400 bg-transparent
-                                 hover:bg-gray-200 
-                                 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
-                  >
-                    <svg
-                      className="w-5 h-5"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                        clipRule="evenodd"
-                      ></path>
-                    </svg>
-                  </button>
-                </div>
-                <form id="addurlgallery">
-                  <div className="p-6 space-y-6">
-                    <div className="grid grid-cols-6 gap-6">
-                      <div className="col-span-6 sm:col-span-3">
-                        <label
-                          className={`text-sm ${color?.text} capitalize font-medium  block mb-2`}
-                          htmlFor="grid-password"
-                        >
-                          {language?.imagelink}
-                          <span style={{ color: "#ff0000" }}>*</span>
-                        </label>
-                        <input
-                          type="text"
-                          onChange={(e) =>
-                            setImage(
-                              { ...Image, image_link: e.target.value },
-                              setFlag(1)
-                            )
-                          }
-                          className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg 
-                                            focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
-                        />
-                        <p className="text-sm text-red-700 font-light">
-                          {error?.image_link}
-                        </p>
-                      </div>
-
-                      <div className="col-span-6 sm:col-span-3">
-                        <label
-                          className={`text-sm ${color?.text} capitalize font-medium  block mb-2`}
-                          htmlFor="grid-password"
-                        >
-                          {language?.image} {language?.titl}
-                          <span style={{ color: "#ff0000" }}>*</span>
-                        </label>
-                        <input
-                          type="text"
-                          onChange={(e) =>
-                            setActionImage(
-                              { ...actionImage, image_title: e.target.value },
-                              setFlag(1)
-                            )
-                          }
-                          className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg 
-                                            focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
-                        />
-                        <p className="text-sm text-red-700 font-light">
-                          {error?.image_title}
-                        </p>
-                      </div>
-                      <div className="col-span-6 sm:col-span-3">
-                        <label
-                          className={`text-sm ${color?.text} font-medium  block mb-2`}
-                          htmlFor="grid-password"
-                        >
-                          {language?.image} {language?.description}
-                          <span style={{ color: "#ff0000" }}>*</span>
-                        </label>
-                        <textarea
-                          rows="2"
-                          columns="60"
-                          onChange={(e) =>
-                            setActionImage(
-                              {
-                                ...actionImage,
-                                image_description: e.target.value,
-                              },
-                              setFlag(1)
-                            )
-                          }
-                          className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg 
-                                            focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5`}
-                          defaultValue=""
-                        />
-                        <p className="text-sm text-red-700 font-light">
-                          {error?.image_description}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </form>
-                <div className="items-center p-6 border-t border-gray-200 rounded-b">
-                  <div
-                    className={flag !== 1 && spinner === 0 ? "block" : "hidden"}
-                  >
-                    <Button Primary={language?.AddDisabled} />
-                  </div>
-                  <div
-                    className={spinner === 0 && flag === 1 ? "block" : "hidden"}
-                  >
-                    <Button
-                      Primary={language?.Add}
-                      onClick={() => {
-                        validationGallery(setError, flag, actionImage, setActionImage, setSpinner, currentProperty, image, setImage, setGallery, setImages, setEnlargedImage, setVisible, Router, addImage, addURLImage, setAddImage, setAddURLImage);
-                      }}
-                    />
-                  </div>
-                  <div
-                    className={spinner === 1 && flag === 1 ? "block" : "hidden"}
-                  >
-                    <Button Primary={language?.SpinnerAdd} />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        {
+          addURLImage === 1 && <Modal
+            title={language?.addnewimage}
+            description={<AddFromUrl
+              language={language} color={color} error={error} setError={setError} flag={flag} setFlag={setFlag}
+              validationGallery={validationGallery} actionImage={actionImage} setActionImage={setActionImage}
+              spinner={spinner} setSpinner={setSpinner} currentProperty={currentProperty} image={image}
+              setImage={setImage} setGallery={setGallery} setImages={setImages} setEnlargedImage={setEnlargedImage}
+              setVisible={setVisible} Router={Router} addImage={addImage} addURLImage={addURLImage} setAddImage={setAddImage}
+              setAddURLImage={setAddURLImage} />}
+            setShowModal={() => {
+              setImage({});
+              document.getElementById("addurlgallery").reset();
+              setAddURLImage(0);
+              setImage({});
+              setActionImage({});
+              setError({});
+            }} />
+        }
 
         {/* Modal Delete */}
-        <div className={deleteImage === 1 ? "block" : "hidden"}>
-          <div className="overflow-x-hidden overflow-y-auto fixed top-4 left-0 right-0 backdrop-blur-xl bg-black/30 md:inset-0 z-50 flex justify-center items-center h-modal sm:h-full">
-            <div className="relative w-full max-w-md px-4 h-full md:h-auto">
-              <div
-                className={`rounded-lg shadow relative ${color?.whitebackground}`}
-              >
-                <div className="flex justify-end p-2">
-                  <button
-                    onClick={() => setdeleteImage(0)}
-                    type="button"
-                    className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
-                    data-modal-toggle="delete-user-modal"
-                  >
-                    <svg
-                      className="w-5 h-5"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                        clipRule="evenodd"
-                      ></path>
-                    </svg>
-                  </button>
-                </div>
+        {deleteImage === 1 && <Modal
+          description={
+            <DeleteSelectedImages color={color} language={language} spinner={spinner} deleteMultiple={deleteMultiple} setdeleteImage={setdeleteImage} check={check} currentProperty={currentProperty} setSpinner={setSpinner} setGallery={setGallery} setImages={setImages} setEnlargedImage={setEnlargedImage} setVisible={setVisible} Router={Router} />}
+          setShowModal={() => setdeleteImage(0)} />
+        }
 
-                <div className="p-6 pt-0 text-center">
-                  <svg
-                    className="w-20 h-20 text-red-600 mx-auto"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    ></path>
-                  </svg>
-                  <h3
-                    className={`text-base font-normal ${color?.deltext} mt-5 mb-6`}
-                  >
-                    {language?.areyousureyouwanttodelete}
-                  </h3>
+      </div >
 
-                  {spinner === 0 ? (
-                    <>
-                      <Button
-                        Primary={language?.Delete}
-                        onClick={() => deleteMultiple(check, currentProperty, setSpinner, setGallery, setImages, setEnlargedImage, setVisible, Router, setdeleteImage)}
-                      />
-                      <Button
-                        Primary={language?.Cancel}
-                        onClick={() => setdeleteImage(0)}
-                      />
-                    </>
-                  ) : (
-                    <Button Primary={language?.SpinnerDelete} />
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+      {/* Toast Container */}
+      < ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
 
-        {/* Toast Container */}
-        <ToastContainer
-          position="top-center"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-        />
-      </div>
       {/* Footer */}
-      <Footer color={color} Primary={english.Foot} />
+      < Footer color={color} Primary={english.Foot} />
     </>
   );
 }

@@ -355,7 +355,7 @@ function Gallery() {
           {/* loaders for images end */}
 
           {/* main gallery start */}
-          {visible === 1?
+          {visible === 1 ?
             showSearchedImages === 0 ? <div className="flex-wrap container grid sm:grid-cols-2 py-4 -pl-6 lg:grid-cols-3 gap-4">
               {images?.map((item, idx) => {
                 return (
@@ -415,69 +415,69 @@ function Gallery() {
                 );
               })}
             </div>
-          
-          :
-          <div className="flex-wrap container grid sm:grid-cols-2 py-4 -pl-6 lg:grid-cols-3 gap-4">
-            {searchedImages?.map((item, idx) => {
-              return (
-                <>
-                  <div
-                    className="block text-blueGray-600  text-xs font-bold "
-                    key={idx}
-                  >
-                    <div
-                      className="relative cursor-pointer"
-                      tooltip
-                      title="Click here to view or edit."
-                    >
-                      <a href="#" className="relative flex">
-                        <input
-                          type="checkbox"
-                          id={item?.image_id}
+
+              :
+              <div className="flex-wrap container grid sm:grid-cols-2 py-4 -pl-6 lg:grid-cols-3 gap-4">
+                {searchedImages?.map((item, idx) => {
+                  return (
+                    <>
+                      <div
+                        className="block text-blueGray-600  text-xs font-bold "
+                        key={idx}
+                      >
+                        <div
+                          className="relative cursor-pointer"
                           tooltip
-                          title="Click here to delete image."
-                          name={item?.image_id}
-                          checked={item.isChecked || false}
-                          onChange={(e) => {
-                            handlecheckbox(e, images, setImages, setCheck);
-                          }}
-                          className="bottom-0 right-0 cursor-pointer absolute bg-gray-30 opacity-30 m-1 border-gray-300 text-cyan-600  checked:opacity-100 focus:ring-3 focus:ring-cyan-200 h-4 w-4 rounded-full"
-                          onClick={() => {
-                            setSelectedImage(!selectedImage);
-                          }}
-                        />
-                        {check?.length === 0 || undefined ? (
-                          <img
-                            htmlFor={item?.image_id}
-                            className={`rounded-lg`}
-                            src={item.image_link}
-                            alt="Room Image"
-                            style={{ height: "170px", width: "450px" }}
-                            onClick={() => {
-                              setEnlargeImage(1);
-                              setActionEnlargeImage(item);
-                              setIndexImage(idx);
-                            }}
-                          />
-                        ) : (
-                          <img
-                            htmlFor={item?.image_id}
-                            className={`rounded-lg`}
-                            src={item.image_link}
-                            alt="Room Image"
-                            style={{ height: "170px", width: "450px" }}
-                          />
-                        )}
-                      </a>
-                    </div>
-                  </div>
-                </>
-              );
-            })}
-          </div>:undefined
-          
-          
-        }
+                          title="Click here to view or edit."
+                        >
+                          <a href="#" className="relative flex">
+                            <input
+                              type="checkbox"
+                              id={item?.image_id}
+                              tooltip
+                              title="Click here to delete image."
+                              name={item?.image_id}
+                              checked={item.isChecked || false}
+                              onChange={(e) => {
+                                handlecheckbox(e, images, setImages, setCheck);
+                              }}
+                              className="bottom-0 right-0 cursor-pointer absolute bg-gray-30 opacity-30 m-1 border-gray-300 text-cyan-600  checked:opacity-100 focus:ring-3 focus:ring-cyan-200 h-4 w-4 rounded-full"
+                              onClick={() => {
+                                setSelectedImage(!selectedImage);
+                              }}
+                            />
+                            {check?.length === 0 || undefined ? (
+                              <img
+                                htmlFor={item?.image_id}
+                                className={`rounded-lg`}
+                                src={item.image_link}
+                                alt="Room Image"
+                                style={{ height: "170px", width: "450px" }}
+                                onClick={() => {
+                                  setEnlargeImage(1);
+                                  setActionEnlargeImage(item);
+                                  setIndexImage(idx);
+                                }}
+                              />
+                            ) : (
+                              <img
+                                htmlFor={item?.image_id}
+                                className={`rounded-lg`}
+                                src={item.image_link}
+                                alt="Room Image"
+                                style={{ height: "170px", width: "450px" }}
+                              />
+                            )}
+                          </a>
+                        </div>
+                      </div>
+                    </>
+                  );
+                })}
+              </div> : undefined
+
+
+          }
           {/* main gallery Ends */}
         </div>
 
@@ -664,9 +664,6 @@ function Gallery() {
             setActionImage({});
             setError({});
           }} />}
-
-
-
         {/* Modal Add from url */}
         {
           addURLImage === 1 && <Modal

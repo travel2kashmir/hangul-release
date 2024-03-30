@@ -151,8 +151,6 @@ function Inbox() {
             })
     }
 
-    // Checkboxes logic for single or multi delete
-    
     // Multi delete
     const allDelete = async () => {
         checked = [];

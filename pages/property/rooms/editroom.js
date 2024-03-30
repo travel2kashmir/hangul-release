@@ -1,9 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import validateRoom from '../../../components/validation/room/roomdescriptionadd';
-import validateSingleBedEdit from '../../../components/validation/room/roomsinglebededit';
-import validateEditGallery from '../../../components/validation/room/roomgalleryedit';
-import validateRoomRates from '../../../components/validation/room/roomratesadd';
-import validateBedAdd from '../../../components/validation/room/roomsinglebedadd';
 import LoaderTable from '../../../components/loadertable';
 import objChecker from "lodash"
 import Table from '../../../components/Table';
@@ -30,18 +25,14 @@ import ImageDemo from "../../../components/utils/ImageDemo"
 import Router from 'next/router'
 import BreadCrumb from '../../../components/utils/BreadCrumb';
 import GenericTable from '../../../components/utils/Tables/GenericTable';
-import RoomEdit from '../../../components/rooms/RoomEdit';
-import RoomDelete from '../../../components/rooms/RoomDelete';
-import RoomPlanAdd from '../../../components/rooms/RoomPlanAdd';
-
+import { RoomPlanAdd, RoomEdit, RoomDelete, RoomDescription, SingleBed, RoomService, AddImage } from '../../../components/rooms';
+import { validateBedAdd, validateRoomRates, validateEditGallery, validateSingleBedEdit, validateRoom } from '../../../components/validation/room';
+import EditRoomImage from '../../../components/rooms/EditRoomImage';
 let language;
 let currentProperty;
 let currentroom;
 let room;
-let viewsData;
 let check = [];
-let checkDiscount = [];
-let checkModification = [];
 let resView = [];
 let currency;
 let currentLogged;
@@ -51,14 +42,13 @@ function Room() {
   const [allCheck, setAllCheck] = useState(0)
   const [visible, setVisible] = useState(0)
   const [spinner, setSpinner] = useState(0)
-  const [darkModeSwitcher, setDarkModeSwitcher] = useState()
+  const [finalView, setFinalView] = useState([])
   const [color, setColor] = useState({})
   const [allRoomDetails, setAllRoomDetails] = useState([])
   const [modified, setModified] = useState([])
   const [flag, setFlag] = useState([])
   const [disp, setDisp] = useState(0);
   const [error, setError] = useState({});
-  const [finalView, setFinalView] = useState([])
   const [roomDetails, setRoomDetails] = useState([])
   const [bedDetails, setBedDetails] = useState([])
   const [allRoomRates, setAllRoomRates] = useState([])
@@ -66,12 +56,10 @@ function Room() {
   const [roomimages, setRoomimages] = useState([])
   const [images, setImages] = useState([]);
   const [addImage, setAddImage] = useState(0)
-  const [roomtypes, setRoomtypes] = useState([])
   const [actionImage, setActionImage] = useState({})
   const [deleteImage, setdeleteImage] = useState(0)
   const [editImage, setEditImage] = useState(0);
   const [view, setView] = useState(0);
-  const [roomView, setRoomView] = useState([]);
   const [image, setImage] = useState({})
   const [imageUploaded, setImageUploaded] = useState(false)
   const [services, setServices] = useState([])
@@ -79,7 +67,7 @@ function Room() {
   const [gen, setGen] = useState([])
   const [selectedImage, setSelectedImage] = useState(false);
   const [indexImage, setIndexImage] = useState();
-  const [isInventoryEdited, setIsInventoryEdited] = useState(false);
+
   const [enlargeImage, setEnlargeImage] = useState(0)
   const [enlargedImage, setEnlargedImage] = useState();
   const [mode, setMode] = useState()
@@ -119,7 +107,6 @@ function Room() {
       Router.push(window.location.origin)
     }
     else {
-      fetchRoomtypes();
       fetchImages();
       fetchDetails();
     }
@@ -210,9 +197,6 @@ function Room() {
       .then((response) => {
         setAllRoomDetails(response.data);
         setRoomDetails(response.data);
-        setVisible(1);
-        setFinalView(response?.data?.views);
-        filterRatesData(response?.data?.unconditional_rates);
         if (response.data.room_refrences !== undefined) {
           let item = response.data.room_refrences.map(item => item.room_identifier)
           setInitalIdentifiers(item.toString())
@@ -221,11 +205,12 @@ function Room() {
         if (response.data?.room_type == 'Single') {
           setBedDetails(response.data.beds?.[i])
         }
-
         if (response.data.room_facilities !== undefined) {
           setServices(response.data.room_facilities);
         }
-
+        setVisible(1);
+        setFinalView(response?.data?.views);
+        filterRatesData(response?.data?.unconditional_rates);
         setRoomDetails(response.data);
         if (response.data.room_facilities == undefined) {
           fetchServices();
@@ -252,34 +237,15 @@ function Room() {
       .catch((error) => { console.log("url to fetch room, failed"); });
   }
 
-  const filterCurrency = (props) => {
-    if (props != undefined) {
-      currency = lang?.CurrencyData.filter(el => {
-        return props.baserate_currency.toUpperCase() === el.currency_code;
-      });
-      const rate = {
-        "currency": currency?.[i]?.currency_name,
-        "baserate_amount": props.baserate_amount,
-        "tax_amount": props.tax_amount,
-        "otherfees_amount": props.otherfees_amount,
-        "room_id": props.room_id,
-        "un_rate_id": props.un_rate_id
-      }
-      //setAllRoomRates({ props., currency: currency?.[i]?.currency_name })
-      setAllRoomRates(rate)
-
-    }
-  }
-
   // Room Services
   const fetchServices = async () => {
     const url = `/api/all_room_services`
     axios.get(url)
       .then((response) => {
         setServices(response.data);
-        console.log("url  to fetch roomtypes hitted successfully")
+        console.log("url  to fetch room services hitted successfully")
       })
-      .catch((error) => { console.log("url to fetch roomtypes, failed") });
+      .catch((error) => { console.log("url to fetch room services, failed") });
   }
 
   // Room Images
@@ -299,107 +265,11 @@ function Room() {
   }
 
   // Room Types
-  const fetchRoomtypes = async () => {
-    const url = `/api/room-types`
-    axios.get(url)
-      .then((response) => {
-        setRoomtypes(response.data);
-        console.log("url  to fetch room types hitted successfully")
-      })
-      .catch((error) => { console.log("url to fetch roomtypes, failed") });
-  }
 
-  const onChangePhoto = (e, i) => {
-    setImage({ ...image, imageFile: e.target.files[0] })
-  }
 
-  /* Function to upload image */
-  const uploadImage = () => {
-    const imageDetails = image.imageFile
-    const formData = new FormData();
-    formData.append("file", imageDetails);
-    formData.append("upload_preset", "Travel2Kashmir")
 
-    axios.post("https://api.cloudinary.com/v1_1/dvczoayyw/image/upload", formData)
-      .then(response => {
-        setActionImage({ ...actionImage, image_link: response?.data?.secure_url })
-        setImageUploaded(true)
-      })
-      .catch(error => {
-        toast.error("App: Image upload error.", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-        console.error('There was an error.', error);
 
-      });
 
-  }
-
-  // Views
-  const views = (viewData) => {
-    setFinalView([]);
-    var final_view_data = []
-    viewData.map(item => {
-      var temp = {
-        view: item?.view
-      }
-      final_view_data.push(temp)
-    });
-    setFinalView(final_view_data);
-    setRoomView(1)
-  }
-
-  /* Function for Edit Room Images*/
-  const updateImageDetails = () => {
-    const final_data = {
-      "image_id": actionImage?.image_id,
-      "image_title": actionImage.image_title,
-      "image_description": actionImage.image_description,
-      "image_type": "room"
-    }
-    setSpinner(1)
-    const url = '/api/images'
-    axios.put(url, final_data, { header: { "content-type": "application/json" } }).then
-      ((response) => {
-        setEditImage(0);
-        setSpinner(0)
-        toast.success("App: Room image details update success.", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-        fetchDetails();
-        setActionImage([]);
-        setError({});
-        setAllRoomDetails([]);
-        setFlag([])
-      })
-      .catch((error) => {
-        setSpinner(0);
-        setError({});
-        toast.error("App: Room gallery update error.", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-
-      })
-
-  }
 
   /*function for keyboard keys */
   function left(key) {
@@ -452,174 +322,9 @@ function Room() {
     }
   }, []);
 
-  /* Function to add images*/
-  const submitAddImage = () => {
-    if (actionImage.length !== 0) {
-      const imagedata = [{
-        property_id: currentProperty?.property_id,
-        image_link: actionImage?.image_link,
-        image_title: actionImage?.image_title,
-        image_description: actionImage?.image_description,
-        image_category: "room",
-        room_id: currentroom
-      }]
-      const finalImage = { "images": imagedata }
-      setSpinner(1);
-      axios.post(`/api/gallery`, finalImage)
-        .then(response => {
-          setSpinner(0)
-          toast.success("App: Image added success.", {
-            position: "top-center",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
-          fetchImages();
-          setActionImage([])
-          setError({});
-          setFlag([]);
-          setAddImage(0);
-          // submitImageLink(response?.data?.image_id);
-        })
-        .catch(error => {
-          setSpinner(0);
-          setError({})
-          toast.error("App: Gallery error.", {
-            position: "top-center",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
-        });
-    }
-  }
-  /* Function for Update Room Description*/
-  const submitRoomDescriptionEdit = () => {
-    if (allRoomDetails.length !== 0) {
-      const final_data = {
-        "room_id": currentroom,
-        "room_name": allRoomDetails.room_name,
-        "room_type_id": allRoomDetails.room_type_id,
-        "room_description": allRoomDetails.room_description,
-        "is_room": allRoomDetails.is_room,
-        "is_room_sharing": allRoomDetails.is_room_sharing,
-        "room_style": allRoomDetails.room_style,
-        "room_capacity": allRoomDetails.room_capacity,
-        "maximum_number_of_occupants": allRoomDetails.maximum_number_of_occupants,
-        "minimum_number_of_occupants": allRoomDetails.minimum_number_of_occupants,
-        "minimum_age_of_occupants": allRoomDetails.minimum_age_of_occupants,
-        "room_length": allRoomDetails.room_length,
-        "room_width": allRoomDetails.room_width,
-        "room_height": allRoomDetails.room_height
-      }
-      setSpinner(1);
-      if (roomIdentifiers != undefined) {
-        manageIdentifiers(currentroom, allRoomDetails.room_type);
-      }
 
-      const url = '/api/room'
-      axios.put(url, final_data, { header: { "content-type": "application/json" } }).then
-        ((response) => {
-          setSpinner(0);
-          toast.success("Room details update success.", {
-            position: "top-center",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
-          fetchDetails();
-          setError({});
-          setFlag([]);
-          setAllRoomDetails([])
-        })
-        .catch((error) => {
-          setSpinner(0);
-          setError({});
-          toast.error("Room details update error. ", {
-            position: "top-center",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
-        })
-    }
-  }
 
-  //  update inventory 
-  function updateInventory() {
-    let url = `/api/inventory`
-    let inventorydata = {
-      "inventory": [{
 
-        "room_id": allRoomDetails.room_id,
-        "inventory_count": allRoomDetails.inventory_count
-      }]
-    }
-    axios.put(url, inventorydata,
-      {
-        header: { "content-type": "application/json" }
-      }
-    ).then((response) => {
-      console.log(response.data);
-      toast.success('Inventory updated successfully')
-    }).catch((err) => {
-      console.log(err)
-      toast.error('Not Able to update the inventory at the moment.')
-    })
-  }
-
-  // manage identifiers
-  function manageIdentifiers(room_id, room_type) {
-    let id = roomIdentifiers?.split(",")
-    let final = [];
-    let temp;
-    id.map((i) => {
-      temp = {
-        "room_id": room_id,
-        "room_type_id": roomtypes.filter(i => i.room_type_name === room_type)[0].room_type_id,
-        "room_identifier": i
-      }
-      final.push(temp);
-
-    })
-    axios.post('/api/room_refrence', { "room_refrences": final },
-      { headers: { 'content-type': 'application/json' } })
-      .then(response => {
-        setSpinner(0);
-        toast.success("API: Room Refrences Added successfully", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      }).catch(() => {
-        toast.error("API: Room Refrences Added Failed", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      })
-
-  }
   /* Function for Update Room Rates*/
   const submitRoomRatesEdit = () => {
     if (allRoomRates.length !== 0) {
@@ -712,138 +417,7 @@ function Room() {
     }
   }
 
-  /*Function to add room service*/
-  const submitServices = () => {
-    services.map(
-      (i) => (i.room_id = currentroom, i.status = i.service_value)
-    )
-    services.map(
-      (i) => {
-        if (JSON.stringify(i.service_value) !== "true") {
-          return (
 
-            i.service_value = false,
-            i.status = false
-          )
-        }
-      }
-    )
-    var total = { "room_services": services }
-    const url = '/api/room_facilities'
-    axios.post(url, total, { header: { "content-type": "application/json" } }).then
-      ((response) => {
-        toast.success("Room services added success.", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      })
-      .catch((error) => {
-        toast.error("Room services add error.", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      })
-
-  }
-
-  /*Function to edit room service*/
-  const editServices = () => {
-    services.map(
-      (i) => (i.room_id = currentroom, i.status = i.service_value)
-    )
-    services.map(
-      (i) => {
-        if (JSON.stringify(i.service_value) !== "true") {
-          return (
-
-            i.service_value = false,
-            i.status = false
-          )
-        }
-      }
-    )
-    setSpinner(1)
-    var total = { "room_services": services }
-    const url = '/api/room_facilities'
-    axios.put(url, total, { header: { "content-type": "application/json" } }).then
-      ((response) => {
-        setSpinner(0)
-        toast.success("Room services update successfully.", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-
-      })
-      .catch((error) => {
-        setSpinner(0)
-        toast.error("Room Services update error. ", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      })
-
-  }
-
-  // View Submit
-  const submitView = () => {
-    const data = finalView?.map((i => {
-      return {
-        "room_id": currentroom,
-        "view": i?.view
-      }
-    }))
-    setSpinner(1);
-    const final_data = { "room_views": data }
-    const url = '/api/room_views'
-    axios.post(url, final_data, { header: { "content-type": "application/json" } }).then
-      ((response) => {
-        setSpinner(0);
-        toast.success("View add success.", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-        setFlag([])
-        setRoomView([]);
-        setError({});
-      })
-      .catch((error) => {
-        setSpinner(0);
-        toast.error("View add error.", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      })
-  }
 
   /* Function to add bed */
   const addBed = () => {
@@ -1012,7 +586,6 @@ function Room() {
           progress: undefined,
         });
         fetchDetails();
-        Router.push("./gallery");
         setdeleteImage(0);
       })
       .catch((error) => {
@@ -1029,54 +602,6 @@ function Room() {
       });
   }
 
-  /* Function to edit single bed */
-  const submitBedUpdate = () => {
-    const current = new Date();
-    const currentDateTime = current.toISOString();
-    const final_data = {
-      "beds": [{
-        "bed_id": roomDetails?.beds?.[i]?.bed_id,
-        "length": roomDetails?.bed_length,
-        "width": roomDetails?.bed_width,
-        "unit": "cm"
-      }]
-    }
-    setSpinner(1);
-    const url = '/api/bed_details'
-    axios.put(url, final_data, { header: { "content-type": "application/json" } }).then
-      ((response) => {
-        toast.success("App: Bed update success.", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-
-        fetchDetails();
-        Router.push("./editroom");
-        setError({});
-        setModified([]);
-        setSpinner(0);
-        setFlag([])
-      })
-      .catch((error) => {
-        toast.error("App: Bed update error!", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-        setSpinner(0);
-        setFlag([])
-      })
-
-  }
 
   // Delete Bed
   const deleteBed = (props) => {
@@ -1108,52 +633,6 @@ function Room() {
       })
   }
 
-
-  // Validate Room Description
-  const validationRoomDescription = () => {
-    var result = validateRoom(allRoomDetails, finalView, roomIdentifiers?.split(","))
-    if (result === true) {
-      if (flag === 1) {
-        submitRoomDescriptionEdit();
-      }
-      if (roomView === 1) {
-        submitView();
-      }
-      if (isInventoryEdited) {
-        updateInventory();
-      }
-    }
-    else {
-      setError(result)
-    }
-  }
-
-  // Validate Beds Data
-  const validationBedData = () => {
-    var result = validateBedAdd(bedDetails)
-    if (result === true) {
-      submitBedUpdate();
-    }
-    else {
-      setError(result)
-    }
-  }
-
-  // Validate Image
-  const validationImage = () => {
-    var result = validateEditGallery(actionImage)
-    if (result === true) {
-      if (addImage === 1) {
-        submitAddImage();
-      }
-      if (addImage === 0) {
-        updateImageDetails();
-      }
-    }
-    else {
-      setError(result)
-    }
-  }
 
   // Validate Rates
   const validationRates = () => {
@@ -1216,375 +695,14 @@ function Room() {
           </h6>
 
           {/* Room Description */}
-          {disp === 0 ?
-            <div id='0' className='block py-1'>
-              <div className={`${color?.whitebackground} shadow rounded-lg px-12 sm:p-6 xl:p-8  2xl:col-span-2`}>
-                {/* progress bar starts */}
-                <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`]} selected={1} color={color} />
-                {/* Progress bar ends */}
-                <h6 className={`${color?.text} text-xl flex leading-none pl-6 lg:pt-2 pt-6  pb-2 font-bold`}>
-                  {language?.room} {language?.description}
-                </h6>
-                <div className="pt-6">
-                  <div className=" md:px-2 mx-auto w-full">
-                    <div className="flex flex-wrap">
-                      {/* room type */}
-                      <DropDown
-                        label={`${language?.room} ${language?.type}`}
-                        visible={visible}
-                        defaultValue={roomDetails?.room_type}
-                        onChangeAction={(e) =>
-                          setAllRoomDetails(
-                            { ...allRoomDetails, room_type_id: e.target.value },
-                            setFlag(1)
-                          )
-                        }
-                        error={error?.propertycategory}
-                        color={color}
-                        req={true}
-                        options={roomtypes?.map(i => {
-                          return (
-
-                            { value: i.room_type_id, label: i?.room_type_name.replaceAll("_", " ") }
-
-                          )
-                        })
-                        }
-
-
-                      />
-
-                      {/* room name */}
-                      <InputText
-                        label={`${language?.room} ${language?.name}`}
-                        visible={visible}
-                        defaultValue={allRoomDetails?.room_name}
-                        onChangeAction={(e) => {
-                          setAllRoomDetails({
-                            ...allRoomDetails, room_name: e.target.value,
-                          });
-                          setFlag(1);
-                        }
-                        }
-                        error={error?.room_name}
-                        color={color}
-                        req={true}
-                        tooltip={true}
-                      />
-
-                      {/*Room Description */}
-                      <InputTextBox
-                        label={`${language?.room} ${language?.description}`}
-                        visible={visible}
-                        defaultValue={allRoomDetails?.room_description}
-                        wordLimit={1000}
-                        onChangeAction={(e) => {
-                          if (e.target.value.length >= 0 && e.target.value.length < 1000) {
-                            setError({})
-                            setAllRoomDetails({ ...allRoomDetails, room_description: e.target.value }, setFlag(1))
-                          }
-                          else {
-                            setError({ room_description: 'word limit reached' })
-                          }
-
-                        }
-
-                        }
-                        error={error?.room_description}
-                        color={color}
-                        req={true}
-                        tooltip={true}
-                      />
-
-                      {/* room capacity */}
-                      <InputText
-                        label={`${language?.room} ${language?.capacity}`}
-                        visible={visible}
-                        defaultValue={allRoomDetails?.room_capacity}
-                        onChangeAction={
-                          (e) => (
-                            setAllRoomDetails({ ...allRoomDetails, room_capacity: e.target.value }, setFlag(1))
-                          )
-                        }
-                        error={error?.room_capacity}
-                        color={color}
-                        req={true}
-                      />
-
-                      {/* max number of occupants */}
-                      <InputText
-                        label={`${language?.maximum} ${language?.number} ${language?.of} ${language?.occupants}`}
-                        visible={visible}
-                        defaultValue={allRoomDetails?.maximum_number_of_occupants}
-                        onChangeAction={
-                          (e) => (
-                            setAllRoomDetails({ ...allRoomDetails, maximum_number_of_occupants: e.target.value }, setFlag(1))
-                          )
-                        }
-                        error={error?.maximum_number_of_occupants}
-                        color={color}
-                        req={true}
-                      />
-
-                      {/* minimum number of occupants */}
-                      <InputText
-                        label={`${language?.minimum} ${language?.number} ${language?.of} ${language?.occupants}`}
-                        visible={visible}
-                        defaultValue={allRoomDetails?.minimum_number_of_occupants}
-                        onChangeAction={
-                          (e) => {
-                            setAllRoomDetails({ ...allRoomDetails, minimum_number_of_occupants: e.target.value }, setFlag(1))
-                          }
-                        }
-                        error={error?.minimum_number_of_occupants}
-                        color={color}
-                        req={true}
-                      />
-
-                      {/* Maximum age of occupants */}
-                      <InputText
-                        label={`${language?.maximum} ${language?.age} ${language?.of} ${language?.occupants}`}
-                        visible={visible}
-                        defaultValue={allRoomDetails?.minimum_age_of_occupants}
-                        onChangeAction={
-                          (e) => (
-                            setAllRoomDetails({ ...allRoomDetails, minimum_age_of_occupants: e.target.value }, setFlag(1))
-                          )
-                        }
-                        error={error?.maximum_number_of_occupants}
-                        color={color}
-                        req={true}
-                      />
-
-                      {/* views room */}
-                      <div className="w-full lg:w-6/12 px-4">
-                        <div className="relative w-full mb-3">
-                          <label className={`text-sm font-medium ${color?.text} block py-1 mb-2`}
-                            htmlFor="grid-password">
-                            {language?.viewsfromroom}
-                            <span style={{ color: "#ff0000" }}>*</span>
-                          </label>
-                          <div className={visible === 0 ? 'block py-1' : 'hidden'}><Lineloader /></div>
-                          <div className={visible === 1 ? 'block py-1' : 'hidden'}>
-                            <Multiselect
-                              className={`shadow-sm ${color?.greybackground} ${color?.text} mb-3 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full`}
-                              isObject={true}
-                              options={lang?.Views}
-                              onRemove={(event) => { views(event) }}
-                              onSelect={(event) => { views(event) }}
-                              selectedValues={finalView}
-                              displayValue="view"
-                              closeIcon='circle'
-                              style={{
-                                chips: {
-                                  background: '#0891b2',
-                                  'font-size': '0.875 rem'
-                                }
-
-                              }}
-
-                            />
-                            <p className="text-sm text-red-700 font-light">
-                              {error?.view}</p>
-                          </div>
-                        </div>
-                      </div>
-                      {/* Room length */}
-                      <InputText
-                        label={`${language?.room} ${language?.length} (${language?.infeet})`}
-                        visible={visible}
-                        defaultValue={allRoomDetails?.room_length}
-                        onChangeAction={
-                          (e) => (
-                            setAllRoomDetails({ ...allRoomDetails, room_length: e.target.value }, setFlag(1))
-                          )
-                        }
-                        error={error?.room_length}
-                        color={color}
-                        req={true}
-                      />
-
-                      {/* Room Breadth */}
-
-                      <InputText
-                        label={`${language?.room} ${language?.breadth} (${language?.infeet})`}
-                        visible={visible}
-                        defaultValue={allRoomDetails?.room_width}
-                        onChangeAction={
-                          (e) => (
-                            setAllRoomDetails({ ...allRoomDetails, room_width: e.target.value }, setFlag(1))
-                          )
-                        }
-                        error={error?.room_width}
-                        color={color}
-                        req={true}
-                      />
-
-                      {/* Room Height */}
-                      <InputText
-                        label={`${language?.room} ${language?.height} (${language?.infeet})`}
-                        visible={visible}
-                        defaultValue={allRoomDetails?.room_height}
-                        onChangeAction={
-                          (e) => (
-                            setAllRoomDetails({ ...allRoomDetails, room_height: e.target.value }, setFlag(1))
-                          )
-                        }
-                        error={error?.room_height}
-                        color={color}
-                        req={true}
-                      />
-
-                      {/* Room Area Read only */}
-                      <InputText
-                        label={`${language?.room} ${language?.area}`}
-                        visible={visible}
-                        defaultValue={allRoomDetails?.carpet_area}
-                        onChangeAction={undefined}
-                        color={color}
-                        disabled={true}
-                      />
-
-                      {/* Room Volume Read only */}
-                      <InputText
-                        label={`${language?.room} ${language?.volume}`}
-                        visible={visible}
-                        defaultValue={allRoomDetails?.room_volume}
-                        onChangeAction={undefined}
-                        color={color}
-                        disabled={true}
-                      />
-
-                      {/* Room Style*/}
-                      <DropDown
-                        label={language?.roomstyle}
-                        visible={visible}
-                        defaultValue={allRoomDetails?.room_style?.replaceAll("_", " ")}
-                        onChangeAction={
-                          (e) => (
-                            setAllRoomDetails({ ...allRoomDetails, room_style: e.target.value }, setFlag(1))
-                          )
-                        }
-                        error={error?.room_style}
-                        color={color}
-                        req={true}
-                        options={[
-                          { value: "western", label: "Western" },
-                          { value: "japanese", label: "Japanese" },
-                          { value: "japanese_western", label: "Japanese Western" },
-                        ]}
-                      />
-
-                      {/* Is Room Shared */}
-                      <DropDown
-                        label={language?.isroomshared}
-                        visible={visible}
-                        defaultValue={allRoomDetails?.is_room_sharing === "shared" ? "Yes" : "No"}
-                        onChangeAction={
-                          (e) => (
-                            setAllRoomDetails({ ...allRoomDetails, is_room_sharing: e.target.value }, setFlag(1))
-                          )
-                        }
-                        error={error?.is_room_sharing}
-                        color={color}
-                        req={true}
-                        options={[
-                          { value: "yes", label: "Yes" },
-                          { value: "no", label: "No" },
-
-                        ]}
-                      />
-
-                      {/* Is Room Outdoor Or Indoor */}
-                      <DropDown
-                        label={language?.isroom}
-                        visible={visible}
-                        defaultValue={allRoomDetails?.is_room}
-                        onChangeAction={
-                          (e) => (
-                            setAllRoomDetails({ ...allRoomDetails, is_room: e.target.value }, setFlag(1))
-                          )
-                        }
-                        error={error?.is_room_sharing}
-                        color={color}
-                        req={true}
-                        options={[
-                          { value: "indoor", label: "Indoor" },
-                          { value: "outdoor", label: "Outdoor" },
-
-                        ]}
-                      />
-
-                      {/* room inventory start */}
-                      <InputText
-                        label={`${language?.room} ${language?.inventory}`}
-                        visible={visible}
-                        defaultValue={allRoomDetails?.inventory_count}
-                        onChangeAction={(e) => {
-                          setAllRoomDetails({ ...allRoomDetails, inventory_count: e.target.value }, setFlag(1))
-                          setIsInventoryEdited(true)
-                        }}
-                        color={color}
-                        disabled={false}
-                        req={true}
-                        title={"Total number of rooms available"}
-                        tooltip={true}
-                        error={error?.inventory_count}
-                      />
-                      {/* room inventory end */}
-
-
-                      {/* Room identifier field start */}
-
-                      <InputText
-                        label={`${language?.room} ${language?.identifiers}`}
-                        visible={visible}
-                        defaultValue={initalIdentifiers}
-                        onChangeAction={(e) => {
-                          setRoomIdentifiers(e.target.value);
-                          setFlag(1);
-                        }}
-                        color={color}
-                        disabled={false}
-                        req={true}
-                        title={"Enter comma seperated room no\'s of similar type of rooms"}
-                        tooltip={true}
-                        error={error?.room_identifier}
-                      />
-
-                    </div>
-                    <div className="flex items-center justify-end space-x-2 sm:space-x-3 ml-auto">
-                      <div className={(spinner === 0 && (flag !== 1 && roomView != 1)) ? 'block py-1' : 'hidden'}>
-                        <Button Primary={language?.UpdateDisabled} />
-                      </div>
-                      <div className={(spinner === 0 && (flag === 1 || roomView === 1)) ? 'block py-1' : 'hidden'}>
-                        <Button Primary={language?.Update} onClick={() => { validationRoomDescription() }} />
-                      </div>
-                      <div className={spinner === 1 ? 'block py-1' : 'hidden'}>
-                        <Button Primary={language?.SpinnerUpdate} />
-                      </div>
-                      <Button Primary={language?.Next} onClick={() => {
-                        {
-                          (roomDetails?.room_type === 'Studio_Room' || roomDetails?.room_type === 'Semi_Double' || roomDetails?.room_type === 'King'
-                            || roomDetails?.room_type === 'Queen' || roomDetails?.room_type === 'Double') ?
-                            setDisp(4)
-                            : roomDetails?.room_type === 'Single' ?
-                              setDisp(5) :
-                              setDisp(1)
-                        }
-                      }} />
-                    </div>
-
-                  </div>
-                </div>
-
-              </div>
-            </div>
-            : undefined}
+          {disp === 0 &&
+            <>
+              <RoomDescription color={color} spinner={spinner} setSpinner={setSpinner} lang={lang} language={language} roomDetails={roomDetails} allRoomDetails={allRoomDetails} setAllRoomDetails={setAllRoomDetails} setFlag={setFlag} visible={visible} error={error} setError={setError} initalIdentifiers={initalIdentifiers} setRoomIdentifiers={setRoomIdentifiers} roomIdentifiers={roomIdentifiers} flag={flag} finalView={finalView} setFinalView={setFinalView} currentroom={currentroom} fetchDetails={fetchDetails} setDisp={setDisp} /></>
+          }
 
 
           {/* Multiple Bed */}
-          {disp === 4 ?
+          {disp === 4 &&
             <div id='4' className='block py-1'>
               <div className={`${color?.whitebackground} shadow rounded-lg px-12 sm:p-6 xl:p-8  2xl:col-span-2`}>
                 <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`]}
@@ -1610,183 +728,16 @@ function Room() {
                   }} />
                 </div>
               </div>
-            </div> : undefined}
+            </div>}
 
           {/* Single Bed */}
-          {disp === 5 ?
-            <div id='5' className='block py-1'>
-              <div className={`${color?.whitebackground} shadow rounded-lg px-12 sm:p-6 xl:p-8  2xl:col-span-2`}>
-                <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`]} selected={1} color={color} />
-                <h6 className={`${color?.text} text-xl flex leading-none pl-6 lg:pt-2 pt-6  pb-2 font-bold`}>
-                  {language?.room} {language?.description}
-                </h6>
-                <div className="flex flex-wrap">
-
-                  <div className="w-full lg:w-6/12 px-4">
-                    <div className="relative w-full mb-3">
-                      <label
-                        className={`text-sm  font-medium ${color?.text} block py-1 mb-2`}
-                        htmlFor="grid-password">
-                        {language?.bed} {language?.Length}({language?.incm})
-                        <span style={{ color: "#ff0000" }}>*</span>
-                      </label>
-                      <div className={visible === 0 ? 'block py-1' : 'hidden'}><Lineloader /></div>
-                      <div className={visible === 1 ? 'block py-1' : 'hidden'}>
-                        <input
-                          type="text" defaultValue={bedDetails?.bed_length}
-                          className={`shadow-sm ${color?.greybackground} ${color?.text}  border border-gray-300  sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`}
-                          onChange={
-                            (e) => (
-                              setBedDetails({ ...bedDetails, bed_length: e.target.value }, setFlag(1))
-                            )
-                          }
-                        />
-                        <p className="text-sm text-red-700 font-light">
-                          {error?.bed_length}</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="w-full lg:w-6/12 px-4">
-                    <div className="relative w-full mb-3">
-                      <label className={`text-sm font-medium ${color?.text} block py-1 mb-2`}
-                        htmlFor="grid-password">
-                        {language?.bed}  {language?.width}({language?.incm})
-                        <span style={{ color: "#ff0000" }}>*</span>
-                      </label>
-                      <div className={visible === 0 ? 'block py-1' : 'hidden'}><Lineloader /></div>
-                      <div className={visible === 1 ? 'block py-1' : 'hidden'}>
-                        <input
-                          type="text"
-                          className={`shadow-sm ${color?.greybackground} ${color?.text}  border border-gray-300  sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`}
-                          defaultValue={bedDetails?.bed_width}
-                          onChange={
-                            (e) => (
-                              setBedDetails({ ...bedDetails, bed_width: e.target.value }, setFlag(1))
-                            )
-                          }
-                        />
-                        <p className="text-sm text-sm text-red-700 font-light">
-                          {error?.bed_width}</p>
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
-                <div className="flex items-center mt-2 justify-end space-x-2 sm:space-x-3 ml-auto">
-                  <Button Primary={language?.Previous} onClick={() => {
-                    setDisp(0)
-                  }} />
-
-                  <div className={(spinner === 0 && flag !== 1) ? 'block py-1' : 'hidden'}>
-                    <Button Primary={language?.UpdateDisabled} /></div>
-                  <div className={(spinner === 0 && flag === 1) ? 'block py-1' : 'hidden'}>
-                    <Button Primary={language?.Update} onClick={() => {
-                      validationBedData();
-                    }} />
-                  </div>
-                  <div className={(spinner === 1 && flag === 1) ? 'block py-1' : 'hidden'}>
-                    <Button Primary={language?.SpinnerUpdate} />
-                  </div>
-                  <Button Primary={language?.Next} onClick={() => {
-                    setDisp(1)
-                  }} />
-                </div>
-              </div>
-            </div> : undefined}
+          {disp === 5 &&
+            <SingleBed color={color} language={language} bedDetails={bedDetails} setBedDetails={setBedDetails} error={error} setError={setError} visible={visible} flag={flag} setFlag={setFlag} spinner={spinner} disp={disp} setDisp={setDisp} setSpinner={setSpinner} fetchDetails={fetchDetails} setModified={setModified} />
+          }
 
           {/* Room Services */}
-          {disp === 1 ?
-            <div id='1' className='block py-1'>
-              <div className={`${color?.whitebackground} shadow rounded-lg mt-2 mx-1 px-12 sm:p-6 xl:p-8  2xl:col-span-2`}>
-                <WidgetStatus name={[`Room Description`, `${language?.room} ${language?.services}`, `${language?.room} ${language?.gallery}`, `${language?.room} ${language?.rates}`]} selected={2} color={color} />
-                <h6 className={`${color?.text} text-xl flex leading-none pl-6 pt-2 font-bold  mb-8`}>
-                  {language?.room} {language?.services}
-                </h6>
-                <div className="flex flex-col my-4">
-                  <div className="overflow-x-auto">
-                    <div className="align-middle inline-block py-1 min-w-full">
-                      <div className="shadow-sm overflow-hidden">
-                        <table className="table-fixed min-w-full divide-y mx-8 divide-gray-200">
-                          <thead className={`${color.greybackground}`}>
-                            <tr>
-                              <th
-                                scope="col"
-                                className={`${color.text} py-4 px-2 text-left text-xs font-semibold uppercase`}
-                              >
-                                {language?.service} {language?.name}
-                              </th>
-                              <th
-                                scope="col"
-                                className={`${color.text} py-4 px-6 text-left text-xs font-semibold uppercase`}
-                              >
-                                {language?.service} {language?.edit}
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody className={`${color.text} divide-y divide-gray-200`}>
-                            {services?.map((item, idx) => (
-                              <tr className={`${color?.hover}`} key={idx}>
-                                <td className="py-4 flex items-center whitespace-nowrap space-x-6 mr-12 lg:mr-0">
-                                  <span className={`${color.text} py-4 px-2 whitespace-nowrap text-base font-medium capitalize `}>
-                                    {"  " +
-                                      item?.service_name?.replace(/_+/g, " ")}
-                                  </span>
-                                </td>
-
-                                <td className={`${color.text} px-4 py-4 whitespace-nowrap text-base font-normal `}>
-                                  <div className="flex">
-                                    <div className="form-check ml-4 form-check-inline">
-
-                                      <label htmlFor={"default-toggle" + idx} className="inline-flex relative items-center cursor-pointer">
-
-                                        <input type="checkbox" value={item?.service_value} checked={item?.service_value == true}
-                                          onChange={() => {
-                                            setServices(services?.map((i) => {
-
-                                              if (i?.service_id === item?.service_id) {
-                                                i.service_value = !i.service_value
-
-                                              }
-                                              return i
-                                            }))
-                                          }}
-                                          id={"default-toggle" + idx} className="sr-only peer" />
-                                        <div
-                                          className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 
-                                 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 
-                                 peer-checked:after:translate-x-full 
-                                 peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] 
-                                 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5
-                                  after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-
-                                      </label>
-                                    </div>
-                                  </div>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                        <div className="flex items-center justify-end space-x-2 sm:space-x-3 ml-auto"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex items-center mt-4 justify-end space-x-2 sm:space-x-3 ml-auto">
-                  <Button Primary={language?.Previous} onClick={() => { setDisp(0) }} />
-                  <div className={spinner === 0 ? 'block py-1' : 'hidden'}>
-                    <Button Primary={roomDetails?.room_facilities !== undefined ? language?.Update : language?.Submit}
-                      onClick={() => { roomDetails?.room_facilities !== undefined ? editServices() : submitServices() }} />
-                  </div>
-                  <div className={spinner === 1 ? 'block py-1' : 'hidden'}>
-                    <Button Primary={roomDetails?.room_facilities !== undefined ? language?.SpinnerUpdate : language?.SpinnerSubmit}
-                    />
-                  </div>
-                  <Button Primary={language?.Next} onClick={() => { setDisp(2) }} />
-                </div>
-              </div>
-            </div> : undefined}
+          {disp === 1 && <RoomService color={color} language={language} services={services} setServices={setServices} spinner={spinner} setSpinner={setSpinner} setDisp={setDisp}
+            roomDetails={roomDetails} currentroom={currentroom} />}
 
           {/* Room Gallery */}
           {disp === 2 ?
@@ -1859,7 +810,7 @@ function Room() {
                         </svg>
                       </a>
                       <a
-                        onClick={allDelete}
+                        onClick={()=>check.length!=0?allDelete():toast.error('APP: No photo selected')}
                         className={
                           check?.length === 0 || undefined
                             ? `${color?.textgray} cursor-pointer p-1 ${color?.hover} rounded inline-flex
@@ -1994,7 +945,7 @@ function Room() {
             </div> : undefined}
 
           {/* Room Rates */}
-          {disp === 3 ?
+          {disp === 3 &&
             <div id='3' className='block py-1'>
               <div className={`${color?.whitebackground} shadow rounded-lg  sm:p-6 xl:p-8  2xl:col-span-2`}>
                 {/* widget progress starts */}
@@ -2011,13 +962,13 @@ function Room() {
                   data={roomRates}
                 />
               </div>
-            </div> : undefined}
+            </div>}
 
 
         </div>
 
         {/* New image enlarge */}
-        {enlargeImage === 1 ? <div id="enlarge" className={"block py-1"}>
+        {enlargeImage === 1 && <div id="enlarge" className={"block py-1"}>
           <div className="overflow-x-hidden overflow-y-auto fixed top-4 left-0 right-0 backdrop-blur-xl   sm:inset-0 bg-black/30 md:inset-0 z-50 flex justify-center items-center h-modal sm:h-full">
             <div className="flex justify-start ml-2 mr-auto">
               {/* //Left arrow symbol*/}
@@ -2162,207 +1113,38 @@ function Room() {
               </svg>
             </div>
           </div>
-        </div> : undefined}
+        </div>}
 
         {/* Modal Add Image */}
-        <div className={addImage === 1 ? 'block py-1' : 'hidden'}>
-          <div className="overflow-x-hidden overflow-y-auto fixed top-4 left-0 right-0 backdrop-blur-xl bg-black/30 md:inset-0 z-50 flex justify-center items-center h-modal sm:h-full">
-            <div className="relative w-full max-w-2xl px-4 h-full md:h-auto">
-              <div className={`${color?.whitebackground} rounded-lg shadow-sm relative`}>
-                <div className="flex items-start justify-between p-5 border-b rounded-t">
-                  <h3 className={`${color?.text} text-xl font-semibold`}>
-                    {language?.add} {language?.new} {language?.image}
-                  </h3>
-                  <button type="button"
-                    onClick={() => { setAddImage(0); setActionImage({}); setError({}) }}
-                    className="text-gray-400 bg-transparent
-                                 hover:bg-gray-200 
-                                 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
-                  >
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>
-                  </button>
-                </div>
+        {addImage === 1 &&
+          <Modal
+            color={color}
+            title={`${language?.add} ${language?.new} ${language?.image}`}
+            description={
+              <AddImage color={color} language={language} error={error} setError={setError} image={image} setImage={setImage} actionImage={actionImage} setActionImage={setActionImage} spinner={spinner} setSpinner={setSpinner} flag={flag} setFlag={setFlag} imageUploaded={imageUploaded} setImageUploaded={setImageUploaded} setAddImage={setAddImage} currentProperty={currentProperty} currentroom={currentroom} fetchImages={fetchImages} />
+            }
+            setShowModal={() => { setAddImage(0); setActionImage({}); setError({}) }}
+            showCloseButton={false} />
+        }
 
-                <div className="p-6 space-y-6">
-                  <div className="grid grid-cols-6 gap-6">
-                    <div className="col-span-6 sm:col-span-3">
-                      <label
-                        className={`text-sm font-medium ${color?.text} block py-1 mb-2`}
-                        htmlFor="grid-password"
-                      >
-                        {language?.image} {language?.upload}
-                        <span style={{ color: "#ff0000" }}>*</span>
-                      </label>
-                      <div className="flex">
-                        <input
-                          type="file" name="myImage" accept="image/png, image/gif, image/jpeg, image/jpg"
-                          onChange={e => {
-                            onChangePhoto(e, 'imageFile');
-                          }}
-                          className={`${color?.greybackground} ${color?.text} shadow-sm  border border-gray-300  sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full py-2 px-2.5`}
-                        />
-                      </div>
-                      <div className="col-span-6 mt-2 sm:col-span-3">
-                        <p className="text-sm text-sm text-red-700 font-light">
-                          {error?.image_link}</p>
-                        <Button Primary={language?.Upload} onClick={uploadImage} />
-                      </div>
-                    </div>
-                    <div className="col-span-6 sm:col-span-3 mt-2">
-                      {/* displays image once it is loaded else demoImage */}
-                      {actionImage?.image_link != undefined ?
-                        <img className={`py-2 ${color?.text} `} src={actionImage?.image_link} alt='Image Preview' style={{ height: "150px", width: "250px" }} /> :
-                        <ImageDemo width={'250'} height={'150'} bgColor={'bg-gray-400'} />}
-
-
-                    </div>
-                    <div className="col-span-6 sm:col-span-3">
-                      <label
-                        className={`text-sm font-medium ${color?.text} block py-1 mb-2`}
-                        htmlFor="grid-password"
-                      >
-                        {language?.image} {language?.titl}
-                        <span style={{ color: "#ff0000" }}>*</span>
-                      </label>
-                      <input
-                        type="text"
-                        onChange={(e) => (setActionImage({ ...actionImage, image_title: e.target.value }, setFlag(1)))}
-                        className={`${color?.greybackground} ${color?.text} shadow-sm py-2  border border-gray-300  sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full px-2.5`}
-                      />
-                      <p className="text-sm text-sm text-red-700 font-light">
-                        {error?.image_title}</p>
-                    </div>
-                    <div className="col-span-6 sm:col-span-3">
-                      <label
-                        className={`text-sm font-medium ${color?.text} block py-1 mb-2`}
-                        htmlFor="grid-password"
-                      >
-                        {language?.image} {language?.description}
-                        <span style={{ color: "#ff0000" }}>*</span>
-                      </label>
-                      <textarea rows="2" columns="60"
-                        onChange={(e) => (setActionImage({ ...actionImage, image_description: e.target.value }, setFlag(1)))}
-                        className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`}
-                        defaultValue="" />
-                      <p className="text-sm text-red-700 font-light">
-                        {error?.image_description}</p>
-                    </div>
-
-                  </div>
-                </div>
-                <div className="items-center p-6 border-t border-gray-200 rounded-b">
-                  {spinner === 0 ? <><div className={(flag !== 1 || imageUploaded === false) ? 'block py-1' : 'hidden'}>
-                    <Button Primary={language?.AddDisabled} />
-                  </div>
-                    <div className={(flag === 1 && imageUploaded === true) ? 'block py-1' : 'hidden'}>
-                      <Button Primary={language?.Add} onClick={() => { validationImage(); }} />
-                    </div>
-                  </> : <div className={'block py-1'}>
-                    <Button Primary={language?.SpinnerAdd} />
-                  </div>}
-
-
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
 
         {/* Modal edit Image */}
-        <div className={editImage === 1 ? 'block py-1' : 'hidden'}>
-          <div className="overflow-x-hidden overflow-y-auto fixed top-4 left-0 right-0 backdrop-blur-xl bg-black/30 md:inset-0 z-50 flex justify-center items-center h-modal sm:h-full">
-            <div className="relative w-full max-w-2xl px-4 h-full md:h-auto">
-              <div className={`${color?.whitebackground} rounded-lg shadow-sm relative`}>
-                <div className="flex items-start justify-between p-5 border-b rounded-t">
-                  <h3 className={`${color?.text} text-xl font-semibold`}>
-                    {language?.edit} {language?.image}
-                  </h3>
-                  <button type="button"
-                    onClick={() => { setEditImage(0); setError({}); }}
-                    className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center" data-modal-toggle="user-modal">
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>
-                  </button>
-                </div>
-                <div className="p-6 space-y-6">
-                  <div className="grid grid-cols-6 gap-6">
-                    <div className="col-span-6 sm:col-span-3">
-                      <img src={actionImage?.image_link} alt='Room Image' style={{ height: "200px", width: "400px" }} className={`py-2 ${color?.text} `} />
-                    </div>
-                    <div className="col-span-6 sm:col-span-3">
-                      <label
-                        className={`text-sm font-medium ${color?.text} block py-1 mb-2`}
-                        htmlFor="grid-password">
-                        {language?.image} {language?.description}
-                        <span style={{ color: "#ff0000" }}>*</span>
-                      </label>
-                      <textarea rows="6" columns="60"
-                        className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`}
-                        onChange={
-                          (e) => (
-                            setActionImage({
-                              ...actionImage,
-                              image_description: e.target.value
-                            }, setFlag(1))
-                          )
-                        } defaultValue={actionImage?.image_description} />
-                      <p className="text-sm text-sm text-red-700 font-light">
-                        {error?.image_description}</p>
-                    </div>
-                    <div className="col-span-6 sm:col-span-3">
-                      <label
-                        className={`text-sm font-medium ${color?.text} block py-1 mb-2`}
-                        htmlFor="grid-password">
-                        {language?.image} {language?.titl}
-                        <span style={{ color: "#ff0000" }}>*</span>
-                      </label>
-                      <input
-                        type="text"
-                        defaultValue={actionImage?.image_title}
-                        onChange={
-                          (e) => (
-                            setActionImage({
-                              ...actionImage,
-                              image_title: e.target.value
-                            }, setFlag(1))
-                          )
-                        }
-                        className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`}
-                      />
-                      <p className="text-sm text-sm text-red-700 font-light">
-                        {error?.image_title}</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="items-center p-6 border-t border-gray-200 rounded-b">
-                  <div className={(spinner === 0 && flag !== 1) ? 'block py-1' : 'hidden'}>
-                    <Button Primary={language?.UpdateDisabled} />
-                  </div>
-                  <div className={(spinner === 0 && flag === 1) ? 'block py-1' : 'hidden'}>
-                    <Button Primary={language?.Update} onClick={validationImage} />
-                  </div>
+        {editImage === 1 && <Modal
+          color={color}
+          title={`${language?.edit} ${language?.image}`}
+          description={
+            <EditRoomImage color={color} language={language} actionImage={actionImage} setActionImage={setActionImage} fetchImages={fetchImages} flag={flag} setFlag={setFlag} spinner={spinner} setSpinner={setSpinner} error={error} setError={setError} addImage={addImage} setEditImage={setEditImage} fetchDetails={fetchDetails} setAllRoomDetails={setAllRoomDetails} />
+          }
+          setShowModal={() => { setEditImage(0); setError({}); }}
+          showCloseButton={false} />}
 
-
-                  <div className={spinner === 1 ? 'block py-1' : 'hidden'}>
-                    <Button Primary={language?.SpinnerUpdate} />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
 
         {/* Modal Delete */}
-        <div className={deleteImage === 1 ? 'block py-1' : 'hidden'}>
-          <div className="overflow-x-hidden overflow-y-auto fixed top-4 left-0 right-0 backdrop-blur-xl bg-black/30 md:inset-0 z-50 flex justify-center items-center h-modal sm:h-full">
-            <div className="relative w-full max-w-md px-4 h-full md:h-auto">
-              <div className={`${color?.whitebackground}  rounded-lg shadow-sm relative`}>
-                <div className="flex justify-end p-2">
-                  <button
-                    onClick={() => setdeleteImage(0)}
-                    type="button" className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center" data-modal-toggle="delete-user-modal">
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>
-                  </button>
-                </div>
+        {deleteImage === 1 &&
+          <Modal
+            color={color}
+            description={
+              <div className={`${color?.whitebackground}  rounded-lg  relative`}>
 
                 <div className="p-6 pt-0 text-center">
                   <svg className="w-20 h-20 text-red-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -2379,9 +1161,11 @@ function Room() {
                     <Button Primary={language?.SpinnerDelete} />}
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
+
+            }
+            setShowModal={() => setdeleteImage(0)}
+            showCloseButton={false} />
+        }
 
         {/* Modal Add Bed */}
         <div className={view === 1 ? 'block py-1' : 'hidden'}>
@@ -2453,7 +1237,7 @@ function Room() {
         </div>
 
         {/* Modal add rate plans */}
-        {addConditionalRate === 1 ?
+        {addConditionalRate === 1 &&
           <Modal
             color={color}
             title={'Add Meal Rate Plan'}
@@ -2466,10 +1250,10 @@ function Room() {
             }
             setShowModal={setAddConditionalRate}
             showCloseButton={false} />
-          : undefined}
+        }
 
         {/* Modal edit rate plans */}
-        {roomRateEditModal === 1 ?
+        {roomRateEditModal === 1 &&
           <Modal
             color={color}
             title={'Edit Rate'}
@@ -2478,10 +1262,10 @@ function Room() {
             }
             setShowModal={setRoomRateEditModal}
             showCloseButton={false} />
-          : undefined}
+        }
 
         {/* Modal delete rate plans */}
-        {roomRateDeleteModal === 1 ?
+        {roomRateDeleteModal === 1 &&
           <Modal
             title={'Delete Rate'}
             color={color}
@@ -2490,7 +1274,7 @@ function Room() {
             }
             setShowModal={setRoomRateDeleteModal}
             showCloseButton={false} />
-          : undefined}
+        }
 
         {/* Toast Container */}
         <ToastContainer position="top-center"

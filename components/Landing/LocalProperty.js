@@ -1,4 +1,6 @@
+import Router  from "next/router";
+
 export default function LocalProperty(props) {
-    localStorage.setItem("property", JSON.stringify(props.item));
-    router.push('./propertysummary');
+  window.localStorage.setItem("property", JSON.stringify(props.item));
+    Router.push('./propertysummary');
   };

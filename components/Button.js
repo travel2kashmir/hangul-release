@@ -1,11 +1,11 @@
-const Button = ({ testid, onClick, Primary = {} }) => {
+const Button = ({ testid, onClick, Primary = {},buttonType=undefined }) => {
     const { color = '', icon = '', label = '',disabled=false } = Primary;
     if (!label && !icon) {
       return null; // Return null if both label and icon are not provided
     } 
     return (
       <button
-        // type="button"
+      type={buttonType ? buttonType : undefined}
         data-testid={testid}
         onClick={onClick}
         disabled={disabled}

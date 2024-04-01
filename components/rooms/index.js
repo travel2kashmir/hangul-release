@@ -8,4 +8,9 @@ import RoomDescription from "./RoomDescription";
 import SingleBed from "./SingleBed";
 import RoomService from "./RoomService"; 
 import AddImage from "./AddImage";
-export {SingleBed,RoomDescription,RoomRateModification,RoomPlanAdd,RoomEdit,RoomDiscounts,RoomDelete,AddNewRatesofRoom,RoomService,AddImage}
+import MultipleBeds from "./MultipleBeds";
+import AddNewBed from "./AddNewBed";
+import RoomGalleryHead from "./RoomGalleryHead";
+import RoomImage from "./RoomImage";
+import navigationList from "./NavigationList";
+export {RoomImage,navigationList,AddNewBed,RoomGalleryHead,MultipleBeds,SingleBed,RoomDescription,RoomRateModification,RoomPlanAdd,RoomEdit,RoomDiscounts,RoomDelete,AddNewRatesofRoom,RoomService,AddImage}

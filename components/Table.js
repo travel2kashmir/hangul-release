@@ -120,7 +120,7 @@ const Table = (args) => {
                         </form>
                         {/* search form end */}
                         {/* icons start */}
-                        <div className="flex space-x-1 pl-0 sm:pl-2 mt-3 sm:mt-0">
+                       {args.mark!=='beds' && <div className="flex space-x-1 pl-0 sm:pl-2 mt-3 sm:mt-0">
                             <span className={`${args?.color?.textgray} hover:${args?.color?.text} cursor-pointer p-1 ${args?.color?.hover} rounded inline-flex justify-center`}>
                                 <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd"></path></svg>
                             </span>
@@ -137,7 +137,7 @@ const Table = (args) => {
                             <span className={`${args?.color?.textgray} hover:${args?.color?.text} cursor-pointer p-1 ${args?.color?.hover} rounded inline-flex justify-center`}>
                                 <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path></svg>
                             </span>
-                        </div>
+                        </div>} 
                         {/* icons end*/}
                     </div>
 
@@ -181,13 +181,13 @@ const Table = (args) => {
                                     <tr>
                                         {args?.name != "Services" ?
                                             <th scope="col" className="p-4">
-                                                <div className="flex items-center">
+                                               {args.mark!=='beds' && <div className="flex items-center">
                                                     <input id="checkbox-all" aria-describedby="checkbox-1" type="checkbox"
                                                         name="allSelect" checked={args?.gen?.filter(item => item?.isChecked !== true).length < 1}
                                                         onChange={(e) => { handlecheckbox(e); setViewDel(1); }}
                                                         className="bg-gray-50 border-gray-300 text-cyan-600  focus:ring-3 focus:ring-cyan-200 h-4 w-4 rounded" />
                                                     <label htmlFor="checkbox-all" className="sr-only">checkbox</label>
-                                                </div>
+                                                </div>}
                                             </th> : <></>}
                                         <th scope="col"
                                             className={`p-4 text-left text-xs font-semibold ${args?.color?.textgray} uppercase`}>{args?.cols?.col1}</th>
@@ -216,11 +216,11 @@ const Table = (args) => {
                                                         {/* first col when editing starts */}
                                                         {args?.name != "Services" ?
                                                             <td className="p-4 w-4">
-                                                                <span className="flex items-center">
+                                                               {args.mark!=='beds' && <span className="flex items-center">
                                                                     <input id="checkbox-1" aria-describedby="checkbox-1" type="checkbox"
                                                                         className="bg-gray-50 border-gray-300 text-cyan-600  focus:ring-3 focus:ring-cyan-200 h-4 w-4 rounded" />
                                                                     <label htmlFor="checkbox-1" className="sr-only">checkbox</label>
-                                                                </span>
+                                                                </span>}
                                                             </td> : <></>}
                                                         {(args?.name != "Additional Services" && args?.name != "Package Miles" && args?.name != "Elite Rewards") ?
                                                             <td className={`p-4 whitespace-nowrap capitalize text-base font-normal ${args?.color?.text}`}>
@@ -391,13 +391,13 @@ const Table = (args) => {
                                                     <tr>
                                                         {args?.name != "Services" ?
                                                             <td className="p-4 w-4">
-                                                                <span className="flex items-center">
+                                                               {args.mark!=='beds' && <span className="flex items-center">
                                                                     <input id="checkbox-1" name={item?.id} checked={item.isChecked || false}
                                                                         onChange={(e) => { handlecheckbox(e); setViewDel(1); }}
                                                                         aria-describedby="checkbox-1" type="checkbox"
                                                                         className="bg-gray-50 border-gray-300 text-cyan-600  focus:ring-3 focus:ring-cyan-200 h-4 w-4 rounded" />
                                                                     <label htmlFor="checkbox-1" className="sr-only">checkbox</label>
-                                                                </span>
+                                                                </span>}
                                                             </td> : <></>}
                                                         <td className={`p-4 whitespace-nowrap ${args.name === "Contact" ? undefined : `capitalize`}  text-base font-normal ${args?.color?.text}`}>
                                                             {args.name != "Contact" ? item?.name : item?.type}

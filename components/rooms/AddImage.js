@@ -5,6 +5,7 @@ import ImageDemo from '../utils/ImageDemo';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { validateEditGallery } from '../validation/room';
+import InputText from '../utils/InputText';
 
 function AddImage({ color, language, error, setError, image, setImage, actionImage, setActionImage, spinner, setSpinner, flag, setFlag, imageUploaded, setImageUploaded,setAddImage,currentProperty,currentroom,fetchImages }) {
     const onChangePhoto = (e, i) => {
@@ -102,8 +103,8 @@ function AddImage({ color, language, error, setError, image, setImage, actionIma
         <div className="relative w-full max-w-2xl px-4 h-full md:h-auto">
             <div className={`${color?.whitebackground} relative`}>
                 <div className="p-6 space-y-6">
-                    <div className="grid grid-cols-6 gap-6">
-                        <div className="col-span-6 sm:col-span-3">
+                    <div className="flex flex-wrap">
+                        <div className="w-full lg:w-1/2">
                             <label
                                 className={`text-sm font-medium ${color?.text} block py-1 mb-2`}
                                 htmlFor="grid-password"
@@ -126,7 +127,7 @@ function AddImage({ color, language, error, setError, image, setImage, actionIma
                                 <Button Primary={language?.Upload} onClick={uploadImage} />
                             </div>
                         </div>
-                        <div className="col-span-6 sm:col-span-3 mt-2">
+                        <div className="w-full lg:w-1/2 mt-2">
                             {/* displays image once it is loaded else demoImage */}
                             {actionImage?.image_link != undefined ?
                                 <img className={`py-2 ${color?.text} `} src={actionImage?.image_link} alt='Image Preview' style={{ height: "150px", width: "250px" }} /> :
@@ -134,38 +135,25 @@ function AddImage({ color, language, error, setError, image, setImage, actionIma
 
 
                         </div>
-                        <div className="col-span-6 sm:col-span-3">
-                            <label
-                                className={`text-sm font-medium ${color?.text} block py-1 mb-2`}
-                                htmlFor="grid-password"
-                            >
-                                {language?.image} {language?.titl}
-                                <span style={{ color: "#ff0000" }}>*</span>
-                            </label>
-                            <input
-                                type="text"
-                                onChange={(e) => (setActionImage({ ...actionImage, image_title: e.target.value }, setFlag(1)))}
-                                className={`${color?.greybackground} ${color?.text} shadow-sm py-2  border border-gray-300  sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block  w-full px-2.5`}
-                            />
-                            <p className="text-sm text-red-700 font-light">
-                                {error?.image_title}</p>
-                        </div>
-                        <div className="col-span-6 sm:col-span-3">
-                            <label
-                                className={`text-sm font-medium ${color?.text} block py-1 mb-2`}
-                                htmlFor="grid-password"
-                            >
-                                {language?.image} {language?.description}
-                                <span style={{ color: "#ff0000" }}>*</span>
-                            </label>
-                            <textarea rows="2" columns="60"
-                                onChange={(e) => (setActionImage({ ...actionImage, image_description: e.target.value }, setFlag(1)))}
-                                className={`shadow-sm ${color?.greybackground} border border-gray-300 ${color?.text} sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block py-1 w-full p-2.5`}
-                                defaultValue="" />
-                            <p className="text-sm text-red-700 font-light">
-                                {error?.image_description}</p>
-                        </div>
 
+                        
+                        <InputText
+                            label={`${language?.image} ${language?.titl}`}
+                            visible={1}
+                            onChangeAction={(e) => (setActionImage({ ...actionImage, image_title: e.target.value }, setFlag(1)))}
+                            error={error?.image_title}
+                            color={color}
+                            req={true}
+                        />
+                        <InputText
+                            label={`${language?.image} ${language?.description}`}
+                            visible={1}
+                            onChangeAction={(e) => (setActionImage({ ...actionImage, image_description: e.target.value }, setFlag(1)))}
+                            error={error?.image_description}
+                            color={color}
+                            req={true}
+                        />
+                        
                     </div>
                 </div>
                 <div className="items-center p-6 border-t border-gray-200 rounded-b">

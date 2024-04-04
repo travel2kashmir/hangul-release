@@ -18,7 +18,7 @@ import GlobalData from "../../../components/GlobalData";
 import DropDown from "../../../components/utils/DropDown";
 import Button from "../../../components/Button";
 import validateUniversal from "../../../components/Businesssettings/validateUniversal";
-import TaxRateSettings from "../../../components/Businesssettings/TaxRateSettings";
+
 
 var language;
 var country;
@@ -185,43 +185,6 @@ function Index() {
                     tooltip={true}
                   />
                   {/* select currency ends  */}
-
-               
-                  {/* other fees type start  */}
-                  <DropDown
-                    label={'Other Fees Calculation'}
-                    visible={1}
-                    defaultValue={universalData?.other_fee_type || 'Select type'}
-                    onChangeAction={(e) => {
-                      setMutationFlag(true)
-                      setUniversalData({ ...universalData, other_fee_type: e.target.value })
-                    }}
-                    color={color}
-                    req={true}
-                    options={[{ "value": "percentage", "label": "percentage" },
-                    { "value": "fixed", "label": "fixed" }]}
-                    error={error?.other_fee_type}
-                    title={"Other fee type will help in calculation other fees"}
-                    tooltip={true}
-                  />
-                  {/* other fees type end  */}
-
-                  {/* other fees start  */}
-                  <InputText
-                    label={"Other Fees Rate"}
-                    visible={1}
-                    defaultValue={universalData?.other_fees}
-                    onChangeAction={(e) => {
-                      setMutationFlag(true);
-                      setUniversalData({ ...universalData, other_fees: e.target.value });
-                    }
-                    }
-                    error={error?.tax_rate || error?.other_fees}
-                    color={color}
-                    req={true}
-                    title={'The other fees will be applied on purchase'}
-                    tooltip={true}
-                  />
                 </div>
               </div>
             </div>
@@ -248,7 +211,7 @@ function Index() {
 
           </div>
 
-          <TaxRateSettings color={color} language={language} taxPlans={allHotelDetails?.tax_plans} property_id={allHotelDetails?.property_id}/>
+
           {/* Toast Container */}
 
 

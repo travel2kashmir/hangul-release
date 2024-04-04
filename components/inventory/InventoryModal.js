@@ -147,9 +147,7 @@ function InventoryModal({ error, setError, setView, setInventories, view, color,
         {/* Navbar */}
 
         <div className={`${color?.whitebackground} shadow rounded-lg px-12 sm:p-6 xl:p-8  2xl:col-span-2`}>
-          <h6 className={`${color?.text} text-xl flex leading-none pl-6 lg:pt-2 pt-6  font-bold`}>
-            {language?.outofservice}
-          </h6>
+          
           <div className="pt-6">
             <div className=" md:px-4 mx-auto w-full">
               <form id='inventoryAddForm'>

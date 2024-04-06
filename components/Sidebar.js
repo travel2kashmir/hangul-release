@@ -6,7 +6,7 @@ var language;
 const Sidebar = (args) => {
   useEffect(() => {
 
-    const firstfun = () => {
+    const onComponentLoadActions = () => {
       if (typeof window !== 'undefined') {
         var locale = localStorage.getItem("Language");
         if (locale === "ar") {
@@ -20,7 +20,7 @@ const Sidebar = (args) => {
         }
       }
     }
-    firstfun();
+    onComponentLoadActions();
 
   }, [])
 

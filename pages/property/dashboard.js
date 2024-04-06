@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
+import { useRouter } from "next/router";
 import Title from '../../components/title';
 import Sidebar from "../../components/Sidebar";
 import Header from "../../components/Header";
@@ -10,7 +10,6 @@ import { InitialActions, ColorToggler } from "../../components/initalActions";
 import BreadCrumb from "../../components/utils/BreadCrumb";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import CountUp from 'react-countup';
 import Piechart from '../../components/Dashboard/Piechart';
 import Barchart from '../../components/Dashboard/Barchart';
 import axios from 'axios';
@@ -23,6 +22,7 @@ var currentLogged;
 let colorToggle;
 
 function Dashboard() {
+  const router = useRouter();
   const [color, setColor] = useState({})
   const [mode, setMode] = useState()
   const [roomCount, setRoomCount] = useState()

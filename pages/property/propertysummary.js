@@ -22,7 +22,6 @@ import "swiper/css/navigation";
 // import required modules
 import SwiperCore, { Autoplay, Pagination, Navigation } from "swiper";
 import Router, { useRouter } from "next/router";
-const logger = require("../../services/logger");
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Footer from '../../components/Footer';
@@ -72,9 +71,9 @@ function PropertySummary() {
       .then((response) => {
         setAllHotelDetails(response.data);
         filterCountry(response.data.address?.[i]);
-        logger.info("url  to fetch property details hitted successfully")
+        console.log("url  to fetch property details hitted successfully")
       })
-      .catch((error) => { logger.error("url to fetch property details, failed") });
+      .catch((error) => { console.log("url to fetch property details, failed") });
   }
 
   const filterCountry = (props) => {

@@ -12,7 +12,7 @@ function TermsAndConditions() {
 
 
     useEffect(() => {
-        const firstfun = () => {
+        const onComponentLoadActions = () => {
             if (typeof window !== 'undefined') {
                 var locale = localStorage.getItem("Language");
                 const colorToggle = JSON.parse(localStorage.getItem("ColorToggle"));
@@ -30,7 +30,7 @@ function TermsAndConditions() {
                 }
             }
         }
-        firstfun();
+        onComponentLoadActions();
         Router.push("./termsandconditions");
     }, [])
 

@@ -17,7 +17,6 @@ var language;
 var currentProperty;
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-const logger = require("../../../services/logger");
 let colorToggle;
 var country;
 var i = 0;
@@ -92,7 +91,7 @@ function AddBasicDetails() {
 
   /** Fetching language from the local storage **/
   useEffect(() => {
-    const firstfun = () => {
+    const onComponentLoadActions = () => {
       if (typeof window !== 'undefined') {
         var locale = localStorage.getItem("Language");
         setColor(colorFile?.light)
@@ -110,7 +109,7 @@ function AddBasicDetails() {
         }
       }
     }
-    firstfun();
+    onComponentLoadActions();
 
     Router.push("./addbasicdetails");
     setAllHotelDetails({ ...allHotelDetails, description_date: current })

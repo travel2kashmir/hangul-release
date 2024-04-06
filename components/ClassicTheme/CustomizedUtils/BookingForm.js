@@ -108,6 +108,7 @@ function BookingForm({ themeColor, setShowModalBookingForm, setShowBookingEngine
                     </div>
                     <div className='flex justify-center items-center md:pt-10 lg:pt-0'>
                         <button
+                            disabled={!enquiry || (!enquiry.checkin && !enquiry.checkout)}
                             className='bg-cyan-700 hover:bg-cyan-900 mt-5 border rounded-3xl border-none h-12 w-full text-white'
                             onClick={() => {
                                 if (enquiry.checkin === "" && enquiry.checkout === "") {

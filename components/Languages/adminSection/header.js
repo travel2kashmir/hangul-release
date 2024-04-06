@@ -10,7 +10,7 @@ function Header(args) {
 
   const [services, setServices] = useState(false)
   useEffect(() => {
-      const firstfun = () => {
+      const onComponentLoadActions = () => {
       if (typeof window !== 'undefined') {
 
         var locale = localStorage.getItem("Language");
@@ -27,7 +27,7 @@ function Header(args) {
 
       }
     }
-    firstfun();
+    onComponentLoadActions();
   }, [])
   /** UseState to check whether its small screen or large screen **/
   const [smSidebar, setSmSidebar] = useState(false)

@@ -8,7 +8,6 @@ import ButtonLoader from './ButtonLoader';
 var currentProperty;
 var currentRoom;
 var currentLogged;
-const logger = require("../../services/logger");
 import Multiselect from 'multiselect-react-dropdown';
 
 function InventoryModal({ error, setError, setView, setInventories, view, color, language, fetchHotelDetails }) {
@@ -28,7 +27,7 @@ function InventoryModal({ error, setError, setView, setInventories, view, color,
       .then((response) => {
         fetchRooms(response.data.length > 0 ? response.data : []);
       })
-      .catch((error) => { logger.error("url to fetch property details, failed") });
+      .catch((error) => { console.log("url to fetch property details, failed") });
   }
 
   //fetch all rooms 
@@ -40,7 +39,7 @@ function InventoryModal({ error, setError, setView, setInventories, view, color,
         setAllRooms(response?.data);
       })
       .catch((error) => {
-        logger.error("url to fetch property details, failed")
+        console.log("url to fetch property details, failed")
       });
       // all room refrences 
     axios.get(`/api/all_room_refrences/${currentProperty?.property_id}`)
@@ -49,12 +48,12 @@ function InventoryModal({ error, setError, setView, setInventories, view, color,
         setVisible(1);
       })
       .catch((error) => {
-        logger.error("url to fetch property details, failed")
+        console.log("url to fetch property details, failed")
       });
   }
 
   useEffect(() => {
-    const firstfun = () => {
+    const onComponentLoadActions = () => {
       if (typeof window !== 'undefined') {
 
         /** Current Property Basic Details fetched from the local storage **/
@@ -65,7 +64,7 @@ function InventoryModal({ error, setError, setView, setInventories, view, color,
 
       }
     }
-    firstfun();
+    onComponentLoadActions();
   }, [view])
 
   useEffect(() => {
@@ -148,9 +147,7 @@ function InventoryModal({ error, setError, setView, setInventories, view, color,
         {/* Navbar */}
 
         <div className={`${color?.whitebackground} shadow rounded-lg px-12 sm:p-6 xl:p-8  2xl:col-span-2`}>
-          <h6 className={`${color?.text} text-xl flex leading-none pl-6 lg:pt-2 pt-6  font-bold`}>
-            {language?.outofservice}
-          </h6>
+          
           <div className="pt-6">
             <div className=" md:px-4 mx-auto w-full">
               <form id='inventoryAddForm'>

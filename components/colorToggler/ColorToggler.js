@@ -16,7 +16,7 @@ const ColorToggler = (newColor, setColor) => {
     setColor(colorFile?.dark)
     localStorage.setItem("colorToggle", true)
   }
-  // firstfun();
+  // onComponentLoadActions();
   // router.push(page);
 }
 export default ColorToggler;

@@ -51,11 +51,11 @@ function Theme() {
   const router = useRouter();
 
   useEffect(() => {
-    firstfun();
+    onComponentLoadActions();
     // router.push("./theme");
   }, [])
 
-  const firstfun = () => {
+  const onComponentLoadActions = () => {
     if (typeof window !== 'undefined') {
       locale = localStorage.getItem("Language");
       colorToggle = localStorage.getItem("colorToggle");

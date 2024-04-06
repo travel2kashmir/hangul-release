@@ -17,9 +17,6 @@ var currentProperty;
 var currentLogged;
 var currentUser;
 var locale;
-
-const logger = require("../../services/logger");
-
 function UserDetails() {
     const [properties, setProperties] = useState([]);
     const [spinner, setSpinner] = useState(0);
@@ -27,7 +24,7 @@ function UserDetails() {
     const [userData, setUserdata] = useState([]);
     const [saveData, setSaveData] = useState('');
     useEffect(() => {
-        const firstfun = () => {
+        const onComponentLoadActions = () => {
             if (typeof window !== 'undefined') {
                 locale = localStorage.getItem("Language");
                 if (locale === "ar") {
@@ -43,7 +40,7 @@ function UserDetails() {
                 currentLogged = JSON.parse(localStorage.getItem("Signin Details"));
             }
         }
-        firstfun();
+        onComponentLoadActions();
         fetchProperty();
         fetchAllProperties();
     }, [])
@@ -75,16 +72,16 @@ function UserDetails() {
         try {
 
             const url = `/api/properties/${currentUser.user_id}`;
-            logger.info("url" + url)
+            console.log("url" + url)
             const response = await axios.get(url, {
                 headers: { accept: "application/json" },
             });
             setUserdata(response.data);
         } catch (error) {
             if (error.response) {
-                logger.error("Current User Properties Error");
+                console.log("Current User Properties Error");
             } else {
-                logger.error("Current User Properties Error");
+                console.log("Current User Properties Error");
             }
         }
     };

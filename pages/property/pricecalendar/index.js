@@ -7,7 +7,6 @@ import { InitialActions, ColorToggler } from '../../../components/initalActions'
 import { english, french, arabic } from "../../../components/Languages/Languages";
 
 var currentLogged;
-let colorToggle;
 var language;
 let currentProperty;
 
@@ -24,7 +23,6 @@ const RoomPricePage = () => {
         currentLogged = resp?.currentLogged;
         currentProperty = resp?.currentProperty;
         setProperty_name(resp?.currentProperty?.property_name);
-        colorToggle = resp?.colorToggle
         setVisible(1);
     }, [])
 

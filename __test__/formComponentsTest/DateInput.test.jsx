@@ -148,7 +148,7 @@ test('Does Fire event works',()=>{
     max={'2024-03-03'}
     toolTip={`test case2`}
  />)
- const input=screen.getByTestId('inputdate')
+ const input=screen.getByTestId('inputdate-test case1')
  fireEvent.change(input, {target: {value: 'w'}})
  expect(testFunction).toHaveBeenCalled();
  })

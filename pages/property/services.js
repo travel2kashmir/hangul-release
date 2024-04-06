@@ -2,30 +2,21 @@ import React, { useEffect, useState } from 'react';
 import axios from "axios";
 import Sidebar from "../../components/Sidebar";
 import LoaderDarkTable from "../../components/loaders/darktableloader";
-import colorFile from "../../components/colors/Color";
 import Header from "../../components/Header";
-import Link from "next/link";
 import Table from '../../components/Table';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { english, french, arabic } from "../../components/Languages/Languages"
 import LoaderTable from "../../components/loadertable";
-import Headloader from "../../components/loaders/headloader";
 import Addservices from '../../components/admin/AddServices';
-const logger = require("../../services/logger");
 import { InitialActions, ColorToggler } from "../../components/initalActions";
 import { navigationList, fetchHotelDetails } from '../../components/logic/property/Services';
-
-var language;
-var currentProperty;
-var propertyName;
-var propertyId;
-import Router from 'next/router';
-var currentLogged;
 import objChecker from "lodash";
 import BreadCrumb from '../../components/utils/BreadCrumb';
-let colorToggle;
-
+import Router from 'next/router';
+var language;
+var currentProperty;
+var currentLogged;
 function Services() {
   const [visible, setVisible] = useState(0)
   const [services, setServices] = useState([])
@@ -47,8 +38,6 @@ function Services() {
     language = resp?.language;
     currentLogged = resp?.currentLogged;
     currentProperty = resp?.currentProperty;
-    colorToggle = resp?.colorToggle
-
     if (JSON.stringify(currentLogged) === 'null') {
       Router.push(window.location.origin)
     }

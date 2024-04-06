@@ -106,7 +106,7 @@ function Allusers() {
   }
 
   useEffect(() => {
-    const firstfun = () => {
+    const onComponentLoadActions = () => {
       if (typeof window !== 'undefined') {
         var locale = localStorage.getItem("Language");
         if (locale === "ar") {
@@ -124,7 +124,7 @@ function Allusers() {
 
       }
     }
-    firstfun();
+    onComponentLoadActions();
     fetchAllUsers();
     Router.push("./allusers");
   }, [])

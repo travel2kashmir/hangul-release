@@ -2,7 +2,7 @@ import React from 'react'
 import InputText from '../../utils/InputText'
 import WidgetStatus from '../../widgetStatus'
 import Button from '../../Button'
-import LineLoader from '../../loaders/LineLoader'
+import LineLoader from '../../loaders/lineloader'
 import InputTextBox from '../../utils/InputTextBox'
 import Multiselect from 'multiselect-react-dropdown'
 import { validationRoomDescription } from '../../../components/logic/property/Rooms/AddRoom';

@@ -76,13 +76,13 @@ function AddNewRatesofRoom({ color, language, roomId }) {
             axios.post(url, data, { "headers": { "content-type": "application/json" } })
                 .then((resp) => {
                     console.log(resp.data)
-                    toast.success("Rates saved sucessfully");
+                    toast.success("API: Rates saved sucessfully");
+                    Router.push(`${window.location.protocol}//${window.location.host}/property/rooms`)
                     setSpinner(0);
-                    Router.push(`${window.location.host}/property/rooms`)
                 })
                 .catch((err) => {
                     console.log(err.message)
-                    toast.error("Error in adding rates")
+                    toast.error("API:Error in adding rates")
                     setSpinner(0)
                 })
         }

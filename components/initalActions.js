@@ -19,15 +19,16 @@ const InitialActions = ({ setColor, setMode }) => {
             setMode(colorToggle === "true" ? true : false)
         }
         {
+
             if (locale === "ar") {
                 language = arabic;
             }
-            if (locale === "en") {
-                language = english;
-            }
-            if (locale === "fr") {
-                language = french;
 
+            else if (locale === "fr") {
+                language = french;
+            }
+            else {
+                language = english;
             }
         }
         /** Current Property Details fetched from the local storage **/

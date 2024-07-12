@@ -3,7 +3,6 @@ import 'tailwindcss/tailwind.css';
 import '../pages/themes/classic/classic.css'
 import NProgress from 'nprogress'; //nprogress module
 import 'nprogress/nprogress.css';
-// import Layout from '../components/Layout'
 import Router from "next/router";
 
 // redux libraries
@@ -24,12 +23,10 @@ function MyApp({ Component, pageProps }) {
     <>
       <PersistGate persistor={store.__persistor} loading={<div>Loading...</div>}>
         <Component {...pageProps} />
-       
       </PersistGate>
-
-    </>
+  </>
   )
 }
 export { reportWebVitals } from 'next-axiom';
-// export default MyApp
+
 export default wrapper.withRedux(MyApp);

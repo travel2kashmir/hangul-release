@@ -35,6 +35,7 @@ function Services() {
   // runs at load time
   useEffect(() => {
     const resp = InitialActions({ setColor, setMode })
+    console.log(resp)
     language = resp?.language;
     currentLogged = resp?.currentLogged;
     currentProperty = resp?.currentProperty;
@@ -96,7 +97,7 @@ function Services() {
     }
   }
 
-
+console.log(color.name)
   return (
     <>
       <Header
@@ -124,8 +125,8 @@ function Services() {
           crumbList={navigationList(currentLogged, currentProperty)}
         />
 
-        <div className={(visible === 0 && colorToggle == false ? 'block' : 'hidden')}><LoaderTable /></div>
-        <div className={(visible === 0 && colorToggle == true ? 'block' : 'hidden')}><LoaderDarkTable /></div>
+        <div className={(visible === 0 && color.name==='light' ? 'block' : 'hidden')}><LoaderTable /></div>
+        <div className={(visible === 0 && color.name ==='dark' ? 'block' : 'hidden')}><LoaderDarkTable /></div>
         <div className={visible === 1 ? 'block' : 'hidden'}>
           {/* table is invoked if property has services else add services is invoked */}
           {JSON.stringify(Object.keys(services).includes('services')) === "true" ?

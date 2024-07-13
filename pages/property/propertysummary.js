@@ -126,7 +126,6 @@ function PropertySummary() {
           <BreadCrumb
             color={color}
             crumbList={navigationList(currentLogged, currentProperty)}
-
           />
 
           <div>

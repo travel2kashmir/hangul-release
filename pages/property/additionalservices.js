@@ -184,8 +184,8 @@ function AdditionalServices() {
                     crumbList={navigationList(currentLogged, currentProperty)}
                 />
                 
-                {visible === 0 && colorToggle === "false" &&<LoaderTable />}
-                {visible === 0 && colorToggle === "true" && <LoaderDarkTable />}
+                {visible === 0 && color.name==='light' &&<LoaderTable />}
+                {visible === 0 && color.name==='dark'&& <LoaderDarkTable />}
                 {visible === 1 &&
                     <Table gen={gene} setGen={setGene} add={() => setView(1)} name="Additional Services"
                         edit={editAdditionalServices} color={color}

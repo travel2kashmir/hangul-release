@@ -7,12 +7,13 @@ import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/router";
 import Header from '../../components/Languages/adminSection/header'
 import Sidebar from "../../components/Languages/adminSection/sidebar";
-import {english,french,arabic} from "../../components/Languages/Languages"
+import { english, french, arabic } from "../../components/Languages/Languages"
 import Button from "../../components/Button";
 var language;
 var currentUser;
 import Lineloader from "../../components/loaders/lineloader";
 import Textboxloader from "../../components/loaders/textboxloader";
+import { preventDefault } from "@fullcalendar/core/internal";
 
 function AdminLanding() {
     const [loc, setLoc] = useState()
@@ -49,7 +50,7 @@ function AdminLanding() {
     useEffect(() => {
         const onComponentLoadActions = () => {
             if (typeof window !== 'undefined') {
-                var locale = localStorage.getItem("Language");
+                var locale = localStorage.getItem("Language") || "en";
                 if (locale === "ar") {
                     language = arabic;
                 }
@@ -279,7 +280,7 @@ function AdminLanding() {
                                     </table>
 
                                 </form>
-
+                                {/* list of inactive properties  */}
                                 <h6 className="text-xl mx-auto my-6 flex leading-none  pt-2 font-bold text-gray-900 ">
                                     {language?.inactiveproperties}
                                 </h6>
@@ -335,9 +336,11 @@ function AdminLanding() {
                                                         </td>
                                                         <td className="p-2 whitespace-nowrap space-x-1">
                                                             <button
-                                                                onClick={() => {
+                                                                onClick={(e) => {
+                                                                    e.preventDefault();
                                                                     LocalProperty({ item });
                                                                     router.push("../property/propertysummary");
+                                                                    // router.push("www.google.com");
                                                                 }}
                                                                 className="text-white bg-cyan-600
                                          hover:bg-cyan-700 focus:ring-4 focus:ring-cyan-200 font-semibold rounded-lg

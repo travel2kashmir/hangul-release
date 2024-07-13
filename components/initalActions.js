@@ -29,6 +29,7 @@ const InitialActions = ({ setColor, setMode }) => {
             }
             else {
                 language = english;
+                localStorage.setItem("Language","en")
             }
         }
         /** Current Property Details fetched from the local storage **/

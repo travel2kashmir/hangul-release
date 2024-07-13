@@ -67,8 +67,8 @@ function Bookings() {
                 />
 
                 {/* Booking Table */}
-                {visible === 0 && colorToggle === "false" && <LoaderTable />}
-                {visible === 0 && colorToggle === "true" && <LoaderDarkTable />}
+                {visible === 0 && color.name==='light' && <LoaderTable />}
+                {visible === 0 && color.name==='dark' && <LoaderDarkTable />}
                 {visible === 1 && <GenericTable
                         color={color}
                         language={language}
